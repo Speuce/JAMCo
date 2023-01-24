@@ -28,4 +28,8 @@ The application will be able to handle a capacity of 100 users, and up to 1000 c
 
 # Tech
 
+We are using Vue.js with Vite and Vuetify on the frontend, and the Django framework for Python on the backend. For our database, supported by the Django ORM, we are using PostgreSQL.
+
+<img width="540" alt="Architecture diagram" src="https://user-images.githubusercontent.com/29902980/214203271-78edec4f-c423-4947-aa91-5e50b6684e0f.png">
+
 # User Stories
