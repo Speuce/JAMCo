@@ -6,6 +6,26 @@ JAMCo's vision is to empower job seekers by providing a user-friendly platform f
 
 # Core Features
 
+## Accounts
+
+Users create personal accounts to access their job application console from any computer. Users can link their accounts with an external provider, and can personalize their experience and profile.
+
+## Job Manager
+
+Enables users to track information relevant to every job they apply for or wish to apply for. Users can record the job requirements, needed documents, dates and deadlines, and application status. 
+
+## Friends
+
+Users can connect with friends and other community members to share details about the requirements, challenges, and current status of their applications. 
+
+## Notifications
+
+Users can set reminders for their upcoming deadlines to stay coordinated, and set notifications for friend activity to keep in touch. 
+
+## Request Handling
+
+The application will be able to handle a capacity of 100 users, and up to 1000 concurrent requests per minute.
+
 # Tech
 
 # User Stories
