@@ -32,4 +32,33 @@ We are using Vue.js with Vite and Vuetify on the frontend, and the Django framew
 
 <img width="540" alt="Architecture diagram" src="https://user-images.githubusercontent.com/29902980/214203271-78edec4f-c423-4947-aa91-5e50b6684e0f.png">
 
-# User Stories
+# User Stories by Feature
+
+### Notifications:
+
+- Friend Request Notifications ([#10](https://github.com/Speuce/JAMCo/issues/10))
+- Deadline Notifications ([#11](https://github.com/Speuce/JAMCo/issues/11))
+- Optionally Send Application Notifications To Friends ([#12](https://github.com/Speuce/JAMCo/issues/12))
+- Optionally Recieve Application Notifications From Friends ([#13](https://github.com/Speuce/JAMCo/issues/13))
+
+### Friends
+
+- Add & Remove Friends ([#14](https://github.com/Speuce/JAMCo/issues/14))
+- Friend Privacy Settings ([#15](https://github.com/Speuce/JAMCo/issues/15))
+- Request Cover Letter Reviews ([#16](https://github.com/Speuce/JAMCo/issues/16))
+- View Friends' Applications ([#17](https://github.com/Speuce/JAMCo/issues/17))
+
+### Track A Job
+
+- Add Job With Basic Info ([#6](https://github.com/Speuce/JAMCo/issues/6))
+- Job Tracking Kanban Board ([#7](https://github.com/Speuce/JAMCo/issues/7))
+- Add Cover Letter Field ([#8](https://github.com/Speuce/JAMCo/issues/8))
+- Add Related Deadlines ([#9](https://github.com/Speuce/JAMCo/issues/9))
+- Edit Job Details ([#22](https://github.com/Speuce/JAMCo/issues/22))
+
+### Accounts
+
+- Account Creation ([#18](https://github.com/Speuce/JAMCo/issues/18))
+- Account Details & Personal Profile ([#19](https://github.com/Speuce/JAMCo/issues/19))
+- Account Settings & Preferences ([#20](https://github.com/Speuce/JAMCo/issues/20))
+- Account Login Options ([#21](https://github.com/Speuce/JAMCo/issues/21))
