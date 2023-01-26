@@ -8,11 +8,13 @@ services:
       - POSTGRES_PASSWORD=admin
     ports:
       - '5432:5432'
-  web:
-    build: .
-    command: ./backend/docker-entrypoint.sh
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: ./docker-entrypoint.sh
     volumes:
-      - .:/app
+      - ./backend:/backend
     ports:
       - "8000:8000"
     environment:
@@ -22,3 +24,15 @@ services:
       POSTGRES_HOST: db
     depends_on:
       - db
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    command: ./docker-entrypoint.sh
+    #command: tail -f /dev/null
+    volumes:
+      - ./frontend:/frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
