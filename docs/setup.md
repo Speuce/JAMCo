@@ -14,4 +14,4 @@
 ![Screen Shot 2023-01-25 at 9 49 56 PM](https://user-images.githubusercontent.com/8062248/214756375-5f4bbe93-912d-4c70-bc68-1ce7e8f1e6dd.png)
 5. Wait.
 6. Navigate to `localhost:3000` for the frontend and `localhost:8000` for the backend.
-7. (Optional) If desired, once the first dev container is set up you can open a new VSCode window, and repeat steps 2-4 for the other (front/back-end) container as well. This way, you'll have one window for frontend and one for backend open simultaneously. 
+7. (Optional) Once the first dev container is set up you can open a new VSCode window, and repeat steps 2-4 for the other (front/back-end) container as well. This way, you'll have one window for frontend and one for backend open simultaneously. 
