@@ -1,9 +1,9 @@
 <script setup>
-import JobTrackingView from "./views/JobTrackingView.vue";
+import { RouterView } from "vue-router";
 </script>
 
 <template>
-  <JobTrackingView />
+  <RouterView />
 </template>
 
 <style scoped>
