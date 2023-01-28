@@ -43,19 +43,12 @@ We are using Vue.js with Vite and Vuetify on the frontend, and the Django framew
 
 # User Stories by Feature
 
-### Notifications ([#5](https://github.com/Speuce/JAMCo/issues/5))
+### Accounts ([#2](https://github.com/Speuce/JAMCo/issues/2))
 
-- Friend Request Notifications ([#10](https://github.com/Speuce/JAMCo/issues/10))
-- Deadline Notifications ([#11](https://github.com/Speuce/JAMCo/issues/11))
-- Optionally Send Application Notifications To Friends ([#12](https://github.com/Speuce/JAMCo/issues/12))
-- Optionally Recieve Application Notifications From Friends ([#13](https://github.com/Speuce/JAMCo/issues/13))
-
-### Friends ([#4](https://github.com/Speuce/JAMCo/issues/4))
-
-- Add & Remove Friends ([#14](https://github.com/Speuce/JAMCo/issues/14))
-- Friend Privacy Settings ([#15](https://github.com/Speuce/JAMCo/issues/15))
-- Request Cover Letter Reviews ([#16](https://github.com/Speuce/JAMCo/issues/16))
-- View Friends' Applications ([#17](https://github.com/Speuce/JAMCo/issues/17))
+- Account Creation ([#18](https://github.com/Speuce/JAMCo/issues/18))
+- Account Details & Personal Profile ([#19](https://github.com/Speuce/JAMCo/issues/19))
+- Account Settings & Preferences ([#20](https://github.com/Speuce/JAMCo/issues/20))
+- Account Login Options ([#21](https://github.com/Speuce/JAMCo/issues/21))
 
 ### Track A Job ([#3](https://github.com/Speuce/JAMCo/issues/3))
 
@@ -65,9 +58,16 @@ We are using Vue.js with Vite and Vuetify on the frontend, and the Django framew
 - Add Related Deadlines ([#9](https://github.com/Speuce/JAMCo/issues/9))
 - Edit Job Details ([#22](https://github.com/Speuce/JAMCo/issues/22))
 
-### Accounts ([#2](https://github.com/Speuce/JAMCo/issues/2))
+### Friends ([#4](https://github.com/Speuce/JAMCo/issues/4))
 
-- Account Creation ([#18](https://github.com/Speuce/JAMCo/issues/18))
-- Account Details & Personal Profile ([#19](https://github.com/Speuce/JAMCo/issues/19))
-- Account Settings & Preferences ([#20](https://github.com/Speuce/JAMCo/issues/20))
-- Account Login Options ([#21](https://github.com/Speuce/JAMCo/issues/21))
+- Add & Remove Friends ([#14](https://github.com/Speuce/JAMCo/issues/14))
+- Friend Privacy Settings ([#15](https://github.com/Speuce/JAMCo/issues/15))
+- Request Cover Letter Reviews ([#16](https://github.com/Speuce/JAMCo/issues/16))
+- View Friends' Applications ([#17](https://github.com/Speuce/JAMCo/issues/17))
+
+### Notifications ([#5](https://github.com/Speuce/JAMCo/issues/5))
+
+- Friend Request Notifications ([#10](https://github.com/Speuce/JAMCo/issues/10))
+- Deadline Notifications ([#11](https://github.com/Speuce/JAMCo/issues/11))
+- Optionally Send Application Notifications To Friends ([#12](https://github.com/Speuce/JAMCo/issues/12))
+- Optionally Recieve Application Notifications From Friends ([#13](https://github.com/Speuce/JAMCo/issues/13))
