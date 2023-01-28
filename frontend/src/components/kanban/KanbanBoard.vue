@@ -16,17 +16,17 @@
           </p>
           <!-- TODO: Make draggable groups full column height -->
           <draggable
-            :list="column.tasks"
+            :list="column.jobs"
             :animation="200"
             ghost-class="ghost-card"
-            group="tasks"
+            group="jobs"
           >
-            <task-card
-              v-for="task in column.tasks"
-              :key="task.id"
-              :task="task"
+            <JobCard
+              v-for="job in column.jobs"
+              :key="job.id"
+              :job="job"
               class="mt-3 cursor-move"
-            ></task-card>
+            ></JobCard>
           </draggable>
         </div>
       </div>
@@ -36,20 +36,19 @@
 
 <script>
 import { VueDraggableNext } from "vue-draggable-next";
-import TaskCard from "./TaskCard.vue";
+import JobCard from "./JobCard.vue";
 import sampleData from "./sample_data.json";
 
 export default {
   name: "KanbanBoard",
   components: {
-    TaskCard,
+    JobCard,
     draggable: VueDraggableNext,
   },
   data() {
     const columns = sampleData;
     return {
       columns: columns,
-      //other properties
     };
   },
 };
@@ -60,8 +59,6 @@ export default {
   min-width: 320px;
   width: 320px;
 }
-/* Unfortunately @apply cannot be setup in codesandbox, 
-  but you'd use "@apply border opacity-50 border-blue-500 bg-gray-200" here */
 .ghost-card {
   opacity: 0.5;
   background: #f7fafc;
