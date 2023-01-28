@@ -1,8 +1,17 @@
 # JAMCo
 **The Job Application Management Console**
 
-# Project Summary and Vision
+# Vision Statement
 JAMCo's vision is to empower job seekers by providing a user-friendly platform for managing and tracking job applications, enabling them to stay organized and informed throughout the job search process. JAMCo is a web application to help people track job requirements, interview dates, and submitted cover letters, ultimately leading to successful career planning.
+
+# Summary
+
+JAMCo is designed to track your progress across all your open job applications. Its kanban board is designed to make job tracking a breeze. You can customize your board to include categories relevant to your field, such as jobs you wish to apply to in the future, pending pre-assessments, or scheduled interviews. Adding jobs to the job board is easy with our user-friendly forms. Signing up on JAMCo is near-instant with a Google login, and you can customize your profile and tracking options for any industry. You can also use the Friends page to add people you know on JAMCo, view their open applications, share relevant positions, and request cover letter reviews. You can even configure notifications to send you an email when a friend shares a job or requests a cover letter review.
+
+# Target Market: Students
+
+Searching for a job can be a busy and time-consuming process, particularly for students who are looking for internships or preparing for life after graduation. With all the responsibilities already on their plate, job-hunting can add to the burden. JAMCo simplifies this by putting all of the user’s job applications into one place. By putting all of the user’s job application information at their fingertips, JAMCo lets them worry less about juggling job listings and focus more on making great first impressions on future employers.
+
 
 # Core Features
 
@@ -34,21 +43,14 @@ We are using Vue.js with Vite and Vuetify on the frontend, and the Django framew
 
 # User Stories by Feature
 
-### Notifications:
+### Accounts ([#2](https://github.com/Speuce/JAMCo/issues/2))
 
-- Friend Request Notifications ([#10](https://github.com/Speuce/JAMCo/issues/10))
-- Deadline Notifications ([#11](https://github.com/Speuce/JAMCo/issues/11))
-- Optionally Send Application Notifications To Friends ([#12](https://github.com/Speuce/JAMCo/issues/12))
-- Optionally Recieve Application Notifications From Friends ([#13](https://github.com/Speuce/JAMCo/issues/13))
+- Account Creation ([#18](https://github.com/Speuce/JAMCo/issues/18))
+- Account Details & Personal Profile ([#19](https://github.com/Speuce/JAMCo/issues/19))
+- Account Settings & Preferences ([#20](https://github.com/Speuce/JAMCo/issues/20))
+- Account Login Options ([#21](https://github.com/Speuce/JAMCo/issues/21))
 
-### Friends
-
-- Add & Remove Friends ([#14](https://github.com/Speuce/JAMCo/issues/14))
-- Friend Privacy Settings ([#15](https://github.com/Speuce/JAMCo/issues/15))
-- Request Cover Letter Reviews ([#16](https://github.com/Speuce/JAMCo/issues/16))
-- View Friends' Applications ([#17](https://github.com/Speuce/JAMCo/issues/17))
-
-### Track A Job
+### Track A Job ([#3](https://github.com/Speuce/JAMCo/issues/3))
 
 - Add Job With Basic Info ([#6](https://github.com/Speuce/JAMCo/issues/6))
 - Job Tracking Kanban Board ([#7](https://github.com/Speuce/JAMCo/issues/7))
@@ -56,9 +58,16 @@ We are using Vue.js with Vite and Vuetify on the frontend, and the Django framew
 - Add Related Deadlines ([#9](https://github.com/Speuce/JAMCo/issues/9))
 - Edit Job Details ([#22](https://github.com/Speuce/JAMCo/issues/22))
 
-### Accounts
+### Friends ([#4](https://github.com/Speuce/JAMCo/issues/4))
 
-- Account Creation ([#18](https://github.com/Speuce/JAMCo/issues/18))
-- Account Details & Personal Profile ([#19](https://github.com/Speuce/JAMCo/issues/19))
-- Account Settings & Preferences ([#20](https://github.com/Speuce/JAMCo/issues/20))
-- Account Login Options ([#21](https://github.com/Speuce/JAMCo/issues/21))
+- Add & Remove Friends ([#14](https://github.com/Speuce/JAMCo/issues/14))
+- Friend Privacy Settings ([#15](https://github.com/Speuce/JAMCo/issues/15))
+- Request Cover Letter Reviews ([#16](https://github.com/Speuce/JAMCo/issues/16))
+- View Friends' Applications ([#17](https://github.com/Speuce/JAMCo/issues/17))
+
+### Notifications ([#5](https://github.com/Speuce/JAMCo/issues/5))
+
+- Friend Request Notifications ([#10](https://github.com/Speuce/JAMCo/issues/10))
+- Deadline Notifications ([#11](https://github.com/Speuce/JAMCo/issues/11))
+- Optionally Send Application Notifications To Friends ([#12](https://github.com/Speuce/JAMCo/issues/12))
+- Optionally Recieve Application Notifications From Friends ([#13](https://github.com/Speuce/JAMCo/issues/13))
