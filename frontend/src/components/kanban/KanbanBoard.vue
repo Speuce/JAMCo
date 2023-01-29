@@ -6,23 +6,24 @@
       <div class="min-h-screen flex overflow-x-scroll py-12">
         <div
           v-for="column in columns"
-          :key="column.title"
+          :key="column.id"
           class="bg-gray-100 rounded-lg px-3 py-3 column-width rounded mr-4"
         >
           <p
             class="text-gray-700 font-semibold font-sans tracking-wide text-sm"
           >
-            {{ column.title }}
+            {{ column.name }}
           </p>
           <!-- TODO: Make draggable groups full column height -->
           <draggable
-            :list="column.jobs"
+            :list="jobs[column.id]"
             :animation="200"
             ghost-class="ghost-card"
-            group="jobs"
+            group="column.id"
+            @change="(event) => handle(event, column.id)"
           >
             <JobCard
-              v-for="job in column.jobs"
+              v-for="job in jobs[column.id]"
               :key="job.id"
               :job="job"
               class="mt-3 cursor-move"
@@ -37,7 +38,8 @@
 <script>
 import { VueDraggableNext } from "vue-draggable-next";
 import JobCard from "./JobCard.vue";
-import sampleData from "./sample_data.json";
+import sampleColumnMapping from "./sample_columns.json";
+import sampleJobs from "./sample_jobs.json";
 
 export default {
   name: "KanbanBoard",
@@ -46,10 +48,27 @@ export default {
     draggable: VueDraggableNext,
   },
   data() {
-    const columns = sampleData;
+    var jobsByColumn = {};
+
+    for (var job in sampleJobs) {
+      if (jobsByColumn[sampleJobs[job].columnId] == null) {
+        jobsByColumn[sampleJobs[job].columnId] = [];
+      }
+      jobsByColumn[sampleJobs[job].columnId].push(sampleJobs[job]);
+    }
+
     return {
-      columns: columns,
+      columns: sampleColumnMapping,
+      jobs: jobsByColumn,
     };
+  },
+  methods: {
+    handle(event, colId) {
+      if (event.added) {
+        event.added.element.columnId = colId;
+        // Post Update to Job Model, update ColumnId field
+      }
+    },
   },
 };
 </script>

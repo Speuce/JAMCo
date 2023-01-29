@@ -1,0 +1,6 @@
+[
+  { "id": 1, "name": "To Apply" },
+  { "id": 2, "name": "Application Submitted" },
+  { "id": 3, "name": "OA" },
+  { "id": 4, "name": "Interview" }
+]
