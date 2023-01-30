@@ -11,8 +11,6 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@vue/test-utils": "^2.2.8",
-    "jsdom": "^21.1.0",
     "vue": "^3.2.45",
     "vue-draggable-next": "^2.1.1",
     "vue-router": "^4.1.6"
@@ -26,6 +24,8 @@
     "eslint-plugin-vue": "^9.3.0",
     "prettier": "^2.7.1",
     "vite": "^4.0.0",
-    "vitest": "^0.28.3"
+    "vitest": "^0.28.3",
+    "@vue/test-utils": "^2.2.8",
+    "jsdom": "^21.1.0"
   }
 }
