@@ -1,10 +1,10 @@
 <template>
   <div
-    class="px-3 h-6 rounded-full text-xs font-semibold flex items-center"
+    class="badge-container"
     v-bind:style="{ backgroundColor: colours[0], color: colours[2] }"
   >
     <span
-      class="w-2 h-2 rounded-full mr-1"
+      class="badge-spot"
       v-bind:style="{ backgroundColor: colours[1] }"
     ></span>
     <span>
@@ -26,3 +26,23 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.badge-container {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.badge-spot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  margin-right: 0.25rem;
+}
+</style>

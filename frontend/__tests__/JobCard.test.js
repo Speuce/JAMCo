@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import JobCard from "../src/components/kanban/JobCard.vue";
-import stringToTriColourPalatte from "../src/assets/string-to-tri-colour-palatte";
+import stringToTriColourPalatte from "../src/helpers/string-to-tri-colour-palatte";
 import { expect, describe, it } from "vitest";
 
 describe("JobCard", () => {

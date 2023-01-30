@@ -1,36 +1,32 @@
 <!-- Vue2 Kanban Implementation Template: https://codesandbox.io/s/animated-draggable-kanban-board-with-tailwind-and-vue-1ry0p?ref=madewithvuejs.com&file=/src/App.vue-->
 
 <template>
-  <div id="app">
-    <div class="flex justify-center">
-      <div class="min-h-screen flex overflow-x-scroll py-12">
-        <div
-          v-for="column in columns"
-          :key="column.id"
-          class="bg-gray-100 rounded-lg px-3 py-3 column-width rounded mr-4"
+  <div class="container">
+    <div class="min-h-screen column-container">
+      <div
+        v-for="column in columns"
+        :key="column.id"
+        class="column-width column"
+      >
+        <p class="column-title">
+          {{ column.name }}
+        </p>
+        <draggable
+          :list="jobs[column.id]"
+          :animation="200"
+          ghost-class="ghost-card"
+          group="column.id"
+          @change="handle($event, column.id)"
+          class="min-h-screen"
+          id="column"
         >
-          <p
-            class="text-gray-700 font-semibold font-sans tracking-wide text-sm"
-          >
-            {{ column.name }}
-          </p>
-          <draggable
-            :list="jobs[column.id]"
-            :animation="200"
-            ghost-class="ghost-card"
-            group="column.id"
-            @change="handle($event, column.id)"
-            class="min-h-screen"
-            id="column"
-          >
-            <JobCard
-              v-for="job in jobs[column.id]"
-              :key="job.id"
-              :job="job"
-              class="mt-3 cursor-move"
-            ></JobCard>
-          </draggable>
-        </div>
+          <JobCard
+            v-for="job in jobs[column.id]"
+            :key="job.id"
+            :job="job"
+            class="job-card"
+          ></JobCard>
+        </draggable>
       </div>
     </div>
   </div>
@@ -77,6 +73,46 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.column-container {
+  display: flex;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.column {
+  --bg-opacity: 1;
+  background-color: #f7fafc;
+  background-color: rgba(247, 250, 252, var(--bg-opacity));
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  margin-right: 1rem;
+}
+
+.column-title {
+  --text-opacity: 1;
+  color: #4a5568;
+  color: rgba(74, 85, 104, var(--text-opacity));
+  font-weight: 600;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  letter-spacing: 0.025em;
+  font-size: 0.875rem;
+}
+
+.job-card {
+  margin-top: 0.75rem;
+  cursor: move;
+}
 .column-width {
   min-width: 320px;
   width: 320px;
