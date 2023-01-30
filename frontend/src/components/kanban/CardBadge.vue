@@ -20,7 +20,7 @@ export default {
     colours: {
       type: Array,
       default: () => {
-        ["#FFF", "#FFF", "#FFF"];
+        return ["#FFF", "#FFF", "#FFF"];
       },
     },
   },

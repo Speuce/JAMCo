@@ -14,13 +14,14 @@
           >
             {{ column.name }}
           </p>
-          <!-- TODO: Make draggable groups full column height -->
           <draggable
             :list="jobs[column.id]"
             :animation="200"
             ghost-class="ghost-card"
             group="column.id"
-            @change="(event) => handle(event, column.id)"
+            @change="handle($event, column.id)"
+            class="min-h-screen"
+            id="column"
           >
             <JobCard
               v-for="job in jobs[column.id]"
@@ -38,8 +39,8 @@
 <script>
 import { VueDraggableNext } from "vue-draggable-next";
 import JobCard from "./JobCard.vue";
-import sampleColumnMapping from "./sample_columns.json";
-import sampleJobs from "./sample_jobs.json";
+import sampleColumnMapping from "../../../__tests__/test_data/test_column_mapping.json";
+import sampleJobs from "../../../__tests__/test_data/test_jobs.json";
 
 export default {
   name: "KanbanBoard",
@@ -48,18 +49,9 @@ export default {
     draggable: VueDraggableNext,
   },
   data() {
-    var jobsByColumn = {};
-
-    for (var job in sampleJobs) {
-      if (jobsByColumn[sampleJobs[job].columnId] == null) {
-        jobsByColumn[sampleJobs[job].columnId] = [];
-      }
-      jobsByColumn[sampleJobs[job].columnId].push(sampleJobs[job]);
-    }
-
     return {
       columns: sampleColumnMapping,
-      jobs: jobsByColumn,
+      jobs: this.processJobsByColumn(sampleJobs),
     };
   },
   methods: {
@@ -68,6 +60,17 @@ export default {
         event.added.element.columnId = colId;
         // Post Update to Job Model, update ColumnId field
       }
+    },
+    processJobsByColumn(sampleJobs) {
+      var jobsByColumn = {};
+
+      for (var job in sampleJobs) {
+        if (jobsByColumn[sampleJobs[job].columnId] == null) {
+          jobsByColumn[sampleJobs[job].columnId] = [];
+        }
+        jobsByColumn[sampleJobs[job].columnId].push(sampleJobs[job]);
+      }
+      return jobsByColumn;
     },
   },
 };

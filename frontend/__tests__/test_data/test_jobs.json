@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "title": "Gamestation",
+    "company": "Gamestation",
     "date": "Sep 14",
     "type": "Full Stack",
     "position": "Software Engineer",
@@ -9,7 +9,7 @@
   },
   {
     "id": 10,
-    "title": "Wework",
+    "company": "Wework",
     "date": "Sep 9",
     "type": "Backend",
     "position": "Software Engineer I",
@@ -17,7 +17,7 @@
   },
   {
     "id": 13,
-    "title": "Wework",
+    "company": "Wework",
     "date": "Sep 9",
     "type": "1",
     "position": "Software Engineer I",
@@ -25,7 +25,7 @@
   },
   {
     "id": 53,
-    "title": "Wework",
+    "company": "Wework",
     "date": "Sep 9",
     "type": "test",
     "position": "Software Engineer I",
@@ -33,15 +33,30 @@
   },
   {
     "id": 6,
-    "title": "Doors",
-    "date": "Sep 9",
+    "company": "Doors",
+    "date": "Sep 49",
     "type": "Frontend",
     "position": "Software Engineer",
     "columnId": 2
   },
   {
+    "id": 62,
+    "company": "Doors",
+    "date": "Sep 59",
+    "type": "",
+    "position": "Software Engineer",
+    "columnId": 1
+  },
+  {
+    "id": 632,
+    "company": "Doors",
+    "date": "Sep 9",
+    "position": "Software Engineer",
+    "columnId": 2
+  },
+  {
     "id": 7,
-    "title": "Pear",
+    "company": "Pear",
     "date": "Sep 14",
     "type": "Full Stack",
     "position": "Software Engineer II",
@@ -49,7 +64,7 @@
   },
   {
     "id": 8,
-    "title": "JamCo",
+    "company": "JamCo",
     "date": "Sep 12",
     "type": "Backend",
     "position": "SDE I",
@@ -57,7 +72,7 @@
   },
   {
     "id": 16,
-    "title": "Real Company",
+    "company": "Real Company",
     "date": "Sep 14",
     "type": "Full Stack",
     "position": "Software Developer",
@@ -65,7 +80,7 @@
   },
   {
     "id": 11,
-    "title": "Rainforest",
+    "company": "Rainforest",
     "date": "Sep 14",
     "type": "Full Stack",
     "position": "Software Engineer",
@@ -73,7 +88,7 @@
   },
   {
     "id": 12,
-    "title": "Minisoft",
+    "company": "Minisoft",
     "date": "Sep 9",
     "type": "Frontend",
     "position": "Senior Software Engineer",
@@ -81,7 +96,7 @@
   },
   {
     "id": 13,
-    "title": "Gooble",
+    "company": "Gooble",
     "date": "Sep 14",
     "type": "Full Stack",
     "position": "Software Developer II",
@@ -89,7 +104,7 @@
   },
   {
     "id": 15,
-    "title": "Dream Job",
+    "company": "Dream Job",
     "date": "Sep 9",
     "type": "Frontend",
     "position": "Software Engineer",
