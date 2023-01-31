@@ -43,15 +43,8 @@ export default {
   background-color: #fff;
   background-color: rgba(255, 255, 255, var(--bg-opacity));
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-
   border-radius: 0.25rem;
-
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-
+  padding: 0.75rem;
   border-width: 1px;
   --border-opacity: 1;
   border-color: rgba(255, 255, 255, var(--border-opacity));
