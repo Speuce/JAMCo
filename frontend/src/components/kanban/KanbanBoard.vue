@@ -1,7 +1,7 @@
 <!-- Vue2 Kanban Implementation Template: https://codesandbox.io/s/animated-draggable-kanban-board-with-tailwind-and-vue-1ry0p?ref=madewithvuejs.com&file=/src/App.vue-->
 
 <template>
-  <div class="page-container">
+  <div class="page">
     <div class="board-container">
       <div class="min-h-screen column-container">
         <div
@@ -72,17 +72,14 @@ export default {
     processJobsByColumn() {
       var jobsByColumn = {};
 
-      for (var job in this.jobs) {
-        if (jobsByColumn[this.jobs[job].columnId] == null) {
-          jobsByColumn[this.jobs[job].columnId] = [];
-        }
-        jobsByColumn[this.jobs[job].columnId].push(this.jobs[job]);
-      }
-
       for (var col in this.columns) {
         if (jobsByColumn[this.columns[col].id] == null) {
           jobsByColumn[this.columns[col].id] = [];
         }
+      }
+
+      for (var job in this.jobs) {
+        jobsByColumn[this.jobs[job].columnId].push(this.jobs[job]);
       }
 
       return jobsByColumn;
@@ -92,9 +89,8 @@ export default {
 </script>
 
 <style scoped>
-.page-container {
-  background-color: white;
-  padding-left: 1rem;
+.page {
+  display: inline-block;
 }
 .board-container {
   display: flex;
@@ -102,18 +98,17 @@ export default {
 }
 
 .min-h-screen {
-  min-height: 85vh;
+  min-height: 20vh;
 }
 
 .column-container {
   display: flex;
-  padding-bottom: 3rem;
 }
 
 .column {
   --bg-opacity: 1;
   background-color: #f7fafc;
-  background-color: rgba(247, 250, 252, var(--bg-opacity));
+  background-color: rgba(220, 220, 220, var(--bg-opacity));
   border-radius: 0.25rem;
   padding: 0.75rem;
   margin-right: 1rem;

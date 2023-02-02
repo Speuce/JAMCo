@@ -7,7 +7,9 @@
         <v-btn class="settings"> Tracking Settings </v-btn>
       </div>
     </div>
-    <KanbanBoard :columns="columns" :jobs="jobs" />
+    <div class="kanban">
+      <KanbanBoard :columns="columns" :jobs="jobs" />
+    </div>
   </div>
 </template>
 
@@ -30,6 +32,10 @@ export default {
 </script>
 
 <style scoped>
+.kanban {
+  overflow-x: scroll;
+  margin: 0.5rem 0rem;
+}
 h2 {
   color: rgba(74, 85, 104, var(--text-opacity));
   font-weight: 600;
@@ -38,12 +44,14 @@ h2 {
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 .page-container {
-  padding: 1rem;
+  margin: 1rem 2rem 2rem 2rem;
+  min-width: 100vw;
+  padding-right: 3.5rem;
 }
 .header-container {
-  display: flex;
   color: black;
-  padding: 1rem 2rem 1rem 1rem;
+  display: flex;
+  margin: 1.5rem 1rem 1.5rem 0;
   justify-content: space-between;
 }
 
