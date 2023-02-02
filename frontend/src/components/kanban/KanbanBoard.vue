@@ -98,7 +98,7 @@ export default {
 }
 
 .min-h-screen {
-  min-height: 20vh;
+  min-height: 80vh;
 }
 
 .column-container {
