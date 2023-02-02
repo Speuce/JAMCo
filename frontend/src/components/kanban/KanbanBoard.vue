@@ -78,6 +78,13 @@ export default {
         }
         jobsByColumn[this.jobs[job].columnId].push(this.jobs[job]);
       }
+
+      for (var col in this.columns) {
+        if (jobsByColumn[this.columns[col].id] == null) {
+          jobsByColumn[this.columns[col].id] = [];
+        }
+      }
+
       return jobsByColumn;
     },
   },
