@@ -1,32 +1,35 @@
 <!-- Vue2 Kanban Implementation Template: https://codesandbox.io/s/animated-draggable-kanban-board-with-tailwind-and-vue-1ry0p?ref=madewithvuejs.com&file=/src/App.vue-->
 
 <template>
-  <div class="container">
-    <div class="min-h-screen column-container">
-      <div
-        v-for="column in columns"
-        :key="column.id"
-        class="column-width column"
-      >
-        <p class="column-title">
-          {{ column.name }}
-        </p>
-        <draggable
-          :list="jobs[column.id]"
-          :animation="200"
-          ghost-class="ghost-card"
-          group="column.id"
-          @change="handle($event, column.id)"
-          class="min-h-screen"
-          id="column"
+  <div class="page-container">
+    <div class="board-container">
+      <div class="min-h-screen column-container">
+        <div
+          v-for="column in columns"
+          :key="column.id"
+          class="column-width column"
         >
-          <JobCard
-            v-for="job in jobs[column.id]"
-            :key="job.id"
-            :job="job"
-            class="job-card"
-          ></JobCard>
-        </draggable>
+          <p class="column-title">
+            {{ column.name }}
+          </p>
+          <draggable
+            :list="this.jobsByColumn[column.id]"
+            :animation="200"
+            ghost-class="ghost-card"
+            group="column.id"
+            :sorted="false"
+            @change="handle($event, column.id)"
+            class="min-h-screen"
+            id="column"
+          >
+            <JobCard
+              v-for="job in this.jobsByColumn[column.id]"
+              :key="job.id"
+              :job="job"
+              class="job-card"
+            ></JobCard>
+          </draggable>
+        </div>
       </div>
     </div>
   </div>
@@ -35,8 +38,6 @@
 <script>
 import { VueDraggableNext } from "vue-draggable-next";
 import JobCard from "./JobCard.vue";
-import sampleColumnMapping from "../../../__tests__/test_data/test_column_mapping.json";
-import sampleJobs from "../../../__tests__/test_data/test_jobs.json";
 
 export default {
   name: "KanbanBoard",
@@ -44,10 +45,21 @@ export default {
     JobCard,
     draggable: VueDraggableNext,
   },
+  props: {
+    columns: {
+      type: Object,
+      default: () => {
+        return null;
+      },
+    },
+    jobs: {
+      type: Object,
+      default: null,
+    },
+  },
   data() {
     return {
-      columns: sampleColumnMapping,
-      jobs: this.processJobsByColumn(sampleJobs),
+      jobsByColumn: this.processJobsByColumn(this.jobs),
     };
   },
   methods: {
@@ -57,14 +69,14 @@ export default {
         // Post Update to Job Model, update ColumnId field
       }
     },
-    processJobsByColumn(sampleJobs) {
+    processJobsByColumn() {
       var jobsByColumn = {};
 
-      for (var job in sampleJobs) {
-        if (jobsByColumn[sampleJobs[job].columnId] == null) {
-          jobsByColumn[sampleJobs[job].columnId] = [];
+      for (var job in this.jobs) {
+        if (jobsByColumn[this.jobs[job].columnId] == null) {
+          jobsByColumn[this.jobs[job].columnId] = [];
         }
-        jobsByColumn[sampleJobs[job].columnId].push(sampleJobs[job]);
+        jobsByColumn[this.jobs[job].columnId].push(this.jobs[job]);
       }
       return jobsByColumn;
     },
@@ -73,18 +85,21 @@ export default {
 </script>
 
 <style scoped>
-.container {
+.page-container {
+  background-color: white;
+  padding-left: 1rem;
+}
+.board-container {
   display: flex;
   justify-content: center;
 }
 
 .min-h-screen {
-  min-height: 100vh;
+  min-height: 85vh;
 }
 
 .column-container {
   display: flex;
-  padding-top: 3rem;
   padding-bottom: 3rem;
 }
 
