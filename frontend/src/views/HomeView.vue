@@ -1,9 +1,11 @@
-<script setup>
-import TheWelcome from "../components/TheWelcome.vue";
-</script>
-
 <template>
   <main>
-    <TheWelcome />
+    <h1>
+      Visit:
+      <ul>
+        <li>'/' for this/home page</li>
+        <li>'/tracking' for kanban</li>
+      </ul>
+    </h1>
   </main>
 </template>
