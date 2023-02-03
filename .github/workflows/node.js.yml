@@ -13,7 +13,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: ./frontend
     strategy:
       matrix:
         node-version: [19.5]
@@ -26,7 +28,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: frontend/package-lock.json
-    - name: npm istall
+    - name: npm install
+    
       run: npm i
     - name: run npm test
       run: npm test
