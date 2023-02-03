@@ -48,9 +48,7 @@ export default {
   props: {
     columns: {
       type: Object,
-      default: () => {
-        return null;
-      },
+      default: null,
     },
     jobs: {
       type: Object,

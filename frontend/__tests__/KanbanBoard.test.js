@@ -10,15 +10,13 @@ describe("KanbanBoard", () => {
   let wrapper;
 
   beforeEach(async () => {
-    wrapper = mount(KanbanBoard);
-    await wrapper.setData({
-      jobs: wrapper.vm.processJobsByColumn(testJobs),
-      columns: testColumnMapping,
+    wrapper = mount(KanbanBoard, {
+      propsData: { jobs: testJobs, columns: testColumnMapping },
     });
   });
 
   it("has the correct number of columns", () => {
-    const columns = wrapper.findAll(".column-width");
+    var columns = wrapper.findAllComponents(VueDraggableNext);
     expect(columns.length).toBe(Object.keys(testColumnMapping).length);
   });
 
