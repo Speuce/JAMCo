@@ -6,3 +6,5 @@ pip==20.1.1
 psycopg2-binary==2.9.5
 setuptools==47.1.0
 sqlparse==0.4.3
+yapf==0.32.0
+django-cors-headers==3.13.0
