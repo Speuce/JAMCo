@@ -17,7 +17,7 @@ export default {
       });
       window.google.accounts.id.renderButton(
         document.getElementById("signin_button"),
-        { theme: "outline", size: "large" }
+        { theme: "outline", size: "large", text: "continue_with", shape: "pill" }
       );
     });
   },
