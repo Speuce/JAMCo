@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: [19.5]
 
     steps:
     - uses: actions/checkout@v3
@@ -25,5 +25,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
-    - run: npm test
+    - name: npm istall
+      working-directory: ./frontend
+      run: npm i
+    - name: run npm test
+      working-directory: ./frontend
+      run: npm test
