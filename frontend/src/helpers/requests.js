@@ -24,6 +24,7 @@ export async function postRequest(url, data) {
     return response.json();
   } catch (e) {
     console.error(e);
+    throw new Error("Error sending post request");
   }
 }
 
