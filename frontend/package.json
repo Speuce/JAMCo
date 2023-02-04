@@ -11,6 +11,7 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "js-cookie": "^3.0.1",
     "vue": "^3.2.45",
     "vue-draggable-next": "^2.1.1",
     "vue-router": "^4.1.6",
