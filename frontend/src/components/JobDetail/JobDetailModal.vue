@@ -1,3 +1,16 @@
+<!--
+  TODO:
+  - Decide if job prop for all info or make own calls?
+  - Make description, cover letter, comments scrollable
+  - Limit number of deadlines?
+  - Populate Status options correctly
+  - Make Add new Deadline button populate correctly
+  - Add delete X beside each deadline?
+  - Link Modal to 'New Application' button
+  - Link Modal to application cards
+  - Test All Additions
+-->
+
 <template>
   <v-row justify="center">
     <v-dialog v-model="dialog" persistent>
@@ -70,23 +83,38 @@
                   ></v-textarea
                 ></v-col>
               </v-row>
-            </v-col>
-            <v-col cols="12" sm="4">
+
               <v-row>
+                <v-col cols="12" sm="">
+                  <v-textarea
+                    auto-grow
+                    label="Comments"
+                    rows="2"
+                    row-height="30"
+                    shaped
+                    no-resize
+                    v-model="prefill.comments"
+                  ></v-textarea
+                ></v-col>
+              </v-row>
+            </v-col>
+
+            <v-col cols="12" sm="4">
+              <v-row class="bottom-pad">
                 <v-col cols="12" sm="6">
                   <h2>Deadlines</h2>
                 </v-col>
                 <v-col cols="12" sm="6">
-                  <v-btn>Add Deadline</v-btn>
+                  <v-btn @click="newDeadline">Add Deadline</v-btn>
                 </v-col>
               </v-row>
-              <v-row></v-row>
-              <div v-for="deadline in prefill.deadlines" :key="deadline.title">
+              <v-row v-for="deadline in deadlines" :key="deadline.title">
                 <JobDetailDeadline
+                  :id="deadline.title"
                   :title="deadline.title"
                   :date="deadline.date"
                 />
-              </div>
+              </v-row>
             </v-col>
           </v-row>
           <v-row> </v-row>
@@ -109,6 +137,9 @@
 <script>
 import sampleColumns from "../../../__tests__/test_data/test_column_mapping.json";
 import JobDetailDeadline from "../JobDetail/JobDetailDeadline.vue";
+import { ref } from "vue";
+
+const deadlines = ref([{ title: "testDeadline", date: "02/12/2023" }]);
 
 export default {
   components: {
@@ -142,13 +173,24 @@ export default {
       type: "Backend",
       columnId: 1,
       position: "Software Engineer",
+      comments: "This is a comment",
       description:
         "This is a really long job description that will be scrollable. This is a really long job description that will be scrollable. This is a really long job description that will be scrollable. This is a really long job description that will be scrollable. This is a really long job description that will be scrollable. This is a really long job description that will be scrollable. This is a really long job description that will be scrollable. This is a really long job description that will be scrollable. This is a really long job description that will be scrollable. ",
-      deadlines: [{ title: "testDeadline", date: "02/12/2023" }],
     },
     colList: sampleColumns,
+    deadlines,
   }),
+  methods: {
+    newDeadline() {
+      deadlines.value.push({ title: "", date: "" });
+      console.log(deadlines.value);
+    },
+  },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.bottom-pad {
+  padding-bottom: 1rem;
+}
+</style>
