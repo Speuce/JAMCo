@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "js-cookie": "^3.0.1",
+    "@vuepic/vue-datepicker": "^3.6.7",
     "vue": "^3.2.45",
     "vue-draggable-next": "^2.1.1",
     "vue-router": "^4.1.6",

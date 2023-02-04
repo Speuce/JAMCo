@@ -1,4 +1,5 @@
 <template>
+  <JobDetailModal />
   <div class="page-container">
     <div class="header-container">
       <h2 class="internal">Your Applications</h2>
@@ -17,10 +18,12 @@
 import KanbanBoard from '../components/kanban/KanbanBoard.vue'
 import sampleColumnMapping from '../../__tests__/test_data/test_column_mapping.json'
 import sampleJobs from '../../__tests__/test_data/test_jobs.json'
+import JobDetailModal from '../components/JobDetail/JobDetailModal.vue'
 
 export default {
   components: {
     KanbanBoard,
+    JobDetailModal,
   },
   data() {
     return {
