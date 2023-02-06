@@ -20,6 +20,9 @@ import { ref } from "vue";
 const dateModel = ref(null);
 const titleModel = ref(null);
 
+// Deadline Structure:
+// { id: nextDeadlineId.value++, title: "testDeadline", date: "02/12/2023" }
+
 export default {
   components: {
     Datepicker,

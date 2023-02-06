@@ -1,21 +1,13 @@
 <!--
   TODO:
-  - Make description, cover letter, comments scrollable
-  - Limit number of deadlines?
   - Populate Status options correctly
   - Make Add new Deadline button populate correctly
-  - Add delete X beside each deadline?
-  - Link Modal to 'New Application' button
-  - Link Modal to application cards
   - Test All Additions
 -->
 
 <template>
   <v-row justify="center">
     <v-dialog v-model="dialog" persistent>
-      <template v-slot:activator="{ props }">
-        <v-btn color="primary" v-bind="props"> Open Dialog </v-btn>
-      </template>
       <v-card>
         <v-card-text>
           <v-row>
@@ -25,7 +17,7 @@
                   <v-text-field
                     label="Position*"
                     class="text-h5"
-                    v-model="prefill.position"
+                    v-model="jobData.position"
                   ></v-text-field
                 ></v-col>
 
@@ -34,7 +26,7 @@
                 <v-col cols="12" sm="4">
                   <v-text-field
                     label="Type"
-                    v-model="prefill.type"
+                    v-model="jobData.type"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -44,7 +36,7 @@
                   <v-text-field
                     label="Company*"
                     required
-                    v-model="prefill.company"
+                    v-model="jobData.company"
                   ></v-text-field>
                 </v-col>
 
@@ -68,7 +60,7 @@
                     class="text-area-box"
                     label="Description"
                     shaped
-                    v-model="prefill.description"
+                    v-model="jobData.description"
                   ></v-textarea
                 ></v-col>
               </v-row>
@@ -80,7 +72,7 @@
                     class="text-area-box"
                     label="Cover Letter"
                     shaped
-                    v-model="prefill.coverLetter"
+                    v-model="jobData.coverLetter"
                   ></v-textarea
                 ></v-col>
               </v-row>
@@ -92,7 +84,7 @@
                     class="text-area-box"
                     label="Comments"
                     shaped
-                    v-model="prefill.comments"
+                    v-model="jobData.comments"
                   ></v-textarea
                 ></v-col>
               </v-row>
@@ -109,9 +101,9 @@
                 </v-col>
               </v-row>
               <v-col class="scroll-deadlines">
-                <v-row v-for="deadline in deadlines" :key="deadline.title">
+                <v-row v-for="deadline in deadlines" :key="deadline.id">
                   <JobDetailDeadline
-                    :id="deadline.title"
+                    :id="deadline.id"
                     :title="deadline.title"
                     :date="deadline.date"
                   />
@@ -123,10 +115,27 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue-darken-1" variant="text" @click="dialog = false">
+          <v-btn
+            color="blue-darken-1"
+            variant="text"
+            @click="
+              () => {
+                $emit('close');
+              }
+            "
+          >
             Close
           </v-btn>
-          <v-btn color="blue-darken-1" variant="text" @click="dialog = false">
+          <v-btn
+            color="blue-darken-1"
+            variant="text"
+            @click="
+              () => {
+                saveJob();
+                $emit('close');
+              }
+            "
+          >
             Save
           </v-btn>
         </v-card-actions>
@@ -140,7 +149,8 @@ import sampleColumns from "../../../../__tests__/test_data/test_column_mapping.j
 import JobDetailDeadline from "../job/JobDetailDeadline.vue";
 import { ref } from "vue";
 
-const deadlines = ref([{ title: "testDeadline", date: "02/12/2023" }]);
+const nextDeadlineId = ref(0); // set to max of existing deadlines + 1
+const deadlines = ref([]);
 
 export default {
   components: {
@@ -174,26 +184,22 @@ export default {
       default: () => {},
     },
   },
-  data: () => ({
-    dialog: false,
-    prefill: {
-      id: 10,
-      company: "Wework",
-      date: "Sep 9",
-      type: "Backend",
-      columnId: 1,
-      position: "Software Engineer",
-      comments: "This is a comment",
-      description:
-        "This is a really long job description that will be scrollable. This is a really long job description that will be scrollable. This is a really long job description that will be scrollable. This is a really long job description that will be scrollable. This is a really long job description that will be scrollable. This is a really long job description that will be scrollable. This is a really long job description that will be scrollable. This is a really long job description that will be scrollable. This is a really long job description that will be scrollable. ",
-    },
+  data: (props) => ({
+    dialog: true,
+    jobData: props.job,
     colList: sampleColumns,
     deadlines,
+    nextDeadlineId,
   }),
   methods: {
     newDeadline() {
-      deadlines.value.push({ title: "", date: "" });
+      deadlines.value.push({ id: nextDeadlineId.value++, title: "", date: "" });
       console.log(deadlines.value);
+    },
+    deleteDeadline(id) {
+      deadlines.value.forEach((deadline) => {
+        if (deadline.id == id) deadlines.value.remove(deadline);
+      });
     },
   },
 };

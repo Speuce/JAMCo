@@ -27,6 +27,7 @@
               :key="job.id"
               :job="job"
               class="job-card"
+              @click="this.showDetailModal(job)"
             ></JobCard>
           </draggable>
         </div>
@@ -54,11 +55,14 @@ export default {
       type: Object,
       default: null,
     },
+    showDetailModal: {
+      type: Function,
+      default: () => {},
+    },
   },
   data() {
     return {
       jobsByColumn: this.processJobsByColumn(this.jobs),
-      showDetailModal: false,
     }
   },
   methods: {

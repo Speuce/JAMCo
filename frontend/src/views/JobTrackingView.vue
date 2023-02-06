@@ -1,21 +1,27 @@
 <template>
-  <JobDetailModal
-    v-if="showDetailModal"
-    @close="showDetailModal = false"
-    :saveJob="saveJob"
-  />
   <div class="page-container">
+    <JobDetailModal
+      v-if="detailModalVisible"
+      @close="detailModalVisible = false"
+      :saveJob="saveJob"
+      :job="selectedJob"
+      :columns="this.columns"
+    />
     <div class="header-container">
       <h2 class="internal">Your Applications</h2>
       <div>
-        <v-btn class="internal" @click="showDetailModal = true"
+        <v-btn class="internal" @click="showDetailModal()"
           >Add New Application</v-btn
         >
         <v-btn class="settings"> Tracking Settings </v-btn>
       </div>
     </div>
     <div class="kanban">
-      <KanbanBoard :columns="columns" :jobs="jobs" />
+      <KanbanBoard
+        :columns="columns"
+        :jobs="jobs"
+        :showDetailModal="showDetailModal"
+      />
     </div>
   </div>
 </template>
@@ -26,6 +32,9 @@ import sampleColumnMapping from '../../__tests__/test_data/test_column_mapping.j
 import sampleJobs from '../../__tests__/test_data/test_jobs.json'
 import JobDetailModal from '../components/modal/job/JobDetailModal.vue'
 
+// Reactive list of jobs?
+// Reactive list of columns?
+
 export default {
   components: {
     KanbanBoard,
@@ -35,12 +44,24 @@ export default {
     return {
       columns: sampleColumnMapping,
       jobs: sampleJobs,
-      showDetailModal: false,
+      detailModalVisible: false,
+      selectedJob: {},
     }
   },
   methods: {
     saveJob() {
       console.log('saving job from modal')
+      // Post to database?
+    },
+    showDetailModal(job) {
+      if (job) {
+        this.selectedJob = job
+        console.log('editing job')
+      } else {
+        console.log('creating new job')
+        this.selectedJob = {}
+      }
+      this.detailModalVisible = true
     },
   },
 }
@@ -48,7 +69,7 @@ export default {
 
 <style scoped>
 .kanban {
-  overflow-x: scroll;
+  overflow-x: auto;
   margin: 0.5rem 0rem;
 }
 h2 {
