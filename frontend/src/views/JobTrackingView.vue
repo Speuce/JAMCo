@@ -1,10 +1,16 @@
 <template>
-  <JobDetailModal />
+  <JobDetailModal
+    v-if="showDetailModal"
+    @close="showDetailModal = false"
+    :saveJob="saveJob"
+  />
   <div class="page-container">
     <div class="header-container">
       <h2 class="internal">Your Applications</h2>
       <div>
-        <v-btn class="internal">Add New Application</v-btn>
+        <v-btn class="internal" @click="showDetailModal = true"
+          >Add New Application</v-btn
+        >
         <v-btn class="settings"> Tracking Settings </v-btn>
       </div>
     </div>
@@ -18,7 +24,7 @@
 import KanbanBoard from '../components/kanban/KanbanBoard.vue'
 import sampleColumnMapping from '../../__tests__/test_data/test_column_mapping.json'
 import sampleJobs from '../../__tests__/test_data/test_jobs.json'
-import JobDetailModal from '../components/JobDetail/JobDetailModal.vue'
+import JobDetailModal from '../components/modal/job/JobDetailModal.vue'
 
 export default {
   components: {
@@ -29,7 +35,13 @@ export default {
     return {
       columns: sampleColumnMapping,
       jobs: sampleJobs,
+      showDetailModal: false,
     }
+  },
+  methods: {
+    saveJob() {
+      console.log('saving job from modal')
+    },
   },
 }
 </script>

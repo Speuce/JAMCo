@@ -58,6 +58,7 @@ export default {
   data() {
     return {
       jobsByColumn: this.processJobsByColumn(this.jobs),
+      showDetailModal: false,
     }
   },
   methods: {

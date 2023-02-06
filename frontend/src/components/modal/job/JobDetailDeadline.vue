@@ -1,11 +1,13 @@
 <template>
   <v-row>
-    <v-col cols="12" sm="6">
-      <v-text-field label="Deadline" class="text-h5" v-model="titleModel">
-      </v-text-field>
-    </v-col>
     <v-col cols="12" sm="5">
+      <v-text-field label="Deadline" v-model="titleModel"> </v-text-field>
+    </v-col>
+    <v-col cols="12" sm="5" class="center-offset">
       <Datepicker v-model="dateModel" :enable-time-picker="false"></Datepicker>
+    </v-col>
+    <v-col cols="12" sm="1" class="center-offset">
+      <v-btn class="remove-btn" @click="this.deleteDeadline"><b>X</b></v-btn>
     </v-col>
   </v-row>
 </template>
@@ -31,6 +33,10 @@ export default {
       type: String,
       default: "",
     },
+    deleteDeadline: {
+      type: Function,
+      default: () => {},
+    },
   },
   data: () => ({
     dateModel,
@@ -42,3 +48,15 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.center-offset {
+  padding-top: 18px;
+}
+
+.remove-btn {
+  width: 12em;
+  padding: 0;
+  margin: 0;
+}
+</style>
