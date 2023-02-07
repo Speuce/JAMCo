@@ -1,3 +1,4 @@
+import json
 from django.test import TestCase
 from django.urls import reverse
 
@@ -7,5 +8,5 @@ class AccountTestCase(TestCase):
 
 
     def test_create_account(self):
-        response = self.client.post(reverse('get_or_create_account'), {'credential': 'whatever'})
+        response = self.client.post(reverse('get_or_create_account'), json.dumps({'credential': 'whatever'}), content_type='application/json')
         print(response.status_code)
