@@ -5,7 +5,7 @@
     <div class="board-container">
       <div class="min-h-screen column-container">
         <div
-          v-for="column in columns"
+          v-for="column in getColumns"
           :key="column.id"
           class="column-width column"
         >
@@ -13,7 +13,7 @@
             {{ column.name }}
           </p>
           <draggable
-            :list="this.jobsByColumn[column.id]"
+            :list="this.getJobsByColumn[column.id]"
             :animation="200"
             ghost-class="ghost-card"
             group="column.id"
@@ -23,7 +23,7 @@
             id="column"
           >
             <JobCard
-              v-for="job in this.jobsByColumn[column.id]"
+              v-for="job in this.getJobsByColumn[column.id]"
               :key="job.id"
               :job="job"
               class="job-card"
@@ -60,10 +60,13 @@ export default {
       default: () => {},
     },
   },
-  data() {
-    return {
-      jobsByColumn: this.processJobsByColumn(this.jobs),
-    }
+  computed: {
+    getJobsByColumn() {
+      return this.processJobsByColumn(this.jobs)
+    },
+    getColumns() {
+      return this.columns
+    },
   },
   methods: {
     handle(event, colId) {

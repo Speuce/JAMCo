@@ -3,9 +3,9 @@
     <JobDetailModal
       v-if="detailModalVisible"
       @close="detailModalVisible = false"
-      :saveJob="saveJob"
+      :createOrUpdateJob="createOrUpdateJob"
       :job="selectedJob"
-      :columns="this.columns"
+      :columns="colList"
     />
     <div class="header-container">
       <h2 class="internal">Your Applications</h2>
@@ -18,8 +18,8 @@
     </div>
     <div class="kanban">
       <KanbanBoard
-        :columns="columns"
-        :jobs="jobs"
+        :columns="colList"
+        :jobs="jobList"
         :showDetailModal="showDetailModal"
       />
     </div>
@@ -31,9 +31,12 @@ import KanbanBoard from '../components/kanban/KanbanBoard.vue'
 import sampleColumnMapping from '../../__tests__/test_data/test_column_mapping.json'
 import sampleJobs from '../../__tests__/test_data/test_jobs.json'
 import JobDetailModal from '../components/modal/job/JobDetailModal.vue'
+import { ref } from 'vue'
 
-// Reactive list of jobs?
-// Reactive list of columns?
+const jobList = ref([])
+const colList = ref([])
+const nextJobId = ref(0)
+const isNewJob = ref(false)
 
 export default {
   components: {
@@ -42,24 +45,43 @@ export default {
   },
   data() {
     return {
-      columns: sampleColumnMapping,
-      jobs: sampleJobs,
       detailModalVisible: false,
       selectedJob: {},
+      nextJobId,
+      isNewJob,
+      jobList,
+      colList,
     }
   },
+  setup() {
+    var maxId = 0
+    for (var index in sampleJobs) {
+      jobList.value.push(sampleJobs[index])
+      if (sampleJobs[index].id > maxId) {
+        maxId = sampleJobs[index].id
+      }
+    }
+    for (index in sampleColumnMapping) {
+      colList.value.push(sampleColumnMapping[index])
+    }
+    nextJobId.value = maxId + 1
+  },
   methods: {
-    saveJob() {
-      console.log('saving job from modal')
-      // Post to database?
+    createOrUpdateJob(job) {
+      if (isNewJob.value) {
+        isNewJob.value = false
+        jobList.value.push(job)
+      }
+      // Post to database
     },
     showDetailModal(job) {
       if (job) {
+        // editing job
         this.selectedJob = job
-        console.log('editing job')
       } else {
-        console.log('creating new job')
-        this.selectedJob = {}
+        // creating new job
+        isNewJob.value = true
+        this.selectedJob = { id: nextJobId.value++ }
       }
       this.detailModalVisible = true
     },
@@ -83,6 +105,7 @@ h2 {
   margin: 1rem 2rem 2rem 2rem;
   min-width: 100vw;
   padding-right: 3.5rem;
+  overflow: auto;
 }
 .header-container {
   color: black;
@@ -90,7 +113,6 @@ h2 {
   margin: 1.5rem 1rem 1.5rem 0;
   justify-content: space-between;
 }
-
 .internal {
   margin-right: 2rem;
 }

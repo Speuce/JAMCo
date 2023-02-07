@@ -1,10 +1,3 @@
-<!--
-  TODO:
-  - Populate Status options correctly
-  - Make Add new Deadline button populate correctly
-  - Test All Additions
--->
-
 <template>
   <v-row justify="center">
     <v-dialog v-model="dialog" persistent>
@@ -44,11 +37,11 @@
 
                 <v-col cols="12" sm="4">
                   <v-select
-                    :items="colList"
-                    item-text="name"
+                    :items="getColumns"
+                    item-title="name"
                     item-value="id"
                     label="Status*"
-                    return-object
+                    v-model="selectedColumnId"
                   ></v-select>
                 </v-col>
               </v-row>
@@ -92,20 +85,22 @@
 
             <v-col cols="8" sm="5">
               <v-row class="pad-deadlines">
-                <v-col cols="12" sm="9">
+                <v-col cols="12" sm="8">
                   <h2>Deadlines</h2>
                 </v-col>
 
-                <v-col cols="12" sm="3">
-                  <v-btn @click="newDeadline">Add Deadline</v-btn>
+                <v-col cols="12" sm="4">
+                  <v-btn @click="newDeadline" class="add-deadline"
+                    >Add Deadline</v-btn
+                  >
                 </v-col>
               </v-row>
               <v-col class="scroll-deadlines">
                 <v-row v-for="deadline in deadlines" :key="deadline.id">
                   <JobDetailDeadline
-                    :id="deadline.id"
-                    :title="deadline.title"
-                    :date="deadline.date"
+                    :deadline="deadline"
+                    :deleteDeadline="deleteDeadline"
+                    @updateDeadline="handleDeadlineUpdate"
                   />
                 </v-row>
               </v-col>
@@ -118,23 +113,14 @@
           <v-btn
             color="blue-darken-1"
             variant="text"
-            @click="
-              () => {
-                $emit('close');
-              }
-            "
+            @click="() => $emit('close')"
           >
             Close
           </v-btn>
           <v-btn
             color="blue-darken-1"
             variant="text"
-            @click="
-              () => {
-                saveJob();
-                $emit('close');
-              }
-            "
+            @click="this.saveClicked()"
           >
             Save
           </v-btn>
@@ -145,12 +131,12 @@
 </template>
 
 <script>
-import sampleColumns from "../../../../__tests__/test_data/test_column_mapping.json";
 import JobDetailDeadline from "../job/JobDetailDeadline.vue";
 import { ref } from "vue";
 
 const nextDeadlineId = ref(0); // set to max of existing deadlines + 1
 const deadlines = ref([]);
+const selectedColumnId = ref(-1);
 
 export default {
   components: {
@@ -177,9 +163,9 @@ export default {
     },
     columns: {
       type: Object,
-      default: sampleColumns,
+      default: () => {},
     },
-    saveJob: {
+    createOrUpdateJob: {
       type: Function,
       default: () => {},
     },
@@ -187,19 +173,52 @@ export default {
   data: (props) => ({
     dialog: true,
     jobData: props.job,
-    colList: sampleColumns,
     deadlines,
     nextDeadlineId,
+    selectedColumnId,
   }),
+  setup(props) {
+    deadlines.value = props.job.deadlines ? props.job.deadlines : [];
+    selectedColumnId.value = props.job.columnId
+      ? props.job.columnId
+      : props.columns[0].id;
+  },
+  computed: {
+    getColumns() {
+      return this.columns;
+    },
+  },
   methods: {
     newDeadline() {
-      deadlines.value.push({ id: nextDeadlineId.value++, title: "", date: "" });
-      console.log(deadlines.value);
+      deadlines.value.push({
+        id: nextDeadlineId.value++,
+        title: "",
+        date: "",
+      });
     },
     deleteDeadline(id) {
+      var updatedDeadlines = [];
       deadlines.value.forEach((deadline) => {
-        if (deadline.id == id) deadlines.value.remove(deadline);
+        if (deadline.id != id) updatedDeadlines.push(deadline);
       });
+      deadlines.value = updatedDeadlines;
+    },
+    saveClicked() {
+      this.jobData.deadlines = deadlines.value;
+      this.jobData.columnId = selectedColumnId.value;
+      this.createOrUpdateJob(this.jobData);
+      this.$emit("close");
+    },
+    handleDeadlineUpdate(updatedDeadline) {
+      var updatedDeadlines = [];
+      deadlines.value.forEach((deadline) => {
+        if (deadline.id == updatedDeadline.id) {
+          updatedDeadlines.push(updatedDeadline);
+        } else {
+          updatedDeadlines.push(deadline);
+        }
+      });
+      deadlines.value = updatedDeadlines;
     },
   },
 };
@@ -209,6 +228,10 @@ export default {
 .pad-deadlines {
   padding-bottom: 1rem;
   padding-left: 0.5rem;
+}
+
+.add-deadline {
+  min-width: 165px;
 }
 .scroll-deadlines {
   overflow-y: auto;
