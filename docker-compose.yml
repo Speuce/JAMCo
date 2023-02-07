@@ -15,6 +15,7 @@ services:
     command: ./docker-entrypoint.sh
     volumes:
       - ./backend:/backend
+      - ./frontend/dist:/static/dist
     ports:
       - "8000:8000"
     environment:

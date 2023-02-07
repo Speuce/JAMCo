@@ -15,7 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from account import views as account_views
+from .views import index
 
 urlpatterns = [
+    path('', index),
+    path('sandbox', index),
     path('admin/', admin.site.urls),
+    path('account/api/get_or_create_account',
+         account_views.get_or_create_account),
 ]

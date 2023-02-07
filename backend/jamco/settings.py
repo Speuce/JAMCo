@@ -22,14 +22,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-p4enq_&$q7e%a+cs3@5lcb4h#^9j!*c07ci-9o(v1#k8!ebaos'
 
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
 
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
+    'account',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,6 +43,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -48,12 +54,18 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://0.0.0.0:3000",
+]
+
 ROOT_URLCONF = 'jamco.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -124,3 +136,40 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'debug.log',
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
+# These are the settings you should have for everything to work properly.
+# Add these to your main settings.py file, or modify it accordingly.
+
+# Needed for production. Avoid using '*'.
+#ALLOWED_HOSTS = ['your-production-domain.com']
+ALLOWED_HOSTS = ['*']
+
+DJANGO_VITE_ASSETS_PATH = os.path.join("static", "dist")
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, DJANGO_VITE_ASSETS_PATH),
+]
+TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'), )
+
+DJANGO_VITE_DEV_MODE = DEBUG
+
+VITE_APP_DIR = os.path.join("static")

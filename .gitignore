@@ -1,3 +1,6 @@
 env-ignore/
 backend/jamco/__pycache__/
 *.DS_STORE
+*/dist/*
+*.log
+*/tmp/*
