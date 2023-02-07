@@ -5,6 +5,7 @@ class User(AbstractUser):
     # Name, username, and email are included with AbstractUser
     google_id = models.TextField()
     image_url = models.TextField()
-    #location = models. todo: Import django-cities
+    country = models.CharField(max_length=30)
+    city = models.CharField(max_length=30)
     birthday = models.DateField(verbose_name='Date of Birth')
     field_of_work = models.CharField(max_length=30)
