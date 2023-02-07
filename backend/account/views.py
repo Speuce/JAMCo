@@ -21,6 +21,10 @@ def get_or_create_account(request: HttpRequest):
     Creates a new account, given google id token.
     Will use the google id token to get the user's information.
     """
+
+    print("WOAH!")
+
+
     body = read_request(request)
     credential = body['credential']
     logger.debug(f"get_or_create_account: {credential}")

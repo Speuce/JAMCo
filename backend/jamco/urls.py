@@ -23,5 +23,5 @@ urlpatterns = [
     path('sandbox', index),
     path('admin/', admin.site.urls),
     path('account/api/get_or_create_account',
-         account_views.get_or_create_account),
+         account_views.get_or_create_account, name='get_or_create_account'),
 ]
