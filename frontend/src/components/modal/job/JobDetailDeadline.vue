@@ -31,6 +31,7 @@ export default {
   components: {
     Datepicker,
   },
+  emits: ["updateDeadline"],
   props: {
     deadline: {
       type: Object,
@@ -50,7 +51,7 @@ export default {
     },
     deleteDeadline: {
       type: Function,
-      default: () => {},
+      default: undefined,
     },
   },
   data: (props) => ({

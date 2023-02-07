@@ -150,7 +150,6 @@ export default {
           user: -1,
           id: -1,
           company: "",
-          date: "",
           type: "",
           columnId: -1,
           position: "",

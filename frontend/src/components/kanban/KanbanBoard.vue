@@ -17,7 +17,6 @@
             :animation="200"
             ghost-class="ghost-card"
             group="column.id"
-            :sorted="false"
             @change="handle($event, column.id)"
             class="min-h-screen"
             id="column"
@@ -57,7 +56,7 @@ export default {
     },
     showDetailModal: {
       type: Function,
-      default: () => {},
+      default: undefined,
     },
   },
   computed: {
@@ -86,6 +85,14 @@ export default {
 
       for (var job in this.jobs) {
         jobsByColumn[this.jobs[job].columnId].push(this.jobs[job])
+      }
+
+      for (col in this.columns) {
+        jobsByColumn[this.columns[col].id] = jobsByColumn[
+          this.columns[col].id
+        ].sort((a, b) => {
+          a.id > b.id ? 1 : -1
+        })
       }
 
       return jobsByColumn

@@ -8,7 +8,7 @@ describe('JobCard', () => {
   var job = {}
   function mountJobCard(job) {
     wrapper = mount(JobCard, {
-      propsData: { job },
+      props: { job },
     })
   }
 

@@ -12,7 +12,7 @@ describe('CardBadge', () => {
   it('uses passed colours when passed via props', async () => {
     const colours = ['#000', '#111', '#222']
     var wrapper = mount(CardBadge, {
-      propsData: { colours },
+      props: { colours },
     })
     await wrapper.setProps({ colours: colours })
     expect(wrapper.props().colours).toEqual(colours)
