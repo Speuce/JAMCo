@@ -8,5 +8,9 @@ class AccountTestCase(TestCase):
 
 
     def test_create_account(self):
-        response = self.client.post(reverse('get_or_create_account'), json.dumps({'credential': 'whatever'}), content_type='application/json')
+        response = self.client.post(
+            reverse('get_or_create_account'),
+            json.dumps({'credential': 'whatever'}),
+            content_type='application/json'
+        )
         print(response.status_code)
