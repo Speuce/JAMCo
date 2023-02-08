@@ -142,6 +142,7 @@ export default {
   components: {
     JobDetailDeadline,
   },
+  emits: ["close"],
   props: {
     job: {
       type: Object,
@@ -156,17 +157,16 @@ export default {
           description: "",
           coverLetter: "",
           comments: "",
-          deadlines: [],
         };
       },
     },
     columns: {
       type: Object,
-      default: () => {},
+      default: undefined,
     },
     createOrUpdateJob: {
       type: Function,
-      default: () => {},
+      default: undefined,
     },
   },
   data: (props) => ({

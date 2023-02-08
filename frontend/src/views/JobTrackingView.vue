@@ -2,7 +2,7 @@
   <div class="page-container">
     <JobDetailModal
       v-if="detailModalVisible"
-      @close="detailModalVisible = false"
+      @close="closeModal"
       :createOrUpdateJob="createOrUpdateJob"
       :job="selectedJob"
       :columns="colList"
@@ -84,6 +84,9 @@ export default {
         this.selectedJob = { id: nextJobId.value++ }
       }
       this.detailModalVisible = true
+    },
+    closeModal() {
+      this.detailModalVisible = false;
     },
   },
 }

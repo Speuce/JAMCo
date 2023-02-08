@@ -1,5 +1,4 @@
 import { fileURLToPath, URL } from 'node:url'
-
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
@@ -35,7 +34,7 @@ export default defineConfig({
   base: '/',
   test: {
     environment: 'jsdom',
-    setupFiles: ['./__tests__/setupVuetify.js', './__tests__/setupPlugins.js'],
+    setupFiles: ['./__tests__/setupGlobals.js', './__tests__/setupPlugins.js'],
     deps: {
       inline: ['vuetify'],
     },

@@ -13,6 +13,7 @@
   "dependencies": {
     "@vuepic/vue-datepicker": "^3.6.7",
     "js-cookie": "^3.0.1",
+    "resize-observer-polyfill": "^1.5.1",
     "vite-plugin-vuetify": "^1.0.2",
     "vue": "^3.2.45",
     "vue-draggable-next": "^2.1.1",
