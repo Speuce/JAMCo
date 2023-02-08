@@ -13,4 +13,4 @@ class AccountTestCase(TestCase):
             json.dumps({'credential': 'whatever'}),
             content_type='application/json'
         )
-        print(response.status_code)
+        self.assertEqual(response.status_code, 200)
