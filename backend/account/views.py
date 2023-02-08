@@ -5,8 +5,8 @@ API-layer for account related operations.
 """
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_POST
-
 from jamco.helper import read_request
+from . import business
 
 import logging
 
@@ -26,5 +26,6 @@ def get_or_create_account(request: HttpRequest):
     credential = body['credential']
     logger.debug(f"get_or_create_account: {credential}")
 
-    #TODO: Create account, return created account
-    return JsonResponse({'data': "account_created"})
+    user_id = business.get_or_create_user({'google_id': credential})
+
+    return JsonResponse({'data': user_id})
