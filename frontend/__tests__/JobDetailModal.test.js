@@ -33,6 +33,8 @@ describe("JobDetailModal", () => {
   afterEach(() => {
     job.deadlines = [];
     wrapper.vm.nextDeadlineId = 0;
+    wrapper.vm.positionErrorIndicator = null;
+    wrapper.vm.companyErrorIndicator = null;
   });
 
   it("populates with default values when no props provided", () => {
@@ -50,6 +52,36 @@ describe("JobDetailModal", () => {
     });
 
     expect(wrapper.vm.deadlines).toEqual([]);
+  });
+
+  it("displays error when position is empty & save is pressed", () => {
+    expect(wrapper.vm.positionErrorIndicator).toBe(null);
+    expect(wrapper.vm.companyErrorIndicator).toBe(null);
+
+    var testJob = { ...job };
+    testJob.position = null;
+    testJob.company = "non-empty";
+    mountModal(testJob);
+
+    wrapper.vm.saveClicked();
+
+    expect(wrapper.vm.positionErrorIndicator).toBe("red");
+    expect(wrapper.vm.companyErrorIndicator).toBe(null);
+  });
+
+  it("displays error when company is empty & save is pressed", () => {
+    expect(wrapper.vm.positionErrorIndicator).toBe(null);
+    expect(wrapper.vm.companyErrorIndicator).toBe(null);
+
+    var testJob = { ...job };
+    testJob.company = null;
+    testJob.position = "non-empty";
+    mountModal(testJob);
+
+    wrapper.vm.saveClicked();
+
+    expect(wrapper.vm.positionErrorIndicator).toBe(null);
+    expect(wrapper.vm.companyErrorIndicator).toBe("red");
   });
 
   it("emits close when close button clicked", () => {

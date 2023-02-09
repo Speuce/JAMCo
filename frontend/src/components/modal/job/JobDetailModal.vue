@@ -11,6 +11,7 @@
                     label="Position*"
                     class="text-h5"
                     v-model="jobData.position"
+                    :style="{ color: this.positionErrorIndicator }"
                   ></v-text-field
                 ></v-col>
 
@@ -30,6 +31,7 @@
                     label="Company*"
                     required
                     v-model="jobData.company"
+                    :style="{ color: this.companyErrorIndicator }"
                   ></v-text-field>
                 </v-col>
 
@@ -107,13 +109,19 @@
             </v-col>
           </v-row>
           <small>* indicates required field</small>
+          <h4
+            v-if="this.positionErrorIndicator || this.companyErrorIndicator"
+            class="errorMessage"
+          >
+            Ensure Required (*) Fields Are Filled
+          </h4>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             color="blue-darken-1"
             variant="text"
-            @click="() => $emit('close')"
+            @click="this.closeClicked"
           >
             Close
           </v-btn>
@@ -175,6 +183,8 @@ export default {
     deadlines,
     nextDeadlineId,
     selectedColumnId,
+    positionErrorIndicator: null,
+    companyErrorIndicator: null,
   }),
   setup(props) {
     deadlines.value = props.job.deadlines ? props.job.deadlines : [];
@@ -203,9 +213,32 @@ export default {
       deadlines.value = updatedDeadlines;
     },
     saveClicked() {
-      this.jobData.deadlines = deadlines.value;
-      this.jobData.columnId = selectedColumnId.value;
-      this.createOrUpdateJob(this.jobData);
+      this.positionErrorIndicator = null;
+      this.companyErrorIndicator = null;
+      if (
+        this.jobData.position &&
+        this.jobData.company &&
+        this.jobData.position.length > 0 &&
+        this.jobData.company.length > 0
+      ) {
+        this.positionErrorIndicator = null;
+        this.companyErrorIndicator = null;
+        this.jobData.deadlines = deadlines.value;
+        this.jobData.columnId = selectedColumnId.value;
+        this.createOrUpdateJob(this.jobData);
+        this.$emit("close");
+      } else {
+        if (!this.jobData.position || this.jobData.position.length == 0) {
+          this.positionErrorIndicator = "red";
+        }
+        if (!this.jobData.company || this.jobData.company.length == 0) {
+          this.companyErrorIndicator = "red";
+        }
+      }
+    },
+    closeClicked() {
+      this.positionErrorIndicator = null;
+      this.companyErrorIndicator = null;
       this.$emit("close");
     },
     handleDeadlineUpdate(updatedDeadline) {
@@ -224,6 +257,9 @@ export default {
 </script>
 
 <style scoped>
+.errorMessage {
+  color: red;
+}
 .pad-deadlines {
   padding-bottom: 1rem;
   padding-left: 0.5rem;
