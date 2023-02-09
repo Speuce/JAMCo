@@ -5,7 +5,7 @@
 import { postRequest } from "@/helpers/requests.js";
 export default {
   data() {},
-  mounted() {
+mounted() {
     window.addEventListener("load", () => {
       window.google.accounts.id.initialize({
         client_id:
@@ -13,7 +13,7 @@ export default {
         callback: this.onSignin,
       });
       window.google.accounts.id.renderButton(
-        document.getElementById("signin_button"),
+    document.getElementById("signin_button"),
         {
           theme: "outline",
           size: "large",
