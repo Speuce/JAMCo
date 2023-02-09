@@ -55,5 +55,7 @@ jobs:
       with:
         eslint: true
         prettier: true
+        eslint_dir: frontend/
+        prettier_dir: frontend/
 
 
