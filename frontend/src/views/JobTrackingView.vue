@@ -5,15 +5,15 @@
       @createOrUpdateJob="createOrUpdateJob"
       @close="closeDetailModal"
       :createOrUpdateJob="createOrUpdateJob"
-      :job="selectedJob"
+      :job="jobsByColumn"
       :columns="colList"
     />
     <ColumnOptionModal
       v-if="columnOptionModalVisible"
       @close="closeColumnModal"
-      :createOrUpdateColumn="createOrUpdateColumn"
+      :updateColumns="updateColumns"
       :columns="colList"
-      :jobsByColumn="jobList"
+      :jobsByColumn="jobsByColumn"
     />
     <div class="header-container">
       <h2 class="internal">Your Applications</h2>
@@ -29,8 +29,8 @@
     <div class="kanban">
       <KanbanBoard
         :columns="colList"
-        :jobs="jobList"
-        @showDetailModal="showDetailModal"
+        :jobs="jobsByColumn"
+        :showDetailModal="showDetailModal"
       />
     </div>
   </div>
@@ -44,7 +44,7 @@ import JobDetailModal from '../components/modal/job/JobDetailModal.vue'
 import ColumnOptionModal from '../components/modal/column/ColumnOptionModal.vue'
 import { ref } from 'vue'
 
-const jobList = ref([])
+const jobsByColumn = ref({})
 const colList = ref([])
 const nextJobId = ref(0)
 const isNewJob = ref(false)
@@ -62,33 +62,46 @@ export default {
       selectedJob: {},
       nextJobId,
       isNewJob,
-      jobList, // switch jobList to jobByColumn (pull up from Kanban)
       colList,
+      jobsByColumn,
     }
   },
   setup() {
-    let maxId = 0
-    sampleJobs.forEach((job) => {
-      jobList.value.push(job)
-      if (job.id > maxId) {
-        maxId = job.id
+    var maxId = 0
+    for (var index in sampleColumnMapping) {
+      colList.value.push(sampleColumnMapping[index])
+    }
+
+    for (var colIndex in colList.value) {
+      if (jobsByColumn.value[colList.value[colIndex].id] == null) {
+        jobsByColumn.value[colList.value[colIndex].id] = []
       }
-    })
-    sampleColumnMapping.forEach((colMapping) => {
-      colList.value.push(colMapping)
-    })
+    }
+
+    for (var job in sampleJobs) {
+      jobsByColumn.value[sampleJobs[job].columnId].push(sampleJobs[job])
+    }
+
+    for (colIndex in colList.value) {
+      jobsByColumn.value[colList.value[colIndex].id] = jobsByColumn.value[
+        colList.value[colIndex].id
+      ].sort((a, b) => {
+        a.id > b.id ? 1 : -1
+      })
+    }
+
     nextJobId.value = maxId + 1
   },
   methods: {
     createOrUpdateJob(job) {
       if (isNewJob.value) {
         isNewJob.value = false
-        jobList.value.push(job)
+        jobsByColumn.value[job.columnId].push(job)
       }
       // Post to database
     },
-    createOrUpdateColumn(col) {
-      console.log(col)
+    updateColumns(columns) {
+      this.colList = columns
     },
     showDetailModal(job) {
       if (job) {
