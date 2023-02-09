@@ -4,9 +4,9 @@ Account queries
 Query functions for account related operations.
 """
 
+import datetime
 from django.core.exceptions import ObjectDoesNotExist
 from .models import User
-import datetime
 
 def get_or_create_user(payload: dict) -> User:
     try:
