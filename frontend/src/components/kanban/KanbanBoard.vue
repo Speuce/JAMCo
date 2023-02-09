@@ -60,10 +60,10 @@ export default {
       jobsByColumn: this.processJobsByColumn(this.jobs),
     };
   },
-  methods: {
-    handle(event, colId) {
-      if (event.added) {
-        event.added.element.columnId = colId;
+methods: {
+handle(event, colId) {
+if (event.added) {
+event.added.element.columnId = colId;
         // Post Update to Job Model, update ColumnId field
       }
     },
