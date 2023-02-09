@@ -24,4 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/api/get_or_create_account',
          account_views.get_or_create_account, name='get_or_create_account'),
+    path('account/api/update_account',
+         account_views.update_account, name='update_account'),
 ]
