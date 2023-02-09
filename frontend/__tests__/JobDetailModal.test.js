@@ -35,6 +35,7 @@ describe("JobDetailModal", () => {
     wrapper.vm.nextDeadlineId = 0;
     wrapper.vm.positionErrorIndicator = null;
     wrapper.vm.companyErrorIndicator = null;
+    wrapper.vm.deadlineError = false;
   });
 
   it("populates with default values when no props provided", () => {
@@ -84,6 +85,24 @@ describe("JobDetailModal", () => {
     expect(wrapper.vm.companyErrorIndicator).toBe("red");
   });
 
+  it("displays error when deadline fields empty & save clicked", () => {
+    mountModal(job);
+    wrapper.vm.newDeadline();
+
+    expect(wrapper.vm.deadlineError).toBe(false);
+
+    let buttons = wrapper.findAllComponents({ name: "v-btn" });
+
+    buttons.forEach((button) => {
+      if (button.text() === "Save") {
+        button.trigger("click");
+      }
+    });
+
+    expect(createOrUpdateJob).toBeCalledTimes(0);
+    expect(wrapper.vm.deadlineError).toBe(true);
+  });
+
   it("emits close when close button clicked", () => {
     mountModal(job);
     let buttons = wrapper.findAllComponents({ name: "v-btn" });
@@ -126,13 +145,13 @@ describe("JobDetailModal", () => {
     mountModal(job);
     wrapper.vm.newDeadline();
 
-    let buttons = wrapper.findAllComponents({ name: "v-btn" });
-
-    buttons.forEach((button) => {
-      if (button.text() === "Save") {
-        button.trigger("click");
-      }
+    wrapper.vm.handleDeadlineUpdate({
+      id: 0,
+      title: "Test Title",
+      date: "2022-01-01",
     });
+
+    wrapper.vm.saveClicked();
 
     expect(createOrUpdateJob).toHaveBeenCalledWith({
       id: 1,
@@ -143,7 +162,7 @@ describe("JobDetailModal", () => {
       description: "Test description",
       coverLetter: "Test cover letter",
       comments: "Test comments",
-      deadlines: [{ id: 0, title: "", date: "" }],
+      deadlines: [{ id: 0, title: "Test Title", date: "2022-01-01" }],
       columnId: 1,
     });
   });

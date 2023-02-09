@@ -4,7 +4,7 @@
       <v-card>
         <v-card-text>
           <v-row>
-            <v-col cols="" sm="7">
+            <v-col cols="" sm="" class="info-col">
               <v-row>
                 <v-col cols="12" sm="6">
                   <v-text-field
@@ -17,7 +17,7 @@
 
                 <v-col cols="12" sm="1"></v-col>
 
-                <v-col cols="12" sm="4">
+                <v-col cols="12" sm="5">
                   <v-text-field
                     label="Type"
                     v-model="jobData.type"
@@ -37,7 +37,7 @@
 
                 <v-col cols="12" sm="1"></v-col>
 
-                <v-col cols="12" sm="4">
+                <v-col cols="12" sm="5">
                   <v-select
                     :items="getColumns"
                     item-title="name"
@@ -85,13 +85,13 @@
               </v-row>
             </v-col>
 
-            <v-col cols="8" sm="5">
+            <v-col class="deadline-col">
               <v-row class="pad-deadlines">
-                <v-col cols="12" sm="8">
+                <v-col cols="12" sm="6">
                   <h2>Deadlines</h2>
                 </v-col>
 
-                <v-col cols="12" sm="4">
+                <v-col cols="12" sm="6">
                   <v-btn @click="newDeadline" class="add-deadline"
                     >Add Deadline</v-btn
                   >
@@ -103,6 +103,7 @@
                     :deadline="deadline"
                     :deleteDeadline="deleteDeadline"
                     @updateDeadline="handleDeadlineUpdate"
+                    :tryError="deadlineError"
                   />
                 </v-row>
               </v-col>
@@ -110,7 +111,11 @@
           </v-row>
           <small>* indicates required field</small>
           <h4
-            v-if="this.positionErrorIndicator || this.companyErrorIndicator"
+            v-if="
+              this.positionErrorIndicator ||
+              this.companyErrorIndicator ||
+              this.deadlineError
+            "
             class="errorMessage"
           >
             Ensure Required (*) Fields Are Filled
@@ -121,7 +126,7 @@
           <v-btn
             color="blue-darken-1"
             variant="text"
-            @click="this.closeClicked"
+            @click="this.closeClicked()"
           >
             Close
           </v-btn>
@@ -185,6 +190,7 @@ export default {
     selectedColumnId,
     positionErrorIndicator: null,
     companyErrorIndicator: null,
+    deadlineError: false,
   }),
   setup(props) {
     deadlines.value = props.job.deadlines ? props.job.deadlines : [];
@@ -199,6 +205,7 @@ export default {
   },
   methods: {
     newDeadline() {
+      this.deadlineError = false;
       deadlines.value.push({
         id: nextDeadlineId.value++,
         title: "",
@@ -212,10 +219,29 @@ export default {
       });
       deadlines.value = updatedDeadlines;
     },
+    validateDeadlines() {
+      this.deadlineError = false;
+      for (var index in deadlines.value) {
+        if (
+          !deadlines.value[index].title ||
+          !deadlines.value[index].date ||
+          deadlines.value[index].title.length == 0 ||
+          deadlines.value[index].date.length == 0
+        ) {
+          this.deadlineError = true;
+          return;
+        }
+      }
+      return;
+    },
     saveClicked() {
       this.positionErrorIndicator = null;
       this.companyErrorIndicator = null;
+
+      this.validateDeadlines();
+
       if (
+        !this.deadlineError &&
         this.jobData.position &&
         this.jobData.company &&
         this.jobData.position.length > 0 &&
@@ -223,6 +249,7 @@ export default {
       ) {
         this.positionErrorIndicator = null;
         this.companyErrorIndicator = null;
+        this.deadlineError = false;
         this.jobData.deadlines = deadlines.value;
         this.jobData.columnId = selectedColumnId.value;
         this.createOrUpdateJob(this.jobData);
@@ -257,6 +284,13 @@ export default {
 </script>
 
 <style scoped>
+.deadline-col {
+  min-width: 420px;
+}
+
+.info-col {
+  min-width: 360px;
+}
 .errorMessage {
   color: red;
 }
