@@ -33,6 +33,7 @@ jobs:
       run: npm run test
   lint:
     runs-on: ubuntu-latest
+    permissions: write-all
     defaults:
       run:
         working-directory: ./frontend
