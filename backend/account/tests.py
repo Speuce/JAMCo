@@ -38,7 +38,7 @@ class AccountTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-    def test_invalid_account_update(self):
+    def test_invalid_account_update_view(self):
         # Create an account first
         self.client.post(
             reverse('get_or_create_account'),
