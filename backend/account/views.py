@@ -22,8 +22,10 @@ def get_or_create_account(request: HttpRequest):
     Will use the google id token to get the user's information.
     """
     body = read_request(request)
+    
     credential = body['credential']
     logger.debug(f"get_or_create_account: {credential}")
+    logger.debug("hi")
 
     #TODO: Create account, return created account
     return JsonResponse({'data': "account_created"})
