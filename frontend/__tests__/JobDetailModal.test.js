@@ -21,7 +21,7 @@ describe('JobDetailModal', () => {
     wrapper = mount(JobDetailModal, {
       props: {
         createOrUpdateJob,
-        ajob,
+        job: ajob,
         columns: [
           { id: 1, name: 'Applied' },
           { id: 2, name: 'Interviewing' },
