@@ -2,13 +2,15 @@
   <div class="card-container">
     <div class="id-company">
       <p class="company">
-        {{ job.company }}
+        {{ job?.company ?? '' }}
       </p>
-      <span class="small-gray">{{ job.id }}</span>
+      <span class="small-gray">{{ job?.id ?? '' }}</span>
     </div>
     <div class="position-container">
-      <span class="small-gray" id="job-position">{{ job.position }}</span>
-      <CardBadge v-if="job.type" :colours="badgeColours">{{
+      <span class="small-gray" id="job-position">{{
+        job?.position ?? ''
+      }}</span>
+      <CardBadge v-if="job?.type" :colours="badgeColours">{{
         job.type
       }}</CardBadge>
     </div>
@@ -31,7 +33,7 @@ export default {
   },
   computed: {
     badgeColours() {
-      return stringToTriColourPalatte(this.job.type)
+      return this.job ? stringToTriColourPalatte(this.job.type) : []
     },
   },
 }
