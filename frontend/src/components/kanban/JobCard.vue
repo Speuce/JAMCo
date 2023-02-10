@@ -1,14 +1,16 @@
 <template>
   <div class="card-container">
-    <div class="date-company">
+    <div class="id-company">
       <p class="company">
-        {{ job.company }}
+        {{ job?.company ?? '' }}
       </p>
-      <span class="small-gray">{{ job.date }}</span>
+      <span class="small-gray">{{ job?.id ?? '' }}</span>
     </div>
     <div class="position-container">
-      <span class="small-gray" id="job-position">{{ job.position }}</span>
-      <CardBadge v-if="job.type" :colours="badgeColours">{{
+      <span class="small-gray" id="job-position">{{
+        job?.position ?? ''
+      }}</span>
+      <CardBadge v-if="job?.type" :colours="badgeColours">{{
         job.type
       }}</CardBadge>
     </div>
@@ -16,10 +18,10 @@
 </template>
 
 <script>
-import CardBadge from "./CardBadge.vue";
-import stringToTriColourPalatte from "../../helpers/string-to-tri-colour-palatte";
+import CardBadge from './CardBadge.vue'
+import stringToTriColourPalatte from '../../helpers/string-to-tri-colour-palatte'
 export default {
-  name: "JobCard",
+  name: 'JobCard',
   components: {
     CardBadge,
   },
@@ -31,10 +33,10 @@ export default {
   },
   computed: {
     badgeColours() {
-      return stringToTriColourPalatte(this.job.type);
+      return this.job ? stringToTriColourPalatte(this.job.type) : []
     },
   },
-};
+}
 </script>
 
 <style scoped>
@@ -50,7 +52,7 @@ export default {
   border-color: rgba(255, 255, 255, var(--border-opacity));
 }
 
-.date-company {
+.id-company {
   display: flex;
   justify-content: space-between;
 }
@@ -60,9 +62,9 @@ export default {
   color: #4a5568;
   color: rgba(74, 85, 104, var(--text-opacity));
   font-weight: 600;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   letter-spacing: 0.025em;
   font-size: 0.875rem;
 }

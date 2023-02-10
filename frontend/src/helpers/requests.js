@@ -1,33 +1,35 @@
-import Cookies from "js-cookie";
+/* eslint-disable no-console */
+import Cookies from 'js-cookie'
 
-const prod_mode = import.meta.env.PROD;
-const baseUrl = prod_mode ? "" : "http://localhost:8000/";
+const prodMode = import.meta.env.PROD
+const baseUrl = prodMode ? '' : 'http://localhost:8000/'
 /**
  * Send a post request to the backend
  */
 export async function postRequest(url, data) {
-  if (url.startsWith("/")) url = url.substring(1);
+  // eslint-disable-next-line no-param-reassign
+  if (url.startsWith('/')) url = url.substring(1)
   try {
     const response = await fetch(baseUrl + url, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": getCSRFToken(),
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCSRFToken(),
       },
-      referrerPolicy: "no-referrer-when-downgrade",
+      referrerPolicy: 'no-referrer-when-downgrade',
       body: JSON.stringify(data),
-    });
+    })
     if (response.status !== 200) {
-      console.error(response);
-      throw new Error("Error sending post request");
+      console.error(response)
+      throw new Error('Error sending post request')
     }
-    return response.json();
+    return response.json()
   } catch (e) {
-    console.error(e);
-    throw new Error("Error sending post request");
+    console.error(e)
+    throw new Error('Error sending post request')
   }
 }
 
 export function getCSRFToken() {
-  return Cookies.get("csrftoken");
+  return Cookies.get('csrftoken')
 }

@@ -2,112 +2,160 @@
   {
     "id": 1,
     "company": "Gamestation",
-    "date": "Sep 14",
     "type": "Full Stack",
     "position": "Software Engineer",
-    "columnId": 1
+    "columnId": 1,
+    "deadlines": [
+      {
+        "id": 0,
+        "title": "test?",
+        "date": "Thu Feb 09 2023 20:47:00 GMT-0600 (Central Standard Time)"
+      }
+    ],
+    "coverLetter": "Test Cover Letter",
+    "description": "Test Description",
+    "comments": "Test Comments"
   },
   {
     "id": 10,
     "company": "Wework",
-    "date": "Sep 9",
     "type": "Backend",
     "position": "Software Engineer I",
-    "columnId": 1
+    "columnId": 1,
+    "deadlines": [],
+    "coverLetter": "Test Cover Letter",
+    "description": "Test",
+    "comments": "Test Comments"
   },
   {
     "id": 13,
     "company": "Wework",
-    "date": "Sep 9",
     "type": "1",
     "position": "Software Engineer I",
-    "columnId": 1
+    "columnId": 1,
+    "deadlines": [],
+    "coverLetter": "Test Letter",
+    "description": "Description",
+    "comments": "Test Comments"
   },
   {
     "id": 53,
     "company": "Wework",
-    "date": "Sep 9",
     "type": "test",
     "position": "Software Engineer I",
-    "columnId": 1
+    "columnId": 1,
+    "deadlines": [],
+    "coverLetter": "Test Cover Letter",
+    "description": "Description",
+    "comments": "Test Comments"
   },
   {
     "id": 6,
     "company": "Doors",
-    "date": "Sep 49",
     "type": "Frontend",
     "position": "Software Engineer",
-    "columnId": 2
+    "columnId": 2,
+    "deadlines": [],
+    "coverLetter": "Test",
+    "description": "Test",
+    "comments": "Test"
   },
   {
     "id": 62,
     "company": "Doors",
-    "date": "Sep 59",
     "type": "",
     "position": "Software Engineer",
-    "columnId": 1
+    "columnId": 1,
+    "deadlines": [],
+    "coverLetter": "Test Letter",
+    "description": "Test Description",
+    "comments": "Test"
   },
   {
     "id": 632,
     "company": "Doors",
-    "date": "Sep 9",
     "position": "Software Engineer",
-    "columnId": 2
+    "columnId": 2,
+    "deadlines": [],
+    "coverLetter": "Test Cover Letter",
+    "description": "Test Description",
+    "comments": "Test Comments"
   },
   {
     "id": 7,
     "company": "Pear",
-    "date": "Sep 14",
     "type": "Full Stack",
     "position": "Software Engineer II",
-    "columnId": 2
+    "columnId": 2,
+    "deadlines": [],
+    "coverLetter": "Test Cover Letter",
+    "description": "Test Description",
+    "comments": "Test Comments"
   },
   {
     "id": 8,
     "company": "JamCo",
-    "date": "Sep 12",
     "type": "Backend",
     "position": "SDE I",
-    "columnId": 2
+    "columnId": 2,
+    "deadlines": [],
+    "coverLetter": "Letter",
+    "description": "Description",
+    "comments": "Test"
   },
   {
     "id": 16,
     "company": "Real Company",
-    "date": "Sep 14",
     "type": "Full Stack",
     "position": "Software Developer",
-    "columnId": 2
+    "columnId": 2,
+    "deadlines": [],
+    "coverLetter": "Test Cover Letter",
+    "description": "Test Description",
+    "comments": "Test Comments"
   },
   {
     "id": 11,
     "company": "Rainforest",
-    "date": "Sep 14",
     "type": "Full Stack",
     "position": "Software Engineer",
-    "columnId": 2
+    "columnId": 2,
+    "deadlines": [],
+    "coverLetter": "Cover Letter",
+    "description": "Description",
+    "comments": "Comments"
   },
   {
     "id": 12,
     "company": "Minisoft",
-    "date": "Sep 9",
     "type": "Frontend",
     "position": "Senior Software Engineer",
-    "columnId": 3
+    "columnId": 3,
+    "deadlines": [],
+    "coverLetter": "Test",
+    "description": "Description",
+    "comments": "Test"
   },
   {
     "id": 13,
     "company": "Gooble",
-    "date": "Sep 14",
     "type": "Full Stack",
     "position": "Software Developer II",
-    "columnId": 3
+    "columnId": 3,
+    "deadlines": [],
+    "coverLetter": "Test Letter",
+    "description": "Description",
+    "comments": "Comments"
   },
   {
     "id": 15,
     "company": "Dream Job",
-    "date": "Sep 9",
     "type": "Frontend",
     "position": "Software Engineer",
-    "columnId": 4
+    "columnId": 4,
+    "deadlines": [],
+    "coverLetter": "Test",
+    "description": "Description",
+    "comments": "Test"
   }
 ]

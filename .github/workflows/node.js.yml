@@ -33,6 +33,7 @@ jobs:
       run: npm run test
   lint:
     runs-on: ubuntu-latest
+    permissions: write-all
     defaults:
       run:
         working-directory: ./frontend
@@ -50,6 +51,9 @@ jobs:
         cache-dependency-path: frontend/package-lock.json
     - name: npm install
       run: npm i
-    - name: run npm lint
+    - name: Run eslint
       run: npm run lint
+    - name: Run prettier
+      run: npx prettier --check .
+
 

@@ -4,12 +4,12 @@
 
 <script>
 export default {
-  name: "Sandbox",
+  name: 'Sandbox',
   data() {
-    return {};
+    return {}
   },
 
   methods: {},
-};
+}
 </script>
 <style scoped></style>
