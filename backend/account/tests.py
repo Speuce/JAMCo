@@ -59,7 +59,7 @@ class AccountTestCase(TestCase):
         query.get_or_create_user({'google_id': '4'})
         response = self.client.post(
             reverse('create_column'),
-            json.dumps({'google_id': '4', 'column_name': "New column"}),
+            json.dumps({'google_id': '4', 'column_name': 'New column'}),
             content_type='application/json'
         )
 
@@ -74,7 +74,7 @@ class AccountTestCase(TestCase):
         # User doesn't exist
         response = self.client.post(
             reverse('create_column'),
-            json.dumps({'google_id': '4', 'column_name': "New column"}),
+            json.dumps({'google_id': '4', 'column_name': 'New column'}),
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 400)
