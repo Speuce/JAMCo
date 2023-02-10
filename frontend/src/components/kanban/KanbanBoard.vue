@@ -66,6 +66,7 @@ export default {
   methods: {
     handle(event, colId) {
       if (event.added) {
+        // eslint-disable-next-line no-param-reassign
         event.added.element.columnId = colId
         // Post Update to Job Model, update ColumnId field
       }
@@ -83,7 +84,7 @@ export default {
       Object.keys(this.columns).forEach((colKey) => {
         const columnId = this.columns[colKey].id
         jobsByColumnMapping[columnId] = jobsByColumnMapping[columnId].sort(
-          (a, b) => (a.id > b.id ? 1 : -1)
+          (a, b) => (a.id > b.id ? 1 : -1),
         )
       })
 

@@ -35,7 +35,7 @@ describe('GoogleSignin.vue', () => {
   it('calls the initialize function on window load', () => {
     expect(mockWindow.addEventListener).toHaveBeenCalledWith(
       'load',
-      expect.any(Function)
+      expect.any(Function),
     )
     const loadCallback = mockWindow.addEventListener.mock.calls[0][1]
     loadCallback()
@@ -52,7 +52,7 @@ describe('GoogleSignin.vue', () => {
         size: 'large',
         text: 'continue_with',
         shape: 'pill',
-      }
+      },
     )
   })
 
@@ -62,7 +62,7 @@ describe('GoogleSignin.vue', () => {
     await wrapper.vm.$nextTick()
     expect(postRequest).toHaveBeenCalledWith(
       'account/api/get_or_create_account',
-      { credential: response.credential }
+      { credential: response.credential },
     )
   })
 })

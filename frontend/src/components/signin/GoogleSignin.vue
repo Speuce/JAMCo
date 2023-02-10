@@ -19,7 +19,7 @@ export default {
           size: 'large',
           text: 'continue_with',
           shape: 'pill',
-        }
+        },
       )
     })
   },

@@ -6,9 +6,9 @@ import { expect, describe, it } from 'vitest'
 describe('JobCard', () => {
   let wrapper
   let job = {}
-  function mountJobCard(job) {
+  function mountJobCard(ajob) {
     wrapper = mount(JobCard, {
-      props: { job },
+      props: { ajob },
     })
   }
 

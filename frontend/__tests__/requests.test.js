@@ -34,7 +34,7 @@ describe('requests.js', () => {
     const mockResponse = { status: 500, json: vi.fn().mockReturnValue({}) }
     fetch.mockReturnValue(Promise.resolve(mockResponse))
     expect(postRequest('/test', mockData)).rejects.toThrow(
-      'Error sending post request'
+      'Error sending post request',
     )
   })
 })

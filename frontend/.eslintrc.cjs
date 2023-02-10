@@ -1,5 +1,7 @@
+/* eslint-disable no-undef */
 /* eslint-env node */
 require('@rushstack/eslint-patch/modern-module-resolution')
+customRules = require('./eslintrules.js')
 
 module.exports = {
   root: true,
@@ -11,7 +13,6 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
   },
-  rules: {
-    'vue/multi-word-component-names': 0,
-  },
+  ignorePatterns: ['**/icons/*.vue'],
+  rules: { ...customRules },
 }

@@ -4,9 +4,9 @@ import { expect, describe, it } from 'vitest'
 
 describe('CardBadge', () => {
   it('uses default colours when none received', () => {
-    const default_colours = ['#FFF', '#FFF', '#FFF']
+    const defaultColours = ['#FFF', '#FFF', '#FFF']
     let wrapper = mount(CardBadge)
-    expect(wrapper.props().colours).toEqual(default_colours)
+    expect(wrapper.props().colours).toEqual(defaultColours)
   })
 
   it('uses passed colours when passed via props', async () => {

@@ -213,7 +213,7 @@ export default {
     deleteDeadline(id) {
       let updatedDeadlines = []
       deadlines.value.forEach((deadline) => {
-        if (deadline.id != id) updatedDeadlines.push(deadline)
+        if (deadline.id !== id) updatedDeadlines.push(deadline)
       })
       deadlines.value = updatedDeadlines
     },
@@ -223,14 +223,12 @@ export default {
         if (
           !deadline.title ||
           !deadline.date ||
-          deadline.title.length == 0 ||
-          deadline.date.length == 0
+          deadline.title.length === 0 ||
+          deadline.date.length === 0
         ) {
           this.deadlineError = true
-          return
         }
       })
-      return
     },
     saveClicked() {
       this.positionErrorIndicator = null
@@ -253,10 +251,10 @@ export default {
         this.$emit('createOrUpdateJob', this.jobData)
         this.$emit('close')
       } else {
-        if (!this.jobData.position || this.jobData.position.length == 0) {
+        if (!this.jobData.position || this.jobData.position.length === 0) {
           this.positionErrorIndicator = 'red'
         }
-        if (!this.jobData.company || this.jobData.company.length == 0) {
+        if (!this.jobData.company || this.jobData.company.length === 0) {
           this.companyErrorIndicator = 'red'
         }
       }
@@ -269,7 +267,7 @@ export default {
     handleDeadlineUpdate(updatedDeadline) {
       let updatedDeadlines = []
       deadlines.value.forEach((deadline) => {
-        if (deadline.id == updatedDeadline.id) {
+        if (deadline.id === updatedDeadline.id) {
           updatedDeadlines.push(updatedDeadline)
         } else {
           updatedDeadlines.push(deadline)
