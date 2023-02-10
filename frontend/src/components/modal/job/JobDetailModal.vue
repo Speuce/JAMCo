@@ -13,17 +13,17 @@
                     v-model="jobData.position"
                     :style="{ color: this.positionErrorIndicator }"
                     maxlength="50"
-                  ></v-text-field
-                ></v-col>
+                  />
+                </v-col>
 
-                <v-col cols="12" sm="1"></v-col>
+                <v-col cols="12" sm="1" />
 
                 <v-col cols="12" sm="5">
                   <v-text-field
                     label="Type"
                     v-model="jobData.type"
                     maxlength="12"
-                  ></v-text-field>
+                  />
                 </v-col>
               </v-row>
 
@@ -35,10 +35,10 @@
                     v-model="jobData.company"
                     :style="{ color: this.companyErrorIndicator }"
                     maxlength="50"
-                  ></v-text-field>
+                  />
                 </v-col>
 
-                <v-col cols="12" sm="1"></v-col>
+                <v-col cols="12" sm="1" />
 
                 <v-col cols="12" sm="5">
                   <v-select
@@ -47,7 +47,7 @@
                     item-value="id"
                     label="Status*"
                     v-model="selectedColumnId"
-                  ></v-select>
+                  />
                 </v-col>
               </v-row>
 
@@ -60,8 +60,8 @@
                     shaped
                     v-model="jobData.description"
                     maxlength="10000"
-                  ></v-textarea
-                ></v-col>
+                  />
+                </v-col>
               </v-row>
 
               <v-row>
@@ -73,8 +73,8 @@
                     shaped
                     v-model="jobData.coverLetter"
                     maxlength="10000"
-                  ></v-textarea
-                ></v-col>
+                  />
+                </v-col>
               </v-row>
 
               <v-row>
@@ -86,8 +86,8 @@
                     shaped
                     v-model="jobData.comments"
                     maxlength="10000"
-                  ></v-textarea
-                ></v-col>
+                  />
+                </v-col>
               </v-row>
             </v-col>
 
@@ -128,7 +128,7 @@
           </h4>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn
             color="blue-darken-1"
             variant="text"
