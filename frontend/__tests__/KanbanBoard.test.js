@@ -13,12 +13,33 @@ describe('KanbanBoard', () => {
   beforeEach(async () => {
     wrapper = mount(KanbanBoard, {
       props: {
-        jobs: testJobs,
+        jobs: getJobsByColumn(),
         columns: testColumnMapping,
         showDetailModal,
       },
     })
   })
+
+  // Processing in JobTrackingView
+  function getJobsByColumn() {
+    let jobsByColumn = []
+
+    testJobs.forEach((job) => {
+      if (!jobsByColumn[job.columnId]) {
+        jobsByColumn[job.columnId] = []
+      }
+      jobsByColumn[job.columnId].push(job)
+    })
+
+    testColumnMapping.forEach((column) => {
+      if (jobsByColumn[column.id].length > 0) {
+        jobsByColumn[column.id] = jobsByColumn[column.id].sort((a, b) =>
+          a.id > b.id ? 1 : -1
+        )
+      }
+    })
+    return jobsByColumn
+  }
 
   it('has the correct number of columns', () => {
     let columns = wrapper.findAllComponents(VueDraggableNext)
@@ -28,10 +49,11 @@ describe('KanbanBoard', () => {
   it('updates the column of a job when it is moved', () => {
     let column = wrapper.findAllComponents(VueDraggableNext)
     let job = wrapper.findComponent(JobCard)
-    expect(job.vm.job.columnId).toBe(1)
 
-    column[1].vm.$emit('change', { added: { element: job.vm.job } }, 2)
-    expect(job.vm.job.columnId).toBe(2)
+    expect(job.vm.job.columnId).toBe(12)
+
+    column[4].vm.$emit('change', { added: { element: job.vm.job } }, 8)
+    expect(job.vm.job.columnId).toBe(8)
   })
 
   it('emits showDetailModal when card clicked', () => {

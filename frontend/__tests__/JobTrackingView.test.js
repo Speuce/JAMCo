@@ -35,6 +35,7 @@ describe('JobTrackingView', () => {
     buttons.forEach((button) => {
       if (button.text() === 'Add New Application') {
         button.trigger('click')
+        return
       }
     })
     // interacted with via modal
@@ -47,7 +48,19 @@ describe('JobTrackingView', () => {
   it('closes the detail modal when the close event is emitted', async () => {
     expect(wrapper.vm.detailModalVisible).toBe(false)
     wrapper.vm.showDetailModal()
-    wrapper.vm.closeModal()
+    wrapper.vm.closeDetailModal()
     expect(wrapper.vm.detailModalVisible).toBe(false)
+  })
+
+  it('opens ColumnOptionModal Board Options clicked', () => {
+    expect(wrapper.vm.columnOptionModal).toBe(false)
+    let buttons = wrapper.findAllComponents({ name: 'v-btn' })
+    buttons.forEach((button) => {
+      if (button.text() === 'Board Options') {
+        button.trigger('click')
+        return
+      }
+    })
+    expect(wrapper.vm.detailModalVisible).toBe(true)
   })
 })

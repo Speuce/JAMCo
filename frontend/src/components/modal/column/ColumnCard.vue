@@ -26,7 +26,7 @@
           size="small"
           icon="mdi-arrow-up-down-bold"
           class="button-pad"
-          disabled="true"
+          disabled
         />
       </v-col>
     </v-row>

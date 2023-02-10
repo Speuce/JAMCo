@@ -4,7 +4,7 @@
       v-if="detailModalVisible"
       @createOrUpdateJob="createOrUpdateJob"
       @close="closeDetailModal"
-      :job="jobsByColumn"
+      :job="this.selectedJob"
       :columns="colList"
     />
     <ColumnOptionModal
@@ -29,7 +29,7 @@
       <KanbanBoard
         :columns="colList"
         :jobs="jobsByColumn"
-        :showDetailModal="showDetailModal"
+        @showDetailModal="showDetailModal"
       />
     </div>
   </div>
@@ -99,8 +99,17 @@ export default {
     createOrUpdateJob(job) {
       if (isNewJob.value) {
         isNewJob.value = false
-        jobsByColumn.value[job.columnId].push(job)
+      } else {
+        colList.value.forEach((column) => {
+          if (jobsByColumn.value[column.id]) {
+            jobsByColumn.value[column.id] = jobsByColumn.value[
+              column.id
+            ].filter((item) => item.id != job.id)
+          }
+        })
       }
+      jobsByColumn.value[job.columnId].push(job)
+
       // Post to database
     },
     updateColumns(columns) {
