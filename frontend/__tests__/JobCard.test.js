@@ -5,16 +5,16 @@ import { expect, describe, it } from 'vitest'
 
 describe('JobCard', () => {
   let wrapper
-  let job = {}
-  function mountJobCard(ajob) {
+  function mountJobCard(job) {
     wrapper = mount(JobCard, {
-      props: { ajob },
+      props: { job },
     })
   }
 
   // Testing stringToTriColourPalatte from "assets/string-to-tri-colour-palatte"
   it('calculates the badge colours correctly for assorted strings', () => {
-    job = { type: 'TestOne' }
+    let job = {}
+    job = { type: 'TestOne', company: 'test' }
     mountJobCard(job)
 
     let badgeColours = wrapper.vm.badgeColours
