@@ -1,24 +1,25 @@
 <template>
   <v-row>
-    <v-dialog v-model="dialog" persistent>
+    <v-dialog v-model="dialog" persistent class="dialog">
       <v-card class="card">
-        <v-row justify="center">
-          <v-col cols="12" sm="4">
-            <h3>Customize Columns</h3>
+        <v-row class="left-pad">
+          <v-col cols="12" sm="8">
+            <h2>Customize Columns</h2>
+            <small>Drag and Drop Columns to Change Order</small>
           </v-col>
           <v-col cols="12" sm="4">
             <v-btn @click="addColumn"> Add Column </v-btn>
           </v-col>
         </v-row>
-        <v-row justify="center">
-          <v-col cols="12" sm="1">
+        <v-row>
+          <v-col cols="12" sm="2">
             <v-row v-for="i in cols.length" :key="i" class="number-rows">
-              <v-col cols="12" sm="1">
-                <h3>{{ i }}</h3>
+              <v-col cols="12" sm="3">
+                <h2>{{ i }}</h2>
               </v-col>
             </v-row>
           </v-col>
-          <v-col cols="12" sm="8">
+          <v-col cols="12" sm="10">
             <v-card-text>
               <draggable
                 :list="cols"
@@ -31,7 +32,7 @@
                   v-for="column in cols"
                   :key="column.id"
                   :column="column"
-                  :deleteColumn="deleteColumn"
+                  @deleteColumn="deleteColumn"
                   @updateColumn="updateColumn"
                   :tryError="invalidColumns"
                 />
@@ -39,13 +40,13 @@
             </v-card-text>
           </v-col>
         </v-row>
-        <h4 class="error-message" v-if="unableToDeleteCol">
+        <h4 class="error-message left-pad" v-if="unableToDeleteCol">
           ** Unable to Delete Non-Empty Column **
         </h4>
-        <h4 class="error-message" v-if="maxColumnsReached">
+        <h4 class="error-message left-pad" v-if="maxColumnsReached">
           ** A Maximum of 8 Columns Are Supported **
         </h4>
-        <h4 class="error-message" v-if="invalidColumns">
+        <h4 class="error-message left-pad" v-if="invalidColumns">
           ** Ensure Each Column Has a Non-Empty Title **
         </h4>
         <v-card-actions>
@@ -71,20 +72,20 @@
 </template>
 
 <script>
-import ColumnCard from "./ColumnCard.vue";
-import { VueDraggableNext } from "vue-draggable-next";
-import { ref } from "vue";
+import ColumnCard from './ColumnCard.vue'
+import { VueDraggableNext } from 'vue-draggable-next'
+import { ref } from 'vue'
 
-const MAX_COLS = 8;
-const cols = ref([]);
-const nextColId = ref(0); // set to max of existing cols + 1
+const MAX_COLS = 8
+const cols = ref([])
+const nextColId = ref(0) // set to max of existing cols + 1
 
 export default {
   components: {
     ColumnCard,
     draggable: VueDraggableNext,
   },
-  emits: ["close"],
+  emits: ['close', 'updateColumns'],
   props: {
     columns: {
       type: Object,
@@ -92,10 +93,6 @@ export default {
     },
     jobsByColumn: {
       type: Object,
-      default: undefined,
-    },
-    updateColumns: {
-      type: Function,
       default: undefined,
     },
   },
@@ -108,85 +105,86 @@ export default {
     invalidColumns: false,
   }),
   setup(props) {
-    cols.value = [];
-    for (var col in props.columns) {
-      if (props.columns[col].id >= nextColId.value) {
-        nextColId.value = props.columns[col].id + 1;
+    cols.value = []
+    props.columns.forEach((col) => {
+      if (col.id >= nextColId.value) {
+        nextColId.value = col.id + 1
       }
-      cols.value.push(props.columns[col]);
-    }
+      cols.value.push(col)
+    })
   },
   computed: {
     getColumns() {
-      return this.columns;
+      return this.columns
     },
   },
   methods: {
     hideWarnings() {
-      this.maxColumnsReached = false;
-      this.unableToDeleteCol = false;
-      this.invalidColumns = false;
+      this.maxColumnsReached = false
+      this.unableToDeleteCol = false
+      this.invalidColumns = false
     },
     deleteColumn(colId) {
-      this.hideWarnings();
+      this.hideWarnings()
       if (!this.jobsByColumn[colId] || this.jobsByColumn[colId].length == 0) {
-        var updatedCols = [];
-        for (var colIndex in cols.value) {
-          if (cols.value[colIndex].id != colId) {
-            updatedCols.push(cols.value[colIndex]);
+        var updatedCols = []
+        cols.value.forEach((col) => {
+          if (col.id != colId) {
+            updatedCols.push(col)
           }
-        }
-        cols.value = updatedCols;
+        })
+        cols.value = updatedCols
       } else {
-        this.unableToDeleteCol = true;
+        this.unableToDeleteCol = true
       }
     },
-    updateColumn(col) {
-      this.hideWarnings();
-      var updatedCols = [];
-      for (var colIndex in cols.value) {
-        if (cols.value[colIndex].id != col.id) {
-          updatedCols.push(cols.value[colIndex]);
+    updateColumn(column) {
+      this.hideWarnings()
+      var updatedCols = []
+      cols.value.forEach((col) => {
+        if (col.id != column.id) {
+          updatedCols.push(col)
         } else {
-          updatedCols.push(col);
+          updatedCols.push(column)
         }
-      }
-      cols.value = updatedCols;
+      })
+      cols.value = updatedCols
     },
     addColumn() {
-      this.hideWarnings();
+      this.hideWarnings()
       if (cols.value.length < MAX_COLS) {
-        this.cols.push({ id: nextColId.value++, name: "", position: -1 });
+        this.cols.push({ id: nextColId.value++, number: -1, name: '' })
       } else {
-        this.maxColumnsReached = true;
+        this.maxColumnsReached = true
       }
     },
     saveClicked() {
-      this.hideWarnings();
-      this.validateColumns();
+      this.hideWarnings()
+      this.validateColumns()
       if (!this.invalidColumns) {
-        var index = 0;
-        for (var colIndex in cols.value) {
-          cols.value[colIndex].columnId = index++;
-        }
-        this.updateColumns(cols.value);
-        this.$emit("close");
+        var index = 0
+        cols.value.forEach((column) => {
+          column.number = index++
+        })
+        cols.value = cols.value.sort((a, b) => (a.number > b.number ? 1 : -1))
+        this.$emit('updateColumns', cols.value)
+        this.$emit('close')
       }
     },
     closeClicked() {
-      this.$emit("close");
+      this.$emit('close')
     },
     validateColumns() {
-      this.invalidColumns = false;
-      for (var colIndex in cols.value) {
-        if (cols.value[colIndex].name.length == 0) {
-          this.invalidColumns = true;
-          return;
+      this.invalidColumns = false
+      cols.value.forEach((col) => {
+        if (col.name.length == 0) {
+          this.invalidColumns = true
+          return
         }
-      }
+      })
     },
   },
-};
+}
 </script>
 
 <style scoped>
@@ -196,10 +194,15 @@ export default {
 .error-message {
   color: red;
 }
-
 .number-rows {
-  padding-top: 30px;
-  height: 78px;
+  padding-top: 25px;
+  height: 90px;
   padding-left: 40px;
+}
+.left-pad {
+  padding-left: 10px;
+}
+.dialog {
+  max-width: 700px;
 }
 </style>

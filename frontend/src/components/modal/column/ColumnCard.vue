@@ -1,5 +1,5 @@
 <template>
-  <v-card class="col-card">
+  <div class="col-card">
     <v-row>
       <v-col cols="12" sm="8">
         <v-text-field
@@ -9,18 +9,33 @@
           :style="{
             color: this.tryError && columnModel.name.length == 0 ? 'red' : '',
           }"
-        ></v-text-field>
+          variant="outlined"
+          maxlength="30"
+        />
       </v-col>
-      <v-col cols="12" sm="4">
-        <v-btn @click="this.deleteColumn(columnModel.id)">X</v-btn>
+      <v-col cols="12" sm="2">
+        <v-btn
+          @click="this.$emit('deleteColumn', columnModel.id)"
+          size="small"
+          icon="mdi-trash-can-outline"
+          class="button-pad"
+        />
+      </v-col>
+      <v-col cols="12" sm="2">
+        <v-btn
+          size="small"
+          icon="mdi-arrow-up-down-bold"
+          class="button-pad"
+          disabled="true"
+        />
       </v-col>
     </v-row>
-  </v-card>
+  </div>
 </template>
 
 <script>
 export default {
-  emits: ["close", "updateColumn"],
+  emits: ['close', 'updateColumn', 'deleteColumn'],
   props: {
     column: {
       type: Object,
@@ -31,12 +46,8 @@ export default {
       },
       name: {
         type: String,
-        default: "",
+        default: '',
       },
-    },
-    deleteColumn: {
-      type: Function,
-      default: undefined,
     },
     tryError: {
       type: Boolean,
@@ -49,16 +60,18 @@ export default {
   }),
   methods: {
     updateColumn(event) {
-      console.log(event);
-      this.columnModel.title = event.target._value;
-      this.$emit("updateColumn", this.columnModel);
+      this.columnModel.name = event.target._value
+      this.$emit('updateColumn', this.columnModel)
     },
   },
-};
+}
 </script>
 
 <style scoped>
 .col-card {
   width: auto;
+}
+.button-pad {
+  margin-top: 8px;
 }
 </style>

@@ -4,14 +4,13 @@
       v-if="detailModalVisible"
       @createOrUpdateJob="createOrUpdateJob"
       @close="closeDetailModal"
-      :createOrUpdateJob="createOrUpdateJob"
       :job="jobsByColumn"
       :columns="colList"
     />
     <ColumnOptionModal
       v-if="columnOptionModalVisible"
       @close="closeColumnModal"
-      :updateColumns="updateColumns"
+      @updateColumns="updateColumns"
       :columns="colList"
       :jobsByColumn="jobsByColumn"
     />
@@ -68,27 +67,31 @@ export default {
   },
   setup() {
     var maxId = 0
-    for (var index in sampleColumnMapping) {
-      colList.value.push(sampleColumnMapping[index])
-    }
+    jobsByColumn.value = []
+    colList.value = []
 
-    for (var colIndex in colList.value) {
-      if (jobsByColumn.value[colList.value[colIndex].id] == null) {
-        jobsByColumn.value[colList.value[colIndex].id] = []
+    sampleColumnMapping.forEach((colMapping) => {
+      colList.value.push(colMapping)
+    })
+    colList.value = colList.value.sort((a, b) => (a.number > b.number ? 1 : -1))
+
+    sampleJobs.forEach((job) => {
+      if (job.id > maxId) {
+        maxId = job.id
       }
-    }
+      if (!jobsByColumn.value[job.columnId]) {
+        jobsByColumn.value[job.columnId] = []
+      }
+      jobsByColumn.value[job.columnId].push(job)
+    })
 
-    for (var job in sampleJobs) {
-      jobsByColumn.value[sampleJobs[job].columnId].push(sampleJobs[job])
-    }
-
-    for (colIndex in colList.value) {
-      jobsByColumn.value[colList.value[colIndex].id] = jobsByColumn.value[
-        colList.value[colIndex].id
-      ].sort((a, b) => {
-        a.id > b.id ? 1 : -1
-      })
-    }
+    colList.value.forEach((column) => {
+      if (jobsByColumn.value[column.id].length > 0) {
+        jobsByColumn.value[column.id] = jobsByColumn.value[column.id].sort(
+          (a, b) => (a.id > b.id ? 1 : -1)
+        )
+      }
+    })
 
     nextJobId.value = maxId + 1
   },
@@ -101,7 +104,21 @@ export default {
       // Post to database
     },
     updateColumns(columns) {
-      this.colList = columns
+      colList.value = columns
+
+      colList.value.forEach((column) => {
+        if (jobsByColumn.value[column.id]) {
+          jobsByColumn.value[column.id] = jobsByColumn.value[column.id].sort(
+            (a, b) => (a.id > b.id ? 1 : -1)
+          )
+        }
+      })
+
+      colList.value.forEach((col) => {
+        if (!jobsByColumn.value[col.id]) {
+          jobsByColumn.value[col.id] = []
+        }
+      })
     },
     showDetailModal(job) {
       if (job) {
