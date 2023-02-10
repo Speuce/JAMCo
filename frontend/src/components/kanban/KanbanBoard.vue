@@ -5,7 +5,7 @@
     <div class="board-container">
       <div class="min-h-screen column-container">
         <div
-          v-for="column in columns"
+          v-for="column in getColumns"
           :key="column.id"
           class="column-width column"
         >
@@ -13,21 +13,21 @@
             {{ column.name }}
           </p>
           <draggable
-            :list="this.jobsByColumn[column.id]"
+            :list="this.getJobsByColumn[column.id]"
             :animation="200"
             ghost-class="ghost-card"
             group="column.id"
-            :sorted="false"
             @change="handle($event, column.id)"
             class="min-h-screen"
             id="column"
           >
             <JobCard
-              v-for="job in this.jobsByColumn[column.id]"
+              v-for="job in this.getJobsByColumn[column.id]"
               :key="job.id"
               :job="job"
               class="job-card"
-            ></JobCard>
+              @click="this.$emit('showDetailModal', job)"
+            />
           </draggable>
         </div>
       </div>
@@ -55,10 +55,13 @@ export default {
       default: null,
     },
   },
-  data() {
-    return {
-      jobsByColumn: this.processJobsByColumn(this.jobs),
-    }
+  computed: {
+    getJobsByColumn() {
+      return this.processJobsByColumn(this.jobs)
+    },
+    getColumns() {
+      return this.columns
+    },
   },
   methods: {
     handle(event, colId) {
@@ -68,19 +71,23 @@ export default {
       }
     },
     processJobsByColumn() {
-      var jobsByColumn = {}
+      const jobsByColumnMapping = this.columns.reduce((acc, column) => {
+        acc[column.id] = []
+        return acc
+      }, {})
 
-      for (var col in this.columns) {
-        if (jobsByColumn[this.columns[col].id] == null) {
-          jobsByColumn[this.columns[col].id] = []
-        }
-      }
+      this.jobs.forEach((job) => {
+        jobsByColumnMapping[job.columnId].push(job)
+      })
 
-      for (var job in this.jobs) {
-        jobsByColumn[this.jobs[job].columnId].push(this.jobs[job])
-      }
+      Object.keys(this.columns).forEach((colKey) => {
+        const columnId = this.columns[colKey].id
+        jobsByColumnMapping[columnId] = jobsByColumnMapping[columnId].sort(
+          (a, b) => (a.id > b.id ? 1 : -1)
+        )
+      })
 
-      return jobsByColumn
+      return jobsByColumnMapping
     },
   },
 }

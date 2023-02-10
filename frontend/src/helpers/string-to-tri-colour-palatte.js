@@ -1,18 +1,18 @@
 /* Based on https://github.com/brandoncorbin/string_to_color */
 
-var stringToTriColourPalatte = function (str) {
+let stringToTriColourPalatte = function (str) {
   // Generate a Hash for the String
-  var hash = function (word) {
-    var h = 0
-    for (var i = 0; i < word.length; i++) {
+  let hash = function (word) {
+    let h = 0
+    for (let i = 0; i < word.length; i++) {
       h = word.charCodeAt(i) + ((h << 5) - h)
     }
     return h
   }
 
   // Change the darkness or lightness
-  var shade = function (color, prc) {
-    var num = parseInt(color, 16),
+  let shade = function (color, prc) {
+    let num = parseInt(color, 16),
       amt = Math.round(2.55 * prc),
       R = (num >> 16) + amt,
       G = ((num >> 8) & 0x00ff) + amt,
@@ -31,8 +31,8 @@ var stringToTriColourPalatte = function (str) {
   }
 
   // Convert hash to an RGBA
-  var int_to_rgba = function (i) {
-    var color =
+  let int_to_rgba = function (i) {
+    let color =
       ((i >> 24) & 0xff).toString(16) +
       ((i >> 16) & 0xff).toString(16) +
       ((i >> 8) & 0xff).toString(16) +
@@ -40,8 +40,8 @@ var stringToTriColourPalatte = function (str) {
     return color
   }
 
-  var base_colour = int_to_rgba(hash(str))
-  var colours = [
+  let base_colour = int_to_rgba(hash(str))
+  let colours = [
     shade(base_colour, 64),
     shade(base_colour, -64),
     shade(base_colour, -48),

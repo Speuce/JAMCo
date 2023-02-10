@@ -1,10 +1,10 @@
 <template>
   <div class="card-container">
-    <div class="date-company">
+    <div class="id-company">
       <p class="company">
         {{ job.company }}
       </p>
-      <span class="small-gray">{{ job.date }}</span>
+      <span class="small-gray">{{ job.id }}</span>
     </div>
     <div class="position-container">
       <span class="small-gray" id="job-position">{{ job.position }}</span>
@@ -50,7 +50,7 @@ export default {
   border-color: rgba(255, 255, 255, var(--border-opacity));
 }
 
-.date-company {
+.id-company {
   display: flex;
   justify-content: space-between;
 }
