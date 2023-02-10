@@ -2,7 +2,7 @@ import json
 from django.test import TestCase
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
-from . import query, models
+from . import business, query, models
 
 class AccountTestCase(TestCase):
     def setUp(self):
@@ -80,6 +80,58 @@ class AccountTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
 
 
+    def test_get_columns_view(self):
+        query.get_or_create_user({'google_id': '4'})
+        # Make several columns
+        self.client.post(
+            reverse('create_column'),
+            json.dumps({'google_id': '4', 'column_name': 'New column'}),
+            content_type='application/json'
+        )
+        self.client.post(
+            reverse('create_column'),
+            json.dumps({'google_id': '4', 'column_name': 'Newer column'}),
+            content_type='application/json'
+        )
+        self.client.post(
+            reverse('create_column'),
+            json.dumps({'google_id': '4', 'column_name': 'Even newer column'}),
+            content_type='application/json'
+        )
+
+        response = self.client.post(
+            reverse('get_columns'),
+            json.dumps({'google_id': '4'}),
+            content_type='application/json'
+        )
+        self.assertEqual(
+            json.loads(response.content),
+            { 'columns':
+                [
+                    {'name': 'New column', 'column_number': 0},
+                    {'name': 'Newer column', 'column_number': 1},
+                    {'name': 'Even newer column', 'column_number': 2}
+                ]
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_get_columns_business(self):
+        business.get_or_create_user({'google_id': '4'})
+        business.create_column('4', 'New column')
+        business.create_column('4', 'Newest column')
+        business.create_column('4', 'Newester column')
+
+        columns = business.get_columns('4')
+        column_numbers = [column.column_number for column in columns]
+        # Returned columns should be sorted by column number
+        self.assertTrue(all(
+            column_numbers[i] <= column_numbers[i+1]
+            for i in range(len(column_numbers) - 1)
+        ))
+
+
     def test_create_and_get_account_query(self):
         query.get_or_create_user({'google_id': '4'})
         # A user should exist after that query
@@ -146,3 +198,23 @@ class AccountTestCase(TestCase):
         # User doesn't exist
         with self.assertRaises(ObjectDoesNotExist):
             query.create_column('4', 'New column')
+
+
+    def test_get_columns_query(self):
+        query.get_or_create_user({'google_id': '4'})
+        query.create_column('4', 'New column')
+        query.create_column('4', 'Newest column')
+        query.create_column('4', 'Newester column')
+        # Make another user
+        query.get_or_create_user({'google_id': '5'})
+        query.create_column('5', 'New column')
+        query.create_column('5', 'Newest column')
+        query.create_column('5', 'Newester column')
+        query.create_column('5', 'Newesterest column')
+
+        columns = query.get_columns('4')
+
+        # The query should only return the columns for the specified user
+        self.assertEqual(columns.count(), 3)
+        for column in columns:
+            self.assertEqual(column.user.google_id, '4')

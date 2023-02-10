@@ -69,3 +69,24 @@ def create_column(request: HttpRequest):
         return JsonResponse(status=200, data=new_column.to_dict())
     except ObjectDoesNotExist:
         return JsonResponse(status=400, data={})
+
+
+@require_POST
+def get_columns(request: HttpRequest):
+    """
+    Gets all of the columns for a given user
+    """
+
+    body = read_request(request)
+    credential = body['google_id']
+    logger.debug(f'create_column: {credential}')
+
+    try:
+        columns = business.get_columns(credential)
+
+        return JsonResponse(
+            status=200,
+            data={'columns': [column.to_dict() for column in columns]}
+        )
+    except ObjectDoesNotExist:
+        return JsonResponse(status=400, data={})

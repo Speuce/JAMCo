@@ -14,6 +14,7 @@ def get_or_create_user(payload: dict) -> User:
     except ObjectDoesNotExist:
         # TODO: Replace these dummy values with values populated using OAuth (#26)
         return User.objects.create(
+            username=User.objects.all().count(),
             google_id=payload['google_id'],
             image_url='https://i.redd.it/9m2wxxxoljk91.jpg',
             country='The Canada',
@@ -45,3 +46,9 @@ def create_column(credential: str, column_name: str) -> KanbanColumn:
         name=column_name,
         column_number=KanbanColumn.objects.all().count()
     )
+
+
+def get_columns(credential: str) -> list[KanbanColumn]:
+    return KanbanColumn.objects.filter(
+        user=User.objects.get(google_id=credential))
+
