@@ -14,9 +14,9 @@
 </template>
 
 <script>
-import KanbanBoard from "../components/kanban/KanbanBoard.vue";
-import sampleColumnMapping from "../../__tests__/test_data/test_column_mapping.json";
-import sampleJobs from "../../__tests__/test_data/test_jobs.json";
+import KanbanBoard from '../components/kanban/KanbanBoard.vue'
+import sampleColumnMapping from '../../__tests__/test_data/test_column_mapping.json'
+import sampleJobs from '../../__tests__/test_data/test_jobs.json'
 
 export default {
   components: {
@@ -26,9 +26,9 @@ export default {
     return {
       columns: sampleColumnMapping,
       jobs: sampleJobs,
-    };
+    }
   },
-};
+}
 </script>
 
 <style scoped>
@@ -39,9 +39,9 @@ export default {
 h2 {
   color: rgba(74, 85, 104, var(--text-opacity));
   font-weight: 600;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 .page-container {
   margin: 1rem 2rem 2rem 2rem;
