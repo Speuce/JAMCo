@@ -51,3 +51,21 @@ def update_account(request: HttpRequest):
         return JsonResponse(status=400, data={})
 
     return JsonResponse(status=200, data={})
+
+
+@require_POST
+def create_column(request: HttpRequest):
+    """
+    Creates a column for a user, given the user's google id and a column name
+    """
+
+    body = read_request(request)
+    credential = body['google_id']
+    column_name = body['column_name']
+    logger.debug(f'create_column: {credential}, {column_name}')
+
+    try:
+        new_column = business.create_column(credential, column_name)
+        return JsonResponse(status=200, data=new_column.to_dict())
+    except ObjectDoesNotExist:
+        return JsonResponse(status=400, data={})

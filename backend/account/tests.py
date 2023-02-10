@@ -55,6 +55,31 @@ class AccountTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
 
 
+    def test_create_column_view(self):
+        query.get_or_create_user({'google_id': '4'})
+        response = self.client.post(
+            reverse('create_column'),
+            json.dumps({'google_id': '4', 'column_name': "New column"}),
+            content_type='application/json'
+        )
+
+        self.assertEqual(
+            json.loads(response.content),
+            {'name': 'New column', 'column_number': 0}
+        )
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_invalid_create_column_view(self):
+        # User doesn't exist
+        response = self.client.post(
+            reverse('create_column'),
+            json.dumps({'google_id': '4', 'column_name': "New column"}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+
+
     def test_create_and_get_account_query(self):
         query.get_or_create_user({'google_id': '4'})
         # A user should exist after that query
@@ -95,3 +120,29 @@ class AccountTestCase(TestCase):
         # User not specified
         with self.assertRaises(KeyError):
             query.update_user({'first_name': 'Rob'})
+
+
+    def test_create_column_query(self):
+        query.get_or_create_user({'google_id': '4'})
+        new_column = query.create_column('4', 'New column')
+        newer_column = query.create_column('4', 'Newer column')
+
+        # Column numbers should be in order of creation by default
+        self.assertEqual(new_column.column_number, 0)
+        self.assertEqual(newer_column.column_number, 1)
+
+
+    def test_duplicate_column_names(self):
+        query.get_or_create_user({'google_id': '4'})
+        query.create_column('4', 'New column')
+        query.create_column('4', 'Newer column')
+
+        # Duplicate names are allowed
+        duplicate_name_column = query.create_column('4', 'Newer column')
+        self.assertEqual(duplicate_name_column.column_number, 2)
+
+
+    def test_invalid_create_column_query(self):
+        # User doesn't exist
+        with self.assertRaises(ObjectDoesNotExist):
+            query.create_column('4', 'New column')

@@ -5,7 +5,7 @@ Query functions for account related operations.
 """
 
 from django.core.exceptions import ObjectDoesNotExist
-from .models import User
+from .models import *
 import datetime
 
 def get_or_create_user(payload: dict) -> User:
@@ -37,3 +37,11 @@ def update_user(payload: dict):
     # isn't raised. That is, we'll only save changes if the entire payload is
     # error-free.
     user.save()
+
+
+def create_column(credential: str, column_name: str) -> KanbanColumn:
+    return KanbanColumn.objects.create(
+        user=User.objects.get(google_id=credential),
+        name=column_name,
+        column_number=KanbanColumn.objects.all().count()
+    )
