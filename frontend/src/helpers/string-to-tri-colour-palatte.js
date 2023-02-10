@@ -33,11 +33,11 @@ let stringToTriColourPalatte = (str) => {
 
   // Convert hash to an RGBA
   let intToRgba = (i) => {
-    let color = ((i >> 24) & 0xff)
-      .toString(16)((i >> 16) & 0xff)
-      .toString(16)((i >> 8) & 0xff)
-      .toString(16)(i & 0xff)
-      .toString(16)
+    let color =
+      ((i >> 24) & 0xff).toString(16) +
+      ((i >> 16) & 0xff).toString(16) +
+      ((i >> 8) & 0xff).toString(16) +
+      (i & 0xff).toString(16)
     return color
   }
 
