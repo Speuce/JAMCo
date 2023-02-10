@@ -146,18 +146,18 @@
 </template>
 
 <script>
-import JobDetailDeadline from "../job/JobDetailDeadline.vue";
-import { ref } from "vue";
+import JobDetailDeadline from '../job/JobDetailDeadline.vue'
+import { ref } from 'vue'
 
-const nextDeadlineId = ref(0); // set to max of existing deadlines + 1
-const deadlines = ref([]);
-const selectedColumnId = ref(-1);
+const nextDeadlineId = ref(0) // set to max of existing deadlines + 1
+const deadlines = ref([])
+const selectedColumnId = ref(-1)
 
 export default {
   components: {
     JobDetailDeadline,
   },
-  emits: ["close", "createOrUpdateJob"],
+  emits: ['close', 'createOrUpdateJob'],
   props: {
     job: {
       type: Object,
@@ -165,14 +165,14 @@ export default {
         return {
           user: -1,
           id: -1,
-          company: "",
-          type: "",
+          company: '',
+          type: '',
           columnId: -1,
-          position: "",
-          description: "",
-          coverLetter: "",
-          comments: "",
-        };
+          position: '',
+          description: '',
+          coverLetter: '',
+          comments: '',
+        }
       },
     },
     columns: {
@@ -191,34 +191,34 @@ export default {
     deadlineError: false,
   }),
   setup(props) {
-    deadlines.value = props.job.deadlines ? props.job.deadlines : [];
+    deadlines.value = props.job.deadlines ? props.job.deadlines : []
     selectedColumnId.value = props.job.columnId
       ? props.job.columnId
-      : props.columns[0].id;
+      : props.columns[0].id
   },
   computed: {
     getColumns() {
-      return this.columns;
+      return this.columns
     },
   },
   methods: {
     newDeadline() {
-      this.deadlineError = false;
+      this.deadlineError = false
       deadlines.value.push({
         id: nextDeadlineId.value++,
-        title: "",
-        date: "",
-      });
+        title: '',
+        date: '',
+      })
     },
     deleteDeadline(id) {
-      let updatedDeadlines = [];
+      let updatedDeadlines = []
       deadlines.value.forEach((deadline) => {
-        if (deadline.id != id) updatedDeadlines.push(deadline);
-      });
-      deadlines.value = updatedDeadlines;
+        if (deadline.id != id) updatedDeadlines.push(deadline)
+      })
+      deadlines.value = updatedDeadlines
     },
     validateDeadlines() {
-      this.deadlineError = false;
+      this.deadlineError = false
       deadlines.value.forEach((deadline) => {
         if (
           !deadline.title ||
@@ -226,17 +226,17 @@ export default {
           deadline.title.length == 0 ||
           deadline.date.length == 0
         ) {
-          this.deadlineError = true;
-          return;
+          this.deadlineError = true
+          return
         }
-      });
-      return;
+      })
+      return
     },
     saveClicked() {
-      this.positionErrorIndicator = null;
-      this.companyErrorIndicator = null;
+      this.positionErrorIndicator = null
+      this.companyErrorIndicator = null
 
-      this.validateDeadlines();
+      this.validateDeadlines()
 
       if (
         !this.deadlineError &&
@@ -245,40 +245,40 @@ export default {
         this.jobData.position.length > 0 &&
         this.jobData.company.length > 0
       ) {
-        this.positionErrorIndicator = null;
-        this.companyErrorIndicator = null;
-        this.deadlineError = false;
-        this.jobData.deadlines = deadlines.value;
-        this.jobData.columnId = selectedColumnId.value;
-        this.$emit("createOrUpdateJob", this.jobData);
-        this.$emit("close");
+        this.positionErrorIndicator = null
+        this.companyErrorIndicator = null
+        this.deadlineError = false
+        this.jobData.deadlines = deadlines.value
+        this.jobData.columnId = selectedColumnId.value
+        this.$emit('createOrUpdateJob', this.jobData)
+        this.$emit('close')
       } else {
         if (!this.jobData.position || this.jobData.position.length == 0) {
-          this.positionErrorIndicator = "red";
+          this.positionErrorIndicator = 'red'
         }
         if (!this.jobData.company || this.jobData.company.length == 0) {
-          this.companyErrorIndicator = "red";
+          this.companyErrorIndicator = 'red'
         }
       }
     },
     closeClicked() {
-      this.positionErrorIndicator = null;
-      this.companyErrorIndicator = null;
-      this.$emit("close");
+      this.positionErrorIndicator = null
+      this.companyErrorIndicator = null
+      this.$emit('close')
     },
     handleDeadlineUpdate(updatedDeadline) {
-      let updatedDeadlines = [];
+      let updatedDeadlines = []
       deadlines.value.forEach((deadline) => {
         if (deadline.id == updatedDeadline.id) {
-          updatedDeadlines.push(updatedDeadline);
+          updatedDeadlines.push(updatedDeadline)
         } else {
-          updatedDeadlines.push(deadline);
+          updatedDeadlines.push(deadline)
         }
-      });
-      deadlines.value = updatedDeadlines;
+      })
+      deadlines.value = updatedDeadlines
     },
   },
-};
+}
 </script>
 
 <style scoped>

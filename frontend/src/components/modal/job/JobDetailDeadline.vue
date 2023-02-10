@@ -37,14 +37,14 @@
 </template>
 
 <script>
-import Datepicker from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css";
+import Datepicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
 
 export default {
   components: {
     Datepicker,
   },
-  emits: ["updateDeadline"],
+  emits: ['updateDeadline', 'deleteDeadline'],
   props: {
     deadline: {
       type: Object,
@@ -55,11 +55,11 @@ export default {
       },
       title: {
         type: String,
-        default: "",
+        default: '',
       },
       date: {
         type: String,
-        default: "",
+        default: '',
       },
     },
     tryError: {
@@ -76,15 +76,15 @@ export default {
   }),
   methods: {
     updateDate(date) {
-      this.deadlineModel.date = date;
-      this.$emit("updateDeadline", this.deadlineModel);
+      this.deadlineModel.date = date
+      this.$emit('updateDeadline', this.deadlineModel)
     },
     updateDeadline(event) {
-      this.deadlineModel.title = event.target._value;
-      this.$emit("updateDeadline", this.deadlineModel);
+      this.deadlineModel.title = event.target._value
+      this.$emit('updateDeadline', this.deadlineModel)
     },
   },
-};
+}
 </script>
 
 <style scoped>
