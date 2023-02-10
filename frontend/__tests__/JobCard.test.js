@@ -4,8 +4,8 @@ import stringToTriColourPalatte from '../src/helpers/string-to-tri-colour-palatt
 import { expect, describe, it } from 'vitest'
 
 describe('JobCard', () => {
-  var wrapper
-  var job = {}
+  let wrapper
+  let job = {}
   function mountJobCard(job) {
     wrapper = mount(JobCard, {
       props: { job },
@@ -17,8 +17,8 @@ describe('JobCard', () => {
     job = { type: 'TestOne' }
     mountJobCard(job)
 
-    var badgeColours = wrapper.vm.badgeColours
-    var expectedColours = stringToTriColourPalatte(job.type)
+    let badgeColours = wrapper.vm.badgeColours
+    let expectedColours = stringToTriColourPalatte(job.type)
     expect(badgeColours).toEqual(expectedColours)
 
     job = { type: '187325' }

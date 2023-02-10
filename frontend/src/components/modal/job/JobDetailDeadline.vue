@@ -8,8 +8,8 @@
         :style="{
           color: this.tryError && deadlineModel.title.length == 0 ? 'red' : '',
         }"
-      >
-      </v-text-field>
+        maxlength="50"
+      />
     </v-col>
     <v-col cols="12" sm="5" class="center-offset">
       <Datepicker
@@ -23,12 +23,15 @@
             this.tryError && !deadlineModel.date ? 'red' : '',
           '--dp-icon-color': this.tryError && !deadlineModel.date ? 'red' : '',
         }"
-      ></Datepicker>
+      />
     </v-col>
     <v-col cols="12" sm="2" class="center-offset">
-      <v-btn class="remove-btn" @click="this.deleteDeadline(this.deadline.id)"
-        ><b>X</b></v-btn
-      >
+      <v-btn
+        class="remove-btn"
+        @click="this.$emit('deleteDeadline', this.deadline.id)"
+        size="x-small"
+        icon="mdi-trash-can-outline"
+      />
     </v-col>
   </v-row>
 </template>
@@ -59,10 +62,6 @@ export default {
         default: "",
       },
     },
-    deleteDeadline: {
-      type: Function,
-      default: undefined,
-    },
     tryError: {
       type: Boolean,
       default: false,
@@ -77,14 +76,11 @@ export default {
   }),
   methods: {
     updateDate(date) {
-      this.updateDeadline({ event: "dateChange", newDate: date });
+      this.deadlineModel.date = date;
+      this.$emit("updateDeadline", this.deadlineModel);
     },
     updateDeadline(event) {
-      if (event.event == "dateChange") {
-        this.deadlineModel.date = event.newDate;
-      } else {
-        this.deadlineModel.title = event.target._value;
-      }
+      this.deadlineModel.title = event.target._value;
       this.$emit("updateDeadline", this.deadlineModel);
     },
   },
@@ -98,8 +94,6 @@ export default {
 }
 
 .remove-btn {
-  width: 12em;
-  padding: 0;
-  margin: 0;
+  margin-top: 2px;
 }
 </style>

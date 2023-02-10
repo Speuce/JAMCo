@@ -26,29 +26,39 @@ describe("JobDetailDeadline", () => {
       .findComponent(Datepicker)
       .vm.$emit("update:model-value", "01/01/2023");
     expect(wrapper.emitted("updateDeadline")).toBeTruthy();
-    expect(wrapper.emitted().updateDeadline[0][0].id).toEqual(1);
-    expect(wrapper.emitted().updateDeadline[0][0].title).toEqual("testTitle");
-    expect(wrapper.emitted().updateDeadline[0][0].date).toEqual("01/01/2023");
+    expect(wrapper.emitted().updateDeadline[0][0]).toEqual({
+      id: 1,
+      title: "testTitle",
+      date: "01/01/2023",
+    });
   });
 
   it("emits updateDeadline when datePicker cleared", () => {
     wrapper.findComponent(Datepicker).vm.$emit("update:model-value", null);
     expect(wrapper.emitted("updateDeadline")).toBeTruthy();
-    expect(wrapper.emitted().updateDeadline[0][0].id).toEqual(1);
-    expect(wrapper.emitted().updateDeadline[0][0].title).toEqual("testTitle");
-    expect(wrapper.emitted().updateDeadline[0][0].date).toEqual(null);
+    expect(wrapper.emitted().updateDeadline[0][0]).toEqual({
+      id: 1,
+      title: "testTitle",
+      date: null,
+    });
   });
 
   it("emits updateDeadline event when title changed", () => {
     wrapper
       .findComponent({ name: "v-text-field" })
-      .vm.$emit("change", { target: { value: "Test Input" } });
+      .vm.$emit("change", { target: { _value: "Test Input" } });
     expect(wrapper.emitted("updateDeadline")).toBeTruthy();
+    expect(wrapper.emitted().updateDeadline[0][0]).toEqual({
+      id: 1,
+      title: "Test Input",
+      date: "12/12/1212",
+    });
   });
 
-  it("calls deleteDeadline when the remove button is clicked", () => {
+  it("emits deleteDeadline when the remove button is clicked", () => {
     wrapper.findComponent({ name: "v-btn" }).trigger("click");
-    expect(wrapper.vm.deleteDeadline).toHaveBeenCalledWith(1);
+    expect(wrapper.emitted("deleteDeadline")).toBeTruthy();
+    expect(wrapper.emitted().deleteDeadline[0][0]).toEqual(1);
   });
 
   it("populates deadlineModel with props", () => {

@@ -26,8 +26,8 @@
               :key="job.id"
               :job="job"
               class="job-card"
-              @click="this.showDetailModal(job)"
-            ></JobCard>
+              @click="this.$emit('showDetailModal', job)"
+            />
           </draggable>
         </div>
       </div>
@@ -54,10 +54,6 @@ export default {
       type: Object,
       default: null,
     },
-    showDetailModal: {
-      type: Function,
-      default: undefined,
-    },
   },
   computed: {
     getJobsByColumn() {
@@ -75,27 +71,23 @@ export default {
       }
     },
     processJobsByColumn() {
-      var jobsByColumn = {}
+      const jobsByColumnMapping = this.columns.reduce((acc, column) => {
+        acc[column.id] = []
+        return acc
+      }, {})
 
-      for (var col in this.columns) {
-        if (jobsByColumn[this.columns[col].id] == null) {
-          jobsByColumn[this.columns[col].id] = []
-        }
-      }
+      this.jobs.forEach((job) => {
+        jobsByColumnMapping[job.columnId].push(job)
+      })
 
-      for (var job in this.jobs) {
-        jobsByColumn[this.jobs[job].columnId].push(this.jobs[job])
-      }
+      Object.keys(this.columns).forEach((colKey) => {
+        const columnId = this.columns[colKey].id
+        jobsByColumnMapping[columnId] = jobsByColumnMapping[columnId].sort(
+          (a, b) => (a.id > b.id ? 1 : -1)
+        )
+      })
 
-      for (col in this.columns) {
-        jobsByColumn[this.columns[col].id] = jobsByColumn[
-          this.columns[col].id
-        ].sort((a, b) => {
-          a.id > b.id ? 1 : -1
-        })
-      }
-
-      return jobsByColumn
+      return jobsByColumnMapping
     },
   },
 }

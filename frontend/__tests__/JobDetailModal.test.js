@@ -59,7 +59,7 @@ describe("JobDetailModal", () => {
     expect(wrapper.vm.positionErrorIndicator).toBe(null);
     expect(wrapper.vm.companyErrorIndicator).toBe(null);
 
-    var testJob = { ...job };
+    let testJob = { ...job };
     testJob.position = null;
     testJob.company = "non-empty";
     mountModal(testJob);
@@ -74,7 +74,7 @@ describe("JobDetailModal", () => {
     expect(wrapper.vm.positionErrorIndicator).toBe(null);
     expect(wrapper.vm.companyErrorIndicator).toBe(null);
 
-    var testJob = { ...job };
+    let testJob = { ...job };
     testJob.company = null;
     testJob.position = "non-empty";
     mountModal(testJob);
@@ -153,7 +153,8 @@ describe("JobDetailModal", () => {
 
     wrapper.vm.saveClicked();
 
-    expect(createOrUpdateJob).toHaveBeenCalledWith({
+    expect(wrapper.emitted("createOrUpdateJob")).toBeTruthy();
+    expect(wrapper.emitted().createOrUpdateJob[0][0]).toEqual({
       id: 1,
       company: "Test Company",
       date: "2022-01-01",

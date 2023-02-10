@@ -3,7 +3,7 @@
     <JobDetailModal
       v-if="detailModalVisible"
       @close="closeModal"
-      :createOrUpdateJob="createOrUpdateJob"
+      @createOrUpdateJob="createOrUpdateJob"
       :job="selectedJob"
       :columns="colList"
     />
@@ -20,7 +20,7 @@
       <KanbanBoard
         :columns="colList"
         :jobs="jobList"
-        :showDetailModal="showDetailModal"
+        @showDetailModal="showDetailModal"
       />
     </div>
   </div>
@@ -54,16 +54,16 @@ export default {
     }
   },
   setup() {
-    var maxId = 0
-    for (var index in sampleJobs) {
-      jobList.value.push(sampleJobs[index])
-      if (sampleJobs[index].id > maxId) {
-        maxId = sampleJobs[index].id
+    let maxId = 0
+    sampleJobs.forEach((job) => {
+      jobList.value.push(job)
+      if (job.id > maxId) {
+        maxId = job.id
       }
-    }
-    for (index in sampleColumnMapping) {
-      colList.value.push(sampleColumnMapping[index])
-    }
+    })
+    sampleColumnMapping.forEach((colMapping) => {
+      colList.value.push(colMapping)
+    })
     nextJobId.value = maxId + 1
   },
   methods: {
@@ -86,7 +86,7 @@ export default {
       this.detailModalVisible = true
     },
     closeModal() {
-      this.detailModalVisible = false;
+      this.detailModalVisible = false
     },
   },
 }

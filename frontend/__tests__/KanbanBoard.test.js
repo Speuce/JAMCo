@@ -21,22 +21,22 @@ describe('KanbanBoard', () => {
   })
 
   it('has the correct number of columns', () => {
-    var columns = wrapper.findAllComponents(VueDraggableNext)
+    let columns = wrapper.findAllComponents(VueDraggableNext)
     expect(columns.length).toBe(Object.keys(testColumnMapping).length)
   })
 
   it('updates the column of a job when it is moved', () => {
-    var column = wrapper.findAllComponents(VueDraggableNext)
-    var job = wrapper.findComponent(JobCard)
+    let column = wrapper.findAllComponents(VueDraggableNext)
+    let job = wrapper.findComponent(JobCard)
     expect(job.vm.job.columnId).toBe(1)
 
     column[1].vm.$emit('change', { added: { element: job.vm.job } }, 2)
     expect(job.vm.job.columnId).toBe(2)
   })
 
-  it('calls showDetailModal when card clicked', () => {
-    var card = wrapper.findComponent(JobCard)
+  it('emits showDetailModal when card clicked', () => {
+    let card = wrapper.findComponent(JobCard)
     card.trigger('click')
-    expect(showDetailModal).toBeCalledWith(card.vm.job)
+    expect(wrapper.emitted('showDetailModal')).toBeTruthy()
   })
 })

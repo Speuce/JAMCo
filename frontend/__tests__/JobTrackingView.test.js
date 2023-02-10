@@ -23,7 +23,7 @@ describe("JobTrackingView", () => {
 
   it("assigns selectedJob when card clicked", () => {
     expect(wrapper.vm.selectedJob).toEqual({});
-    var job = wrapper.findComponent(JobCard);
+    let job = wrapper.findComponent(JobCard);
     job.trigger("click");
     expect(wrapper.vm.selectedJob).toEqual(job.vm.job);
   });
@@ -31,7 +31,7 @@ describe("JobTrackingView", () => {
   it("opens JobDetailModal when New Job clicked", () => {
     expect(wrapper.vm.selectedJob).toEqual({});
     expect(wrapper.vm.detailModalVisible).toBe(false);
-    var buttons = wrapper.findAllComponents({ name: "v-btn" });
+    let buttons = wrapper.findAllComponents({ name: "v-btn" });
     buttons.forEach((button) => {
       if (button.text() === "Add New Application") {
         button.trigger("click");

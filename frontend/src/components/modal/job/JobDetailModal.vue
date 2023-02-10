@@ -4,7 +4,7 @@
       <v-card>
         <v-card-text>
           <v-row>
-            <v-col cols="" sm="" class="info-col">
+            <v-col class="info-col">
               <v-row>
                 <v-col cols="12" sm="6">
                   <v-text-field
@@ -12,6 +12,7 @@
                     class="text-h5"
                     v-model="jobData.position"
                     :style="{ color: this.positionErrorIndicator }"
+                    maxlength="50"
                   ></v-text-field
                 ></v-col>
 
@@ -21,6 +22,7 @@
                   <v-text-field
                     label="Type"
                     v-model="jobData.type"
+                    maxlength="12"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -32,6 +34,7 @@
                     required
                     v-model="jobData.company"
                     :style="{ color: this.companyErrorIndicator }"
+                    maxlength="50"
                   ></v-text-field>
                 </v-col>
 
@@ -56,6 +59,7 @@
                     label="Description"
                     shaped
                     v-model="jobData.description"
+                    maxlength="10000"
                   ></v-textarea
                 ></v-col>
               </v-row>
@@ -68,6 +72,7 @@
                     label="Cover Letter"
                     shaped
                     v-model="jobData.coverLetter"
+                    maxlength="10000"
                   ></v-textarea
                 ></v-col>
               </v-row>
@@ -80,6 +85,7 @@
                     label="Comments"
                     shaped
                     v-model="jobData.comments"
+                    maxlength="10000"
                   ></v-textarea
                 ></v-col>
               </v-row>
@@ -101,7 +107,7 @@
                 <v-row v-for="deadline in deadlines" :key="deadline.id">
                   <JobDetailDeadline
                     :deadline="deadline"
-                    :deleteDeadline="deleteDeadline"
+                    @deleteDeadline="deleteDeadline"
                     @updateDeadline="handleDeadlineUpdate"
                     :tryError="deadlineError"
                   />
@@ -126,15 +132,11 @@
           <v-btn
             color="blue-darken-1"
             variant="text"
-            @click="this.closeClicked()"
+            @click="this.closeClicked"
           >
             Close
           </v-btn>
-          <v-btn
-            color="blue-darken-1"
-            variant="text"
-            @click="this.saveClicked()"
-          >
+          <v-btn color="blue-darken-1" variant="text" @click="this.saveClicked">
             Save
           </v-btn>
         </v-card-actions>
@@ -155,7 +157,7 @@ export default {
   components: {
     JobDetailDeadline,
   },
-  emits: ["close"],
+  emits: ["close", "createOrUpdateJob"],
   props: {
     job: {
       type: Object,
@@ -175,10 +177,6 @@ export default {
     },
     columns: {
       type: Object,
-      default: undefined,
-    },
-    createOrUpdateJob: {
-      type: Function,
       default: undefined,
     },
   },
@@ -213,7 +211,7 @@ export default {
       });
     },
     deleteDeadline(id) {
-      var updatedDeadlines = [];
+      let updatedDeadlines = [];
       deadlines.value.forEach((deadline) => {
         if (deadline.id != id) updatedDeadlines.push(deadline);
       });
@@ -221,17 +219,17 @@ export default {
     },
     validateDeadlines() {
       this.deadlineError = false;
-      for (var index in deadlines.value) {
+      deadlines.value.forEach((deadline) => {
         if (
-          !deadlines.value[index].title ||
-          !deadlines.value[index].date ||
-          deadlines.value[index].title.length == 0 ||
-          deadlines.value[index].date.length == 0
+          !deadline.title ||
+          !deadline.date ||
+          deadline.title.length == 0 ||
+          deadline.date.length == 0
         ) {
           this.deadlineError = true;
           return;
         }
-      }
+      });
       return;
     },
     saveClicked() {
@@ -252,7 +250,7 @@ export default {
         this.deadlineError = false;
         this.jobData.deadlines = deadlines.value;
         this.jobData.columnId = selectedColumnId.value;
-        this.createOrUpdateJob(this.jobData);
+        this.$emit("createOrUpdateJob", this.jobData);
         this.$emit("close");
       } else {
         if (!this.jobData.position || this.jobData.position.length == 0) {
@@ -269,7 +267,7 @@ export default {
       this.$emit("close");
     },
     handleDeadlineUpdate(updatedDeadline) {
-      var updatedDeadlines = [];
+      let updatedDeadlines = [];
       deadlines.value.forEach((deadline) => {
         if (deadline.id == updatedDeadline.id) {
           updatedDeadlines.push(updatedDeadline);
