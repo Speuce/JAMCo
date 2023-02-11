@@ -90,3 +90,26 @@ def get_columns(request: HttpRequest):
         )
     except ObjectDoesNotExist:
         return JsonResponse(status=400, data={})
+
+
+def rename_column(request: HttpRequest):
+    """
+    Renames the specified column
+    """
+
+    body = read_request(request)
+
+    credential = body['google_id']
+    column_number = body['column_number']
+    new_name = body['new_name']
+
+    logger.debug(
+        f'rename_column: {credential} changed column {column_number} to \
+            {new_name}'
+    )
+
+    try:
+        business.rename_column(credential, column_number, new_name)
+        return JsonResponse(status=200, data={})
+    except ObjectDoesNotExist:
+        return JsonResponse(status=400, data={})

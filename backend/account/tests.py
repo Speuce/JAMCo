@@ -83,21 +83,9 @@ class AccountTestCase(TestCase):
     def test_get_columns_view(self):
         query.get_or_create_user({'google_id': '4'})
         # Make several columns
-        self.client.post(
-            reverse('create_column'),
-            json.dumps({'google_id': '4', 'column_name': 'New column'}),
-            content_type='application/json'
-        )
-        self.client.post(
-            reverse('create_column'),
-            json.dumps({'google_id': '4', 'column_name': 'Newer column'}),
-            content_type='application/json'
-        )
-        self.client.post(
-            reverse('create_column'),
-            json.dumps({'google_id': '4', 'column_name': 'Even newer column'}),
-            content_type='application/json'
-        )
+        query.create_column('4', 'New column')
+        query.create_column('4', 'Newer column')
+        query.create_column('4', 'Even newer column')
 
         response = self.client.post(
             reverse('get_columns'),
@@ -105,16 +93,89 @@ class AccountTestCase(TestCase):
             content_type='application/json'
         )
         self.assertEqual(
-            json.loads(response.content),
+            json.loads(response.content)['columns'],
+            [
+                {'name': 'New column', 'column_number': 0},
+                {'name': 'Newer column', 'column_number': 1},
+                {'name': 'Even newer column', 'column_number': 2}
+            ]
+        )
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_rename_column_view(self):
+        query.get_or_create_user({'google_id': '4'})
+        # Make several columns
+        query.create_column('4', 'New column')
+        query.create_column('4', 'Newer column')
+        query.create_column('4', 'Even newer column')
+
+        # Rename a couple of them
+        response1 = self.client.post(
+            reverse('rename_column'),
+            json.dumps({
+                'google_id': '4',
+                'column_number': 0,
+                'new_name': 'Old column'
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response1.status_code, 200)
+        response2 = self.client.post(
+            reverse('rename_column'),
+            json.dumps({
+                'google_id': '4',
+                'column_number': 1,
+                'new_name': 'The most powerful column'
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response2.status_code, 200)
+
+        response3 = self.client.post(
+            reverse('get_columns'),
+            json.dumps({'google_id': '4'}),
+            content_type='application/json'
+        )
+        self.assertEqual(
+            json.loads(response3.content),
             { 'columns':
                 [
-                    {'name': 'New column', 'column_number': 0},
-                    {'name': 'Newer column', 'column_number': 1},
+                    {'name': 'Old column', 'column_number': 0},
+                    {'name': 'The most powerful column', 'column_number': 1},
                     {'name': 'Even newer column', 'column_number': 2}
                 ]
             }
         )
-        self.assertEqual(response.status_code, 200)
+
+
+    def test_invalid_rename_column_view(self):
+        query.get_or_create_user({'google_id': '4'})
+        query.create_column('4', 'New column')
+
+        # Try renaming a column that doesn't exist
+        response1 = self.client.post(
+            reverse('rename_column'),
+            json.dumps({
+                'google_id': '4',
+                'column_number': 1,
+                'new_name': 'Totally real column'
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response1.status_code, 400)
+
+        # Try renaming a column for a user that doesn't exist
+        response3 = self.client.post(
+            reverse('rename_column'),
+            json.dumps({
+                'google_id': '53 55 53',
+                'column_number': 1,
+                'new_name': 'Totally real column'
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response3.status_code, 400)
 
 
     def test_get_columns_business(self):
@@ -218,3 +279,29 @@ class AccountTestCase(TestCase):
         self.assertEqual(columns.count(), 3)
         for column in columns:
             self.assertEqual(column.user.google_id, '4')
+
+
+    def test_rename_column_query(self):
+        query.get_or_create_user({'google_id': '4'})
+        query.create_column('4', 'New column')
+        query.create_column('4', 'Newest column')
+        query.create_column('4', 'Newester column')
+
+        query.rename_column('4', 1, 'Renamed')
+
+        renamed_column = models.KanbanColumn.objects.get(
+            user=query.get_or_create_user({'google_id': '4'}), column_number=1)
+        self.assertEqual(renamed_column.name, 'Renamed')
+
+
+    def test_invalid_rename_column_query(self):
+        query.get_or_create_user({'google_id': '4'})
+        query.create_column('4', 'New column')
+
+        # Try renaming a column that doesn't exist
+        with self.assertRaises(ObjectDoesNotExist):
+            query.rename_column('4', 1, 'Totally real column')
+
+        # Try renaming a column for a user that doesn't exist
+        with self.assertRaises(ObjectDoesNotExist):
+            query.rename_column('53 55 53 53 59', 1, 'This is real I promise')

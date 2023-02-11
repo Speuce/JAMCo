@@ -52,3 +52,11 @@ def get_columns(credential: str) -> list[KanbanColumn]:
     return KanbanColumn.objects.filter(
         user=User.objects.get(google_id=credential))
 
+
+def rename_column(credential: str, column_number: int, new_name: str):
+    column = KanbanColumn.objects.get(
+        user=User.objects.get(google_id=credential),
+        column_number=column_number
+    )
+    column.name = new_name
+    column.save()

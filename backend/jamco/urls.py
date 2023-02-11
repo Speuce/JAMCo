@@ -30,4 +30,6 @@ urlpatterns = [
          account_views.create_column, name='create_column'),
     path('account/api/get_columns',
         account_views.get_columns, name='get_columns'),
+    path('account/api/rename_column',
+        account_views.rename_column, name='rename_column')
 ]
