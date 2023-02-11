@@ -58,6 +58,7 @@ jobs:
         path: ./backend/coverage.lcov
         
   checks:
+    needs: base_branch_coverage
     runs-on: ubuntu-latest
     defaults:
       run:
