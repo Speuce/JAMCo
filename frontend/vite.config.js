@@ -35,6 +35,9 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['./__tests__/setupGlobals.js', './__tests__/setupPlugins.js'],
+    coverage: {
+      reporter: ['lcov', 'html'],
+    },
     deps: {
       inline: ['vuetify'],
     },
