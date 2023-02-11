@@ -55,7 +55,6 @@ describe('JobTrackingView', () => {
   })
 
   it('opens ColumnOptionModal when Board Options clicked', () => {
-    console.log(wrapper.vm)
     expect(wrapper.vm.boardOptionModalVisible).toBe(false)
     let buttons = wrapper.findAllComponents({ name: 'v-btn' })
     buttons.forEach((button) => {
