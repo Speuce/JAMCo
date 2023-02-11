@@ -123,7 +123,7 @@ class AccountTestCase(TestCase):
         self.assertEqual(response1.status_code, 200)
         self.assertEqual(
             json.loads(response1.content),
-            {'name': 'Old column', 'column_number': 0},
+            {'column': {'name': 'Old column', 'column_number': 0}},
         )
 
         response2 = self.client.post(
@@ -138,7 +138,12 @@ class AccountTestCase(TestCase):
         self.assertEqual(response2.status_code, 200)
         self.assertEqual(
             json.loads(response2.content),
-            {'name': 'The most powerful column', 'column_number': 1},
+            {
+                'column': {
+                    'name': 'The most powerful column',
+                    'column_number': 1
+                }
+            },
         )
 
         # Make sure all changes are reflected when we get all columns
