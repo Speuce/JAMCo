@@ -1,16 +1,12 @@
 import json
-from django.test import RequestFactory, TestCase
-from django.http import JsonResponse
+from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
-from account import views, business, query
+from account import business, query
 
-class GetOrCreateAccountTestCase(TestCase):
+class GetOrCreateAccountTests(TransactionTestCase):
+    reset_sequences = True
 
-    def setUp(self):
-        pass
-
-
-    def test_create_account_view(self):
+    def test_create_account(self):
         response = self.client.post(
             reverse('get_or_create_account'),
             json.dumps({'credential': 'whatever'}),
@@ -22,7 +18,8 @@ class GetOrCreateAccountTestCase(TestCase):
         self.assertEqual(json.loads(response.content)['data'], 1)
 
 
-    def test_update_account_view(self):
+class UpdateAccountTests(TestCase):
+    def test_update_account(self):
         # Create an account first
         self.client.post(
             reverse('get_or_create_account'),
@@ -39,7 +36,7 @@ class GetOrCreateAccountTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-    def test_invalid_account_update_view(self):
+    def test_invalid_account_update(self):
         # Create an account first
         self.client.post(
             reverse('get_or_create_account'),
@@ -56,7 +53,8 @@ class GetOrCreateAccountTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
 
 
-    def test_create_column_view(self):
+class CreateColumnTests(TestCase):
+    def test_create_column(self):
         query.get_or_create_user({'google_id': '4'})
         response = self.client.post(
             reverse('create_column'),
@@ -71,7 +69,7 @@ class GetOrCreateAccountTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-    def test_invalid_create_column_view(self):
+    def test_invalid_create_column(self):
         # User doesn't exist
         response = self.client.post(
             reverse('create_column'),
@@ -81,7 +79,8 @@ class GetOrCreateAccountTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
 
 
-    def test_get_columns_view(self):
+class GetColumnsTests(TestCase):
+    def test_get_columns(self):
         query.get_or_create_user({'google_id': '4'})
         # Make several columns
         query.create_column('4', 'New column')
@@ -104,7 +103,8 @@ class GetOrCreateAccountTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-    def test_rename_column_view(self):
+class RenameColumnTests(TestCase):
+    def test_rename_column(self):
         query.get_or_create_user({'google_id': '4'})
         # Make several columns
         query.create_column('4', 'New column')
@@ -165,7 +165,7 @@ class GetOrCreateAccountTestCase(TestCase):
         )
 
 
-    def test_invalid_rename_column_view(self):
+    def test_invalid_rename_column(self):
         query.get_or_create_user({'google_id': '4'})
         query.create_column('4', 'New column')
 
@@ -196,7 +196,8 @@ class GetOrCreateAccountTestCase(TestCase):
         self.assertEqual(json.loads(response3.content), {})
 
 
-    def test_reorder_column_view(self):
+class ReorderColumnTests(TestCase):
+    def test_reorder_column(self):
         query.get_or_create_user({'google_id': '4'})
         query.create_column('4', 'Should be the second column')
         query.create_column('4', 'Should be the first column')
@@ -224,7 +225,7 @@ class GetOrCreateAccountTestCase(TestCase):
         )
 
 
-    def test_invalid_reorder_column_view(self):
+    def test_invalid_reorder_column(self):
         query.get_or_create_user({'google_id': '4'})
         query.create_column('4', 'Should be the first column')
         query.create_column('4', 'Should be the second column')
@@ -281,7 +282,8 @@ class GetOrCreateAccountTestCase(TestCase):
         self.assertEqual(json.loads(response.content), {})
 
 
-    def test_delete_column_view(self):
+class DeleteColumnTests(TestCase):
+    def test_delete_column(self):
         query.get_or_create_user({'google_id': '4'})
         query.create_column('4', 'First column')
         query.create_column('4', 'To be deleted')
@@ -303,7 +305,7 @@ class GetOrCreateAccountTestCase(TestCase):
         self.assertEqual(len(business.get_columns('4')), 2)
 
 
-    def test_invalid_delete_column_view(self):
+    def test_invalid_delete_column(self):
         query.get_or_create_user({'google_id': '4'})
         query.create_column('4', "Pwease don't dewete me 🥺")
 
