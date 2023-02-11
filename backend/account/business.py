@@ -8,7 +8,12 @@ from . import query
 from .models import *
 
 def get_or_create_user(payload: dict) -> User:
-    return query.get_or_create_user(payload)
+    is_new = not query.user_exists(payload['google_id'])
+    user = query.get_or_create_user(payload)
+    if (is_new):
+        create_default_columns(payload['google_id'])
+
+    return user
 
 
 def update_user(payload: dict):
@@ -95,3 +100,10 @@ def delete_column(credential: str, column_number: int) -> list[KanbanColumn]:
         column.save()
 
     return changed_columns
+
+
+def create_default_columns(credential: str):
+    create_column(credential, 'To Apply')
+    create_column(credential, 'Application Submitted')
+    create_column(credential, 'OA')
+    create_column(credential, 'Interview')

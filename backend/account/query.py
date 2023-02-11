@@ -24,6 +24,10 @@ def get_or_create_user(payload: dict) -> User:
         )
 
 
+def user_exists(credential: str) -> bool:
+    return User.objects.filter(google_id=credential).exists()
+
+
 def update_user(payload: dict):
     user = User.objects.get(google_id=payload['google_id'])
     for key, value in payload.items():

@@ -346,8 +346,20 @@ class AccountTestCase(TestCase):
         self.assertEqual(len(business.get_columns('4')), 1)
 
 
-    def test_get_columns_business(self):
+    def test_create_user_business(self):
+        # Make sure default columns are created
         business.get_or_create_user({'google_id': '4'})
+        columns = business.get_columns('4')
+        self.assertEqual(columns[0].name, "To Apply")
+        self.assertEqual(columns[1].name, "Application Submitted")
+        self.assertEqual(columns[2].name, "OA")
+        self.assertEqual(columns[3].name, "Interview")
+
+
+    def test_get_columns_business(self):
+        # Using the query function for creating a user means that we don't have
+        # to worry about the default columns
+        query.get_or_create_user({'google_id': '4'})
         business.create_column('4', 'New column')
         business.create_column('4', 'Newest column')
         business.create_column('4', 'Newester column')
@@ -362,7 +374,7 @@ class AccountTestCase(TestCase):
 
 
     def test_reorder_column_business(self):
-        business.get_or_create_user({'google_id': '4'})
+        query.get_or_create_user({'google_id': '4'})
         column2 = business.create_column('4', 'Should be the second column')
         column1 = business.create_column('4', 'Should be the first column')
         business.create_column('4', 'Should be the third column')
@@ -372,7 +384,7 @@ class AccountTestCase(TestCase):
 
 
     def test_invalid_reorder_column_business(self):
-        business.get_or_create_user({'google_id': '4'})
+        query.get_or_create_user({'google_id': '4'})
         business.create_column('4', 'Should be the first column')
         business.create_column('4', 'Should be the second column')
 
@@ -390,7 +402,7 @@ class AccountTestCase(TestCase):
 
 
     def test_delete_column_business(self):
-        business.get_or_create_user({'google_id': '4'})
+        query.get_or_create_user({'google_id': '4'})
         business.create_column('4', 'column')
         column2 = business.create_column('4', 'COLUMN')
         column3 = business.create_column('4', 'Row >:)')
@@ -416,6 +428,12 @@ class AccountTestCase(TestCase):
         query.get_or_create_user({'google_id': '4'})
         self.assertTrue(models.User.objects.filter(google_id='4').exists())
         self.assertEqual(models.User.objects.filter(google_id='4').count(), 1)
+
+
+    def test_user_exists_query(self):
+        self.assertFalse(query.user_exists('4'))
+        query.get_or_create_user({'google_id': '4'})
+        self.assertTrue(query.user_exists('4'))
 
 
     def test_update_account_query(self):
