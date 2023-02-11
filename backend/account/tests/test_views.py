@@ -480,7 +480,7 @@ class UpdateColumnsTests(TestCase):
         columns = business.update_columns('4', [
             {'id': -1, 'name': 'New column', 'column_number': 0},
             {'id': -1, 'name': 'Newer column', 'column_number': 1},
-            {'id': -1, 'name': 'Even newer column', 'column_number': 1},
+            {'id': -1, 'name': 'Even newer column', 'column_number': 2},
         ])
 
         # Rename a couple of them
