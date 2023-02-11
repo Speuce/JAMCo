@@ -1,4 +1,4 @@
-name: Code Coverage
+name: Frontend Coverage
 
 on:
   push:
