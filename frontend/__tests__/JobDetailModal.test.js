@@ -1,10 +1,9 @@
 import { mount } from '@vue/test-utils'
-import { expect, describe, it, vi, afterEach } from 'vitest'
+import { expect, describe, it, afterEach } from 'vitest'
 import JobDetailModal from '../src/components/modal/job/JobDetailModal.vue'
 
 describe('JobDetailModal', () => {
   let wrapper
-  const createOrUpdateJob = vi.fn()
   const job = {
     id: 1,
     company: 'Test Company',
@@ -20,7 +19,6 @@ describe('JobDetailModal', () => {
   function mountModal(job) {
     wrapper = mount(JobDetailModal, {
       props: {
-        createOrUpdateJob,
         job,
         columns: [
           { id: 1, name: 'Applied' },
@@ -99,7 +97,7 @@ describe('JobDetailModal', () => {
       }
     })
 
-    expect(createOrUpdateJob).toBeCalledTimes(0)
+    expect(wrapper.emitted('createOrUpdateJob')).toBeFalsy()
     expect(wrapper.vm.deadlineError).toBe(true)
   })
 

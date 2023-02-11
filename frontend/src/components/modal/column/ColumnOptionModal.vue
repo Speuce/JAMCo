@@ -113,11 +113,6 @@ export default {
       cols.value.push(col)
     })
   },
-  computed: {
-    getColumns() {
-      return this.columns
-    },
-  },
   methods: {
     hideWarnings() {
       this.maxColumnsReached = false
@@ -166,7 +161,7 @@ export default {
         cols.value.forEach((column) => {
           column.number = index++
         })
-        cols.value = cols.value.sort((a, b) => (a.number > b.number ? 1 : -1))
+        cols.value = cols.value.sort((a, b) => a.number - b.number)
         this.$emit('updateColumns', cols.value)
         this.$emit('close')
       }

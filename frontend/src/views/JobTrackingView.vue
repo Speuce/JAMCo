@@ -8,8 +8,8 @@
       :columns="colList"
     />
     <ColumnOptionModal
-      v-if="columnOptionModalVisible"
-      @close="closeColumnModal"
+      v-if="boardOptionModalVisible"
+      @close="closeBoardOptionModal"
       @updateColumns="updateColumns"
       :columns="colList"
       :jobsByColumn="jobsByColumn"
@@ -57,7 +57,7 @@ export default {
   data() {
     return {
       detailModalVisible: false,
-      columnOptionModalVisible: false,
+      boardOptionModalVisible: false,
       selectedJob: {},
       nextJobId,
       isNewJob,
@@ -143,11 +143,11 @@ export default {
     closeDetailModal() {
       this.detailModalVisible = false
     },
-    closeColumnModal() {
-      this.columnOptionModalVisible = false
+    closeBoardOptionModal() {
+      this.boardOptionModalVisible = false
     },
     showBoardOptionModal() {
-      this.columnOptionModalVisible = true
+      this.boardOptionModalVisible = true
     },
   },
 }

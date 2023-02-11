@@ -17,8 +17,21 @@ describe('ColumnCard', () => {
     })
   })
 
-  it('emits updateColumn when column name changed', () => {
-    console.log(wrapper ? 'expected' : '')
-    expect(true).toBe(false)
+  it('emits updateColumn event when name changed', () => {
+    wrapper
+      .findComponent({ name: 'v-text-field' })
+      .vm.$emit('change', { target: { _value: 'Test Input' } })
+    expect(wrapper.emitted('updateColumn')).toBeTruthy()
+    expect(wrapper.emitted().updateColumn[0][0]).toEqual({
+      id: 0,
+      name: 'Test Input',
+      number: -1,
+    })
+  })
+
+  it('emits deleteColumn when delete clicked', () => {
+    wrapper.findComponent({ name: 'v-btn' }).trigger('click')
+    expect(wrapper.emitted('deleteColumn')).toBeTruthy()
+    expect(wrapper.emitted().deleteColumn[0][0]).toEqual(0)
   })
 })

@@ -35,7 +35,7 @@
 
 <script>
 export default {
-  emits: ['close', 'updateColumn', 'deleteColumn'],
+  emits: ['change', 'close', 'updateColumn', 'deleteColumn'],
   props: {
     column: {
       type: Object,
@@ -47,6 +47,10 @@ export default {
       name: {
         type: String,
         default: '',
+      },
+      number: {
+        type: Number,
+        default: -1,
       },
     },
     tryError: {
