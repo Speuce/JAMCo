@@ -36,7 +36,6 @@ describe('JobTrackingView', () => {
     buttons.forEach((button) => {
       if (button.text() === 'Add New Application') {
         button.trigger('click')
-        return
       }
     })
     // interacted with via modal
@@ -60,7 +59,6 @@ describe('JobTrackingView', () => {
     buttons.forEach((button) => {
       if (button.text() === 'Board Options') {
         button.trigger('click')
-        return
       }
     })
     expect(wrapper.vm.boardOptionModalVisible).toBe(true)
@@ -76,7 +74,7 @@ describe('JobTrackingView', () => {
 
   it('updates colList when param passed to updateColumns', () => {
     expect(wrapper.vm.colList).toEqual(
-      testCols.sort((col1, col2) => col1.number - col2.number)
+      testCols.sort((col1, col2) => col1.number - col2.number),
     )
     wrapper.vm.updateColumns([{ id: 8 }, { id: 0 }])
     expect(wrapper.vm.colList).toEqual([{ id: 8 }, { id: 0 }])

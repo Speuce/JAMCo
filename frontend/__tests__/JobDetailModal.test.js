@@ -16,10 +16,10 @@ describe('JobDetailModal', () => {
     deadlines: [],
   }
 
-  function mountModal(ajob) {
+  function mountModal(jobProp) {
     wrapper = mount(JobDetailModal, {
       props: {
-        job,
+        job: jobProp,
         columns: [
           { id: 1, name: 'Applied' },
           { id: 2, name: 'Interviewing' },

@@ -88,7 +88,7 @@ export default {
     colList.value.forEach((column) => {
       if (jobsByColumn.value[column.id].length > 0) {
         jobsByColumn.value[column.id] = jobsByColumn.value[column.id].sort(
-          (a, b) => a.id - b.id
+          (a, b) => a.id - b.id,
         )
       }
     })
@@ -104,7 +104,7 @@ export default {
           if (jobsByColumn.value[column.id]) {
             jobsByColumn.value[column.id] = jobsByColumn.value[
               column.id
-            ].filter((item) => item.id != job.id)
+            ].filter((item) => item.id !== job.id)
           }
         })
       }
@@ -118,7 +118,7 @@ export default {
       colList.value.forEach((column) => {
         if (jobsByColumn.value[column.id]) {
           jobsByColumn.value[column.id] = jobsByColumn.value[column.id].sort(
-            (a, b) => a.id - b.id
+            (a, b) => a.id - b.id,
           )
         }
       })

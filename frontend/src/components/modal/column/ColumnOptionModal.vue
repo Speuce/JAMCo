@@ -121,10 +121,10 @@ export default {
     },
     deleteColumn(colId) {
       this.hideWarnings()
-      if (!this.jobsByColumn[colId] || this.jobsByColumn[colId].length == 0) {
-        var updatedCols = []
+      if (!this.jobsByColumn[colId] || this.jobsByColumn[colId].length === 0) {
+        let updatedCols = []
         cols.value.forEach((col) => {
-          if (col.id != colId) {
+          if (col.id !== colId) {
             updatedCols.push(col)
           }
         })
@@ -135,9 +135,9 @@ export default {
     },
     updateColumn(column) {
       this.hideWarnings()
-      var updatedCols = []
+      let updatedCols = []
       cols.value.forEach((col) => {
-        if (col.id != column.id) {
+        if (col.id !== column.id) {
           updatedCols.push(col)
         } else {
           updatedCols.push(column)
@@ -157,12 +157,15 @@ export default {
       this.hideWarnings()
       this.validateColumns()
       if (!this.invalidColumns) {
-        var index = 0
+        let index = 0
+        let indexedCols = []
         cols.value.forEach((column) => {
-          column.number = index++
+          let col = column
+          col.number = index++
+          indexedCols.push(col)
         })
-        cols.value = cols.value.sort((a, b) => a.number - b.number)
-        this.$emit('updateColumns', cols.value)
+        indexedCols = indexedCols.sort((a, b) => a.number - b.number)
+        this.$emit('updateColumns', indexedCols)
         this.$emit('close')
       }
     },
@@ -172,9 +175,8 @@ export default {
     validateColumns() {
       this.invalidColumns = false
       cols.value.forEach((col) => {
-        if (col.name.length == 0) {
+        if (col.name.length === 0) {
           this.invalidColumns = true
-          return
         }
       })
     },
