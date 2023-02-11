@@ -114,7 +114,7 @@ def create_default_columns(credential: str):
     create_column(credential, 'Interview', 3)
 
 
-def update_columns(credential: str, payload: list[dict]):
+def update_columns(credential: str, payload: list[dict]) -> list[KanbanColumn]:
     # Ensure that all fields are present and valid before doing any operations
     for column_spec in payload:
         if 'id' not in column_spec:
@@ -126,13 +126,24 @@ def update_columns(credential: str, payload: list[dict]):
                              column_number')
 
     # TODO: Go through the columns in the db and delete those whose ids in don't appear in the payload
-    existing_columns = get_columns(credential)
-    existing_ids = [column.id for column in existing_columns]
+    existing_columns = {column.id: column for column in get_columns(credential)}
 
     for column_spec in payload:
-        if column_spec['id'] not in existing_ids:
+        column_id = column_spec['id']
+        if column_id not in existing_columns:
             # Create a new column
             create_column(
                 credential, column_spec['name'], column_spec['column_number'])
+        elif column_spec['name'] != existing_columns[column_id].name:
+            # Rename
+            print(existing_columns[column_id].name)
+            existing_columns[column_id].name = column_spec['name']
+            print(existing_columns[column_id].name)
+            print()
+
+            # TODO: Reorder
+
+    for column in existing_columns.values():
+        column.save()
 
     return get_columns(credential)

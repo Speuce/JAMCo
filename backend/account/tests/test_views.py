@@ -473,3 +473,46 @@ class UpdateColumnsTests(TestCase):
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 400)
+
+
+    def test_rename(self):
+        query.get_or_create_user({'google_id': '4'})
+        columns = business.update_columns('4', [
+            {'id': -1, 'name': 'New column', 'column_number': 0},
+            {'id': -1, 'name': 'Newer column', 'column_number': 1},
+            {'id': -1, 'name': 'Even newer column', 'column_number': 1},
+        ])
+
+        # Rename a couple of them
+        response = self.client.post(
+            reverse('update_columns'),
+            json.dumps({
+                'google_id': '4',
+                'payload': [
+                    {
+                        'id': columns[0].id,
+                        'name': 'Old column',
+                        'column_number': 0
+                    },
+                    {
+                        'id': columns[1].id,
+                        'name': 'The most powerful column',
+                        'column_number': 0
+                    },
+                ]
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        columns = json.loads(response.content)['columns']
+        self.assertEqual(columns[0]['name'], 'Old column')
+        self.assertEqual(columns[0]['column_number'], 0)
+        self.assertEqual(columns[1]['name'], 'The most powerful column')
+        self.assertEqual(columns[1]['column_number'], 1)
+        self.assertEqual(columns[2]['name'], 'Even newer column')
+        self.assertEqual(columns[2]['column_number'], 2)
+        self.assertEqual(len(query.get_columns('4')), 3)
+
+
+    def test_nonexistent_user(self):
+        self.fail('TODO, along with other error cases')

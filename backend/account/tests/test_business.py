@@ -118,7 +118,38 @@ class UpdateColumnsTests(TestCase):
         self.assertEqual(len(business.get_columns('4')), 3)
 
 
-    def test_invalid_new_column(self):
+    def test_rename(self):
+        query.get_or_create_user({'google_id': '4'})
+        columns = business.update_columns('4', [
+            {'id': -1, 'name': 'New column', 'column_number': 0},
+            {'id': -1, 'name': 'Newer column', 'column_number': 1},
+            {'id': -1, 'name': 'Even newer column', 'column_number': 2},
+        ])
+
+        # Rename a couple of them
+        columns = business.update_columns('4', [
+            {
+                'id': columns[0].id,
+                'name': 'Old column',
+                'column_number': 0
+            },
+            {
+                'id': columns[1].id,
+                'name': 'The most powerful column',
+                'column_number': 0
+            },
+        ])
+
+        self.assertEqual(columns[0].name, 'Old column')
+        self.assertEqual(columns[0].column_number, 0)
+        self.assertEqual(columns[1].name, 'The most powerful column')
+        self.assertEqual(columns[1].column_number, 1)
+        self.assertEqual(columns[2].name, 'Even newer column')
+        self.assertEqual(columns[2].column_number, 2)
+        self.assertEqual(len(query.get_columns('4')), 3)
+
+
+    def test_nonexistent_user(self):
         # User doesn't exist
         with self.assertRaises(ObjectDoesNotExist):
             business.update_columns('4', [
