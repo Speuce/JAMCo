@@ -136,10 +136,7 @@ def update_columns(credential: str, payload: list[dict]) -> list[KanbanColumn]:
                 credential, column_spec['name'], column_spec['column_number'])
         elif column_spec['name'] != existing_columns[column_id].name:
             # Rename
-            print(existing_columns[column_id].name)
             existing_columns[column_id].name = column_spec['name']
-            print(existing_columns[column_id].name)
-            print()
 
             # TODO: Reorder
 
