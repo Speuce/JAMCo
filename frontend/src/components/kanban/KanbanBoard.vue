@@ -5,7 +5,7 @@
     <div class="board-container">
       <div class="min-h-screen column-container">
         <div
-          v-for="column in columns"
+          v-for="column in getColumns"
           :key="column.id"
           class="column-width column"
         >
@@ -13,21 +13,21 @@
             {{ column.name }}
           </p>
           <draggable
-            :list="this.jobsByColumn[column.id]"
+            :list="this.getJobsByColumn[column.id]"
             :animation="200"
             ghost-class="ghost-card"
             group="column.id"
-            :sorted="false"
             @change="handle($event, column.id)"
             class="min-h-screen"
             id="column"
           >
             <JobCard
-              v-for="job in this.jobsByColumn[column.id]"
+              v-for="job in this.getJobsByColumn[column.id]"
               :key="job.id"
               :job="job"
               class="job-card"
-            ></JobCard>
+              @click="this.$emit('showDetailModal', job)"
+            />
           </draggable>
         </div>
       </div>
@@ -36,11 +36,11 @@
 </template>
 
 <script>
-import { VueDraggableNext } from "vue-draggable-next";
-import JobCard from "./JobCard.vue";
+import { VueDraggableNext } from 'vue-draggable-next'
+import JobCard from './JobCard.vue'
 
 export default {
-  name: "KanbanBoard",
+  name: 'KanbanBoard',
   components: {
     JobCard,
     draggable: VueDraggableNext,
@@ -55,35 +55,43 @@ export default {
       default: null,
     },
   },
-  data() {
-    return {
-      jobsByColumn: this.processJobsByColumn(this.jobs),
-    };
+  computed: {
+    getJobsByColumn() {
+      return this.processJobsByColumn(this.jobs)
+    },
+    getColumns() {
+      return this.columns
+    },
   },
   methods: {
     handle(event, colId) {
       if (event.added) {
-        event.added.element.columnId = colId;
+        // eslint-disable-next-line no-param-reassign
+        event.added.element.columnId = colId
         // Post Update to Job Model, update ColumnId field
       }
     },
     processJobsByColumn() {
-      var jobsByColumn = {};
+      const jobsByColumnMapping = this.columns.reduce((acc, column) => {
+        acc[column.id] = []
+        return acc
+      }, {})
 
-      for (var col in this.columns) {
-        if (jobsByColumn[this.columns[col].id] == null) {
-          jobsByColumn[this.columns[col].id] = [];
-        }
-      }
+      this.jobs.forEach((job) => {
+        jobsByColumnMapping[job.columnId].push(job)
+      })
 
-      for (var job in this.jobs) {
-        jobsByColumn[this.jobs[job].columnId].push(this.jobs[job]);
-      }
+      Object.keys(this.columns).forEach((colKey) => {
+        const columnId = this.columns[colKey].id
+        jobsByColumnMapping[columnId] = jobsByColumnMapping[columnId].sort(
+          (a, b) => (a.id > b.id ? 1 : -1),
+        )
+      })
 
-      return jobsByColumn;
+      return jobsByColumnMapping
     },
   },
-};
+}
 </script>
 
 <style scoped>
@@ -117,9 +125,9 @@ export default {
   color: #4a5568;
   color: rgba(74, 85, 104, var(--text-opacity));
   font-weight: 600;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   letter-spacing: 0.025em;
   font-size: 0.875rem;
 }

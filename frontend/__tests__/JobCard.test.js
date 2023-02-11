@@ -1,45 +1,45 @@
-import { mount } from "@vue/test-utils";
-import JobCard from "../src/components/kanban/JobCard.vue";
-import stringToTriColourPalatte from "../src/helpers/string-to-tri-colour-palatte";
-import { expect, describe, it } from "vitest";
+import { mount } from '@vue/test-utils'
+import JobCard from '../src/components/kanban/JobCard.vue'
+import stringToTriColourPalatte from '../src/helpers/string-to-tri-colour-palatte'
+import { expect, describe, it } from 'vitest'
 
-describe("JobCard", () => {
-  var wrapper;
-  var job = {};
+describe('JobCard', () => {
+  let wrapper
   function mountJobCard(job) {
     wrapper = mount(JobCard, {
-      propsData: { job },
-    });
+      props: { job },
+    })
   }
 
   // Testing stringToTriColourPalatte from "assets/string-to-tri-colour-palatte"
-  it("calculates the badge colours correctly for assorted strings", () => {
-    job = { type: "TestOne" };
-    mountJobCard(job);
+  it('calculates the badge colours correctly for assorted strings', () => {
+    let job = {}
+    job = { type: 'TestOne', company: 'test' }
+    mountJobCard(job)
 
-    var badgeColours = wrapper.vm.badgeColours;
-    var expectedColours = stringToTriColourPalatte(job.type);
-    expect(badgeColours).toEqual(expectedColours);
+    let badgeColours = wrapper.vm.badgeColours
+    let expectedColours = stringToTriColourPalatte(job.type)
+    expect(badgeColours).toEqual(expectedColours)
 
-    job = { type: "187325" };
-    mountJobCard(job);
+    job = { type: '187325' }
+    mountJobCard(job)
 
-    badgeColours = wrapper.vm.badgeColours;
-    expectedColours = stringToTriColourPalatte(job.type);
-    expect(badgeColours).toEqual(expectedColours);
+    badgeColours = wrapper.vm.badgeColours
+    expectedColours = stringToTriColourPalatte(job.type)
+    expect(badgeColours).toEqual(expectedColours)
 
-    job = { type: "l..//...,.-35936" };
-    mountJobCard(job);
+    job = { type: 'l..//...,.-35936' }
+    mountJobCard(job)
 
-    badgeColours = wrapper.vm.badgeColours;
-    expectedColours = stringToTriColourPalatte(job.type);
-    expect(badgeColours).toEqual(expectedColours);
+    badgeColours = wrapper.vm.badgeColours
+    expectedColours = stringToTriColourPalatte(job.type)
+    expect(badgeColours).toEqual(expectedColours)
 
-    job = { type: "" };
-    mountJobCard(job);
+    job = { type: '' }
+    mountJobCard(job)
 
-    badgeColours = wrapper.vm.badgeColours;
-    expectedColours = stringToTriColourPalatte(job.type);
-    expect(badgeColours).toEqual(expectedColours);
-  });
-});
+    badgeColours = wrapper.vm.badgeColours
+    expectedColours = stringToTriColourPalatte(job.type)
+    expect(badgeColours).toEqual(expectedColours)
+  })
+})

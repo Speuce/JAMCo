@@ -15,16 +15,16 @@
 
 <script>
 export default {
-  name: "CardBadge",
+  name: 'CardBadge',
   props: {
     colours: {
       type: Array,
       default: () => {
-        return ["#FFF", "#FFF", "#FFF"];
+        return ['#FFF', '#FFF', '#FFF']
       },
     },
   },
-};
+}
 </script>
 
 <style scoped>

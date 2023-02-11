@@ -3,13 +3,13 @@ Account views
 
 API-layer for account related operations.
 """
+import logging
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_POST
 from django.core.exceptions import ObjectDoesNotExist
 from jamco.helper import read_request
 from . import business
 
-import logging
 
 logger = logging.getLogger(__name__)
 
