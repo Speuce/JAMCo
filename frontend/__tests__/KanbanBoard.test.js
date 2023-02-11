@@ -31,8 +31,8 @@ describe('KanbanBoard', () => {
 
     testColumnMapping.forEach((column) => {
       if (jobsByColumn[column.id].length > 0) {
-        jobsByColumn[column.id] = jobsByColumn[column.id].sort((a, b) =>
-          a.id > b.id ? 1 : -1
+        jobsByColumn[column.id] = jobsByColumn[column.id].sort(
+          (a, b) => a.id - b.id
         )
       }
     })

@@ -73,7 +73,7 @@ export default {
     sampleColumnMapping.forEach((colMapping) => {
       colList.value.push(colMapping)
     })
-    colList.value = colList.value.sort((a, b) => (a.number > b.number ? 1 : -1))
+    colList.value = colList.value.sort((a, b) => a.number - b.number)
 
     sampleJobs.forEach((job) => {
       if (job.id > maxId) {
@@ -88,7 +88,7 @@ export default {
     colList.value.forEach((column) => {
       if (jobsByColumn.value[column.id].length > 0) {
         jobsByColumn.value[column.id] = jobsByColumn.value[column.id].sort(
-          (a, b) => (a.id > b.id ? 1 : -1)
+          (a, b) => a.id - b.id
         )
       }
     })
@@ -118,7 +118,7 @@ export default {
       colList.value.forEach((column) => {
         if (jobsByColumn.value[column.id]) {
           jobsByColumn.value[column.id] = jobsByColumn.value[column.id].sort(
-            (a, b) => (a.id > b.id ? 1 : -1)
+            (a, b) => a.id - b.id
           )
         }
       })
