@@ -14,7 +14,9 @@ class GetOrCreateAccountTests(TransactionTestCase):
         )
         self.assertEqual(response.status_code, 200)
         # The query should return the user's id. Since this is the first user in
-        # the database, it has an id of 1.
+        # the database, it has an id of 1. (This is why this test class is
+        # derived from TransactionTestCase; otherwise, the id would keep
+        # counting up as the other tests made users.)
         self.assertEqual(json.loads(response.content)['data'], 1)
 
 
