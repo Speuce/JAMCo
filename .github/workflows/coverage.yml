@@ -9,6 +9,7 @@ on:
 jobs:
   base_branch_cov:
     runs-on: ubuntu-latest
+    environment: test
     defaults:
       run:
         working-directory: ./frontend
@@ -40,6 +41,7 @@ jobs:
 
   checks:
     runs-on: ubuntu-latest
+    environment: test
     needs: base_branch_cov
     defaults:
       run:
