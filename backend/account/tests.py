@@ -280,6 +280,72 @@ class AccountTestCase(TestCase):
         self.assertEqual(json.loads(response.content), {})
 
 
+    def test_delete_column_view(self):
+        query.get_or_create_user({'google_id': '4'})
+        query.create_column('4', 'First column')
+        query.create_column('4', 'To be deleted')
+        query.create_column('4', 'To be second')
+
+        response = self.client.post(
+            reverse('delete_column'),
+            json.dumps({
+                'google_id': '4',
+                'column_number': 1,
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content),
+            {'changed_columns': [{'name': 'To be second', 'column_number': 1}]}
+        )
+        self.assertEqual(len(business.get_columns('4')), 2)
+
+
+    def test_invalid_delete_column_view(self):
+        query.get_or_create_user({'google_id': '4'})
+        query.create_column('4', "Pwease don't dewete me 🥺")
+
+        # Column number too low
+        response = self.client.post(
+            reverse('delete_column'),
+            json.dumps({
+                'google_id': '4',
+                'column_number': -1,
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(json.loads(response.content), {})
+        self.assertEqual(len(business.get_columns('4')), 1)
+
+        # Column number too high
+        response = self.client.post(
+            reverse('delete_column'),
+            json.dumps({
+                'google_id': '4',
+                'column_number': 1,
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(json.loads(response.content), {})
+        self.assertEqual(len(business.get_columns('4')), 1)
+
+        # User doesn't exist
+        response = self.client.post(
+            reverse('delete_column'),
+            json.dumps({
+                'google_id': 'IV',
+                'column_number': -1,
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(json.loads(response.content), {})
+        self.assertEqual(len(business.get_columns('4')), 1)
+
+
     def test_get_columns_business(self):
         business.get_or_create_user({'google_id': '4'})
         business.create_column('4', 'New column')
@@ -321,6 +387,23 @@ class AccountTestCase(TestCase):
 
         with self.assertRaises(ObjectDoesNotExist):
             business.reorder_column('FFFF', 1, 0)
+
+
+    def test_delete_column_business(self):
+        business.get_or_create_user({'google_id': '4'})
+        business.create_column('4', 'column')
+        column2 = business.create_column('4', 'COLUMN')
+        column3 = business.create_column('4', 'Row >:)')
+
+        changed_columns = business.delete_column('4', 0)
+        self.assertEqual(changed_columns, [column2, column3])
+
+        column2.refresh_from_db()
+        column3.refresh_from_db()
+
+        self.assertEqual(column2.column_number, 0)
+        self.assertEqual(column3.column_number, 1)
+        self.assertEqual(len(query.get_columns('4')), 2)
 
 
     def test_create_and_get_account_query(self):
@@ -435,3 +518,26 @@ class AccountTestCase(TestCase):
         # Try renaming a column for a user that doesn't exist
         with self.assertRaises(ObjectDoesNotExist):
             query.rename_column('53 55 53 53 59', 1, 'This is real I promise')
+
+
+    def test_delete_column_query(self):
+        query.get_or_create_user({'google_id': '4'})
+        query.create_column('4', 'New column')
+
+        changed_columns = query.delete_column('4', 0)
+        self.assertEqual(len(query.get_columns('4')), 0)
+
+
+    def test_invalid_delete_column_query(self):
+        query.get_or_create_user({'google_id': '4'})
+        query.create_column('4', 'uhh')
+
+        # Column number too low
+        with self.assertRaises(ObjectDoesNotExist):
+            query.delete_column('4', -1)
+        # Column number too high
+        with self.assertRaises(ObjectDoesNotExist):
+            query.delete_column('4', 1)
+        # User doesn't exist
+        with self.assertRaises(ObjectDoesNotExist):
+            query.delete_column('IIII', 0)

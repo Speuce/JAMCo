@@ -138,3 +138,27 @@ def reorder_column(request: HttpRequest):
             })
     except (ObjectDoesNotExist, ValueError):
         return JsonResponse(status=400, data={})
+
+
+def delete_column(request: HttpRequest):
+    """
+    Deletes the specified column. Some of the remaining columns will have their
+    column numbers adjusted using reorder_column to ensure that there are no
+    gaps.
+    """
+
+    body = read_request(request)
+    credential = body['google_id']
+    column_number = body['column_number']
+
+    try:
+        changed_columns = business.delete_column(credential, column_number)
+        return JsonResponse(
+            status=200,
+            data={
+                'changed_columns': [
+                    column.to_dict() for column in changed_columns
+                ]
+            })
+    except (ObjectDoesNotExist, ValueError):
+        return JsonResponse(status=400, data={})

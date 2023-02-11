@@ -62,3 +62,10 @@ def rename_column(
     column.name = new_name
     column.save()
     return column
+
+
+def delete_column(credential: str, column_number: int):
+    KanbanColumn.objects.get(
+        user=User.objects.get(google_id=credential),
+        column_number=column_number
+    ).delete()
