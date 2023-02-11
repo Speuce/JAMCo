@@ -17,4 +17,4 @@ class KanbanColumn(models.Model):
     column_number = models.IntegerField()
 
     def to_dict(self):
-        return {'name': self.name, 'column_number': self.column_number}
+        return {'id': self.id, 'name': self.name, 'column_number': self.column_number}

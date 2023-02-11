@@ -76,3 +76,52 @@ class DeleteColumnTests(TestCase):
         self.assertEqual(column2.column_number, 0)
         self.assertEqual(column3.column_number, 1)
         self.assertEqual(len(query.get_columns('4')), 2)
+
+
+class UpdateColumnsTests(TestCase):
+    def test_conflicting_new_columns(self):
+        query.get_or_create_user({'google_id': '4'})
+
+        # Creating multiple columns with the same number at the same time will
+        # result in some of them being given different numbers
+        columns = business.update_columns('4', [
+            {'id': -1, 'name': 'New column', 'column_number': 0},
+            {'id': -1, 'name': 'New column', 'column_number': 0},
+        ])
+
+        self.assertEqual(len(columns), 2)
+        self.assertEqual(columns[0].name, 'New column')
+        self.assertEqual(columns[0].column_number, 0)
+        self.assertEqual(columns[1].name, 'New column')
+        self.assertEqual(columns[1].column_number, 1)
+
+
+    def test_conflict_between_new_and_old_column(self):
+        query.get_or_create_user({'google_id': '4'})
+        business.update_columns('4', [
+            {'id': -1, 'name': 'New column', 'column_number': 0},
+            {'id': -1, 'name': 'New column', 'column_number': 1},
+        ])
+
+        # Creating a new column with the same number as another one will push
+        # the other ones back
+        columns = business.update_columns(
+            '4',
+            [{'id': -1, 'name': 'The real new column', 'column_number': 0}]
+        )
+        self.assertEqual(columns[0].name, 'The real new column')
+        self.assertEqual(columns[0].column_number, 0)
+        self.assertEqual(columns[1].name, 'New column')
+        self.assertEqual(columns[1].column_number, 1)
+        self.assertEqual(columns[2].name, 'New column')
+        self.assertEqual(columns[2].column_number, 2)
+        self.assertEqual(len(business.get_columns('4')), 3)
+
+
+    def test_invalid_new_column(self):
+        # User doesn't exist
+        with self.assertRaises(ObjectDoesNotExist):
+            business.update_columns('4', [
+                {'id': -1, 'name': 'New column', 'column_number': 0},
+                {'id': -1, 'name': 'New column', 'column_number': 1},
+            ])

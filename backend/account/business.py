@@ -20,8 +20,13 @@ def update_user(payload: dict):
     query.update_user(payload)
 
 
-def create_column(credential: str, column_name: str) -> KanbanColumn:
-    return query.create_column(credential, column_name)
+def create_column(
+        credential: str, column_name: str, column_number: int) -> KanbanColumn:
+    # Create the new column and then put in in its proper place
+    new_column = query.create_column(credential, column_name)
+    reorder_column(credential, new_column.column_number, column_number)
+
+    return new_column
 
 
 def get_columns(credential: str) -> list[KanbanColumn]:
@@ -103,7 +108,31 @@ def delete_column(credential: str, column_number: int) -> list[KanbanColumn]:
 
 
 def create_default_columns(credential: str):
-    create_column(credential, 'To Apply')
-    create_column(credential, 'Application Submitted')
-    create_column(credential, 'OA')
-    create_column(credential, 'Interview')
+    create_column(credential, 'To Apply', 0)
+    create_column(credential, 'Application Submitted', 1)
+    create_column(credential, 'OA', 2)
+    create_column(credential, 'Interview', 3)
+
+
+def update_columns(credential: str, payload: list[dict]):
+    # Ensure that all fields are present and valid before doing any operations
+    for column_spec in payload:
+        if 'id' not in column_spec:
+            raise ValueError(f'Column {column_spec} missing field: id')
+        if 'name' not in column_spec:
+            raise ValueError(f'Column {column_spec} missing field: name')
+        if 'column_number' not in column_spec:
+            raise ValueError(f'Column {column_spec} missing field: \
+                             column_number')
+
+    # TODO: Go through the columns in the db and delete those whose ids in don't appear in the payload
+    existing_columns = get_columns(credential)
+    existing_ids = [column.id for column in existing_columns]
+
+    for column_spec in payload:
+        if column_spec['id'] not in existing_ids:
+            # Create a new column
+            create_column(
+                credential, column_spec['name'], column_spec['column_number'])
+
+    return get_columns(credential)

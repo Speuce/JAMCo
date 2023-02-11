@@ -36,4 +36,6 @@ urlpatterns = [
         account_views.reorder_column, name='reorder_column'),
     path('account/api/delete_column',
         account_views.delete_column, name='delete_column'),
+    path('account/api/update_columns',
+        account_views.update_columns, name='update_columns'),
 ]

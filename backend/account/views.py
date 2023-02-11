@@ -162,3 +162,26 @@ def delete_column(request: HttpRequest):
             })
     except (ObjectDoesNotExist, ValueError):
         return JsonResponse(status=400, data={})
+
+
+def update_columns(request: HttpRequest):
+    """
+    Called when the user presses the save button on the frontend column view.
+    Takes the user's list of columns (which have been updated on the frontend)
+    and reflects those changes in the database. Returns all of the user's
+    columns.
+    """
+
+    body = read_request(request)
+    credential = body['google_id']
+    payload = body['payload']
+
+    try:
+        columns = business.update_columns(credential, payload)
+        return JsonResponse(
+            status=200,
+            data={'columns': [column.to_dict() for column in columns]}
+        )
+    except (ObjectDoesNotExist):
+        return JsonResponse(status=400, data={})
+
