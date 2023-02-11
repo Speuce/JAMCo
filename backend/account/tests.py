@@ -195,6 +195,91 @@ class AccountTestCase(TestCase):
         self.assertEqual(json.loads(response3.content), {})
 
 
+    def test_reorder_column_view(self):
+        query.get_or_create_user({'google_id': '4'})
+        query.create_column('4', 'Should be the second column')
+        query.create_column('4', 'Should be the first column')
+        query.create_column('4', 'Should be the third column')
+        # Oh no! The columns are in the wrong order!
+        response = self.client.post(
+            reverse('reorder_column'),
+            json.dumps({
+                'google_id': '4',
+                'column_number': 1,
+                'new_column_number': 0
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        # It should return the columns that were changed
+        self.assertEqual(
+            json.loads(response.content),
+            {'changed_columns':
+                [
+                    {'name': 'Should be the first column', 'column_number': 0},
+                    {'name': 'Should be the second column', 'column_number': 1},
+                ]
+            }
+        )
+
+
+    def test_invalid_reorder_column_view(self):
+        query.get_or_create_user({'google_id': '4'})
+        query.create_column('4', 'Should be the first column')
+        query.create_column('4', 'Should be the second column')
+
+        # This isn't how you delete a column >:(
+        response = self.client.post(
+            reverse('reorder_column'),
+            json.dumps({
+                'google_id': '4',
+                'column_number': 1,
+                'new_column_number': 99999999999
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(json.loads(response.content), {})
+
+        # Source column doesn't exist
+        response = self.client.post(
+            reverse('reorder_column'),
+            json.dumps({
+                'google_id': '4',
+                'column_number': 2,
+                'new_column_number': 0
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(json.loads(response.content), {})
+        # Source column doesn't exist, but it's out of range on the other end
+        response = self.client.post(
+            reverse('reorder_column'),
+            json.dumps({
+                'google_id': '4',
+                'column_number': -1,
+                'new_column_number': 0
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(json.loads(response.content), {})
+
+        # User doesn't exist
+        response = self.client.post(
+            reverse('reorder_column'),
+            json.dumps({
+                'google_id': 'four',
+                'column_number': 1,
+                'new_column_number': 0
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(json.loads(response.content), {})
+
+
     def test_get_columns_business(self):
         business.get_or_create_user({'google_id': '4'})
         business.create_column('4', 'New column')
@@ -208,6 +293,34 @@ class AccountTestCase(TestCase):
             column_numbers[i] <= column_numbers[i+1]
             for i in range(len(column_numbers) - 1)
         ))
+
+
+    def test_reorder_column_business(self):
+        business.get_or_create_user({'google_id': '4'})
+        column2 = business.create_column('4', 'Should be the second column')
+        column1 = business.create_column('4', 'Should be the first column')
+        business.create_column('4', 'Should be the third column')
+
+        changed_columns = business.reorder_column('4', 0, 1)
+        self.assertEqual(changed_columns, [column1, column2])
+
+
+    def test_invalid_reorder_column_business(self):
+        business.get_or_create_user({'google_id': '4'})
+        business.create_column('4', 'Should be the first column')
+        business.create_column('4', 'Should be the second column')
+
+        with self.assertRaises(ValueError):
+            business.reorder_column('4', 1, 9999)
+
+        with self.assertRaises(ValueError):
+            business.reorder_column('4', 2, 0)
+
+        with self.assertRaises(ValueError):
+            business.reorder_column('4', -1, 0)
+
+        with self.assertRaises(ObjectDoesNotExist):
+            business.reorder_column('FFFF', 1, 0)
 
 
     def test_create_and_get_account_query(self):

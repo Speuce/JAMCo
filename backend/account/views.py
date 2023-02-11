@@ -98,7 +98,6 @@ def rename_column(request: HttpRequest):
     """
 
     body = read_request(request)
-
     credential = body['google_id']
     column_number = body['column_number']
     new_name = body['new_name']
@@ -112,4 +111,30 @@ def rename_column(request: HttpRequest):
         column = business.rename_column(credential, column_number, new_name)
         return JsonResponse(status=200, data={'column': column.to_dict()})
     except ObjectDoesNotExist:
+        return JsonResponse(status=400, data={})
+
+
+def reorder_column(request: HttpRequest):
+    """
+    Changes the column number of the specified column. Other columns have their
+    column number changed to accomodate the moved column.
+    Returns all of the columns that had their column numbers changed.
+    """
+
+    body = read_request(request)
+    credential = body['google_id']
+    column_number = body['column_number']
+    new_column_number = body['new_column_number']
+
+    try:
+        changed_columns = business.reorder_column(
+            credential, column_number, new_column_number)
+        return JsonResponse(
+            status=200,
+            data={
+                'changed_columns': [
+                    column.to_dict() for column in changed_columns
+                ]
+            })
+    except (ObjectDoesNotExist, ValueError):
         return JsonResponse(status=400, data={})
