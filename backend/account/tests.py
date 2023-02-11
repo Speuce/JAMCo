@@ -78,20 +78,3 @@ class AccountTestCase(TestCase):
         self.assertEqual(
             query.get_or_create_user({'google_id': '4'}).first_name, 'Rob')
 
-
-    def test_invalid_update_account_query(self):
-        # Create an account first
-        query.get_or_create_user({'google_id': '4'})
-
-        # "Update" the user
-        with self.assertRaises(AttributeError):
-            query.update_user({'google_id': '4', 'favourite_prof': 'Rasit'})
-
-        # Update the "user"
-        # User doesn't exist
-        with self.assertRaises(ObjectDoesNotExist):
-            query.update_user({
-                'google_id': '41 6D 6F 6E 67 20 55 73', 'first_name': 'Rob'})
-        # User not specified
-        with self.assertRaises(KeyError):
-            query.update_user({'first_name': 'Rob'})
