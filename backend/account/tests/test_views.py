@@ -515,4 +515,17 @@ class UpdateColumnsTests(TestCase):
 
 
     def test_nonexistent_user(self):
-        self.fail('TODO, along with other error cases')
+        response = self.client.post(
+            reverse('update_columns'),
+            json.dumps({
+                'google_id': '4',
+                'payload': [{
+                    'id': -1,
+                    'name': 'Where am I',
+                    'column_number': 0
+                }]
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(json.loads(response.content), {})
