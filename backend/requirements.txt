@@ -8,3 +8,4 @@ setuptools==47.1.0
 sqlparse==0.4.3
 yapf==0.32.0
 django-cors-headers==3.13.0
+coverage==7.1.0
