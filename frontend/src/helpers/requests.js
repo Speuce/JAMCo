@@ -1,11 +1,13 @@
+/* eslint-disable no-console */
 import Cookies from 'js-cookie'
 
-const prod_mode = import.meta.env.PROD
-const baseUrl = prod_mode ? '' : 'http://localhost:8000/'
+const prodMode = import.meta.env.PROD
+const baseUrl = prodMode ? '' : 'http://localhost:8000/'
 /**
  * Send a post request to the backend
  */
 export async function postRequest(url, data) {
+  // eslint-disable-next-line no-param-reassign
   if (url.startsWith('/')) url = url.substring(1)
   try {
     const response = await fetch(baseUrl + url, {

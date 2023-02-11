@@ -16,7 +16,7 @@ describe('JobDetailModal', () => {
     deadlines: [],
   }
 
-  function mountModal(job) {
+  function mountModal(ajob) {
     wrapper = mount(JobDetailModal, {
       props: {
         job,

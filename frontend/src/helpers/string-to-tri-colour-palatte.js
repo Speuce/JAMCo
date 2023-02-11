@@ -1,8 +1,9 @@
+/* eslint-disable no-nested-ternary */
 /* Based on https://github.com/brandoncorbin/string_to_color */
 
-let stringToTriColourPalatte = function (str) {
+let stringToTriColourPalatte = (str) => {
   // Generate a Hash for the String
-  let hash = function (word) {
+  let hash = (word) => {
     let h = 0
     for (let i = 0; i < word.length; i++) {
       h = word.charCodeAt(i) + ((h << 5) - h)
@@ -11,12 +12,12 @@ let stringToTriColourPalatte = function (str) {
   }
 
   // Change the darkness or lightness
-  let shade = function (color, prc) {
-    let num = parseInt(color, 16),
-      amt = Math.round(2.55 * prc),
-      R = (num >> 16) + amt,
-      G = ((num >> 8) & 0x00ff) + amt,
-      B = (num & 0x0000ff) + amt
+  let shade = (color, prc) => {
+    let num = parseInt(color, 16)
+    let amt = Math.round(2.55 * prc)
+    let R = (num >> 16) + amt
+    let G = ((num >> 8) & 0x00ff) + amt
+    let B = (num & 0x0000ff) + amt
     return (
       '#' +
       (
@@ -31,7 +32,7 @@ let stringToTriColourPalatte = function (str) {
   }
 
   // Convert hash to an RGBA
-  let int_to_rgba = function (i) {
+  let intToRgba = (i) => {
     let color =
       ((i >> 24) & 0xff).toString(16) +
       ((i >> 16) & 0xff).toString(16) +
@@ -40,11 +41,11 @@ let stringToTriColourPalatte = function (str) {
     return color
   }
 
-  let base_colour = int_to_rgba(hash(str))
+  let baseColour = intToRgba(hash(str))
   let colours = [
-    shade(base_colour, 64),
-    shade(base_colour, -64),
-    shade(base_colour, -48),
+    shade(baseColour, 64),
+    shade(baseColour, -64),
+    shade(baseColour, -48),
   ]
 
   return colours

@@ -5,7 +5,6 @@ import { expect, describe, it } from 'vitest'
 
 describe('JobCard', () => {
   let wrapper
-  let job = {}
   function mountJobCard(job) {
     wrapper = mount(JobCard, {
       props: { job },
@@ -14,7 +13,8 @@ describe('JobCard', () => {
 
   // Testing stringToTriColourPalatte from "assets/string-to-tri-colour-palatte"
   it('calculates the badge colours correctly for assorted strings', () => {
-    job = { type: 'TestOne' }
+    let job = {}
+    job = { type: 'TestOne', company: 'test' }
     mountJobCard(job)
 
     let badgeColours = wrapper.vm.badgeColours

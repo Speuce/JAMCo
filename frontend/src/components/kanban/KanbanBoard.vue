@@ -58,6 +58,7 @@ export default {
   methods: {
     handle(event, colId) {
       if (event.added) {
+        // eslint-disable-next-line no-param-reassign
         event.added.element.columnId = colId
         // Post Update to Job Model, update ColumnId field
       }
