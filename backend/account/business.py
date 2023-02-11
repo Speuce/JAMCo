@@ -25,5 +25,6 @@ def get_columns(credential: str) -> list[KanbanColumn]:
     return columns.order_by('column_number')
 
 
-def rename_column(credential: str, column_number: int, new_name: str):
-    query.rename_column(credential, column_number, new_name)
+def rename_column(
+        credential: str, column_number: int, new_name: str) -> KanbanColumn:
+    return query.rename_column(credential, column_number, new_name)

@@ -121,6 +121,11 @@ class AccountTestCase(TestCase):
             content_type='application/json'
         )
         self.assertEqual(response1.status_code, 200)
+        self.assertEqual(
+            json.loads(response1.content),
+            {'name': 'Old column', 'column_number': 0},
+        )
+
         response2 = self.client.post(
             reverse('rename_column'),
             json.dumps({
@@ -131,7 +136,12 @@ class AccountTestCase(TestCase):
             content_type='application/json'
         )
         self.assertEqual(response2.status_code, 200)
+        self.assertEqual(
+            json.loads(response2.content),
+            {'name': 'The most powerful column', 'column_number': 1},
+        )
 
+        # Make sure all changes are reflected when we get all columns
         response3 = self.client.post(
             reverse('get_columns'),
             json.dumps({'google_id': '4'}),
@@ -164,6 +174,7 @@ class AccountTestCase(TestCase):
             content_type='application/json'
         )
         self.assertEqual(response1.status_code, 400)
+        self.assertEqual(json.loads(response1.content), {})
 
         # Try renaming a column for a user that doesn't exist
         response3 = self.client.post(
@@ -176,6 +187,7 @@ class AccountTestCase(TestCase):
             content_type='application/json'
         )
         self.assertEqual(response3.status_code, 400)
+        self.assertEqual(json.loads(response3.content), {})
 
 
     def test_get_columns_business(self):

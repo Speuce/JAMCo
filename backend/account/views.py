@@ -109,7 +109,7 @@ def rename_column(request: HttpRequest):
     )
 
     try:
-        business.rename_column(credential, column_number, new_name)
-        return JsonResponse(status=200, data={})
+        column = business.rename_column(credential, column_number, new_name)
+        return JsonResponse(status=200, data=column.to_dict())
     except ObjectDoesNotExist:
         return JsonResponse(status=400, data={})
