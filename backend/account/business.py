@@ -127,13 +127,8 @@ def update_columns(credential: str, payload: list[dict]) -> list[KanbanColumn]:
 
     # TODO: Go through the columns in the db and delete those whose ids in don't appear in the payload
     existing_columns = {column.id: column for column in get_columns(credential)}
-    # Since reordering columns can change several columns' numbers, we keep
-    # track of the original column numbers to make sure that we only reorder
-    # ones that the user wanted to reorder
-    old_column_numbers = {
-        column.id: column.column_number for column in get_columns(credential)}
 
-    # Create and rename columns
+    # Create, rename, and reorder columns
     for column_spec in payload:
         column_id = column_spec['id']
         if column_id not in existing_columns:
