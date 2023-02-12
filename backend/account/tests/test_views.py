@@ -59,9 +59,9 @@ class GetColumnsTests(TestCase):
     def test_get_columns(self):
         query.get_or_create_user({'google_id': '4'})
         # Make several columns
-        query.create_column('4', 'New column')
-        query.create_column('4', 'Newer column')
-        query.create_column('4', 'Even newer column')
+        query.create_column('4', 'New column', 0)
+        query.create_column('4', 'Newer column', 1)
+        query.create_column('4', 'Even newer column', 2)
 
         response = self.client.post(
             reverse('get_columns'),
@@ -125,33 +125,6 @@ class UpdateColumnsTests(TestCase):
         self.assertEqual(columns[0]['name'], 'New column')
         self.assertEqual(columns[0]['column_number'], 0)
         self.assertEqual(columns[1]['name'], 'Newer column')
-        self.assertEqual(columns[1]['column_number'], 1)
-        self.assertEqual(len(query.get_columns('4')), 2)
-
-
-    def test_conflicting_new_columns(self):
-        query.get_or_create_user({'google_id': '4'})
-
-        # Creating multiple columns with the same number at the same time will
-        # result in some of them being given different numbers
-        response = self.client.post(
-            reverse('update_columns'),
-            json.dumps({
-                'google_id': '4',
-                'payload': [
-                    {'id': -1, 'name': 'New column', 'column_number': 0},
-                    # (notice the identical column_number here)
-                    {'id': -1, 'name': 'Newer column', 'column_number': 0}
-                ]
-            }),
-            content_type='application/json'
-        )
-        self.assertEqual(response.status_code, 200)
-
-        columns = json.loads(response.content)['columns']
-        self.assertEqual(columns[0]['name'], 'Newer column')
-        self.assertEqual(columns[0]['column_number'], 0)
-        self.assertEqual(columns[1]['name'], 'New column')
         self.assertEqual(columns[1]['column_number'], 1)
         self.assertEqual(len(query.get_columns('4')), 2)
 

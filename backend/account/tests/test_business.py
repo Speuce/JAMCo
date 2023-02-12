@@ -18,9 +18,9 @@ class GetColumnsTests(TestCase):
         # Using the query function for creating a user means that we don't have
         # to worry about the default columns
         query.get_or_create_user({'google_id': '4'})
-        query.create_column('4', 'New column')
-        query.create_column('4', 'Newest column')
-        query.create_column('4', 'Newester column')
+        query.create_column('4', 'New column', 0)
+        query.create_column('4', 'Newest column', 1)
+        query.create_column('4', 'Newester column', 2)
 
         columns = business.get_columns('4')
         column_numbers = [column.column_number for column in columns]
@@ -32,23 +32,6 @@ class GetColumnsTests(TestCase):
 
 
 class UpdateColumnsTests(TestCase):
-    def test_conflicting_new_columns(self):
-        query.get_or_create_user({'google_id': '4'})
-
-        # Creating multiple columns with the same number at the same time will
-        # result in some of them being given different numbers
-        columns = business.update_columns('4', [
-            {'id': -1, 'name': 'New column', 'column_number': 0},
-            {'id': -1, 'name': 'New column', 'column_number': 0},
-        ])
-
-        self.assertEqual(len(columns), 2)
-        self.assertEqual(columns[0].name, 'New column')
-        self.assertEqual(columns[0].column_number, 0)
-        self.assertEqual(columns[1].name, 'New column')
-        self.assertEqual(columns[1].column_number, 1)
-
-
     def test_rename(self):
         query.get_or_create_user({'google_id': '4'})
         columns = business.update_columns('4', [

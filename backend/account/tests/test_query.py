@@ -56,8 +56,8 @@ class UpdateAccountTests(TestCase):
 class CreateColumnTests(TestCase):
     def test_create_column(self):
         query.get_or_create_user({'google_id': '4'})
-        new_column = query.create_column('4', 'New column')
-        newer_column = query.create_column('4', 'Newer column')
+        new_column = query.create_column('4', 'New column', 0)
+        newer_column = query.create_column('4', 'Newer column', 1)
 
         # Column numbers should be in order of creation by default
         self.assertEqual(new_column.column_number, 0)
@@ -66,32 +66,32 @@ class CreateColumnTests(TestCase):
 
     def test_duplicate_column_names(self):
         query.get_or_create_user({'google_id': '4'})
-        query.create_column('4', 'New column')
-        query.create_column('4', 'Newer column')
+        query.create_column('4', 'New column', 0)
+        query.create_column('4', 'Newer column', 1)
 
         # Duplicate names are allowed
-        duplicate_name_column = query.create_column('4', 'Newer column')
+        duplicate_name_column = query.create_column('4', 'Newer column', 2)
         self.assertEqual(duplicate_name_column.column_number, 2)
 
 
     def test_invalid_create_column(self):
         # User doesn't exist
         with self.assertRaises(ObjectDoesNotExist):
-            query.create_column('4', 'New column')
+            query.create_column('4', 'New column', 0)
 
 
 class GetColumnsTests(TestCase):
     def test_get_columns(self):
         query.get_or_create_user({'google_id': '4'})
-        query.create_column('4', 'New column')
-        query.create_column('4', 'Newest column')
-        query.create_column('4', 'Newester column')
+        query.create_column('4', 'New column', 0)
+        query.create_column('4', 'Newest column', 1)
+        query.create_column('4', 'Newester column', 2)
         # Make another user
         query.get_or_create_user({'google_id': '5'})
-        query.create_column('5', 'New column')
-        query.create_column('5', 'Newest column')
-        query.create_column('5', 'Newester column')
-        query.create_column('5', 'Newesterest column')
+        query.create_column('5', 'New column', 0)
+        query.create_column('5', 'Newest column', 1)
+        query.create_column('5', 'Newester column', 2)
+        query.create_column('5', 'Newesterest column', 3)
 
         columns = query.get_columns('4')
 
@@ -101,18 +101,18 @@ class GetColumnsTests(TestCase):
             self.assertEqual(column.user.google_id, '4')
 
 
-class DeleteColumnTests(TestCase):
+class DeleteColumnsTests(TestCase):
     def test_delete_columns(self):
         query.get_or_create_user({'google_id': '4'})
-        column1 = query.create_column('4', 'New column')
-        column2 = query.create_column('4', 'Newest column')
-        query.create_column('4', 'Newester column')
+        column1 = query.create_column('4', 'New column', 0)
+        column2 = query.create_column('4', 'Newest column', 1)
+        query.create_column('4', 'Newester column', 2)
         # Make another user
         query.get_or_create_user({'google_id': '5'})
-        query.create_column('5', 'New column')
-        query.create_column('5', 'Newest column')
-        query.create_column('5', 'Newester column')
-        query.create_column('5', 'Newesterest column')
+        query.create_column('5', 'New column', 0)
+        query.create_column('5', 'Newest column', 1)
+        query.create_column('5', 'Newester column', 2)
+        query.create_column('5', 'Newesterest column', 3)
 
         query.delete_columns([column1.id, column2.id])
         self.assertEqual(len(query.get_columns('4')), 1)
@@ -120,11 +120,10 @@ class DeleteColumnTests(TestCase):
 
     def test_invalid_delete_columns(self):
         query.get_or_create_user({'google_id': '4'})
-        query.create_column('4', 'New column')
-        query.create_column('4', 'Newest column')
+        query.create_column('4', 'New column', 0)
+        query.create_column('4', 'Newest column', 1)
 
         # Try deleting a column that doesn't exist
         # By the pigeonhole principle, one of these ids must be invalid ;)
         query.delete_columns([1, 2, 3])
-
 

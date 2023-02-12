@@ -45,11 +45,12 @@ def update_user(payload: dict):
     user.save()
 
 
-def create_column(credential: str, column_name: str) -> KanbanColumn:
+def create_column(
+        credential: str, column_name: str, column_number: int) -> KanbanColumn:
     return KanbanColumn.objects.create(
         user=User.objects.get(google_id=credential),
         name=column_name,
-        column_number=KanbanColumn.objects.all().count()
+        column_number=column_number
     )
 
 
