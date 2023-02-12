@@ -1,10 +1,17 @@
 <template>
-  <div class=""></div>
+  <div class="">
+    <h1>This is the login page where you use Google OAuth</h1>
+    <GoogleSignin />
+  </div>
 </template>
 
 <script>
+import GoogleSignin from '@/components/signin/GoogleSignin.vue'
 export default {
-  name: 'Sandbox',
+  name: 'LandingView',
+  components: {
+    GoogleSignin,
+  },
   data() {
     return {}
   },

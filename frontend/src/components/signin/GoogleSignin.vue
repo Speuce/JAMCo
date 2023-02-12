@@ -26,7 +26,11 @@ export default {
 
   methods: {
     async onSignin(response) {
-      const item = { credential: response.credential }
+      console.log(response)
+      const item = {
+        credential: response.credential,
+        client_id: response.client_id,
+      }
       await postRequest('account/api/get_or_create_account', item)
       // TODO: redirect to home page
     },
