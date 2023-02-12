@@ -150,3 +150,21 @@ class DeleteColumnTests(TestCase):
         # User doesn't exist
         with self.assertRaises(ObjectDoesNotExist):
             query.delete_column('IIII', 0)
+
+
+    def test_delete_columns(self):
+        query.get_or_create_user({'google_id': '4'})
+        column1 = query.create_column('4', 'New column')
+        column2 = query.create_column('4', 'Newest column')
+        query.create_column('4', 'Newester column')
+        # Make another user
+        query.get_or_create_user({'google_id': '5'})
+        query.create_column('5', 'New column')
+        query.create_column('5', 'Newest column')
+        query.create_column('5', 'Newester column')
+        query.create_column('5', 'Newesterest column')
+
+        query.delete_columns([column1.id, column2.id])
+        self.assertEqual(len(query.get_columns('4')), 1)
+        self.assertEqual(len(query.get_columns('5')), 4)
+

@@ -467,6 +467,11 @@ class UpdateColumnsTests(TestCase):
                         'name': 'The most powerful column',
                         'column_number': 1
                     },
+                    {
+                        'id': columns[2].id,
+                        'name': 'Even newer column',
+                        'column_number': 2
+                    },
                 ]
             }),
             content_type='application/json'
@@ -597,6 +602,41 @@ class UpdateColumnsTests(TestCase):
         self.assertEqual(len(query.get_columns('4')), 3)
 
 
+    def test_delete(self):
+        query.get_or_create_user({'google_id': '4'})
+        columns = business.update_columns('4', [
+            {'id': -1, 'name': 'New column', 'column_number': 0},
+            {'id': -1, 'name': 'Newer column', 'column_number': 1},
+            {'id': -1, 'name': 'Even newer column', 'column_number': 2},
+        ])
+
+        response = self.client.post(
+            reverse('update_columns'),
+            json.dumps({
+                'google_id': '4',
+                'payload': [
+                    {
+                        'id': columns[2].id,
+                        'name': 'Even newer column',
+                        'column_number': 2
+                    },
+                    {
+                        'id': columns[0].id,
+                        'name': 'New column',
+                        'column_number': 0
+                    },
+                ]
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        response_columns = json.loads(response.content)['columns']
+        # Since column 1 was absent from the update request, it should be gone
+        self.assertEqual(response_columns[0]['id'], columns[0].id)
+        self.assertEqual(response_columns[1]['id'], columns[2].id)
+        self.assertEqual(len(query.get_columns('4')), 2)
+
+
     def test_nonexistent_user(self):
         response = self.client.post(
             reverse('update_columns'),
@@ -612,3 +652,34 @@ class UpdateColumnsTests(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(json.loads(response.content), {})
+
+
+    def test_empty_payload(self):
+        query.get_or_create_user({'google_id': '4'})
+        business.update_columns('4', [
+            {'id': -1, 'name': 'New column', 'column_number': 0},
+            {'id': -1, 'name': 'Newer column', 'column_number': 1},
+            {'id': -1, 'name': 'Even newer column', 'column_number': 2},
+        ])
+
+        # If the user has columns, an empty update should delete all of them
+        response = self.client.post(
+            reverse('update_columns'),
+            json.dumps({'google_id': '4', 'payload': []}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        response_columns = json.loads(response.content)['columns']
+        self.assertEqual(len(response_columns), 0)
+        self.assertEqual(len(query.get_columns('4')), 0)
+
+        # After that, an empty update shouldn't do anything
+        response = self.client.post(
+            reverse('update_columns'),
+            json.dumps({'google_id': '4', 'payload': []}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        response_columns = json.loads(response.content)['columns']
+        self.assertEqual(len(response_columns), 0)
+        self.assertEqual(len(query.get_columns('4')), 0)

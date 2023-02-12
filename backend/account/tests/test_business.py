@@ -199,6 +199,29 @@ class UpdateColumnsTests(TestCase):
         self.assertEqual(len(query.get_columns('4')), 3)
 
 
+    def test_delete(self):
+        query.get_or_create_user({'google_id': '4'})
+        columns = business.update_columns('4', [
+            {'id': -1, 'name': 'New column', 'column_number': 0},
+            {'id': -1, 'name': 'Newer column', 'column_number': 1},
+            {'id': -1, 'name': 'Even newer column', 'column_number': 2},
+        ])
+
+        result_columns = business.update_columns('4', [
+            {
+                'id': columns[2].id,
+                'name': 'Even newer column',
+                'column_number': 2
+            },
+            {'id': columns[0].id, 'name': 'New column', 'column_number': 0},
+        ])
+
+        # Since column 1 was absent from the update request, it should be gone
+        self.assertEqual(result_columns[0]['id'], columns[0].id)
+        self.assertEqual(result_columns[1]['id'], columns[2].id)
+        self.assertEqual(len(query.get_columns('4')), 2)
+
+
     def test_nonexistent_user(self):
         # User doesn't exist
         with self.assertRaises(ObjectDoesNotExist):
@@ -206,3 +229,22 @@ class UpdateColumnsTests(TestCase):
                 {'id': -1, 'name': 'New column', 'column_number': 0},
                 {'id': -1, 'name': 'New column', 'column_number': 1},
             ])
+
+
+    def test_empty_payload(self):
+        query.get_or_create_user({'google_id': '4'})
+        business.update_columns('4', [
+            {'id': -1, 'name': 'New column', 'column_number': 0},
+            {'id': -1, 'name': 'Newer column', 'column_number': 1},
+            {'id': -1, 'name': 'Even newer column', 'column_number': 2},
+        ])
+
+        # If the user has columns, an empty update should delete all of them
+        result_columns = business.update_columns('4', [])
+        self.assertEqual(len(result_columns), 0)
+        self.assertEqual(len(query.get_columns('4')), 0)
+
+        # After that, an empty update shouldn't do anything
+        result_columns = business.update_columns('4', [])
+        self.assertEqual(len(result_columns), 0)
+        self.assertEqual(len(query.get_columns('4')), 0)

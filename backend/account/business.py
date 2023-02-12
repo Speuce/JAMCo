@@ -125,8 +125,17 @@ def update_columns(credential: str, payload: list[dict]) -> list[KanbanColumn]:
             raise ValueError(f'Column {column_spec} missing field: \
                              column_number')
 
-    # TODO: Go through the columns in the db and delete those whose ids in don't appear in the payload
-    existing_columns = {column.id: column for column in get_columns(credential)}
+    # Separate current columns into ones to update and ones to delete
+    ids_in_payload = [column_spec['id'] for column_spec in payload]
+    existing_columns = {}
+    ids_to_delete = []
+    for column in get_columns(credential):
+        if column.id in ids_in_payload:
+            existing_columns[column.id] = column
+        else:
+            ids_to_delete.append(column.id)
+    # Delete columns whose ids aren't in the payload
+    query.delete_columns(ids_to_delete)
 
     # Create, rename, and reorder columns
     for column_spec in payload:
