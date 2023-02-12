@@ -101,7 +101,6 @@ def rename_column(request: HttpRequest):
     credential = body['google_id']
     column_number = body['column_number']
     new_name = body['new_name']
-
     logger.debug(
         f'rename_column: {credential} changed column {column_number} to \
             {new_name}'
@@ -125,6 +124,8 @@ def reorder_column(request: HttpRequest):
     credential = body['google_id']
     column_number = body['column_number']
     new_column_number = body['new_column_number']
+    logger.debug(
+        f'reorder_column: {credential}, {column_number} -> {new_column_number}')
 
     try:
         changed_columns = business.reorder_column(
@@ -150,6 +151,7 @@ def delete_column(request: HttpRequest):
     body = read_request(request)
     credential = body['google_id']
     column_number = body['column_number']
+    logger.debug(f'delete_column: {credential}, {column_number}')
 
     try:
         changed_columns = business.delete_column(credential, column_number)
@@ -175,6 +177,7 @@ def update_columns(request: HttpRequest):
     body = read_request(request)
     credential = body['google_id']
     payload = body['payload']
+    logger.debug(f'update_column: {credential}, {payload}')
 
     try:
         columns = business.update_columns(credential, payload)
