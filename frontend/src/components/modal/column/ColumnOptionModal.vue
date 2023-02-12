@@ -44,7 +44,10 @@
           ** Unable to Delete Non-Empty Column **
         </h4>
         <h4 class="error-message left-pad" v-if="maxColumnsReached">
-          ** A Maximum of 8 Columns Are Supported **
+          ** A Maximum of {{ MAX_COLS }} Columns Are Supported **
+        </h4>
+        <h4 class="error-message left-pad" v-if="minColumnsReached">
+          ** A Minimum of {{ MIN_COLS }} Column is Required **
         </h4>
         <h4 class="error-message left-pad" v-if="invalidColumns">
           ** Ensure Each Column Has a Non-Empty Title **
@@ -77,6 +80,7 @@ import { VueDraggableNext } from 'vue-draggable-next'
 import { ref } from 'vue'
 
 const MAX_COLS = 8
+const MIN_COLS = 1
 const cols = ref([])
 const nextColId = ref(0) // set to max of existing cols + 1
 
@@ -101,7 +105,9 @@ export default {
     cols,
     unableToDeleteCol: false,
     maxColumnsReached: false,
+    minColumnsReached: false,
     MAX_COLS,
+    MIN_COLS,
     invalidColumns: false,
   }),
   setup(props) {
@@ -116,19 +122,24 @@ export default {
   methods: {
     hideWarnings() {
       this.maxColumnsReached = false
+      this.minColumnsReached = false
       this.unableToDeleteCol = false
       this.invalidColumns = false
     },
     deleteColumn(colId) {
       this.hideWarnings()
       if (!this.jobsByColumn[colId] || this.jobsByColumn[colId].length === 0) {
-        let updatedCols = []
-        cols.value.forEach((col) => {
-          if (col.id !== colId) {
-            updatedCols.push(col)
-          }
-        })
-        cols.value = updatedCols
+        if (cols.value.length > MIN_COLS) {
+          let updatedCols = []
+          cols.value.forEach((col) => {
+            if (col.id !== colId) {
+              updatedCols.push(col)
+            }
+          })
+          cols.value = updatedCols
+        } else {
+          this.minColumnsReached = true
+        }
       } else {
         this.unableToDeleteCol = true
       }

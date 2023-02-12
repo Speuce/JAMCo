@@ -86,7 +86,10 @@ export default {
     })
 
     colList.value.forEach((column) => {
-      if (jobsByColumn.value[column.id].length > 0) {
+      if (
+        jobsByColumn.value[column.id] &&
+        jobsByColumn.value[column.id].length > 0
+      ) {
         jobsByColumn.value[column.id] = jobsByColumn.value[column.id].sort(
           (a, b) => a.id - b.id,
         )
