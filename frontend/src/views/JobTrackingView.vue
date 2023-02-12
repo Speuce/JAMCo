@@ -45,7 +45,7 @@ import { ref } from 'vue'
 
 const jobsByColumn = ref({})
 const colList = ref([])
-const nextJobId = ref(0)
+const nextJobId = ref(0) // TODO: remove when backend integration complete
 const isNewJob = ref(false)
 
 export default {
@@ -59,23 +59,29 @@ export default {
       detailModalVisible: false,
       boardOptionModalVisible: false,
       selectedJob: {},
-      nextJobId,
+      nextJobId, // temp nextId which will be replaced by backend
       isNewJob,
       colList,
       jobsByColumn,
     }
   },
   setup() {
-    var maxId = 0
+    var maxId = 0 // TODO: remove when backend interated
     jobsByColumn.value = []
     colList.value = []
 
+    // TODO: get columns from backend instead of sampleColumnMapping
+    // Populate colList with KanbanColumns
     sampleColumnMapping.forEach((colMapping) => {
       colList.value.push(colMapping)
     })
+    // TODO: Remove since get_columns sorts columns by number already
     colList.value = colList.value.sort((a, b) => a.number - b.number)
 
+    // TODO: populate from backend instead of sampleJobs
+    // Populate jobsByColumn, mapping each job to their columnId
     sampleJobs.forEach((job) => {
+      // TODO: remove maxId check
       if (job.id > maxId) {
         maxId = job.id
       }
@@ -85,6 +91,8 @@ export default {
       jobsByColumn.value[job.columnId].push(job)
     })
 
+    // Order jobs within a column by job.id (initial, default vertical order)
+    // Same process as sortColumnJobsById method below (setup can't call methods)
     colList.value.forEach((column) => {
       if (
         jobsByColumn.value[column.id] &&
@@ -101,8 +109,12 @@ export default {
   methods: {
     createOrUpdateJob(job) {
       if (isNewJob.value) {
+        // TODO: add backend job record
+        // retrieve job (with backend-populated id)
+        // retrieved job will have Deadline objects with properly populated id fields
         isNewJob.value = false
       } else {
+        // Remove job from jobsByColumn
         colList.value.forEach((column) => {
           if (jobsByColumn.value[column.id]) {
             jobsByColumn.value[column.id] = jobsByColumn.value[
@@ -111,21 +123,19 @@ export default {
           }
         })
       }
+      // TODO: post to backend update_job
+      // populate jobsByColumn.value[job.id] with reponse job
       jobsByColumn.value[job.columnId].push(job)
-
-      // Post to database
     },
     updateColumns(columns) {
+      // TODO: post columns to update_columns
+      // update colList.value with response
+
       colList.value = columns
 
-      colList.value.forEach((column) => {
-        if (jobsByColumn.value[column.id]) {
-          jobsByColumn.value[column.id] = jobsByColumn.value[column.id].sort(
-            (a, b) => a.id - b.id,
-          )
-        }
-      })
+      this.sortColumnJobsById()
 
+      // Initialize any empty columns with empty array
       colList.value.forEach((col) => {
         if (!jobsByColumn.value[col.id]) {
           jobsByColumn.value[col.id] = []
@@ -139,9 +149,22 @@ export default {
       } else {
         // creating new job
         isNewJob.value = true
+        // TODO: set id to -1
         this.selectedJob = { id: nextJobId.value++ }
       }
       this.detailModalVisible = true
+    },
+    sortColumnJobsById() {
+      colList.value.forEach((column) => {
+        if (
+          jobsByColumn.value[column.id] &&
+          jobsByColumn.value[column.id].length > 0
+        ) {
+          jobsByColumn.value[column.id] = jobsByColumn.value[column.id].sort(
+            (a, b) => a.id - b.id,
+          )
+        }
+      })
     },
     closeDetailModal() {
       this.detailModalVisible = false

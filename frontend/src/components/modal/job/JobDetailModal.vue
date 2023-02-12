@@ -149,7 +149,7 @@
 import JobDetailDeadline from '../job/JobDetailDeadline.vue'
 import { ref } from 'vue'
 
-const nextDeadlineId = ref(0) // set to max of existing deadlines + 1
+const nextDeadlineId = ref(0) // TODO: remove once backend integration complete
 const deadlines = ref([])
 const selectedColumnId = ref(-1)
 
@@ -205,6 +205,7 @@ export default {
     newDeadline() {
       this.deadlineError = false
       deadlines.value.push({
+        // TODO: set default deadline to -1 (will be corrected in backend)
         id: nextDeadlineId.value++,
         title: '',
         date: '',

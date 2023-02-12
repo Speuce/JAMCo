@@ -4,7 +4,7 @@ import KanbanBoard from '../src/components/kanban/KanbanBoard.vue'
 import JobCard from '../src/components/kanban/JobCard.vue'
 import { expect, beforeEach, describe, it } from 'vitest'
 import testColumnMapping from './test_data/test_column_mapping.json'
-import testJobs from './test_data/test_jobs.json'
+import testJobsByColumn from './test_data/test_jobs_by_column.json'
 
 describe('KanbanBoard', () => {
   let wrapper
@@ -12,32 +12,11 @@ describe('KanbanBoard', () => {
   beforeEach(async () => {
     wrapper = mount(KanbanBoard, {
       props: {
-        jobs: getJobsByColumn(),
+        jobs: testJobsByColumn,
         columns: testColumnMapping,
       },
     })
   })
-
-  // Processing in JobTrackingView
-  function getJobsByColumn() {
-    let jobsByColumn = []
-
-    testJobs.forEach((job) => {
-      if (!jobsByColumn[job.columnId]) {
-        jobsByColumn[job.columnId] = []
-      }
-      jobsByColumn[job.columnId].push(job)
-    })
-
-    testColumnMapping.forEach((column) => {
-      if (jobsByColumn[column.id].length > 0) {
-        jobsByColumn[column.id] = jobsByColumn[column.id].sort(
-          (a, b) => a.id - b.id,
-        )
-      }
-    })
-    return jobsByColumn
-  }
 
   it('has the correct number of columns', () => {
     let columns = wrapper.findAllComponents(VueDraggableNext)

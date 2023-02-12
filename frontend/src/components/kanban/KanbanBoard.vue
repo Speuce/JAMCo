@@ -24,7 +24,7 @@
             <JobCard
               v-for="job in this.jobs[column.id]"
               :key="job.id"
-              :job="{ ...job }"
+              :job="job"
               class="job-card"
               @click="this.$emit('showDetailModal', job)"
             />

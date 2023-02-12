@@ -82,7 +82,7 @@ import { ref } from 'vue'
 const MAX_COLS = 8
 const MIN_COLS = 1
 const cols = ref([])
-const nextColId = ref(0) // set to max of existing cols + 1
+const nextColId = ref(0) // TODO: Remove once backend integration complete
 
 export default {
   components: {
@@ -113,6 +113,7 @@ export default {
   setup(props) {
     cols.value = []
     props.columns.forEach((col) => {
+      // TODO: remove if check
       if (col.id >= nextColId.value) {
         nextColId.value = col.id + 1
       }
