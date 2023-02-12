@@ -35,11 +35,6 @@ def get_columns(credential: str) -> list[KanbanColumn]:
     return list(columns.order_by('column_number'))
 
 
-def rename_column(
-        credential: str, column_number: int, new_name: str) -> KanbanColumn:
-    return query.rename_column(credential, column_number, new_name)
-
-
 def reorder_column(
         credential: str,
         column_number: int,
@@ -77,29 +72,6 @@ def reorder_column(
         for i in range(new_column_number, column_number):
             columns[i].column_number += 1
             changed_columns.append(columns[i])
-
-    for column in changed_columns:
-        column.save()
-
-    return changed_columns
-
-
-def delete_column(credential: str, column_number: int) -> list[KanbanColumn]:
-    changed_columns = []
-
-    columns = list(get_columns(credential))
-
-    if not 0 <= column_number < len(columns):
-        raise ValueError(f"Column number to delete ({column_number}) must be \
-                         between 0 and the number of the user's columns \
-                         ({len(columns)})"
-                        )
-
-    for i in range(column_number + 1, len(columns)):
-        columns[i].column_number -= 1
-        changed_columns.append(columns[i])
-
-    query.delete_column(credential, column_number)
 
     for column in changed_columns:
         column.save()

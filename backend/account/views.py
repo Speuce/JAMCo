@@ -54,24 +54,6 @@ def update_account(request: HttpRequest):
 
 
 @require_POST
-def create_column(request: HttpRequest):
-    """
-    Creates a column for a user, given the user's google id and a column name
-    """
-
-    body = read_request(request)
-    credential = body['google_id']
-    column_name = body['column_name']
-    logger.debug(f'create_column: {credential}, {column_name}')
-
-    try:
-        new_column = business.create_column(credential, column_name)
-        return JsonResponse(status=200, data=new_column.to_dict())
-    except ObjectDoesNotExist:
-        return JsonResponse(status=400, data={})
-
-
-@require_POST
 def get_columns(request: HttpRequest):
     """
     Gets all of the columns for a given user
@@ -92,80 +74,7 @@ def get_columns(request: HttpRequest):
         return JsonResponse(status=400, data={})
 
 
-def rename_column(request: HttpRequest):
-    """
-    Renames the specified column
-    """
-
-    body = read_request(request)
-    credential = body['google_id']
-    column_number = body['column_number']
-    new_name = body['new_name']
-    logger.debug(
-        f'rename_column: {credential} changed column {column_number} to \
-            {new_name}'
-    )
-
-    try:
-        column = business.rename_column(credential, column_number, new_name)
-        return JsonResponse(status=200, data={'column': column.to_dict()})
-    except ObjectDoesNotExist:
-        return JsonResponse(status=400, data={})
-
-
-def reorder_column(request: HttpRequest):
-    """
-    Changes the column number of the specified column. Other columns have their
-    column number changed to accomodate the moved column.
-    Returns all of the columns that had their column numbers changed.
-    """
-
-    body = read_request(request)
-    credential = body['google_id']
-    column_number = body['column_number']
-    new_column_number = body['new_column_number']
-    logger.debug(
-        f'reorder_column: {credential}, {column_number} -> {new_column_number}')
-
-    try:
-        changed_columns = business.reorder_column(
-            credential, column_number, new_column_number)
-        return JsonResponse(
-            status=200,
-            data={
-                'changed_columns': [
-                    column.to_dict() for column in changed_columns
-                ]
-            })
-    except (ObjectDoesNotExist, ValueError):
-        return JsonResponse(status=400, data={})
-
-
-def delete_column(request: HttpRequest):
-    """
-    Deletes the specified column. Some of the remaining columns will have their
-    column numbers adjusted using reorder_column to ensure that there are no
-    gaps.
-    """
-
-    body = read_request(request)
-    credential = body['google_id']
-    column_number = body['column_number']
-    logger.debug(f'delete_column: {credential}, {column_number}')
-
-    try:
-        changed_columns = business.delete_column(credential, column_number)
-        return JsonResponse(
-            status=200,
-            data={
-                'changed_columns': [
-                    column.to_dict() for column in changed_columns
-                ]
-            })
-    except (ObjectDoesNotExist, ValueError):
-        return JsonResponse(status=400, data={})
-
-
+@require_POST
 def update_columns(request: HttpRequest):
     """
     Called when the user presses the save button on the frontend column view.

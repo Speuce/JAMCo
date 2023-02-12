@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.core.exceptions import ObjectDoesNotExist
 from account import query, models
 
-class GetOrCreateTests(TestCase):
+class GetOrCreateUserTests(TestCase):
     def test_create_and_get_account(self):
         query.get_or_create_user({'google_id': '4'})
         # A user should exist after that query
@@ -101,57 +101,7 @@ class GetColumnsTests(TestCase):
             self.assertEqual(column.user.google_id, '4')
 
 
-class RenameColumnTests(TestCase):
-    def test_rename_column(self):
-        query.get_or_create_user({'google_id': '4'})
-        query.create_column('4', 'New column')
-        query.create_column('4', 'Newest column')
-        query.create_column('4', 'Newester column')
-
-        query.rename_column('4', 1, 'Renamed')
-
-        renamed_column = models.KanbanColumn.objects.get(
-            user=query.get_or_create_user({'google_id': '4'}), column_number=1)
-        self.assertEqual(renamed_column.name, 'Renamed')
-
-
-    def test_invalid_rename_column(self):
-        query.get_or_create_user({'google_id': '4'})
-        query.create_column('4', 'New column')
-
-        # Try renaming a column that doesn't exist
-        with self.assertRaises(ObjectDoesNotExist):
-            query.rename_column('4', 1, 'Totally real column')
-
-        # Try renaming a column for a user that doesn't exist
-        with self.assertRaises(ObjectDoesNotExist):
-            query.rename_column('53 55 53 53 59', 1, 'This is real I promise')
-
-
 class DeleteColumnTests(TestCase):
-    def test_delete_column(self):
-        query.get_or_create_user({'google_id': '4'})
-        query.create_column('4', 'New column')
-
-        query.delete_column('4', 0)
-        self.assertEqual(len(query.get_columns('4')), 0)
-
-
-    def test_invalid_delete_column(self):
-        query.get_or_create_user({'google_id': '4'})
-        query.create_column('4', 'uhh')
-
-        # Column number too low
-        with self.assertRaises(ObjectDoesNotExist):
-            query.delete_column('4', -1)
-        # Column number too high
-        with self.assertRaises(ObjectDoesNotExist):
-            query.delete_column('4', 1)
-        # User doesn't exist
-        with self.assertRaises(ObjectDoesNotExist):
-            query.delete_column('IIII', 0)
-
-
     def test_delete_columns(self):
         query.get_or_create_user({'google_id': '4'})
         column1 = query.create_column('4', 'New column')
@@ -167,4 +117,14 @@ class DeleteColumnTests(TestCase):
         query.delete_columns([column1.id, column2.id])
         self.assertEqual(len(query.get_columns('4')), 1)
         self.assertEqual(len(query.get_columns('5')), 4)
+
+    def test_invalid_delete_columns(self):
+        query.get_or_create_user({'google_id': '4'})
+        query.create_column('4', 'New column')
+        query.create_column('4', 'Newest column')
+
+        # Try deleting a column that doesn't exist
+        # By the pigeonhole principle, one of these ids must be invalid ;)
+        query.delete_columns([1, 2, 3])
+
 

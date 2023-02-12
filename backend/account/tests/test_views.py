@@ -55,32 +55,6 @@ class UpdateAccountTests(TestCase):
         self.assertEqual(response.status_code, 400)
 
 
-class CreateColumnTests(TestCase):
-    def test_create_column(self):
-        query.get_or_create_user({'google_id': '4'})
-        response = self.client.post(
-            reverse('create_column'),
-            json.dumps({'google_id': '4', 'column_name': 'New column'}),
-            content_type='application/json'
-        )
-
-        self.assertEqual(
-            json.loads(response.content),
-            {'name': 'New column', 'column_number': 0}
-        )
-        self.assertEqual(response.status_code, 200)
-
-
-    def test_invalid_create_column(self):
-        # User doesn't exist
-        response = self.client.post(
-            reverse('create_column'),
-            json.dumps({'google_id': '4', 'column_name': 'New column'}),
-            content_type='application/json'
-        )
-        self.assertEqual(response.status_code, 400)
-
-
 class GetColumnsTests(TestCase):
     def test_get_columns(self):
         query.get_or_create_user({'google_id': '4'})
@@ -94,261 +68,17 @@ class GetColumnsTests(TestCase):
             json.dumps({'google_id': '4'}),
             content_type='application/json'
         )
-        self.assertEqual(
-            json.loads(response.content)['columns'],
-            [
-                {'name': 'New column', 'column_number': 0},
-                {'name': 'Newer column', 'column_number': 1},
-                {'name': 'Even newer column', 'column_number': 2}
-            ]
-        )
+
+        response_columns = json.loads(response.content)['columns']
+        self.assertEqual(response_columns[0]['name'], 'New column')
+        self.assertEqual(response_columns[0]['column_number'], 0)
+        self.assertEqual(response_columns[1]['name'], 'Newer column')
+        self.assertEqual(response_columns[1]['column_number'], 1)
+        self.assertEqual(response_columns[2]['name'], 'Even newer column')
+        self.assertEqual(response_columns[2]['column_number'], 2)
+        self.assertEqual(len(query.get_columns('4')), 3)
+
         self.assertEqual(response.status_code, 200)
-
-
-class RenameColumnTests(TestCase):
-    def test_rename_column(self):
-        query.get_or_create_user({'google_id': '4'})
-        # Make several columns
-        query.create_column('4', 'New column')
-        query.create_column('4', 'Newer column')
-        query.create_column('4', 'Even newer column')
-
-        # Rename a couple of them
-        response1 = self.client.post(
-            reverse('rename_column'),
-            json.dumps({
-                'google_id': '4',
-                'column_number': 0,
-                'new_name': 'Old column'
-            }),
-            content_type='application/json'
-        )
-        self.assertEqual(response1.status_code, 200)
-        self.assertEqual(
-            json.loads(response1.content),
-            {'column': {'name': 'Old column', 'column_number': 0}},
-        )
-
-        response2 = self.client.post(
-            reverse('rename_column'),
-            json.dumps({
-                'google_id': '4',
-                'column_number': 1,
-                'new_name': 'The most powerful column'
-            }),
-            content_type='application/json'
-        )
-        self.assertEqual(response2.status_code, 200)
-        self.assertEqual(
-            json.loads(response2.content),
-            {
-                'column': {
-                    'name': 'The most powerful column',
-                    'column_number': 1
-                }
-            },
-        )
-
-        # Make sure all changes are reflected when we get all columns
-        response3 = self.client.post(
-            reverse('get_columns'),
-            json.dumps({'google_id': '4'}),
-            content_type='application/json'
-        )
-        self.assertEqual(
-            json.loads(response3.content),
-            { 'columns':
-                [
-                    {'name': 'Old column', 'column_number': 0},
-                    {'name': 'The most powerful column', 'column_number': 1},
-                    {'name': 'Even newer column', 'column_number': 2}
-                ]
-            }
-        )
-
-
-    def test_invalid_rename_column(self):
-        query.get_or_create_user({'google_id': '4'})
-        query.create_column('4', 'New column')
-
-        # Try renaming a column that doesn't exist
-        response1 = self.client.post(
-            reverse('rename_column'),
-            json.dumps({
-                'google_id': '4',
-                'column_number': 1,
-                'new_name': 'Totally real column'
-            }),
-            content_type='application/json'
-        )
-        self.assertEqual(response1.status_code, 400)
-        self.assertEqual(json.loads(response1.content), {})
-
-        # Try renaming a column for a user that doesn't exist
-        response3 = self.client.post(
-            reverse('rename_column'),
-            json.dumps({
-                'google_id': '53 55 53',
-                'column_number': 1,
-                'new_name': 'Totally real column'
-            }),
-            content_type='application/json'
-        )
-        self.assertEqual(response3.status_code, 400)
-        self.assertEqual(json.loads(response3.content), {})
-
-
-class ReorderColumnTests(TestCase):
-    def test_reorder_column(self):
-        query.get_or_create_user({'google_id': '4'})
-        query.create_column('4', 'Should be the second column')
-        query.create_column('4', 'Should be the first column')
-        query.create_column('4', 'Should be the third column')
-        # Oh no! The columns are in the wrong order!
-        response = self.client.post(
-            reverse('reorder_column'),
-            json.dumps({
-                'google_id': '4',
-                'column_number': 1,
-                'new_column_number': 0
-            }),
-            content_type='application/json'
-        )
-        self.assertEqual(response.status_code, 200)
-        # It should return the columns that were changed
-        self.assertEqual(
-            json.loads(response.content),
-            {'changed_columns':
-                [
-                    {'name': 'Should be the first column', 'column_number': 0},
-                    {'name': 'Should be the second column', 'column_number': 1},
-                ]
-            }
-        )
-
-
-    def test_invalid_reorder_column(self):
-        query.get_or_create_user({'google_id': '4'})
-        query.create_column('4', 'Should be the first column')
-        query.create_column('4', 'Should be the second column')
-
-        # This isn't how you delete a column >:(
-        response = self.client.post(
-            reverse('reorder_column'),
-            json.dumps({
-                'google_id': '4',
-                'column_number': 1,
-                'new_column_number': 99999999999
-            }),
-            content_type='application/json'
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(json.loads(response.content), {})
-
-        # Source column doesn't exist
-        response = self.client.post(
-            reverse('reorder_column'),
-            json.dumps({
-                'google_id': '4',
-                'column_number': 2,
-                'new_column_number': 0
-            }),
-            content_type='application/json'
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(json.loads(response.content), {})
-        # Source column doesn't exist, but it's out of range on the other end
-        response = self.client.post(
-            reverse('reorder_column'),
-            json.dumps({
-                'google_id': '4',
-                'column_number': -1,
-                'new_column_number': 0
-            }),
-            content_type='application/json'
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(json.loads(response.content), {})
-
-        # User doesn't exist
-        response = self.client.post(
-            reverse('reorder_column'),
-            json.dumps({
-                'google_id': 'four',
-                'column_number': 1,
-                'new_column_number': 0
-            }),
-            content_type='application/json'
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(json.loads(response.content), {})
-
-
-class DeleteColumnTests(TestCase):
-    def test_delete_column(self):
-        query.get_or_create_user({'google_id': '4'})
-        query.create_column('4', 'First column')
-        query.create_column('4', 'To be deleted')
-        query.create_column('4', 'To be second')
-
-        response = self.client.post(
-            reverse('delete_column'),
-            json.dumps({
-                'google_id': '4',
-                'column_number': 1,
-            }),
-            content_type='application/json'
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            json.loads(response.content),
-            {'changed_columns': [{'name': 'To be second', 'column_number': 1}]}
-        )
-        self.assertEqual(len(business.get_columns('4')), 2)
-
-
-    def test_invalid_delete_column(self):
-        query.get_or_create_user({'google_id': '4'})
-        query.create_column('4', "Pwease don't dewete me 🥺")
-
-        # Column number too low
-        response = self.client.post(
-            reverse('delete_column'),
-            json.dumps({
-                'google_id': '4',
-                'column_number': -1,
-            }),
-            content_type='application/json'
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(json.loads(response.content), {})
-        self.assertEqual(len(business.get_columns('4')), 1)
-
-        # Column number too high
-        response = self.client.post(
-            reverse('delete_column'),
-            json.dumps({
-                'google_id': '4',
-                'column_number': 1,
-            }),
-            content_type='application/json'
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(json.loads(response.content), {})
-        self.assertEqual(len(business.get_columns('4')), 1)
-
-        # User doesn't exist
-        response = self.client.post(
-            reverse('delete_column'),
-            json.dumps({
-                'google_id': 'IV',
-                'column_number': -1,
-            }),
-            content_type='application/json'
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(json.loads(response.content), {})
-        self.assertEqual(len(business.get_columns('4')), 1)
 
 
 class UpdateColumnsTests(TestCase):
@@ -426,14 +156,21 @@ class UpdateColumnsTests(TestCase):
         self.assertEqual(len(query.get_columns('4')), 2)
 
 
-    def test_invalid_new_column(self):
+    def test_invalid_request(self):
+        query.get_or_create_user({'google_id': '4'})
+        columns = business.update_columns('4', [
+            {'id': -1, 'name': 'New column', 'column_number': 0},
+            {'id': -1, 'name': 'Newer column', 'column_number': 1},
+            {'id': -1, 'name': 'Even newer column', 'column_number': 2},
+        ])
+
         # User doesn't exist
         response = self.client.post(
             reverse('update_columns'),
             json.dumps({
-                'google_id': '4',
+                'google_id': '5',
                 'payload': [{
-                    'id': -1,
+                    'id': columns[0].id,
                     'name': 'THE column',
                     'column_number': 0
                 }]
@@ -441,6 +178,9 @@ class UpdateColumnsTests(TestCase):
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 400)
+
+        # Make sure the request didn't update anything
+        self.assertEqual(business.get_columns('4')[0].name, 'New column')
 
 
     def test_rename(self):
