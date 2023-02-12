@@ -74,4 +74,3 @@ def delete_column(credential: str, column_number: int):
         user=User.objects.get(google_id=credential),
         column_number=column_number
     ).delete()
-

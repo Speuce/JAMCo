@@ -32,7 +32,7 @@ def create_column(
 def get_columns(credential: str) -> list[KanbanColumn]:
     columns = query.get_columns(credential)
     # Make sure the columns are sorted
-    return columns.order_by('column_number')
+    return list(columns.order_by('column_number'))
 
 
 def rename_column(
@@ -127,18 +127,25 @@ def update_columns(credential: str, payload: list[dict]) -> list[KanbanColumn]:
 
     # TODO: Go through the columns in the db and delete those whose ids in don't appear in the payload
     existing_columns = {column.id: column for column in get_columns(credential)}
+    # Since reordering columns can change several columns' numbers, we keep
+    # track of the original column numbers to make sure that we only reorder
+    # ones that the user wanted to reorder
+    old_column_numbers = {
+        column.id: column.column_number for column in get_columns(credential)}
 
+    # Create and rename columns
     for column_spec in payload:
         column_id = column_spec['id']
         if column_id not in existing_columns:
             # Create a new column
             create_column(
                 credential, column_spec['name'], column_spec['column_number'])
-        elif column_spec['name'] != existing_columns[column_id].name:
+        else:
             # Rename
             existing_columns[column_id].name = column_spec['name']
-
-            # TODO: Reorder
+            # Reorder
+            existing_columns[column_id].column_number = column_spec[
+                'column_number']
 
     for column in existing_columns.values():
         column.save()

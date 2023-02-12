@@ -426,38 +426,6 @@ class UpdateColumnsTests(TestCase):
         self.assertEqual(len(query.get_columns('4')), 2)
 
 
-    def test_conflict_between_new_and_old_column(self):
-        query.get_or_create_user({'google_id': '4'})
-        business.update_columns('4', [
-            {'id': -1, 'name': 'New column', 'column_number': 0},
-            {'id': -1, 'name': 'New column', 'column_number': 1},
-        ])
-
-        # Creating a new column with the same number as another one will push
-        # the other ones back
-        response = self.client.post(
-            reverse('update_columns'),
-            json.dumps({
-                'google_id': '4',
-                'payload': [{
-                    'id': -1,
-                    'name': 'The real new column',
-                    'column_number': 0
-                }]
-            }),
-            content_type='application/json'
-        )
-        self.assertEqual(response.status_code, 200)
-        columns = json.loads(response.content)['columns']
-        self.assertEqual(columns[0]['name'], 'The real new column')
-        self.assertEqual(columns[0]['column_number'], 0)
-        self.assertEqual(columns[1]['name'], 'New column')
-        self.assertEqual(columns[1]['column_number'], 1)
-        self.assertEqual(columns[2]['name'], 'New column')
-        self.assertEqual(columns[2]['column_number'], 2)
-        self.assertEqual(len(query.get_columns('4')), 3)
-
-
     def test_invalid_new_column(self):
         # User doesn't exist
         response = self.client.post(
@@ -497,7 +465,7 @@ class UpdateColumnsTests(TestCase):
                     {
                         'id': columns[1].id,
                         'name': 'The most powerful column',
-                        'column_number': 0
+                        'column_number': 1
                     },
                 ]
             }),
@@ -511,6 +479,121 @@ class UpdateColumnsTests(TestCase):
         self.assertEqual(columns[1]['column_number'], 1)
         self.assertEqual(columns[2]['name'], 'Even newer column')
         self.assertEqual(columns[2]['column_number'], 2)
+        self.assertEqual(len(query.get_columns('4')), 3)
+
+
+    def test_reorder(self):
+        query.get_or_create_user({'google_id': '4'})
+        columns = business.update_columns('4', [
+            {'id': -1, 'name': 'New column', 'column_number': 0},
+            {'id': -1, 'name': 'Newer column', 'column_number': 1},
+            {'id': -1, 'name': 'Even newer column', 'column_number': 2},
+        ])
+
+        # Make the third one be the first
+        response = self.client.post(
+            reverse('update_columns'),
+            json.dumps({
+                'google_id': '4',
+                'payload': [
+                    {
+                        'id': columns[0].id,
+                        'name': 'New column',
+                        'column_number': 1
+                    },
+                    {
+                        'id': columns[1].id,
+                        'name': 'Newer column',
+                        'column_number': 2
+                    },
+                    {
+                        'id': columns[2].id,
+                        'name': 'Even newer column',
+                        'column_number': 0
+                    },
+                ]
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        response_columns = json.loads(response.content)['columns']
+        self.assertEqual(response_columns[0]['id'], columns[2].id)
+        self.assertEqual(response_columns[1]['id'], columns[0].id)
+        self.assertEqual(response_columns[2]['id'], columns[1].id)
+        self.assertEqual(len(query.get_columns('4')), 3)
+
+
+    def test_out_of_bounds_reorder(self):
+        query.get_or_create_user({'google_id': '4'})
+        columns = business.update_columns('4', [
+            {'id': -1, 'name': 'New column', 'column_number': 0},
+            {'id': -1, 'name': 'Newer column', 'column_number': 1},
+            {'id': -1, 'name': 'Even newer column', 'column_number': 2},
+        ])
+
+        # Make the third one be the first. Er, the one at index negative-fifty.
+        # It should be treated as index zero anyway.
+        response = self.client.post(
+            reverse('update_columns'),
+            json.dumps({
+                'google_id': '4',
+                'payload': [
+                    {
+                        'id': columns[0].id,
+                        'name': 'New column',
+                        'column_number': 0
+                    },
+                    {
+                        'id': columns[1].id,
+                        'name': 'Newer column',
+                        'column_number': 1
+                    },
+                    {
+                        'id': columns[2].id,
+                        'name': 'Even newer column',
+                        'column_number': -50
+                    },
+                ]
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        response_columns = json.loads(response.content)['columns']
+        self.assertEqual(response_columns[0]['id'], columns[2].id)
+        self.assertEqual(response_columns[1]['id'], columns[0].id)
+        self.assertEqual(response_columns[2]['id'], columns[1].id)
+        self.assertEqual(len(query.get_columns('4')), 3)
+
+        # Do the same but with the index being invalid in the other direction
+        response = self.client.post(
+            reverse('update_columns'),
+            json.dumps({
+                'google_id': '4',
+                'payload': [
+                    {
+                        'id': columns[2].id,
+                        'name': 'Even newer column',
+                        'column_number': 500
+                    },
+                    {
+                        'id': columns[0].id,
+                        'name': 'New column',
+                        'column_number': 0
+                    },
+                    {
+                        'id': columns[1].id,
+                        'name': 'Newer column',
+                        'column_number': 1
+                    },
+                ]
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        response_columns = json.loads(response.content)['columns']
+        self.assertEqual(response_columns[0]['id'], columns[0].id)
+        self.assertEqual(response_columns[1]['id'], columns[1].id)
+        self.assertEqual(response_columns[2]['id'], columns[2].id)
         self.assertEqual(len(query.get_columns('4')), 3)
 
 
