@@ -26,7 +26,6 @@ export default {
 
   methods: {
     async onSignin(response) {
-      console.log(response)
       const item = {
         credential: response.credential,
         client_id: response.client_id,

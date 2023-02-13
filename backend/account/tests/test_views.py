@@ -10,7 +10,7 @@ class GetOrCreateAccountTests(TestCase):
     def test_get_or_create_account(self):
         request = self.factory.post(
             "/get_or_create_account",
-            data='{"credential": "test_credential"}',
+            data='{"credential": "test_credential", "client_id": test_id}',
             content_type="application/json",
         )
         response = get_or_create_account(request)

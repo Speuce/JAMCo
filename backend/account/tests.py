@@ -29,8 +29,8 @@ class AccountTestCase(TestCase):
             **self.header,
         )
         self.assertEqual(response.status_code, 200)
-        # The query should return the user's id. Since this is the first user in
-        # the database, it has an id of 1.
+        # The query should return the User object. Since a mock is used,
+        # the id is as given
         self.assertEqual(
             json.loads(response.content)["data"],
             {
