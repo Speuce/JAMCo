@@ -23,7 +23,6 @@ def get_or_create_account(request: HttpRequest):
     Creates a new account, given google id token.
     Will use the google id token to get the user's information.
     """
-    logger.debug("Here!")
     if not request.COOKIES.get("csrftoken"):
         return HttpResponse("No CSRF Token in Cookie", status=401)
     elif not request.headers.get("X-Csrftoken"):
