@@ -14,7 +14,6 @@ from . import business
 
 logger = logging.getLogger(__name__)
 
-logger.debug("SETUP")
 
 
 @require_POST
