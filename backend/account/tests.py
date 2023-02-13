@@ -132,3 +132,13 @@ class AccountTestCase(TestCase):
         # User not specified
         with self.assertRaises(KeyError):
             query.update_user({"first_name": "Rob"})
+
+    def test_invalid_oauth_properties(self, mock_verify_oauth2_token):
+        # Try to create a user when providing an incorrect id
+        response = self.client.post(
+            reverse("get_or_create_account"),
+            json.dumps({"credential": "garbage", "client_id": "unusable"}),
+            content_type="application/json",
+            **self.header,
+        )
+        self.assertEqual(response.status_code, 401)

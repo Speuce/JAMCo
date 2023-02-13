@@ -55,7 +55,7 @@ def get_or_create_account(request: HttpRequest):
             # if None -> first login, redirect to account setup
             # regardless, post to login_user endpoint to set value?
             return JsonResponse({"data": user.to_dict()})
-        else:
+        else:  # probably removable
             return HttpResponse("Token Authentication Failed", status=401)
 
     except ValueError as err_msg:
