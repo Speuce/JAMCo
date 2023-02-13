@@ -94,6 +94,7 @@ describe('ColumnOptionModal', () => {
     expect(wrapper.vm.maxColumnsReached).toBe(false)
     wrapper.vm.addColumn()
     expect(wrapper.vm.maxColumnsReached).toBe(true)
+    expect(wrapper.vm.cols.length).toBe(8)
   })
 
   it('requires minimum of 1 column', () => {
@@ -110,5 +111,6 @@ describe('ColumnOptionModal', () => {
     expect(wrapper.vm.minColumnsReached).toBe(false)
     wrapper.vm.deleteColumn(2)
     expect(wrapper.vm.minColumnsReached).toBe(true)
+    expect(wrapper.vm.cols.length).toBe(1)
   })
 })
