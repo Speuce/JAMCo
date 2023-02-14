@@ -1,11 +1,10 @@
 import { mount } from '@vue/test-utils'
 import JobDetailDeadline from '../src/components/modal/job/JobDetailDeadline.vue'
-import { expect, beforeEach, describe, it, vi } from 'vitest'
+import { expect, beforeEach, describe, it } from 'vitest'
 import Datepicker from '@vuepic/vue-datepicker'
 
 describe('JobDetailDeadline', () => {
   let wrapper
-  let deleteDeadline = vi.fn()
   let deadline = {
     id: 1,
     title: 'testTitle',
@@ -16,7 +15,6 @@ describe('JobDetailDeadline', () => {
     wrapper = mount(JobDetailDeadline, {
       props: {
         deadline,
-        deleteDeadline,
       },
     })
   })

@@ -25,3 +25,12 @@ class User(AbstractUser):
             "field_of_work": self.field_of_work,
             "last_login": self.last_login,
         }
+
+
+class KanbanColumn(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=30)
+    column_number = models.IntegerField()
+
+    def to_dict(self):
+        return {'id': self.id, 'name': self.name, 'column_number': self.column_number}

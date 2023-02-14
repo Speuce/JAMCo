@@ -26,4 +26,8 @@ urlpatterns = [
          account_views.get_or_create_account, name='get_or_create_account'),
     path('account/api/update_account',
          account_views.update_account, name='update_account'),
+    path('account/api/get_columns',
+        account_views.get_columns, name='get_columns'),
+    path('account/api/update_columns',
+        account_views.update_columns, name='update_columns'),
 ]

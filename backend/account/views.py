@@ -79,3 +79,49 @@ def update_account(request: HttpRequest):
         return JsonResponse(status=400, data={})
 
     return JsonResponse(status=200, data={})
+
+
+@require_POST
+def get_columns(request: HttpRequest):
+    """
+    Gets all of the columns for a given user
+    """
+
+    body = read_request(request)
+    user_id = body['user_id']
+    logger.debug(f'get_columns: {user_id}')
+
+    try:
+        columns = business.get_columns(user_id)
+
+        return JsonResponse(
+            status=200,
+            data={'columns': [column.to_dict() for column in columns]}
+        )
+    except ObjectDoesNotExist:
+        return JsonResponse(status=400, data={})
+
+
+@require_POST
+def update_columns(request: HttpRequest):
+    """
+    Called when the user presses the save button on the frontend column view.
+    Takes the user's list of columns (which have been updated on the frontend)
+    and reflects those changes in the database. Returns all of the user's
+    columns.
+    """
+
+    body = read_request(request)
+    user_id = body['user_id']
+    payload = body['payload']
+    logger.debug(f'update_columns: {user_id}, {payload}')
+
+    try:
+        columns = business.update_columns(user_id, payload)
+        return JsonResponse(
+            status=200,
+            data={'columns': [column.to_dict() for column in columns]}
+        )
+    except (ObjectDoesNotExist):
+        return JsonResponse(status=400, data={})
+
