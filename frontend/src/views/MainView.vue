@@ -1,6 +1,6 @@
 <template>
   <div class="page-container">
-    <LoginModalTest v-if="!userData" />
+    <LoginModalTest v-if="!userData" @signin="userSignedIn" />
     <JobTrackingView />
   </div>
 </template>
@@ -19,6 +19,14 @@ export default {
       userData: null,
       // TODO grab user data from cookie
     }
+  },
+  methods: {
+    userSignedIn(userData) {
+      this.userData = userData
+      // TODO navigate to next step
+
+      // TODO set cookie
+    },
   },
 }
 </script>

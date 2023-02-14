@@ -13,9 +13,15 @@
             Sign in to JAMCo to manage and track your job applications
           </p>
         </v-row>
-        <v-row justify="center mt-8">
+        <v-row justify="center" class="mt-8">
           <div width="200" height="200">
-            <GoogleSignin />
+            <GoogleSignin
+              @signin="
+                (usr) => {
+                  $emit('signin', usr)
+                }
+              "
+            />
           </div>
         </v-row>
       </v-col>
