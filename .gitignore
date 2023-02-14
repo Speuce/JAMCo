@@ -4,3 +4,5 @@ backend/jamco/__pycache__/
 */dist/*
 *.log
 */tmp/*
+
+backend/.coverage
