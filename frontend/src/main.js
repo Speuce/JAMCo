@@ -13,7 +13,6 @@ import * as directives from 'vuetify/directives'
 
 // DatePicker
 import Datepicker from '@vuepic/vue-datepicker'
-import '@vuepic/vue-datepicker/dist/main.css'
 
 const vuetify = createVuetify({
   components,
