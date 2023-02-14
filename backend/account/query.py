@@ -21,8 +21,8 @@ def get_or_create_user(payload: dict) -> User:
             first_name=payload["given_name"]
             if payload.get("given_name")
             else "No First Name Found",
-            last_name=payload["family_name"]
-            if payload.get("family_name")
+            last_name = payload.get("family_name") 
+            if payload.get("family_name") else ""
             else "No Last Name Found",
         )
 
