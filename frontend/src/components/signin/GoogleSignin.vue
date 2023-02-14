@@ -28,12 +28,9 @@ export default {
         credential: response.credential,
         client_id: response.client_id,
       }
-      const userData = await postRequest(
-        'account/api/get_or_create_account',
-        item,
-      )
-      console.log('Userdata: ', userData)
-      this.$emit('signin', userData)
+      const resp = await postRequest('account/api/get_or_create_account', item)
+      console.log('Userdata: ', resp.data)
+      this.$emit('signin', resp)
     },
   },
 }

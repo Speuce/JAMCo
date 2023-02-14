@@ -21,10 +21,11 @@ export default {
     }
   },
   methods: {
-    userSignedIn(userData) {
-      this.userData = userData
-      // TODO navigate to next step
-
+    userSignedIn(resp) {
+      this.userData = resp.data
+      if (resp.created) {
+        // TODO navigate to next step @jared
+      }
       // TODO set cookie
     },
   },

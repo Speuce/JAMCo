@@ -17,8 +17,8 @@
           <div width="200" height="200">
             <GoogleSignin
               @signin="
-                (usr) => {
-                  $emit('signin', usr)
+                (resp) => {
+                  $emit('signin', resp)
                 }
               "
             />
