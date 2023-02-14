@@ -14,6 +14,11 @@
       :columns="colList"
       :jobsByColumn="jobsByColumn"
     />
+    <AccountSetupModal
+      v-if="setupModalVisible"
+      @close="closeBoardOptionModal"
+      @updateUserAccount="updateUserAccount"
+    />
     <div class="header-container">
       <h2 class="internal">Your Applications</h2>
       <div>
@@ -42,6 +47,7 @@ import sampleJobs from '../../__tests__/test_data/test_jobs.json'
 import JobDetailModal from '../components/modal/job/JobDetailModal.vue'
 import ColumnOptionModal from '../components/modal/column/ColumnOptionModal.vue'
 import { ref } from 'vue'
+import AccountSetupModal from '../components/modal/setup/AccountSetupModal.vue'
 
 const jobsByColumn = ref({})
 const colList = ref([])
@@ -53,11 +59,13 @@ export default {
     KanbanBoard,
     JobDetailModal,
     ColumnOptionModal,
+    AccountSetupModal,
   },
   data() {
     return {
       detailModalVisible: false,
       boardOptionModalVisible: false,
+      setupModalVisible: true,
       selectedJob: {},
       nextJobId, // temp nextId which will be replaced by backend
       isNewJob,
@@ -166,6 +174,11 @@ export default {
         }
       })
     },
+    updateUserAccount(userData) {
+      // eslint-disable-next-line no-console
+      console.log(userData)
+      // post to backend update_user
+    },
     closeDetailModal() {
       this.detailModalVisible = false
     },
@@ -174,6 +187,9 @@ export default {
     },
     showBoardOptionModal() {
       this.boardOptionModalVisible = true
+    },
+    closeSetupModal() {
+      this.setupModalVisible = false
     },
   },
 }
