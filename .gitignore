@@ -4,3 +4,6 @@ backend/jamco/__pycache__/
 */dist/*
 *.log
 */tmp/*
+
+backend/.coverage
+backend/.vscode/settings.json
