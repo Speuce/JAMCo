@@ -60,11 +60,11 @@ def get_columns(request: HttpRequest):
     """
 
     body = read_request(request)
-    credential = body['google_id']
-    logger.debug(f'create_column: {credential}')
+    user_id = body['user_id']
+    logger.debug(f'get_columns: {user_id}')
 
     try:
-        columns = business.get_columns(credential)
+        columns = business.get_columns(user_id)
 
         return JsonResponse(
             status=200,
@@ -84,12 +84,12 @@ def update_columns(request: HttpRequest):
     """
 
     body = read_request(request)
-    credential = body['google_id']
+    user_id = body['user_id']
     payload = body['payload']
-    logger.debug(f'update_column: {credential}, {payload}')
+    logger.debug(f'update_columns: {user_id}, {payload}')
 
     try:
-        columns = business.update_columns(credential, payload)
+        columns = business.update_columns(user_id, payload)
         return JsonResponse(
             status=200,
             data={'columns': [column.to_dict() for column in columns]}

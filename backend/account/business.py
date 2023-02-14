@@ -11,7 +11,7 @@ def get_or_create_user(payload: dict) -> User:
     is_new = not query.user_exists(payload['google_id'])
     user = query.get_or_create_user(payload)
     if (is_new):
-        create_default_columns(payload['google_id'])
+        create_default_columns(user.id)
 
     return user
 
@@ -20,20 +20,20 @@ def update_user(payload: dict):
     query.update_user(payload)
 
 
-def get_columns(credential: str) -> list[KanbanColumn]:
-    columns = query.get_columns(credential)
+def get_columns(user_id: int) -> list[KanbanColumn]:
+    columns = query.get_columns(user_id)
     # Make sure the columns are sorted
     return list(columns.order_by('column_number'))
 
 
-def create_default_columns(credential: str):
-    query.create_column(credential, 'To Apply', 0)
-    query.create_column(credential, 'Application Submitted', 1)
-    query.create_column(credential, 'OA', 2)
-    query.create_column(credential, 'Interview', 3)
+def create_default_columns(user_id: int):
+    query.create_column(user_id, 'To Apply', 0)
+    query.create_column(user_id, 'Application Submitted', 1)
+    query.create_column(user_id, 'OA', 2)
+    query.create_column(user_id, 'Interview', 3)
 
 
-def update_columns(credential: str, payload: list[dict]) -> list[KanbanColumn]:
+def update_columns(user_id: int, payload: list[dict]) -> list[KanbanColumn]:
     # Ensure that all fields are present and valid before doing any operations
     for column_spec in payload:
         if 'id' not in column_spec:
@@ -48,7 +48,7 @@ def update_columns(credential: str, payload: list[dict]) -> list[KanbanColumn]:
     ids_in_payload = [column_spec['id'] for column_spec in payload]
     existing_columns = {}
     ids_to_delete = []
-    for column in get_columns(credential):
+    for column in get_columns(user_id):
         if column.id in ids_in_payload:
             existing_columns[column.id] = column
         else:
@@ -62,7 +62,7 @@ def update_columns(credential: str, payload: list[dict]) -> list[KanbanColumn]:
         if column_id not in existing_columns:
             # Create a new column
             query.create_column(
-                credential, column_spec['name'], column_spec['column_number'])
+                user_id, column_spec['name'], column_spec['column_number'])
         else:
             # Rename
             existing_columns[column_id].name = column_spec['name']
@@ -73,4 +73,4 @@ def update_columns(credential: str, payload: list[dict]) -> list[KanbanColumn]:
     for column in existing_columns.values():
         column.save()
 
-    return get_columns(credential)
+    return get_columns(user_id)
