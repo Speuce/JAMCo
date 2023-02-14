@@ -6,8 +6,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'tracking',
-      component: () => import('../views/JobTrackingView.vue'),
+      name: 'main',
+      component: () => import('../views/MainView.vue'),
     },
     {
       path: '/sandbox',
