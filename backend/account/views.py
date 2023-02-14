@@ -15,7 +15,6 @@ from . import business
 logger = logging.getLogger(__name__)
 
 
-
 @require_POST
 def get_or_create_account(request: HttpRequest):
     """
@@ -43,16 +42,15 @@ def get_or_create_account(request: HttpRequest):
         )
 
         # ID token is valid. Get the user's Google Account ID from the decoded token.
-        if idinfo.get("sub"):
-            logger.debug(f"Credential Validated for User.google_id: { idinfo['sub'] }")
+        logger.debug(f"Credential Validated for User.google_id: { idinfo['sub'] }")
 
-            user = business.get_or_create_user(idinfo)
-            logger.debug(f"Returned user:\n{user.to_dict()}")
-            # Need some way to differenciate first-time logins
-            # check user.last_login in frontend
-            # if None -> first login, redirect to account setup
-            # regardless, post to login_user endpoint to set value?
-            return JsonResponse({"data": user.to_dict()})
+        user = business.get_or_create_user(idinfo)
+        logger.debug(f"Returned user:\n{user.to_dict()}")
+        # Need some way to differenciate first-time logins
+        # check user.last_login in frontend
+        # if None -> first login, redirect to account setup
+        # regardless, post to login_user endpoint to set value?
+        return JsonResponse({"data": user.to_dict()})
 
     except ValueError as err_msg:
         # Invalid token
