@@ -211,8 +211,8 @@ export default {
 }
 .datepicker {
   padding-bottom: 20px;
-  --dp-icon-color: #8e8e8e;
-  --dp-border-color: #8e8e8e;
+  --dp-icon-color: #9f9f9f;
+  --dp-border-color: #9f9f9f;
   --dp-border-color-hover: #2d2d2d;
   width: 100%;
 }
