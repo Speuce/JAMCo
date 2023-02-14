@@ -1,5 +1,5 @@
 <template>
-  <div class="page-container">
+  <div>
     <JobDetailModal
       v-if="detailModalVisible"
       @close="closeModal"
@@ -46,6 +46,7 @@ export default {
   data() {
     return {
       detailModalVisible: false,
+
       selectedJob: {},
       nextJobId,
       isNewJob,
@@ -55,16 +56,18 @@ export default {
   },
   setup() {
     let maxId = 0
-    sampleJobs.forEach((job) => {
-      jobList.value.push(job)
-      if (job.id > maxId) {
-        maxId = job.id
-      }
-    })
-    sampleColumnMapping.forEach((colMapping) => {
-      colList.value.push(colMapping)
-    })
-    nextJobId.value = maxId + 1
+    if (!jobList.value.length) {
+      sampleJobs.forEach((job) => {
+        jobList.value.push(job)
+        if (job.id > maxId) {
+          maxId = job.id
+        }
+      })
+      sampleColumnMapping.forEach((colMapping) => {
+        colList.value.push(colMapping)
+      })
+      nextJobId.value = maxId + 1
+    }
   },
   methods: {
     createOrUpdateJob(job) {
@@ -104,12 +107,7 @@ h2 {
     'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
-.page-container {
-  margin: 1rem 2rem 2rem 2rem;
-  min-width: 100vw;
-  padding-right: 3.5rem;
-  overflow: auto;
-}
+
 .header-container {
   color: black;
   display: flex;
