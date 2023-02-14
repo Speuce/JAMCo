@@ -14,8 +14,6 @@ from . import business
 
 logger = logging.getLogger(__name__)
 
-logger.debug("SETUP")
-
 
 @require_POST
 def get_or_create_account(request: HttpRequest):
@@ -23,7 +21,6 @@ def get_or_create_account(request: HttpRequest):
     Creates a new account, given google id token.
     Will use the google id token to get the user's information.
     """
-    logger.debug("Here!")
     if not request.COOKIES.get("csrftoken"):
         return HttpResponse("No CSRF Token in Cookie", status=401)
     elif not request.headers.get("X-Csrftoken"):
@@ -45,18 +42,15 @@ def get_or_create_account(request: HttpRequest):
         )
 
         # ID token is valid. Get the user's Google Account ID from the decoded token.
-        if idinfo["sub"]:
-            logger.debug(f"Credential Validated for User.google_id: { idinfo['sub'] }")
+        logger.debug(f"Credential Validated for User.google_id: { idinfo['sub'] }")
 
-            user = business.get_or_create_user(idinfo)
-            logger.debug(f"Returned user:\n{user.to_dict()}")
-            # Need some way to differenciate first-time logins
-            # check user.last_login in frontend
-            # if None -> first login, redirect to account setup
-            # regardless, post to login_user endpoint to set value?
-            return JsonResponse({"data": user.to_dict()})
-        else:  # probably removable
-            return HttpResponse("Token Authentication Failed", status=401)
+        user = business.get_or_create_user(idinfo)
+        logger.debug(f"Returned user:\n{user.to_dict()}")
+        # Need some way to differenciate first-time logins
+        # check user.last_login in frontend
+        # if None -> first login, redirect to account setup
+        # regardless, post to login_user endpoint to set value?
+        return JsonResponse({"data": user.to_dict()})
 
     except ValueError as err_msg:
         # Invalid token
@@ -85,3 +79,49 @@ def update_account(request: HttpRequest):
         return JsonResponse(status=400, data={})
 
     return JsonResponse(status=200, data={})
+
+
+@require_POST
+def get_columns(request: HttpRequest):
+    """
+    Gets all of the columns for a given user
+    """
+
+    body = read_request(request)
+    user_id = body['user_id']
+    logger.debug(f'get_columns: {user_id}')
+
+    try:
+        columns = business.get_columns(user_id)
+
+        return JsonResponse(
+            status=200,
+            data={'columns': [column.to_dict() for column in columns]}
+        )
+    except ObjectDoesNotExist:
+        return JsonResponse(status=400, data={})
+
+
+@require_POST
+def update_columns(request: HttpRequest):
+    """
+    Called when the user presses the save button on the frontend column view.
+    Takes the user's list of columns (which have been updated on the frontend)
+    and reflects those changes in the database. Returns all of the user's
+    columns.
+    """
+
+    body = read_request(request)
+    user_id = body['user_id']
+    payload = body['payload']
+    logger.debug(f'update_columns: {user_id}, {payload}')
+
+    try:
+        columns = business.update_columns(user_id, payload)
+        return JsonResponse(
+            status=200,
+            data={'columns': [column.to_dict() for column in columns]}
+        )
+    except (ObjectDoesNotExist):
+        return JsonResponse(status=400, data={})
+
