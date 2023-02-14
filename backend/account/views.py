@@ -45,7 +45,7 @@ def get_or_create_account(request: HttpRequest):
         )
 
         # ID token is valid. Get the user's Google Account ID from the decoded token.
-        if idinfo["sub"]:
+        if idinfo.get("sub"):
             logger.debug(f"Credential Validated for User.google_id: { idinfo['sub'] }")
 
             user = business.get_or_create_user(idinfo)
@@ -55,8 +55,6 @@ def get_or_create_account(request: HttpRequest):
             # if None -> first login, redirect to account setup
             # regardless, post to login_user endpoint to set value?
             return JsonResponse({"data": user.to_dict()})
-        else:  # probably removable
-            return HttpResponse("Token Authentication Failed", status=401)
 
     except ValueError as err_msg:
         # Invalid token

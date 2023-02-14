@@ -142,3 +142,48 @@ class AccountTestCase(TestCase):
             **self.header,
         )
         self.assertEqual(response.status_code, 401)
+
+        ## No CSRF in Cookie
+        self.client.cookies = SimpleCookie({"not_a_csrftoken": "not_the_droid"})
+        self.header = {
+            "ACCEPT": "application/json",
+            "HTTP_X-CSRFToken": "valid_csrf_token",
+        }
+        # Post the request
+        response = self.client.post(
+            reverse("get_or_create_account"),
+            json.dumps({"credential": "whatever", "client_id": "8675309"}),
+            content_type="application/json",
+            **self.header,
+        )
+        self.assertEqual(response.status_code, 401)
+
+        ## No CSRF in Header
+        self.client.cookies = SimpleCookie({"csrftoken": "valid_csrf_token"})
+        self.header = {
+            "ACCEPT": "application/json",
+            "NOT_HTTP_X-CSRFToken": "actual_trash",
+        }
+        # Post the request
+        response = self.client.post(
+            reverse("get_or_create_account"),
+            json.dumps({"credential": "whatever", "client_id": "8675309"}),
+            content_type="application/json",
+            **self.header,
+        )
+        self.assertEqual(response.status_code, 401)
+
+        ## CSRFs do not match
+        self.client.cookies = SimpleCookie({"csrftoken": "one_csrf_token"})
+        self.header = {
+            "ACCEPT": "application/json",
+            "HTTP_X-CSRFToken": "other_csrf_token",
+        }
+        # Post the request
+        response = self.client.post(
+            reverse("get_or_create_account"),
+            json.dumps({"credential": "whatever", "client_id": "8675309"}),
+            content_type="application/json",
+            **self.header,
+        )
+        self.assertEqual(response.status_code, 401)
