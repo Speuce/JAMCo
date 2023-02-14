@@ -25,7 +25,8 @@ def get_or_create_account(request: HttpRequest):
         return HttpResponse("No CSRF Token in Cookie", status=401)
     elif not request.headers.get("X-Csrftoken"):
         return HttpResponse("No CSRF Token in Header", status=401)
-    elif request.COOKIES.get("csrftoken") != request.headers.get("X-Csrftoken"):
+    elif request.COOKIES.get("csrftoken") != request.headers.get(
+            "X-Csrftoken"):
         return HttpResponse("CSRF Validation Failed", status=401)
 
     body = read_request(request)
@@ -37,12 +38,14 @@ def get_or_create_account(request: HttpRequest):
     # Verify Credentials via Google
     try:
         # Specify the CLIENT_ID of the app that accesses the backend:
-        idinfo = id_token.verify_oauth2_token(
-            credential, requests.Request(), client_id, clock_skew_in_seconds=5
-        )
+        idinfo = id_token.verify_oauth2_token(credential,
+                                              requests.Request(),
+                                              client_id,
+                                              clock_skew_in_seconds=5)
 
         # ID token is valid. Get the user's Google Account ID from the decoded token.
-        logger.debug(f"Credential Validated for User.google_id: { idinfo['sub'] }")
+        logger.debug(
+            f"Credential Validated for User.google_id: { idinfo['sub'] }")
 
         user, created = business.get_or_create_user(idinfo)
         # Need some way to differenciate first-time logins
@@ -94,9 +97,9 @@ def get_columns(request: HttpRequest):
         columns = business.get_columns(user_id)
 
         return JsonResponse(
-            status=200, data={"columns": [column.to_dict() for column in columns]}
-        )
-    except ObjectDoesNotExist:
+            status=200,
+            data={'columns': [column.to_dict() for column in columns]})
+    except Exception:
         return JsonResponse(status=400, data={})
 
 
@@ -117,7 +120,7 @@ def update_columns(request: HttpRequest):
     try:
         columns = business.update_columns(user_id, payload)
         return JsonResponse(
-            status=200, data={"columns": [column.to_dict() for column in columns]}
-        )
-    except ObjectDoesNotExist:
+            status=200,
+            data={'columns': [column.to_dict() for column in columns]})
+    except Exception:
         return JsonResponse(status=400, data={})
