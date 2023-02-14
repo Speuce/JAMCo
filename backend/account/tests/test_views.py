@@ -5,7 +5,7 @@ from account import business, query
 from unittest import mock
 from django.http.cookie import SimpleCookie
 from django.core.exceptions import ObjectDoesNotExist
-from . import query, models
+from account import query, models
 
 
 class GetOrCreateAccountTests(TransactionTestCase):
