@@ -2,7 +2,7 @@
   <v-row>
     <v-col cols="12" sm="5">
       <v-text-field
-        label="Deadline"
+        label="Deadline*"
         v-model="deadlineModel.title"
         @change="updateDeadline"
         :style="{
@@ -15,6 +15,7 @@
       <Datepicker
         v-model="deadlineModel.date"
         :enable-time-picker="false"
+        placeholder="Date*"
         @update:model-value="updateDate"
         :style="{
           '--dp-background-color':
@@ -44,7 +45,7 @@ export default {
   components: {
     Datepicker,
   },
-  emits: ['updateDeadline', 'deleteDeadline'],
+  emits: ['change', 'updateDeadline', 'deleteDeadline'],
   props: {
     deadline: {
       type: Object,
