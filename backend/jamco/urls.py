@@ -15,15 +15,24 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
+
 from account import views as account_views
 from .views import index
 
 urlpatterns = [
-    path('', index),
-    path('sandbox', index),
-    path('admin/', admin.site.urls),
-    path('account/api/get_or_create_account',
-         account_views.get_or_create_account, name='get_or_create_account'),
-    path('account/api/update_account',
-         account_views.update_account, name='update_account'),
-]
+    path("", index),
+    path("sandbox", index),
+    path("admin/", admin.site.urls),
+    path(
+        "account/api/get_or_create_account",
+        account_views.get_or_create_account,
+        name="get_or_create_account",
+    ),
+    path(
+        "account/api/update_account",
+        account_views.update_account,
+        name="update_account",
+    ),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
