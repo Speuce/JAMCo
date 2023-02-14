@@ -40,7 +40,7 @@ class GetOrCreateAccountTests(TransactionTestCase):
                 "google_id": "unique_user_id",
                 "username": 0,
                 "image_url": None,
-                "last_name": "No Last Name Found",
+                "last_name": "",
                 "birthday": None,
                 "city": None,
                 "country": None,
