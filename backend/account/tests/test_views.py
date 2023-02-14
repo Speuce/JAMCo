@@ -27,7 +27,10 @@ class GetOrCreateAccountTests(TransactionTestCase):
         }
         response = self.client.post(
             reverse("get_or_create_account"),
-            json.dumps({"credential": "whatever", "client_id": "8675309"}),
+            json.dumps({
+                "credential": "whatever",
+                "client_id": "8675309"
+            }),
             content_type="application/json",
             **self.header,
         )
@@ -54,6 +57,7 @@ class GetOrCreateAccountTests(TransactionTestCase):
 
 @mock.patch("google.oauth2.id_token.verify_oauth2_token")
 class UpdateAccountTests(TestCase):
+
     def setUp(self):
         self.client.cookies = SimpleCookie({"csrftoken": "valid_csrf_token"})
         self.header = {
@@ -70,7 +74,10 @@ class UpdateAccountTests(TestCase):
         # Create an account first
         self.client.post(
             reverse("get_or_create_account"),
-            json.dumps({"credential": "whatever", "client_id": "8675309"}),
+            json.dumps({
+                "credential": "whatever",
+                "client_id": "8675309"
+            }),
             content_type="application/json",
             **self.header,
         )
@@ -78,7 +85,10 @@ class UpdateAccountTests(TestCase):
         # Try updating it, the request should succeed
         response = self.client.post(
             reverse("update_account"),
-            json.dumps({"google_id": "unique_user_id", "first_name": "Rob"}),
+            json.dumps({
+                "google_id": "unique_user_id",
+                "first_name": "Rob"
+            }),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -92,7 +102,10 @@ class UpdateAccountTests(TestCase):
         # Create an account first
         response = self.client.post(
             reverse("get_or_create_account"),
-            json.dumps({"credential": "unique_user_id", "client_id": "8675309"}),
+            json.dumps({
+                "credential": "unique_user_id",
+                "client_id": "8675309"
+            }),
             content_type="application/json",
             **self.header,
         )
@@ -101,13 +114,17 @@ class UpdateAccountTests(TestCase):
         # Should fail if the given fields don't exist
         response = self.client.post(
             reverse("update_account"),
-            json.dumps({"google_id": "unique_user_id", "favourite_prof": "Rob"}),
+            json.dumps({
+                "google_id": "unique_user_id",
+                "favourite_prof": "Rob"
+            }),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
 
 
 class GetColumnsTests(TestCase):
+
     def test_get_columns(self):
         user = query.get_or_create_user({"sub": "4"})
         # Make several columns
@@ -132,19 +149,32 @@ class GetColumnsTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
+    def test_get_columns_error(self):
+        response = self.client.post(
+            reverse("get_columns"),
+            json.dumps({"user_id": 999}),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+
 
 class UpdateColumnsTests(TestCase):
+
     def test_create_column(self):
         user = query.get_or_create_user({"sub": "4"})
 
         response = self.client.post(
             reverse("update_columns"),
-            json.dumps(
-                {
-                    "user_id": user.id,
-                    "payload": [{"id": -1, "name": "New column", "column_number": 0}],
-                }
-            ),
+            json.dumps({
+                "user_id":
+                user.id,
+                "payload": [{
+                    "id": -1,
+                    "name": "New column",
+                    "column_number": 0
+                }],
+            }),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -157,19 +187,22 @@ class UpdateColumnsTests(TestCase):
         # Make a second column and make sure the first one is still there
         response = self.client.post(
             reverse("update_columns"),
-            json.dumps(
-                {
-                    "user_id": user.id,
-                    "payload": [
-                        {
-                            "id": columns[0]["id"],
-                            "name": "New column",
-                            "column_number": 0,
-                        },
-                        {"id": -1, "name": "Newer column", "column_number": 1},
-                    ],
-                }
-            ),
+            json.dumps({
+                "user_id":
+                user.id,
+                "payload": [
+                    {
+                        "id": columns[0]["id"],
+                        "name": "New column",
+                        "column_number": 0,
+                    },
+                    {
+                        "id": -1,
+                        "name": "Newer column",
+                        "column_number": 1
+                    },
+                ],
+            }),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -187,23 +220,36 @@ class UpdateColumnsTests(TestCase):
         columns = business.update_columns(
             user.id,
             [
-                {"id": -1, "name": "New column", "column_number": 0},
-                {"id": -1, "name": "Newer column", "column_number": 1},
-                {"id": -1, "name": "Even newer column", "column_number": 2},
+                {
+                    "id": -1,
+                    "name": "New column",
+                    "column_number": 0
+                },
+                {
+                    "id": -1,
+                    "name": "Newer column",
+                    "column_number": 1
+                },
+                {
+                    "id": -1,
+                    "name": "Even newer column",
+                    "column_number": 2
+                },
             ],
         )
 
         # User doesn't exist
         response = self.client.post(
             reverse("update_columns"),
-            json.dumps(
-                {
-                    "user_id": -1,
-                    "payload": [
-                        {"id": columns[0].id, "name": "THE column", "column_number": 0}
-                    ],
-                }
-            ),
+            json.dumps({
+                "user_id":
+                -1,
+                "payload": [{
+                    "id": columns[0].id,
+                    "name": "THE column",
+                    "column_number": 0
+                }],
+            }),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
@@ -216,33 +262,48 @@ class UpdateColumnsTests(TestCase):
         columns = business.update_columns(
             user.id,
             [
-                {"id": -1, "name": "New column", "column_number": 0},
-                {"id": -1, "name": "Newer column", "column_number": 1},
-                {"id": -1, "name": "Even newer column", "column_number": 2},
+                {
+                    "id": -1,
+                    "name": "New column",
+                    "column_number": 0
+                },
+                {
+                    "id": -1,
+                    "name": "Newer column",
+                    "column_number": 1
+                },
+                {
+                    "id": -1,
+                    "name": "Even newer column",
+                    "column_number": 2
+                },
             ],
         )
 
         # Rename a couple of them
         response = self.client.post(
             reverse("update_columns"),
-            json.dumps(
-                {
-                    "user_id": user.id,
-                    "payload": [
-                        {"id": columns[0].id, "name": "Old column", "column_number": 0},
-                        {
-                            "id": columns[1].id,
-                            "name": "The most powerful column",
-                            "column_number": 1,
-                        },
-                        {
-                            "id": columns[2].id,
-                            "name": "Even newer column",
-                            "column_number": 2,
-                        },
-                    ],
-                }
-            ),
+            json.dumps({
+                "user_id":
+                user.id,
+                "payload": [
+                    {
+                        "id": columns[0].id,
+                        "name": "Old column",
+                        "column_number": 0
+                    },
+                    {
+                        "id": columns[1].id,
+                        "name": "The most powerful column",
+                        "column_number": 1,
+                    },
+                    {
+                        "id": columns[2].id,
+                        "name": "Even newer column",
+                        "column_number": 2,
+                    },
+                ],
+            }),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -260,33 +321,48 @@ class UpdateColumnsTests(TestCase):
         columns = business.update_columns(
             user.id,
             [
-                {"id": -1, "name": "New column", "column_number": 0},
-                {"id": -1, "name": "Newer column", "column_number": 1},
-                {"id": -1, "name": "Even newer column", "column_number": 2},
+                {
+                    "id": -1,
+                    "name": "New column",
+                    "column_number": 0
+                },
+                {
+                    "id": -1,
+                    "name": "Newer column",
+                    "column_number": 1
+                },
+                {
+                    "id": -1,
+                    "name": "Even newer column",
+                    "column_number": 2
+                },
             ],
         )
 
         # Make the third one be the first
         response = self.client.post(
             reverse("update_columns"),
-            json.dumps(
-                {
-                    "user_id": user.id,
-                    "payload": [
-                        {"id": columns[0].id, "name": "New column", "column_number": 1},
-                        {
-                            "id": columns[1].id,
-                            "name": "Newer column",
-                            "column_number": 2,
-                        },
-                        {
-                            "id": columns[2].id,
-                            "name": "Even newer column",
-                            "column_number": 0,
-                        },
-                    ],
-                }
-            ),
+            json.dumps({
+                "user_id":
+                user.id,
+                "payload": [
+                    {
+                        "id": columns[0].id,
+                        "name": "New column",
+                        "column_number": 1
+                    },
+                    {
+                        "id": columns[1].id,
+                        "name": "Newer column",
+                        "column_number": 2,
+                    },
+                    {
+                        "id": columns[2].id,
+                        "name": "Even newer column",
+                        "column_number": 0,
+                    },
+                ],
+            }),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -301,9 +377,21 @@ class UpdateColumnsTests(TestCase):
         columns = business.update_columns(
             user.id,
             [
-                {"id": -1, "name": "New column", "column_number": 0},
-                {"id": -1, "name": "Newer column", "column_number": 1},
-                {"id": -1, "name": "Even newer column", "column_number": 2},
+                {
+                    "id": -1,
+                    "name": "New column",
+                    "column_number": 0
+                },
+                {
+                    "id": -1,
+                    "name": "Newer column",
+                    "column_number": 1
+                },
+                {
+                    "id": -1,
+                    "name": "Even newer column",
+                    "column_number": 2
+                },
             ],
         )
 
@@ -311,24 +399,27 @@ class UpdateColumnsTests(TestCase):
         # It should be treated as index zero anyway.
         response = self.client.post(
             reverse("update_columns"),
-            json.dumps(
-                {
-                    "user_id": user.id,
-                    "payload": [
-                        {"id": columns[0].id, "name": "New column", "column_number": 0},
-                        {
-                            "id": columns[1].id,
-                            "name": "Newer column",
-                            "column_number": 1,
-                        },
-                        {
-                            "id": columns[2].id,
-                            "name": "Even newer column",
-                            "column_number": -50,
-                        },
-                    ],
-                }
-            ),
+            json.dumps({
+                "user_id":
+                user.id,
+                "payload": [
+                    {
+                        "id": columns[0].id,
+                        "name": "New column",
+                        "column_number": 0
+                    },
+                    {
+                        "id": columns[1].id,
+                        "name": "Newer column",
+                        "column_number": 1,
+                    },
+                    {
+                        "id": columns[2].id,
+                        "name": "Even newer column",
+                        "column_number": -50,
+                    },
+                ],
+            }),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -341,24 +432,27 @@ class UpdateColumnsTests(TestCase):
         # Do the same but with the index being invalid in the other direction
         response = self.client.post(
             reverse("update_columns"),
-            json.dumps(
-                {
-                    "user_id": user.id,
-                    "payload": [
-                        {
-                            "id": columns[2].id,
-                            "name": "Even newer column",
-                            "column_number": 500,
-                        },
-                        {"id": columns[0].id, "name": "New column", "column_number": 0},
-                        {
-                            "id": columns[1].id,
-                            "name": "Newer column",
-                            "column_number": 1,
-                        },
-                    ],
-                }
-            ),
+            json.dumps({
+                "user_id":
+                user.id,
+                "payload": [
+                    {
+                        "id": columns[2].id,
+                        "name": "Even newer column",
+                        "column_number": 500,
+                    },
+                    {
+                        "id": columns[0].id,
+                        "name": "New column",
+                        "column_number": 0
+                    },
+                    {
+                        "id": columns[1].id,
+                        "name": "Newer column",
+                        "column_number": 1,
+                    },
+                ],
+            }),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -373,27 +467,42 @@ class UpdateColumnsTests(TestCase):
         columns = business.update_columns(
             user.id,
             [
-                {"id": -1, "name": "New column", "column_number": 0},
-                {"id": -1, "name": "Newer column", "column_number": 1},
-                {"id": -1, "name": "Even newer column", "column_number": 2},
+                {
+                    "id": -1,
+                    "name": "New column",
+                    "column_number": 0
+                },
+                {
+                    "id": -1,
+                    "name": "Newer column",
+                    "column_number": 1
+                },
+                {
+                    "id": -1,
+                    "name": "Even newer column",
+                    "column_number": 2
+                },
             ],
         )
 
         response = self.client.post(
             reverse("update_columns"),
-            json.dumps(
-                {
-                    "user_id": user.id,
-                    "payload": [
-                        {
-                            "id": columns[2].id,
-                            "name": "Even newer column",
-                            "column_number": 2,
-                        },
-                        {"id": columns[0].id, "name": "New column", "column_number": 0},
-                    ],
-                }
-            ),
+            json.dumps({
+                "user_id":
+                user.id,
+                "payload": [
+                    {
+                        "id": columns[2].id,
+                        "name": "Even newer column",
+                        "column_number": 2,
+                    },
+                    {
+                        "id": columns[0].id,
+                        "name": "New column",
+                        "column_number": 0
+                    },
+                ],
+            }),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -406,12 +515,15 @@ class UpdateColumnsTests(TestCase):
     def test_nonexistent_user(self):
         response = self.client.post(
             reverse("update_columns"),
-            json.dumps(
-                {
-                    "user_id": -1,
-                    "payload": [{"id": -1, "name": "Where am I", "column_number": 0}],
-                }
-            ),
+            json.dumps({
+                "user_id":
+                -1,
+                "payload": [{
+                    "id": -1,
+                    "name": "Where am I",
+                    "column_number": 0
+                }],
+            }),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
@@ -422,16 +534,31 @@ class UpdateColumnsTests(TestCase):
         business.update_columns(
             user.id,
             [
-                {"id": -1, "name": "New column", "column_number": 0},
-                {"id": -1, "name": "Newer column", "column_number": 1},
-                {"id": -1, "name": "Even newer column", "column_number": 2},
+                {
+                    "id": -1,
+                    "name": "New column",
+                    "column_number": 0
+                },
+                {
+                    "id": -1,
+                    "name": "Newer column",
+                    "column_number": 1
+                },
+                {
+                    "id": -1,
+                    "name": "Even newer column",
+                    "column_number": 2
+                },
             ],
         )
 
         # If the user has columns, an empty update should delete all of them
         response = self.client.post(
             reverse("update_columns"),
-            json.dumps({"user_id": user.id, "payload": []}),
+            json.dumps({
+                "user_id": user.id,
+                "payload": []
+            }),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -442,7 +569,10 @@ class UpdateColumnsTests(TestCase):
         # After that, an empty update shouldn't do anything
         response = self.client.post(
             reverse("update_columns"),
-            json.dumps({"user_id": user.id, "payload": []}),
+            json.dumps({
+                "user_id": user.id,
+                "payload": []
+            }),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -453,6 +583,7 @@ class UpdateColumnsTests(TestCase):
 
 @mock.patch("google.oauth2.id_token.verify_oauth2_token")
 class AccountTestCase(TestCase):
+
     def setUp(self):
         self.client.cookies = SimpleCookie({"csrftoken": "valid_csrf_token"})
         self.header = {
@@ -464,14 +595,18 @@ class AccountTestCase(TestCase):
         # Try to create a user when providing an incorrect id
         response = self.client.post(
             reverse("get_or_create_account"),
-            json.dumps({"credential": "garbage", "client_id": "unusable"}),
+            json.dumps({
+                "credential": "garbage",
+                "client_id": "unusable"
+            }),
             content_type="application/json",
             **self.header,
         )
         self.assertEqual(response.status_code, 401)
 
         ## No CSRF in Cookie
-        self.client.cookies = SimpleCookie({"not_a_csrftoken": "not_the_droid"})
+        self.client.cookies = SimpleCookie(
+            {"not_a_csrftoken": "not_the_droid"})
         self.header = {
             "ACCEPT": "application/json",
             "HTTP_X-CSRFToken": "valid_csrf_token",
@@ -479,7 +614,10 @@ class AccountTestCase(TestCase):
         # Post the request
         response = self.client.post(
             reverse("get_or_create_account"),
-            json.dumps({"credential": "whatever", "client_id": "8675309"}),
+            json.dumps({
+                "credential": "whatever",
+                "client_id": "8675309"
+            }),
             content_type="application/json",
             **self.header,
         )
@@ -494,7 +632,10 @@ class AccountTestCase(TestCase):
         # Post the request
         response = self.client.post(
             reverse("get_or_create_account"),
-            json.dumps({"credential": "whatever", "client_id": "8675309"}),
+            json.dumps({
+                "credential": "whatever",
+                "client_id": "8675309"
+            }),
             content_type="application/json",
             **self.header,
         )
@@ -509,7 +650,10 @@ class AccountTestCase(TestCase):
         # Post the request
         response = self.client.post(
             reverse("get_or_create_account"),
-            json.dumps({"credential": "whatever", "client_id": "8675309"}),
+            json.dumps({
+                "credential": "whatever",
+                "client_id": "8675309"
+            }),
             content_type="application/json",
             **self.header,
         )
