@@ -115,12 +115,32 @@
 
 <script>
 import Datepicker from '@vuepic/vue-datepicker'
+import { ref } from 'vue'
+
+const userData = ref({})
 
 export default {
   components: {
     Datepicker,
   },
   emits: ['updateUser', 'close'],
+  props: {
+    user: {
+      type: Object,
+      default: () => {
+        return {
+          id: -1,
+          first_name: '',
+          last_name: '',
+          email: '',
+          field_of_work: '',
+          country: '',
+          region: '',
+          city: '',
+        }
+      },
+    },
+  },
   data() {
     return {
       dialog: true,
@@ -131,14 +151,16 @@ export default {
       region: '',
       city: '',
       workField: '',
-      email: '',
+      email: '', // populate from User Object
       firstNameBlank: false,
       lastNameBlank: false,
       countryBlank: false,
       workFieldBlank: false,
       emailEmpty: false,
-      userData: {}, // will hold user object
     }
+  },
+  setup(props) {
+    userData.value = { ...props.user }
   },
   methods: {
     updateDate(date) {
@@ -162,7 +184,7 @@ export default {
       if (this.workField.trim() === '') {
         this.workFieldBlank = true
       }
-      if (this.emailEmpty.trim() === '') {
+      if (this.email.trim() === '') {
         this.emailEmpty = true
       }
       if (
@@ -172,8 +194,14 @@ export default {
         !this.workFieldBlank &&
         !this.emailEmpty
       ) {
-        // update User Object, hide card
-        this.$emit('updateUser', this.userData)
+        userData.value.first_name = this.firstName
+        userData.value.last_name = this.lastName
+        userData.value.email = this.email
+        userData.value.country = this.country
+        userData.value.field_of_work = this.workField
+        userData.value.birthday = this.birthday
+
+        this.$emit('updateUser', userData.value)
         this.$emit('close')
       }
     },

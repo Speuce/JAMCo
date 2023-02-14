@@ -16,8 +16,9 @@
     />
     <AccountSetupModal
       v-if="setupModalVisible"
-      @close="closeBoardOptionModal"
+      @close="closeSetupModal"
       @updateUserAccount="updateUserAccount"
+      :user="activeUser"
     />
     <div class="header-container">
       <h2 class="internal">Your Applications</h2>
@@ -71,6 +72,7 @@ export default {
       isNewJob,
       colList,
       jobsByColumn,
+      activeUser: {}, // to be populated on login
     }
   },
   setup() {
@@ -175,8 +177,7 @@ export default {
       })
     },
     updateUserAccount(userData) {
-      // eslint-disable-next-line no-console
-      console.log(userData)
+      this.activeUser = userData
       // post to backend update_user
     },
     closeDetailModal() {
