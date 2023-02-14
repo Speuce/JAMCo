@@ -98,4 +98,11 @@ describe('JobTrackingView', () => {
       { id: 0, columnId: 8 },
     ])
   })
+
+  it('updates user account, hides setup modal when called', () => {
+    expect(wrapper.vm.activeUser).toEqual({})
+    wrapper.vm.updateUserAccount({ id: -1 })
+    expect(wrapper.vm.activeUser).toEqual({ id: -1 })
+    expect(wrapper.vm.setupModalVisible).toBe(false)
+  })
 })

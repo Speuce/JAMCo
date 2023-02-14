@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-dialog v-model="dialog" persistent class="dialog-popup">
-      <v-card class="v-card-background">
+      <v-card style="overflow: hidden">
         <v-row class="inner-page-container">
           <v-col class="items">
             <v-row class="center">
@@ -15,9 +15,9 @@
               <v-text-field
                 label="First Name*"
                 required
-                v-model="firstName"
+                v-model="this.userData.first_name"
                 :style="{
-                  color: this.firstNameBlank ? 'red' : '',
+                  color: this.firstNameEmpty ? 'red' : '',
                 }"
                 maxlength="30"
                 variant="outlined"
@@ -27,9 +27,9 @@
               <v-text-field
                 label="Last Name*"
                 required
-                v-model="lastName"
+                v-model="this.userData.last_name"
                 :style="{
-                  color: this.lastNameBlank ? 'red' : '',
+                  color: this.lastNameEmpty ? 'red' : '',
                 }"
                 maxlength="30"
                 variant="outlined"
@@ -37,19 +37,18 @@
             </v-row>
             <v-row>
               <Datepicker
-                v-model="birthday"
+                v-model="this.userData.birthday"
                 :enable-time-picker="false"
                 placeholder="Birthday"
-                @update:model-value="updateDate"
                 class="datepicker"
               />
             </v-row>
             <v-row>
               <v-text-field
                 label="Country*"
-                v-model="country"
+                v-model="this.userData.country"
                 :style="{
-                  color: this.countryBlank ? 'red' : '',
+                  color: this.countryEmpty ? 'red' : '',
                 }"
                 maxlength="30"
                 variant="outlined"
@@ -58,7 +57,7 @@
             <v-row>
               <v-text-field
                 label="Province/Territory/State"
-                v-model="region"
+                v-model="this.userData.region"
                 maxlength="30"
                 variant="outlined"
               />
@@ -66,7 +65,7 @@
             <v-row>
               <v-text-field
                 label="City"
-                v-model="city"
+                v-model="this.userData.city"
                 maxlength="30"
                 variant="outlined"
               />
@@ -74,9 +73,9 @@
             <v-row>
               <v-text-field
                 label="Field of Work*"
-                v-model="workField"
+                v-model="this.userData.field_of_work"
                 :style="{
-                  color: this.workFieldBlank ? 'red' : '',
+                  color: this.workFieldEmpty ? 'red' : '',
                 }"
                 maxlength="30"
                 variant="outlined"
@@ -84,7 +83,7 @@
             <v-row>
               <v-text-field
                 label="Email*"
-                v-model="email"
+                v-model="this.userData.email"
                 :style="{
                   color: this.emailEmpty ? 'red' : '',
                 }"
@@ -96,7 +95,13 @@
                 <v-row>
                   <small
                     class="error"
-                    v-if="this.firstNameBlank || this.lastNameBlank"
+                    v-if="
+                      this.firstNameEmpty ||
+                      this.lastNameEmpty ||
+                      this.emailEmpty ||
+                      this.countryEmpty ||
+                      this.workFieldEmpty
+                    "
                     >Make Sure Required Fields Are Filled</small
                   ></v-row
                 >
@@ -115,15 +120,12 @@
 
 <script>
 import Datepicker from '@vuepic/vue-datepicker'
-import { ref } from 'vue'
-
-const userData = ref({})
 
 export default {
   components: {
     Datepicker,
   },
-  emits: ['updateUser', 'close'],
+  emits: ['updateUser'],
   props: {
     user: {
       type: Object,
@@ -137,72 +139,55 @@ export default {
           country: '',
           region: '',
           city: '',
+          birthday: '',
         }
       },
     },
   },
-  data() {
+  data(props) {
     return {
       dialog: true,
-      firstName: '', // populate from User Object
-      lastName: '', // populate from User Object
-      birthday: '',
-      country: '',
-      region: '',
-      city: '',
-      workField: '',
-      email: '', // populate from User Object
-      firstNameBlank: false,
-      lastNameBlank: false,
-      countryBlank: false,
-      workFieldBlank: false,
+      firstNameEmpty: false,
+      lastNameEmpty: false,
+      countryEmpty: false,
+      workFieldEmpty: false,
       emailEmpty: false,
+      userData: props.user,
     }
   },
-  setup(props) {
-    userData.value = { ...props.user }
-  },
   methods: {
-    updateDate(date) {
-      this.birthday = date
-    },
     signUpClicked() {
-      this.firstNameBlank = false
-      this.lastNameBlank = false
-      this.countryBlank = false
-      this.workFieldBlank = false
+      this.firstNameEmpty = false
+      this.lastNameEmpty = false
+      this.countryEmpty = false
+      this.workFieldEmpty = false
       this.emailEmpty = false
-      if (this.firstName.trim() === '') {
-        this.firstNameBlank = true
+      if (!this.userData.first_name || this.userData.first_name.trim() === '') {
+        this.firstNameEmpty = true
       }
-      if (this.lastName.trim() === '') {
-        this.lastNameBlank = true
+      if (!this.userData.last_name || this.userData.last_name.trim() === '') {
+        this.lastNameEmpty = true
       }
-      if (this.country.trim() === '') {
-        this.countryBlank = true
+      if (!this.userData.country || this.userData.country.trim() === '') {
+        this.countryEmpty = true
       }
-      if (this.workField.trim() === '') {
-        this.workFieldBlank = true
+      if (
+        !this.userData.field_of_work ||
+        this.userData.field_of_work.trim() === ''
+      ) {
+        this.workFieldEmpty = true
       }
-      if (this.email.trim() === '') {
+      if (!this.userData.email || this.userData.email.trim() === '') {
         this.emailEmpty = true
       }
       if (
-        !this.firstNameBlank &&
-        !this.lastNameBlank &&
-        !this.countryBlank &&
-        !this.workFieldBlank &&
+        !this.firstNameEmpty &&
+        !this.lastNameEmpty &&
+        !this.countryEmpty &&
+        !this.workFieldEmpty &&
         !this.emailEmpty
       ) {
-        userData.value.first_name = this.firstName
-        userData.value.last_name = this.lastName
-        userData.value.email = this.email
-        userData.value.country = this.country
-        userData.value.field_of_work = this.workField
-        userData.value.birthday = this.birthday
-
-        this.$emit('updateUser', userData.value)
-        this.$emit('close')
+        this.$emit('updateUser', this.userData)
       }
     },
   },
@@ -213,15 +198,14 @@ export default {
 .inner-page-container {
   padding-top: 3rem;
   padding-left: 7rem;
-  padding-bottom: 2rem;
+  padding-bottom: 3rem;
   width: 90%;
+  overflow: hidden;
 }
 .center {
-  display: flex;
   justify-content: center;
   align-items: center;
 }
-
 .error {
   color: red;
 }
@@ -234,12 +218,11 @@ export default {
 }
 .dialog-popup {
   max-width: 700px;
-  min-height: 1200px;
 }
 </style>
 
 <style lang="scss">
-$dp__border_radius: 0px !default;
+$dp__border_radius: 3px !default;
 $dp__input_padding: 15px 12px !default;
 @import '@vuepic/vue-datepicker/src/VueDatePicker/style/main.scss';
 </style>

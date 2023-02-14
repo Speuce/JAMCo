@@ -16,8 +16,7 @@
     />
     <AccountSetupModal
       v-if="setupModalVisible"
-      @close="closeSetupModal"
-      @updateUserAccount="updateUserAccount"
+      @updateUser="updateUserAccount"
       :user="activeUser"
     />
     <div class="header-container">
@@ -179,6 +178,7 @@ export default {
     updateUserAccount(userData) {
       this.activeUser = userData
       // post to backend update_user
+      this.setupModalVisible = false
     },
     closeDetailModal() {
       this.detailModalVisible = false
@@ -188,9 +188,6 @@ export default {
     },
     showBoardOptionModal() {
       this.boardOptionModalVisible = true
-    },
-    closeSetupModal() {
-      this.setupModalVisible = false
     },
   },
 }
