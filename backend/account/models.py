@@ -9,3 +9,12 @@ class User(AbstractUser):
     city = models.CharField(max_length=30)
     birthday = models.DateField(verbose_name='Date of Birth')
     field_of_work = models.CharField(max_length=30)
+
+
+class KanbanColumn(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=30)
+    column_number = models.IntegerField()
+
+    def to_dict(self):
+        return {'id': self.id, 'name': self.name, 'column_number': self.column_number}

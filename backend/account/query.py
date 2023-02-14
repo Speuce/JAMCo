@@ -6,7 +6,8 @@ Query functions for account related operations.
 
 import datetime
 from django.core.exceptions import ObjectDoesNotExist
-from .models import User
+from .models import *
+import datetime
 
 def get_or_create_user(payload: dict) -> User:
     try:
@@ -24,6 +25,10 @@ def get_or_create_user(payload: dict) -> User:
         )
 
 
+def user_exists(google_id: str) -> bool:
+    return User.objects.filter(google_id=google_id).exists()
+
+
 def update_user(payload: dict):
     user = User.objects.get(google_id=payload['google_id'])
     for key, value in payload.items():
@@ -38,3 +43,29 @@ def update_user(payload: dict):
     # isn't raised. That is, we'll only save changes if the entire payload is
     # error-free.
     user.save()
+
+
+def create_column(
+        user_id: int, column_name: str, column_number: int) -> KanbanColumn:
+    return KanbanColumn.objects.create(
+        user=User.objects.get(id=user_id),
+        name=column_name,
+        column_number=column_number
+    )
+
+
+def get_columns(user_id: int) -> list[KanbanColumn]:
+    return KanbanColumn.objects.filter(
+        user=User.objects.get(id=user_id))
+
+
+def delete_column(user_id: int, column_number: int):
+    KanbanColumn.objects.get(
+        user=User.objects.get(id=user_id),
+        column_number=column_number
+    ).delete()
+
+
+def delete_columns(ids: list[int]):
+    for column_id in ids:
+        KanbanColumn.objects.filter(id=column_id).delete()
