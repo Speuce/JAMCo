@@ -95,7 +95,7 @@ describe('JobDetailModal', () => {
     expect(wrapper.vm.countryEmpty).toBe(true)
   })
 
-  it('displays error when country is empty & sign up is pressed', () => {
+  it('displays error when workField is empty & sign up is pressed', () => {
     expect(wrapper.vm.workFieldEmpty).toBe(false)
 
     let testJob = { ...user }
