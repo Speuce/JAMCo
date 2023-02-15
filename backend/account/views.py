@@ -78,7 +78,7 @@ def update_account(request: HttpRequest):
         # the User model (AttributeError), tries to modify a user that doesn't
         # exist (ObjectDoesNotExist), or doesn't supply the Google ID (KeyError)
         logger.debug(f"Update error:\n{err_msg}")
-        return JsonResponse(status=400, data={})
+        return JsonResponse(status=400, data={'error': repr(err_msg)})
 
     return JsonResponse(status=200, data={})
 
@@ -99,8 +99,8 @@ def get_columns(request: HttpRequest):
         return JsonResponse(
             status=200,
             data={'columns': [column.to_dict() for column in columns]})
-    except Exception:
-        return JsonResponse(status=400, data={})
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={'error': repr(err_msg)})
 
 
 @require_POST
@@ -122,5 +122,5 @@ def update_columns(request: HttpRequest):
         return JsonResponse(
             status=200,
             data={'columns': [column.to_dict() for column in columns]})
-    except Exception:
-        return JsonResponse(status=400, data={})
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={'error': repr(err_msg)})
