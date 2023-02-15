@@ -11,6 +11,7 @@ class User(AbstractUser):
     birthday = models.DateField(verbose_name="Date of Birth", null=True)
     field_of_work = models.CharField(max_length=30, null=True)
 
+    # could use a user_id field in here too?
     def to_dict(self):
         return {
             "google_id": self.google_id,

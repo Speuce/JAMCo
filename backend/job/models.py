@@ -4,6 +4,7 @@ from account.models import KanbanColumn
 
 class Job(models.Model):
     column_number = models.ForeignKey(KanbanColumn, on_delete=models.CASCADE)
+    # google_id or user_id ?
     position_title = models.TextField()
     company = models.CharField(max_length=60)
     description = models.TextField()
