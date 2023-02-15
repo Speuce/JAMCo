@@ -40,6 +40,7 @@ class GetOrCreateAccountTests(TransactionTestCase):
         self.assertEqual(
             json.loads(response.content)["data"],
             {
+                "id":1,
                 "google_id": "unique_user_id",
                 "username": 0,
                 "image_url": None,
