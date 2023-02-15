@@ -17,5 +17,7 @@ def create_job(payload: dict) -> Job:
 
 
 def get_all_job_ids() -> QuerySet:
-    # return Job.objects.all().values_list("id", "position_title", named=True)
+    # should be based on a single user_id? (again, user or google id)
+    # which version below should be used? Both seem quite similar and yet are different
+    return Job.objects.all().values_list("id", "position_title", named=True)
     return Job.objects.all().values("id", "position_title")
