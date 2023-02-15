@@ -47,13 +47,12 @@ def get_or_create_account(request: HttpRequest):
         logger.debug(
             f"Credential Validated for User.google_id: { idinfo['sub'] }")
 
-        user = business.get_or_create_user(idinfo)
-        logger.debug(f"Returned user:\n{user.to_dict()}")
+        user, created = business.get_or_create_user(idinfo)
         # Need some way to differenciate first-time logins
         # check user.last_login in frontend
         # if None -> first login, redirect to account setup
         # regardless, post to login_user endpoint to set value?
-        return JsonResponse({"data": user.to_dict()})
+        return JsonResponse({"data": user.to_dict(), "created": created})
 
     except ValueError as err_msg:
         # Invalid token
@@ -91,8 +90,8 @@ def get_columns(request: HttpRequest):
     """
 
     body = read_request(request)
-    user_id = body['user_id']
-    logger.debug(f'get_columns: {user_id}')
+    user_id = body["user_id"]
+    logger.debug(f"get_columns: {user_id}")
 
     try:
         columns = business.get_columns(user_id)
@@ -114,14 +113,14 @@ def update_columns(request: HttpRequest):
     """
 
     body = read_request(request)
-    user_id = body['user_id']
-    payload = body['payload']
-    logger.debug(f'update_columns: {user_id}, {payload}')
+    user_id = body["user_id"]
+    payload = body["payload"]
+    logger.debug(f"update_columns: {user_id}, {payload}")
 
     try:
         columns = business.update_columns(user_id, payload)
         return JsonResponse(
             status=200,
             data={'columns': [column.to_dict() for column in columns]})
-    except (ObjectDoesNotExist):
+    except Exception:
         return JsonResponse(status=400, data={})

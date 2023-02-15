@@ -7,7 +7,7 @@ class CreateUserTests(TestCase):
 
     def test_create_user(self):
         # Make sure default columns are created
-        user = business.get_or_create_user({"sub": "4"})
+        user, created = business.get_or_create_user({"sub": "4"})
         columns = business.get_columns(user.id)
         self.assertEqual(columns[0].name, "To Apply")
         self.assertEqual(columns[1].name, "Application Submitted")
