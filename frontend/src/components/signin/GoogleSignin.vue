@@ -29,7 +29,6 @@ export default {
         client_id: response.client_id,
       }
       const resp = await postRequest('account/api/get_or_create_account', item)
-      console.log('Userdata: ', resp.data)
       this.$emit('signin', resp)
     },
   },
