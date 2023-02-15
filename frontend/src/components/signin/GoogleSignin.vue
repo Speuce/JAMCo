@@ -4,24 +4,22 @@
 <script>
 import { postRequest } from '@/helpers/requests.js'
 export default {
-  data() {},
+  data: () => ({}),
   mounted() {
-    window.addEventListener('load', () => {
-      window.google.accounts.id.initialize({
-        client_id:
-          '666407506779-6oo4du8jmenhq8noaa8qkhu89i1ghkpi.apps.googleusercontent.com',
-        callback: this.onSignin,
-      })
-      window.google.accounts.id.renderButton(
-        document.getElementById('signin_button'),
-        {
-          theme: 'outline',
-          size: 'large',
-          text: 'continue_with',
-          shape: 'pill',
-        },
-      )
+    window.google.accounts.id.initialize({
+      client_id:
+        '666407506779-6oo4du8jmenhq8noaa8qkhu89i1ghkpi.apps.googleusercontent.com',
+      callback: this.onSignin,
     })
+    window.google.accounts.id.renderButton(
+      document.getElementById('signin_button'),
+      {
+        theme: 'outline',
+        size: 'large',
+        text: 'continue_with',
+        shape: 'pill',
+      },
+    )
   },
 
   methods: {
@@ -30,8 +28,8 @@ export default {
         credential: response.credential,
         client_id: response.client_id,
       }
-      await postRequest('account/api/get_or_create_account', item)
-      // TODO: redirect to home page
+      const resp = await postRequest('account/api/get_or_create_account', item)
+      this.$emit('signin', resp)
     },
   },
 }

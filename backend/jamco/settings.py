@@ -165,6 +165,7 @@ ALLOWED_HOSTS = ["*"]
 DJANGO_VITE_ASSETS_PATH = os.path.join("static", "dist")
 
 STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
     os.path.join(BASE_DIR, DJANGO_VITE_ASSETS_PATH),
 ]
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, "templates"),)
@@ -172,3 +173,5 @@ TEMPLATE_DIRS = (os.path.join(BASE_DIR, "templates"),)
 DJANGO_VITE_DEV_MODE = DEBUG
 
 VITE_APP_DIR = os.path.join("static")
+
+# STATIC_ROOT = os.path.join(BASE_DIR, "static/")

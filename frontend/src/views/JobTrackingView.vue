@@ -1,5 +1,5 @@
 <template>
-  <div class="page-container">
+  <div>
     <JobDetailModal
       v-if="detailModalVisible"
       @createOrUpdateJob="createOrUpdateJob"
@@ -191,12 +191,7 @@ h2 {
     'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
-.page-container {
-  margin: 1rem 2rem 2rem 2rem;
-  min-width: 100vw;
-  padding-right: 3.5rem;
-  overflow: auto;
-}
+
 .header-container {
   color: black;
   display: flex;

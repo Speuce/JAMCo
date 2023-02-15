@@ -1,9 +1,11 @@
+import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import SigninButton from '@/components/signin/GoogleSignin.vue'
 import { postRequest } from '@/helpers/requests.js'
-import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest'
-vi.mock('@/helpers/requests.js')
 
+vi.mock('@/helpers/requests.js', () => ({
+  postRequest: vi.fn(),
+}))
 describe('GoogleSignin.vue', () => {
   let wrapper
   let mockWindow
@@ -32,19 +34,8 @@ describe('GoogleSignin.vue', () => {
     vi.resetAllMocks()
   })
 
-  it('calls the initialize function on window load', () => {
-    expect(mockWindow.addEventListener).toHaveBeenCalledWith(
-      'load',
-      expect.any(Function),
-    )
-    const loadCallback = mockWindow.addEventListener.mock.calls[0][1]
-    loadCallback()
+  it('calls the initialize function on mounted', () => {
     expect(mockWindow.google.accounts.id.initialize).toHaveBeenCalled()
-  })
-
-  it('calls the renderButton function with the correct parameters', () => {
-    const loadCallback = mockWindow.addEventListener.mock.calls[0][1]
-    loadCallback()
     expect(mockWindow.google.accounts.id.renderButton).toHaveBeenCalledWith(
       document.getElementById('signin_button'),
       {
@@ -57,12 +48,13 @@ describe('GoogleSignin.vue', () => {
   })
 
   it('calls the onSignin method with the response and makes the post request', async () => {
-    const response = { credential: 'some-credential' }
+    postRequest.mockResolvedValue({ data: { client_id: 'some-client' } })
+    const response = { credential: 'some-credential', client_id: 'some-client' }
     wrapper.vm.onSignin(response)
     await wrapper.vm.$nextTick()
     expect(postRequest).toHaveBeenCalledWith(
       'account/api/get_or_create_account',
-      { credential: response.credential },
+      response,
     )
   })
 })

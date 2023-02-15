@@ -15,6 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
+
 from account import views as account_views
 from job import views as job_views
 from .views import index
@@ -24,11 +27,14 @@ urlpatterns = [
     path('sandbox', index),
     path('admin/', admin.site.urls),
     path('account/api/get_or_create_account',
-         account_views.get_or_create_account, name='get_or_create_account'),
+         account_views.get_or_create_account,
+         name='get_or_create_account'),
     path('account/api/update_account',
-         account_views.update_account, name='update_account'),
+         account_views.update_account,
+         name='update_account'),
     path('account/api/get_columns',
-        account_views.get_columns, name='get_columns'),
+         account_views.get_columns,
+         name='get_columns'),
     path('account/api/update_columns',
         account_views.update_columns, name='update_columns'),
     path('job/api/get_minimum_jobs',
@@ -39,4 +45,4 @@ urlpatterns = [
         job_views.create_job, name='create_job'),
     path('job/api/update_job',
         job_views.update_job, name='update_job'),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

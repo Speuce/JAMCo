@@ -6,15 +6,16 @@ Business logic for account related operations.
 
 from . import query
 from .models import *
+from typing import Tuple
 
 
-def get_or_create_user(payload: dict) -> User:
+def get_or_create_user(payload: dict) -> Tuple[User, bool]:
     is_new = not query.user_exists(payload["sub"])
     user = query.get_or_create_user(payload)
     if is_new:
         create_default_columns(user.id)
 
-    return user
+    return user, is_new
 
 
 def update_user(payload: dict):

@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import Sandbox from '@/views/Sandbox.vue'
 
 const router = createRouter({
@@ -7,13 +6,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
-    },
-    {
-      path: '/tracking',
-      name: 'tracking',
-      component: () => import('../views/JobTrackingView.vue'),
+      name: 'main',
+      component: () => import('../views/MainView.vue'),
     },
     {
       path: '/sandbox',
