@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from account import views as account_views
+from job import views as job_views
 from .views import index
 
 urlpatterns = [
@@ -30,4 +31,12 @@ urlpatterns = [
         account_views.get_columns, name='get_columns'),
     path('account/api/update_columns',
         account_views.update_columns, name='update_columns'),
+    path('job/api/get_minimum_jobs',
+        job_views.get_minimum_jobs, name='get_minimum_jobs'),
+    path('job/api/get_job_by_id',
+        job_views.get_job_by_id, name='get_job_by_id'),
+    path('job/api/create_job',
+        job_views.create_job, name='create_job'),
+    path('job/api/update_job',
+        job_views.update_job, name='update_job'),
 ]

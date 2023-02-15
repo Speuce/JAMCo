@@ -1,15 +1,18 @@
 from django.db import models
-from account.models import KanbanColumn
+from django.contrib.postgres.fields import ArrayField
+from account.models import KanbanColumn, User
+from job.models import Deadline
 
 
 class Job(models.Model):
-    column_number = models.ForeignKey(KanbanColumn, on_delete=models.CASCADE)
-    # User ForeignKey google_id or user_id ?
+    column_id = models.ForeignKey(KanbanColumn, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     position_title = models.TextField()
     company = models.CharField(max_length=60)
     description = models.TextField()
     notes = models.TextField()
     cover_letter = models.TextField()
+    deadlines = ArrayField(models.ForeignKey(Deadline, on_delete=models.CASCADE))
 
     def to_dict(self):
         return {
@@ -19,18 +22,17 @@ class Job(models.Model):
             "description": self.description,
             "notes": self.notes,
             "cover_letter": self.cover_letter,
+            "column_id": self.column_id,
+            "deadlines": self.deadlines
         }
 
-
 class Deadline(models.Model):
-    job_id = models.ForeignKey(Job, on_delete=models.CASCADE)
-    deadline_title = models.CharField(max_length=60)
-    deadline_date = models.DateField(verbose_name="Deadline Date")
+    title = models.CharField(max_length=60)
+    date = models.DateField(verbose_name="Deadline Date")
 
     def to_dict(self):
         return {
             "id": self.id,
-            "job_id": self.job_id,
-            "deadline_title": self.deadline_title,
-            "deadline_date": self.deadline_date,
+            "title": self.deadline_title,
+            "date": self.deadline_date,
         }
