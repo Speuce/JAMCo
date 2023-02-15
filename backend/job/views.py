@@ -4,7 +4,7 @@ Job views
 API-layer for job related operations.
 """
 import logging
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_POST
 from django.core.exceptions import ObjectDoesNotExist
 from jamco.helper import read_request
@@ -32,8 +32,8 @@ def get_minimum_jobs(request: HttpRequest):
         return JsonResponse(
             status=200,
             data={'jobs': [job.to_dict() for job in jobs]})
-    except Exception:
-        return HttpResponse(status=400)
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={'error': repr(err_msg)})
 
 @require_POST
 def get_job_by_id(request: HttpRequest):
@@ -55,8 +55,8 @@ def get_job_by_id(request: HttpRequest):
         return JsonResponse(
             status=200,
             data={'job_data': job.to_dict()})
-    except Exception:
-        return  HttpResponse(status=400)
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={'error': repr(err_msg)})
 
 @require_POST
 def create_job(request: HttpRequest):
@@ -73,8 +73,8 @@ def create_job(request: HttpRequest):
         return JsonResponse(
             status=200,
             data={'job': job.to_dict()})
-    except (ObjectDoesNotExist):
-        return HttpResponse(status=400)
+    except ObjectDoesNotExist as err_msg:
+        return JsonResponse(status=400, data={'error': repr(err_msg)})
 
 @require_POST
 def update_job(request: HttpRequest):
@@ -87,6 +87,6 @@ def update_job(request: HttpRequest):
 
     try:
         business.update_job(body)
-        return HttpResponse(status=200)
-    except (ObjectDoesNotExist):
-        return HttpResponse(status=400)
+        return JsonResponse(status=200, data={})
+    except ObjectDoesNotExist as err_msg:
+        return JsonResponse(status=400, data={'error': repr(err_msg)})
