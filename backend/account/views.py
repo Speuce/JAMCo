@@ -48,10 +48,6 @@ def get_or_create_account(request: HttpRequest):
             f"Credential Validated for User.google_id: { idinfo['sub'] }")
 
         user, created = business.get_or_create_user(idinfo)
-        # Need some way to differenciate first-time logins
-        # check user.last_login in frontend
-        # if None -> first login, redirect to account setup
-        # regardless, post to login_user endpoint to set value?
         return JsonResponse({"data": user.to_dict(), "created": created})
 
     except ValueError as err_msg:
