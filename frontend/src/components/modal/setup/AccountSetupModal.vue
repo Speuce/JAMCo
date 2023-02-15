@@ -8,89 +8,92 @@
               <h1>Welcome to JAMCo!</h1>
             </v-row>
             <v-row class="center">
-              <h2>Let's finish creating your account.</h2>
+              <h3>Let's finish creating your account.</h3>
             </v-row>
             <v-row><br /></v-row>
-            <v-row>
-              <v-text-field
-                label="First Name*"
-                required
-                v-model="this.userData.first_name"
-                :style="{
-                  color: this.firstNameEmpty ? 'red' : '',
-                }"
-                maxlength="30"
-                variant="outlined"
-              />
-            </v-row>
-            <v-row>
-              <v-text-field
-                label="Last Name*"
-                required
-                v-model="this.userData.last_name"
-                :style="{
-                  color: this.lastNameEmpty ? 'red' : '',
-                }"
-                maxlength="30"
-                variant="outlined"
-              />
-            </v-row>
-            <v-row>
-              <Datepicker
-                v-model="this.userData.birthday"
-                :enable-time-picker="false"
-                placeholder="Birthday"
-                class="datepicker"
-              />
-            </v-row>
-            <v-row>
-              <v-text-field
-                label="Country*"
-                v-model="this.userData.country"
-                :style="{
-                  color: this.countryEmpty ? 'red' : '',
-                }"
-                maxlength="30"
-                variant="outlined"
-              />
-            </v-row>
-            <v-row>
-              <v-text-field
-                label="Province/Territory/State"
-                v-model="this.userData.region"
-                maxlength="30"
-                variant="outlined"
-              />
-            </v-row>
-            <v-row>
-              <v-text-field
-                label="City"
-                v-model="this.userData.city"
-                maxlength="30"
-                variant="outlined"
-              />
-            </v-row>
-            <v-row>
-              <v-text-field
-                label="Field of Work*"
-                v-model="this.userData.field_of_work"
-                :style="{
-                  color: this.workFieldEmpty ? 'red' : '',
-                }"
-                maxlength="30"
-                variant="outlined"
-            /></v-row>
-            <v-row>
-              <v-text-field
-                label="Email*"
-                v-model="this.userData.email"
-                :style="{
-                  color: this.emailEmpty ? 'red' : '',
-                }"
-                maxlength="30"
-                variant="outlined"
-            /></v-row>
-            <v-row class="center">
+            <div class="scrollable">
+              <v-row><br /></v-row>
+              <v-row>
+                <v-text-field
+                  label="First Name*"
+                  required
+                  v-model="this.userData.first_name"
+                  :style="{
+                    color: this.firstNameEmpty ? 'red' : '',
+                  }"
+                  maxlength="30"
+                  variant="outlined"
+                />
+              </v-row>
+              <v-row>
+                <v-text-field
+                  label="Last Name*"
+                  required
+                  v-model="this.userData.last_name"
+                  :style="{
+                    color: this.lastNameEmpty ? 'red' : '',
+                  }"
+                  maxlength="30"
+                  variant="outlined"
+                />
+              </v-row>
+              <v-row>
+                <Datepicker
+                  v-model="this.userData.birthday"
+                  :enable-time-picker="false"
+                  placeholder="Birthday"
+                  class="datepicker"
+                />
+              </v-row>
+              <v-row>
+                <v-text-field
+                  label="Country*"
+                  v-model="this.userData.country"
+                  :style="{
+                    color: this.countryEmpty ? 'red' : '',
+                  }"
+                  maxlength="30"
+                  variant="outlined"
+                />
+              </v-row>
+              <v-row>
+                <v-text-field
+                  label="Province/Territory/State"
+                  v-model="this.userData.region"
+                  maxlength="30"
+                  variant="outlined"
+                />
+              </v-row>
+              <v-row>
+                <v-text-field
+                  label="City"
+                  v-model="this.userData.city"
+                  maxlength="30"
+                  variant="outlined"
+                />
+              </v-row>
+              <v-row>
+                <v-text-field
+                  label="Field of Work*"
+                  v-model="this.userData.field_of_work"
+                  :style="{
+                    color: this.workFieldEmpty ? 'red' : '',
+                  }"
+                  maxlength="30"
+                  variant="outlined"
+              /></v-row>
+              <v-row>
+                <v-text-field
+                  label="Email*"
+                  v-model="this.userData.email"
+                  :style="{
+                    color: this.emailEmpty ? 'red' : '',
+                  }"
+                  maxlength="30"
+                  variant="outlined"
+              /></v-row>
+            </div>
+            <v-row class="center offset-right">
               <v-col cols="12" sm="8">
                 <v-row>
                   <small
@@ -197,10 +200,19 @@ export default {
 <style scoped>
 .inner-page-container {
   padding-top: 3rem;
-  padding-left: 7rem;
+  padding-left: 6rem;
   padding-bottom: 3rem;
   width: 90%;
-  overflow: hidden;
+}
+.offset-right {
+  padding-left: 20px;
+}
+
+.scrollable {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 60vh;
+  padding: 20px;
 }
 .center {
   justify-content: center;

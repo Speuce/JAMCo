@@ -64,8 +64,7 @@ def update_account(request: HttpRequest):
     """
 
     body = read_request(request)
-    credential = body["google_id"]
-    logger.debug(f"update_account: {credential}")
+    logger.debug(f"update_account: {id}")
 
     try:
         business.update_user(body)

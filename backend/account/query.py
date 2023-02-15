@@ -6,8 +6,6 @@ Query functions for account related operations.
 
 from django.core.exceptions import ObjectDoesNotExist
 from .models import *
-import datetime
-
 
 def get_or_create_user(payload: dict) -> User:
     try:
@@ -31,7 +29,7 @@ def user_exists(google_id: str) -> bool:
 
 
 def update_user(payload: dict):
-    user = User.objects.get(google_id=payload["google_id"])
+    user = User.objects.get(id=payload.get("id"))
     for key, value in payload.items():
         # If there are invalid keys in the payload (e.g. the frontend misspelled
         # the name of a field), raise an exception
