@@ -527,7 +527,7 @@ class UpdateColumnsTests(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(json.loads(response.content), {})
+        self.assertEqual(json.loads(response.content), {'error': "DoesNotExist('User matching query does not exist.')"})
 
     def test_empty_payload(self):
         user = query.get_or_create_user({"sub": "4"})
