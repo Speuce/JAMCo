@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.postgres.fields import JSONField
 from account.models import KanbanColumn, User
 
 # class Deadline(models.Model):
@@ -21,7 +20,7 @@ class Job(models.Model):
     description = models.TextField()
     notes = models.TextField()
     cover_letter = models.TextField()
-    deadlines = JSONField(encoder=None)
+    deadlines = models.JSONField(encoder=None)
 
     def to_dict(self):
         return {
