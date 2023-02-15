@@ -3,10 +3,10 @@ Account business
 
 Business logic for account related operations.
 """
-
 from . import query
 from .models import *
 from typing import Tuple
+from django.core.exceptions import ValidationError
 
 
 def get_or_create_user(payload: dict) -> Tuple[User, bool]:
@@ -18,8 +18,15 @@ def get_or_create_user(payload: dict) -> Tuple[User, bool]:
     return user, is_new
 
 
-def update_user(payload: dict):
-    query.update_user(payload)
+def update_user(payload: dict) -> None:
+    formatted_payload = payload
+    try:
+        # formats date string from 2023-02-12T16:31:00.000Z to 2023-02-12
+        formatted_payload['birthday'] = payload.get('birthday')[0:10] if payload.get('birthday') else None
+        query.update_user(formatted_payload)
+    except (IndexError, ValidationError):
+        raise AttributeError("Failed to format date: " + payload.get('birthday'))
+    
 
 
 def get_columns(user_id: int) -> list[KanbanColumn]:

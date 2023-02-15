@@ -1,3 +1,4 @@
+import logging
 import json
 from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
@@ -6,6 +7,7 @@ from unittest import mock
 from django.http.cookie import SimpleCookie
 from django.core.exceptions import ObjectDoesNotExist
 from account import query, models
+logger = logging.getLogger(__name__)
 
 
 @mock.patch("google.oauth2.id_token.verify_oauth2_token")
@@ -40,6 +42,7 @@ class GetOrCreateAccountTests(TransactionTestCase):
         self.assertEqual(
             json.loads(response.content)["data"],
             {
+                "id": 1,
                 "google_id": "unique_user_id",
                 "username": 0,
                 "image_url": None,
@@ -47,6 +50,7 @@ class GetOrCreateAccountTests(TransactionTestCase):
                 "birthday": None,
                 "city": None,
                 "country": None,
+                "region": None,
                 "email": "useremail",
                 "field_of_work": None,
                 "first_name": "firstname",
@@ -72,7 +76,7 @@ class UpdateAccountTests(TestCase):
             "email": "useremail",
         }
         # Create an account first
-        self.client.post(
+        user_resp = self.client.post(
             reverse("get_or_create_account"),
             json.dumps({
                 "credential": "whatever",
@@ -82,11 +86,12 @@ class UpdateAccountTests(TestCase):
             **self.header,
         )
 
+        logger.debug(f"here!: {user_resp.json()}")
         # Try updating it, the request should succeed
         response = self.client.post(
             reverse("update_account"),
             json.dumps({
-                "google_id": "unique_user_id",
+                "id": user_resp.json()['data']['id'],
                 "first_name": "Rob"
             }),
             content_type="application/json",
