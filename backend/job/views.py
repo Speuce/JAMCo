@@ -72,7 +72,6 @@ def create_job(request: HttpRequest):
         job = business.create_job(body)
         return JsonResponse(
             status=200,
-            # this could return min_dict() if we want
             data={'job': job.to_dict()})
     except (ObjectDoesNotExist):
         return HttpResponse(status=400)

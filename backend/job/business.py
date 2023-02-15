@@ -16,6 +16,5 @@ def create_job(payload: dict) -> Job:
     return query.create_job(payload)
 
 def update_job(payload: dict) -> None:
-    # need to handle updating deadlines array with Deadline objects
     query.update_job(payload)
     return None

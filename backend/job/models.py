@@ -1,8 +1,17 @@
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import JSONField
 from account.models import KanbanColumn, User
-from job.models import Deadline
 
+# class Deadline(models.Model):
+#     title = models.CharField(max_length=60)
+#     date = models.DateField(verbose_name="Deadline Date")
+
+#     def to_dict(self):
+#         return {
+#             "id": self.id,
+#             "title": self.title,
+#             "date": self.date,
+#         }
 
 class Job(models.Model):
     column_id = models.ForeignKey(KanbanColumn, on_delete=models.CASCADE)
@@ -12,7 +21,7 @@ class Job(models.Model):
     description = models.TextField()
     notes = models.TextField()
     cover_letter = models.TextField()
-    deadlines = ArrayField(models.ForeignKey(Deadline, on_delete=models.CASCADE))
+    deadlines = JSONField(encoder=None)
 
     def to_dict(self):
         return {
@@ -24,15 +33,4 @@ class Job(models.Model):
             "cover_letter": self.cover_letter,
             "column_id": self.column_id,
             "deadlines": self.deadlines
-        }
-
-class Deadline(models.Model):
-    title = models.CharField(max_length=60)
-    date = models.DateField(verbose_name="Deadline Date")
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "title": self.deadline_title,
-            "date": self.deadline_date,
         }

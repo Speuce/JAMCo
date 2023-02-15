@@ -34,6 +34,7 @@ SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
 INSTALLED_APPS = [
     "corsheaders",
     "account",
+    "job",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
