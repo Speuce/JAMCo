@@ -7,6 +7,7 @@ class User(AbstractUser):
     google_id = models.TextField(unique=True)
     image_url = models.TextField(null=True)
     country = models.CharField(max_length=30, null=True)
+    region = models.CharField(max_length=30, null=True)
     city = models.CharField(max_length=30, null=True)
     birthday = models.DateField(verbose_name="Date of Birth", null=True)
     field_of_work = models.CharField(max_length=30, null=True)
@@ -21,6 +22,7 @@ class User(AbstractUser):
             "email": self.email,
             "image_url": self.image_url,
             "country": self.country,
+            "region": self.region,
             "city": self.city,
             "birthday": self.birthday,
             "field_of_work": self.field_of_work,

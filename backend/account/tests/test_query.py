@@ -30,10 +30,10 @@ class UpdateAccountTests(TestCase):
 
     def test_update_account(self):
         # Create an account first # 'sub' is the field name from google tokens
-        query.get_or_create_user({"sub": "4"})
+        user = query.get_or_create_user({"sub": "4"})
 
         # Update the user
-        query.update_user({"google_id": "4", "first_name": "Rob"})
+        query.update_user({"id": user.id, "first_name": "Rob"})
 
         # The modifications should hold
         self.assertEqual(
@@ -43,21 +43,21 @@ class UpdateAccountTests(TestCase):
 
     def test_invalid_update_account(self):
         # Create an account first # 'sub' is the field name from google tokens
-        query.get_or_create_user({"sub": "4"})
+        user = query.get_or_create_user({"sub": "4"})
 
         # "Update" the user
         with self.assertRaises(AttributeError):
-            query.update_user({"google_id": "4", "favourite_prof": "Rasit"})
+            query.update_user({"id": user.id, "favourite_prof": "Rasit"})
 
         # Update the "user"
         # User doesn't exist
-        with self.assertRaises(ObjectDoesNotExist):
+        with self.assertRaises(ValueError):
             query.update_user({
-                "google_id": "41 6D 6F 6E 67 20 55 73",
+                "id": "41 6D 6F 6E 67 20 55 73",
                 "first_name": "Rob"
             })
         # User not specified
-        with self.assertRaises(KeyError):
+        with self.assertRaises(ObjectDoesNotExist):
             query.update_user({"first_name": "Rob"})
 
 

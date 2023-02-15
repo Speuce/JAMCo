@@ -54,7 +54,13 @@ export default {
     JobDetailModal,
     ColumnOptionModal,
   },
-  data() {
+  props: {
+    user: {
+      type: Object,
+      default: () => {},
+    },
+  },
+  data(props) {
     return {
       detailModalVisible: false,
       boardOptionModalVisible: false,
@@ -63,6 +69,7 @@ export default {
       isNewJob,
       colList,
       jobsByColumn,
+      activeUser: props.user,
     }
   },
   setup() {
