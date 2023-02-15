@@ -4,7 +4,7 @@ Account views
 API-layer for account related operations.
 """
 import logging
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_POST
 from django.core.exceptions import ObjectDoesNotExist
 from google.oauth2 import id_token
@@ -22,12 +22,12 @@ def get_or_create_account(request: HttpRequest):
     Will use the google id token to get the user's information.
     """
     if not request.COOKIES.get("csrftoken"):
-        return HttpResponse("No CSRF Token in Cookie", status=401)
+        return JsonResponse(status=401, data={'error': "No CSRF Token in Cookie"})
     elif not request.headers.get("X-Csrftoken"):
-        return HttpResponse("No CSRF Token in Header", status=401)
+        return JsonResponse(status=401, data={'error': "No CSRF Token in Header"})
     elif request.COOKIES.get("csrftoken") != request.headers.get(
             "X-Csrftoken"):
-        return HttpResponse("CSRF Validation Failed", status=401)
+        return JsonResponse(status=401, data={'error': "CSRF Validation Failed"})
 
     body = read_request(request)
     client_id = body["client_id"]
@@ -56,10 +56,8 @@ def get_or_create_account(request: HttpRequest):
 
     except ValueError as err_msg:
         # Invalid token
-        logger.debug("Invalid Token")
-        logger.debug(f"Error info:\n{err_msg}")
-        return HttpResponse("Token Authentication Failed", status=401)
-
+        logger.debug(f"Invalid Token: {err_msg}")
+        return JsonResponse(status=401, data={'error': repr(err_msg)})
 
 @require_POST
 def update_account(request: HttpRequest):
