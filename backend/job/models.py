@@ -17,7 +17,7 @@ class Job(models.Model):
     # column_id commented as causing tests to fail
     # column_id = models.ForeignKey(KanbanColumn, on_delete=models.CASCADE)
     user_id = models.ForeignKey(
-        User, to_field=id, on_delete=models.CASCADE, related_name="user"
+        User, on_delete=models.CASCADE, related_query_name="user"
     )
     position_title = models.TextField()
     company = models.CharField(max_length=60)

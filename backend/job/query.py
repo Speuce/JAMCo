@@ -43,7 +43,7 @@ def get_job_by_id(in_user_id: int, job_id: int) -> Job:
     if job.user_id.id == in_user_id:
         return job
     else:
-        raise ObjectDoesNotExist("Job does not exist")
+        raise ObjectDoesNotExist("Job with that User does not exist")
 
 
 def get_minimum_jobs(in_user_id: int) -> QuerySet:
@@ -51,6 +51,6 @@ def get_minimum_jobs(in_user_id: int) -> QuerySet:
 
     return (
         Job.objects.all()
-        .filter(user_id=in_user_id)
+        .filter(user=in_user_id)
         .values("id", "position_title", "company")
     )
