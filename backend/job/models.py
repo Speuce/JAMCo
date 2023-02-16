@@ -12,6 +12,7 @@ from account.models import KanbanColumn, User
 #             "date": self.date,
 #         }
 
+
 class Job(models.Model):
     # column_id commented as causing tests to fail
     # column_id = models.ForeignKey(KanbanColumn, on_delete=models.CASCADE)
@@ -32,5 +33,5 @@ class Job(models.Model):
             "notes": self.notes,
             "cover_letter": self.cover_letter,
             "column_id": self.column_id,
-            "deadlines": self.deadlines
+            "deadlines": self.deadlines,
         }
