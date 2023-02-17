@@ -3,16 +3,18 @@ Job queries
 
 Query functions for job related operations.
 """
-
+import logging
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.query import QuerySet
 from .models import *
+
+logger = logging.getLogger(__name__)
 
 
 def create_job(payload: dict) -> Job:
     # need to return Job.objects.create(x,y,z)
     try:
-        return Job.objects.create(
+        job = Job.objects.create(
             user=User.objects.get(id=payload["user_id"]),
             position_title=payload["position_title"],
             company=payload["company"],
@@ -21,6 +23,8 @@ def create_job(payload: dict) -> Job:
             cover_letter=payload["cover_letter"],
             deadlines=payload["deadlines"],
         )
+        logger.debug(f"Created Job: {job.to_dict}")
+        return job
     except:  # some kind of error occurs
         return None
 
@@ -61,3 +65,7 @@ def get_minimum_jobs(in_user: int) -> QuerySet:
         .filter(user__id=in_user)
         .values("id", "position_title", "company")
     )
+
+
+def delete_job(in_user: int, job_id: int):
+    Job.objects.get(id=job_id, user__id=in_user).delete()

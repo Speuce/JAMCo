@@ -19,10 +19,10 @@ class Job(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     position_title = models.TextField()
     company = models.CharField(max_length=60)
-    description = models.TextField()
-    notes = models.TextField()
-    cover_letter = models.TextField()
-    deadlines = models.JSONField(encoder=None)
+    description = models.TextField(null=True)
+    notes = models.TextField(null=True)
+    cover_letter = models.TextField(null=True)
+    deadlines = models.JSONField(encoder=None, null=True)
 
     def to_dict(self):
         return {
@@ -32,6 +32,6 @@ class Job(models.Model):
             "description": self.description,
             "notes": self.notes,
             "cover_letter": self.cover_letter,
-            "column_id": self.column_id,
+            # "column_id": self.column_id,
             "deadlines": self.deadlines,
         }
