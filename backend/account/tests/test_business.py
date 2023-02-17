@@ -5,7 +5,6 @@ from account import business, query
 
 
 class CreateUserTests(TestCase):
-
     def test_create_user(self):
         # Make sure default columns are created
         user, created = business.get_or_create_user({"sub": "4"})
@@ -15,21 +14,23 @@ class CreateUserTests(TestCase):
         self.assertEqual(columns[2].name, "OA")
         self.assertEqual(columns[3].name, "Interview")
 
-class UpdateUserTests(TestCase):
 
+class UpdateUserTests(TestCase):
     def test_update_user_valid_birthday(self):
         user, created = business.get_or_create_user({"sub": "4"})
-        business.update_user(payload={'id': user.id, 'birthday': '2023-02-12T16:31:00.000Z'})
+        business.update_user(
+            payload={"id": user.id, "birthday": "2023-02-12T16:31:00.000Z"}
+        )
         updated_user, created = business.get_or_create_user({"sub": "4"})
         self.assertEqual(updated_user.birthday, datetime.date(2023, 2, 12))
 
     def test_update_user_invalid_birthday(self):
         user, created = business.get_or_create_user({"sub": "5"})
         with self.assertRaises(AttributeError):
-            business.update_user(payload={'id': user.id, 'birthday': '2023-02'})
+            business.update_user(payload={"id": user.id, "birthday": "2023-02"})
+
 
 class GetColumnsTests(TestCase):
-
     def test_get_columns(self):
         # Using the query function for creating a user means that we don't have
         # to worry about the default columns
@@ -42,32 +43,22 @@ class GetColumnsTests(TestCase):
         column_numbers = [column.column_number for column in columns]
         # Returned columns should be sorted by column number
         self.assertTrue(
-            all(column_numbers[i] <= column_numbers[i + 1]
-                for i in range(len(column_numbers) - 1)))
+            all(
+                column_numbers[i] <= column_numbers[i + 1]
+                for i in range(len(column_numbers) - 1)
+            )
+        )
 
 
 class UpdateColumnsTests(TestCase):
-
     def test_rename(self):
         user = query.get_or_create_user({"sub": "4"})
         columns = business.update_columns(
             user.id,
             [
-                {
-                    "id": -1,
-                    "name": "New column",
-                    "column_number": 0
-                },
-                {
-                    "id": -1,
-                    "name": "Newer column",
-                    "column_number": 1
-                },
-                {
-                    "id": -1,
-                    "name": "Even newer column",
-                    "column_number": 2
-                },
+                {"id": -1, "name": "New column", "column_number": 0},
+                {"id": -1, "name": "Newer column", "column_number": 1},
+                {"id": -1, "name": "Even newer column", "column_number": 2},
             ],
         )
 
@@ -75,21 +66,13 @@ class UpdateColumnsTests(TestCase):
         columns = business.update_columns(
             user.id,
             [
-                {
-                    "id": columns[0].id,
-                    "name": "Old column",
-                    "column_number": 0
-                },
+                {"id": columns[0].id, "name": "Old column", "column_number": 0},
                 {
                     "id": columns[1].id,
                     "name": "The most powerful column",
                     "column_number": 1,
                 },
-                {
-                    "id": columns[2].id,
-                    "name": "Even newer column",
-                    "column_number": 2
-                },
+                {"id": columns[2].id, "name": "Even newer column", "column_number": 2},
             ],
         )
 
@@ -106,21 +89,9 @@ class UpdateColumnsTests(TestCase):
         columns = business.update_columns(
             user.id,
             [
-                {
-                    "id": -1,
-                    "name": "New column",
-                    "column_number": 0
-                },
-                {
-                    "id": -1,
-                    "name": "Newer column",
-                    "column_number": 1
-                },
-                {
-                    "id": -1,
-                    "name": "Even newer column",
-                    "column_number": 2
-                },
+                {"id": -1, "name": "New column", "column_number": 0},
+                {"id": -1, "name": "Newer column", "column_number": 1},
+                {"id": -1, "name": "Even newer column", "column_number": 2},
             ],
         )
 
@@ -128,21 +99,9 @@ class UpdateColumnsTests(TestCase):
         result_columns = business.update_columns(
             user.id,
             [
-                {
-                    "id": columns[0].id,
-                    "name": "New column",
-                    "column_number": 1
-                },
-                {
-                    "id": columns[1].id,
-                    "name": "Newer column",
-                    "column_number": 2
-                },
-                {
-                    "id": columns[2].id,
-                    "name": "Even newer column",
-                    "column_number": 0
-                },
+                {"id": columns[0].id, "name": "New column", "column_number": 1},
+                {"id": columns[1].id, "name": "Newer column", "column_number": 2},
+                {"id": columns[2].id, "name": "Even newer column", "column_number": 0},
             ],
         )
 
@@ -156,21 +115,9 @@ class UpdateColumnsTests(TestCase):
         columns = business.update_columns(
             user.id,
             [
-                {
-                    "id": -1,
-                    "name": "New column",
-                    "column_number": 0
-                },
-                {
-                    "id": -1,
-                    "name": "Newer column",
-                    "column_number": 1
-                },
-                {
-                    "id": -1,
-                    "name": "Even newer column",
-                    "column_number": 2
-                },
+                {"id": -1, "name": "New column", "column_number": 0},
+                {"id": -1, "name": "Newer column", "column_number": 1},
+                {"id": -1, "name": "Even newer column", "column_number": 2},
             ],
         )
 
@@ -179,16 +126,8 @@ class UpdateColumnsTests(TestCase):
         result_columns = business.update_columns(
             user.id,
             [
-                {
-                    "id": columns[0].id,
-                    "name": "New column",
-                    "column_number": 1
-                },
-                {
-                    "id": columns[1].id,
-                    "name": "Newer column",
-                    "column_number": 2
-                },
+                {"id": columns[0].id, "name": "New column", "column_number": 1},
+                {"id": columns[1].id, "name": "Newer column", "column_number": 2},
                 {
                     "id": columns[2].id,
                     "name": "Even newer column",
@@ -211,16 +150,8 @@ class UpdateColumnsTests(TestCase):
                     "name": "Even newer column",
                     "column_number": 500,
                 },
-                {
-                    "id": columns[1].id,
-                    "name": "New column",
-                    "column_number": 0
-                },
-                {
-                    "id": columns[2].id,
-                    "name": "Newer column",
-                    "column_number": 1
-                },
+                {"id": columns[1].id, "name": "New column", "column_number": 0},
+                {"id": columns[2].id, "name": "Newer column", "column_number": 1},
             ],
         )
 
@@ -234,37 +165,17 @@ class UpdateColumnsTests(TestCase):
         columns = business.update_columns(
             user.id,
             [
-                {
-                    "id": -1,
-                    "name": "New column",
-                    "column_number": 0
-                },
-                {
-                    "id": -1,
-                    "name": "Newer column",
-                    "column_number": 1
-                },
-                {
-                    "id": -1,
-                    "name": "Even newer column",
-                    "column_number": 2
-                },
+                {"id": -1, "name": "New column", "column_number": 0},
+                {"id": -1, "name": "Newer column", "column_number": 1},
+                {"id": -1, "name": "Even newer column", "column_number": 2},
             ],
         )
 
         result_columns = business.update_columns(
             user.id,
             [
-                {
-                    "id": columns[2].id,
-                    "name": "Even newer column",
-                    "column_number": 2
-                },
-                {
-                    "id": columns[0].id,
-                    "name": "New column",
-                    "column_number": 0
-                },
+                {"id": columns[2].id, "name": "Even newer column", "column_number": 2},
+                {"id": columns[0].id, "name": "New column", "column_number": 0},
             ],
         )
 
@@ -279,16 +190,8 @@ class UpdateColumnsTests(TestCase):
             business.update_columns(
                 -1,
                 [
-                    {
-                        "id": -1,
-                        "name": "New column",
-                        "column_number": 0
-                    },
-                    {
-                        "id": -1,
-                        "name": "New column",
-                        "column_number": 1
-                    },
+                    {"id": -1, "name": "New column", "column_number": 0},
+                    {"id": -1, "name": "New column", "column_number": 1},
                 ],
             )
 
@@ -297,21 +200,9 @@ class UpdateColumnsTests(TestCase):
         business.update_columns(
             user.id,
             [
-                {
-                    "id": -1,
-                    "name": "New column",
-                    "column_number": 0
-                },
-                {
-                    "id": -1,
-                    "name": "Newer column",
-                    "column_number": 1
-                },
-                {
-                    "id": -1,
-                    "name": "Even newer column",
-                    "column_number": 2
-                },
+                {"id": -1, "name": "New column", "column_number": 0},
+                {"id": -1, "name": "Newer column", "column_number": 1},
+                {"id": -1, "name": "Even newer column", "column_number": 2},
             ],
         )
 
@@ -331,20 +222,14 @@ class UpdateColumnsTests(TestCase):
             business.update_columns(
                 user.id,
                 [
-                    {
-                        "name": "New column",
-                        "column_number": 0
-                    },
+                    {"name": "New column", "column_number": 0},
                 ],
             )
         with self.assertRaises(ValueError):
             business.update_columns(
                 user.id,
                 [
-                    {
-                        "id": -1,
-                        "column_number": 0
-                    },
+                    {"id": -1, "column_number": 0},
                 ],
             )
         with self.assertRaises(ValueError):
