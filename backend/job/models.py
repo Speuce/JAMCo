@@ -1,20 +1,7 @@
 from django.db import models
 from account.models import KanbanColumn, User
 
-# class Deadline(models.Model):
-#     title = models.CharField(max_length=60)
-#     date = models.DateField(verbose_name="Deadline Date")
-
-#     def to_dict(self):
-#         return {
-#             "id": self.id,
-#             "title": self.title,
-#             "date": self.date,
-#         }
-
-
 class Job(models.Model):
-    # column_id commented as causing tests to fail
     kcolumn = models.ForeignKey(KanbanColumn, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     position_title = models.TextField()
@@ -23,6 +10,7 @@ class Job(models.Model):
     notes = models.TextField(null=True)
     cover_letter = models.TextField(null=True)
     deadlines = models.JSONField(encoder=None, null=True)
+    type = models.TextField(null = True)
 
     def to_dict(self):
         return {
@@ -34,4 +22,5 @@ class Job(models.Model):
             "cover_letter": self.cover_letter,
             "kcolumn": self.kcolumn.id,
             "deadlines": self.deadlines,
+            "type": self.type
         }

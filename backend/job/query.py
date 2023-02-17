@@ -12,9 +12,8 @@ logger = logging.getLogger(__name__)
 
 
 def create_job(payload: dict) -> Job:
-    # need to return Job.objects.create(x,y,z)
-
     job = Job.objects.create(
+        type=payload["type"] if payload.get("type") else None,
         kcolumn=KanbanColumn.objects.get(id=payload["kcolumn_id"]),
         user=User.objects.get(id=payload["user_id"]),
         position_title=payload["position_title"],
