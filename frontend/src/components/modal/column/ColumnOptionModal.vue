@@ -82,7 +82,6 @@ import { ref } from 'vue'
 const MAX_COLS = 8
 const MIN_COLS = 1
 const cols = ref([])
-const nextColId = ref(0) // TODO: Remove once backend integration complete
 
 export default {
   components: {
@@ -113,10 +112,6 @@ export default {
   setup(props) {
     cols.value = []
     props.columns.forEach((col) => {
-      // TODO: remove if check
-      if (col.id >= nextColId.value) {
-        nextColId.value = col.id + 1
-      }
       cols.value.push(col)
     })
   },
@@ -160,7 +155,7 @@ export default {
     addColumn() {
       this.hideWarnings()
       if (cols.value.length < MAX_COLS) {
-        this.cols.push({ id: nextColId.value++, number: -1, name: '' })
+        this.cols.push({ id: -1, column_number: -1, name: '' })
       } else {
         this.maxColumnsReached = true
       }
@@ -173,10 +168,12 @@ export default {
         let indexedCols = []
         cols.value.forEach((column) => {
           let col = column
-          col.number = index++
+          col.column_number = index++
           indexedCols.push(col)
         })
-        indexedCols = indexedCols.sort((a, b) => a.number - b.number)
+        indexedCols = indexedCols.sort(
+          (a, b) => a.column_number - b.column_number,
+        )
         this.$emit('updateColumns', indexedCols)
         this.$emit('close')
       }

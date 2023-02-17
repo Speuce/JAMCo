@@ -45,6 +45,7 @@ export default {
     JobCard,
     draggable: VueDraggableNext,
   },
+  emits: ['showDetailModal', 'columnChanged'],
   props: {
     columns: {
       type: Object,
@@ -58,9 +59,10 @@ export default {
   methods: {
     handle(event, colId) {
       if (event.added) {
+        let updatedJob = event.added.element
         // eslint-disable-next-line no-param-reassign
-        event.added.element.columnId = colId
-        // Post Update to Job Model, update ColumnId field
+        updatedJob.kcolumn_id = colId
+        this.$emit('columnChanged', updatedJob)
       }
     },
   },

@@ -47,7 +47,6 @@ def update_job(payload: dict) -> None:
         # error-free.
         job.save()
 
-
 def get_job_by_id(in_user: int, job_id: int) -> Job:
     try:
         return Job.objects.get(id=job_id, user__id=in_user)
@@ -56,13 +55,8 @@ def get_job_by_id(in_user: int, job_id: int) -> Job:
 
 
 def get_minimum_jobs(in_user: int) -> QuerySet:
-    # return {id, column, position, company} for all user_id user's jobs
-
-    return (
-        Job.objects.all()
-        .filter(user__id=in_user)
-        .values("id", "kcolumn", "position_title", "company")
-    )
+    # return {id, column, position, company, type} for all user_id user's jobs
+    return Job.objects.all().filter(user__id=in_user).values("id", "kcolumn", "position_title", "company", "type")
 
 
 def delete_job(in_user: int, job_id: int):

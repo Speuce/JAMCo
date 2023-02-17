@@ -30,6 +30,7 @@
         :columns="colList"
         :jobs="jobsByColumn"
         @showDetailModal="showDetailModal"
+        @columnChanged="createOrUpdateJob"
       />
     </div>
   </div>
@@ -37,15 +38,13 @@
 
 <script>
 import KanbanBoard from '../components/kanban/KanbanBoard.vue'
-import sampleColumnMapping from '../../__tests__/test_data/test_column_mapping.json'
-import sampleJobs from '../../__tests__/test_data/test_jobs.json'
 import JobDetailModal from '../components/modal/job/JobDetailModal.vue'
 import ColumnOptionModal from '../components/modal/column/ColumnOptionModal.vue'
 import { ref } from 'vue'
+import { postRequest } from '@/helpers/requests.js'
 
 const jobsByColumn = ref({})
 const colList = ref([])
-const nextJobId = ref(0) // TODO: remove when backend integration complete
 const isNewJob = ref(false)
 
 export default {
@@ -65,37 +64,44 @@ export default {
       detailModalVisible: false,
       boardOptionModalVisible: false,
       selectedJob: {},
-      nextJobId, // temp nextId which will be replaced by backend
       isNewJob,
       colList,
       jobsByColumn,
       activeUser: props.user,
     }
   },
-  setup() {
-    var maxId = 0 // TODO: remove when backend interated
+  async setup(props) {
     jobsByColumn.value = []
     colList.value = []
 
-    // TODO: get columns from backend instead of sampleColumnMapping
-    // Populate colList with KanbanColumns
-    sampleColumnMapping.forEach((colMapping) => {
+    let columnResponse = await postRequest('account/api/get_columns', {
+      user_id: props.user.id,
+    })
+
+    columnResponse.columns.forEach((colMapping) => {
       colList.value.push(colMapping)
     })
-    // TODO: Remove since get_columns sorts columns by number already
-    colList.value = colList.value.sort((a, b) => a.number - b.number)
 
-    // TODO: populate from backend instead of sampleJobs
-    // Populate jobsByColumn, mapping each job to their columnId
-    sampleJobs.forEach((job) => {
-      // TODO: remove maxId check
-      if (job.id > maxId) {
-        maxId = job.id
+    // Setup Empty Arrays for Jobs foreach Column
+    colList.value.forEach((col) => {
+      jobsByColumn.value[col.id] = []
+    })
+
+    let jobResponse = await postRequest('job/api/get_minimum_jobs', {
+      user_id: props.user.id,
+    })
+
+    let jobJSON = JSON.parse(jobResponse.jobs)
+
+    // Populate jobsByColumn, mapping each job to their kcolumn_id
+    jobJSON.forEach((job) => {
+      let jobWithKColId = job
+      jobWithKColId.kcolumn_id = jobWithKColId.kcolumn
+      delete jobWithKColId.kcolumn
+      if (!jobsByColumn.value[jobWithKColId.kcolumn_id]) {
+        jobsByColumn.value[jobWithKColId.kcolumn_id] = []
       }
-      if (!jobsByColumn.value[job.columnId]) {
-        jobsByColumn.value[job.columnId] = []
-      }
-      jobsByColumn.value[job.columnId].push(job)
+      jobsByColumn.value[jobWithKColId.kcolumn_id].push(job)
     })
 
     // Order jobs within a column by job.id (initial, default vertical order)
@@ -110,16 +116,16 @@ export default {
         )
       }
     })
-
-    nextJobId.value = maxId + 1
   },
   methods: {
-    createOrUpdateJob(job) {
+    async createOrUpdateJob(job) {
       if (isNewJob.value) {
-        // TODO: add backend job record
-        // retrieve job (with backend-populated id)
-        // retrieved job will have Deadline objects with properly populated id fields
-        isNewJob.value = false
+        let userJob = job
+        userJob.user_id = this.activeUser.id
+        await postRequest('job/api/create_job', userJob).then((newJob) => {
+          isNewJob.value = false
+          jobsByColumn.value[newJob.job.kcolumn_id].push(newJob.job)
+        })
       } else {
         // Remove job from jobsByColumn
         colList.value.forEach((column) => {
@@ -129,37 +135,43 @@ export default {
             ].filter((item) => item.id !== job.id)
           }
         })
+        await postRequest('job/api/update_job', job)
+        jobsByColumn.value[job.kcolumn_id].push(job)
       }
-      // TODO: post to backend update_job
-      // populate jobsByColumn.value[job.id] with reponse job
-      jobsByColumn.value[job.columnId].push(job)
     },
-    updateColumns(columns) {
-      // TODO: post columns to update_columns
-      // update colList.value with response
+    async updateColumns(columns) {
+      await postRequest('account/api/update_columns', {
+        user_id: this.activeUser.id,
+        payload: columns,
+      }).then((updatedColumns) => {
+        colList.value = updatedColumns.columns
+        this.sortColumnJobsById()
 
-      colList.value = columns
-
-      this.sortColumnJobsById()
-
-      // Initialize any empty columns with empty array
-      colList.value.forEach((col) => {
-        if (!jobsByColumn.value[col.id]) {
-          jobsByColumn.value[col.id] = []
-        }
+        // Initialize any empty columns with empty array
+        colList.value.forEach((col) => {
+          if (!jobsByColumn.value[col.id]) {
+            jobsByColumn.value[col.id] = []
+          }
+        })
       })
     },
-    showDetailModal(job) {
+    async showDetailModal(job) {
       if (job) {
         // editing job
-        this.selectedJob = job
+        await postRequest('job/api/get_job_by_id', {
+          user_id: this.activeUser.id,
+          job_id: job.id,
+        }).then((completeJob) => {
+          this.selectedJob = completeJob.job_data
+          this.detailModalVisible = true
+        })
       } else {
         // creating new job
         isNewJob.value = true
         // TODO: set id to -1
-        this.selectedJob = { id: nextJobId.value++ }
+        this.selectedJob = { id: -1 }
+        this.detailModalVisible = true
       }
-      this.detailModalVisible = true
     },
     sortColumnJobsById() {
       colList.value.forEach((column) => {

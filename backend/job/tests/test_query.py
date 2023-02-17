@@ -35,8 +35,9 @@ class GetOrCreateJobTests(TransactionTestCase):
                 "description": "",
                 "notes": "",
                 "cover_letter": "",
-                "kcolumn": new_column.id,
+                "kcolumn_id": new_column.id,
                 "deadlines": None,
+                "type": None
             },
         )
 

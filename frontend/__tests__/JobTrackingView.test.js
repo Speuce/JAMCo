@@ -74,7 +74,7 @@ describe('JobTrackingView', () => {
 
   it('updates colList when param passed to updateColumns', () => {
     expect(wrapper.vm.colList).toEqual(
-      testCols.sort((col1, col2) => col1.number - col2.number),
+      testCols.sort((col1, col2) => col1.column_number - col2.column_number),
     )
     wrapper.vm.updateColumns([{ id: 8 }, { id: 0 }])
     expect(wrapper.vm.colList).toEqual([{ id: 8 }, { id: 0 }])
@@ -82,20 +82,20 @@ describe('JobTrackingView', () => {
 
   it('updates jobsByColumn when job edited', () => {
     wrapper.vm.isNewJob = false
-    wrapper.vm.createOrUpdateJob({ id: 0, columnId: 8 })
+    wrapper.vm.createOrUpdateJob({ id: 0, kcolumn_id: 8 })
     expect(wrapper.vm.jobsByColumn[8]).toEqual([
       {
         id: 12,
         company: 'Minisoft',
         type: 'Frontend',
         position: 'Senior Software Engineer',
-        columnId: 8,
+        kcolumn_id: 8,
         deadlines: [],
-        coverLetter: 'Test',
+        cover_letter: 'Test',
         description: 'Description',
-        comments: 'Test',
+        notes: 'Test',
       },
-      { id: 0, columnId: 8 },
+      { id: 0, kcolumn_id: 8 },
     ])
   })
 })

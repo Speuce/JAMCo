@@ -10,7 +10,7 @@
                   <v-text-field
                     label="Position*"
                     class="text-h5"
-                    v-model="jobData.position"
+                    v-model="jobData.position_title"
                     :style="{ color: this.positionErrorIndicator }"
                     maxlength="50"
                   />
@@ -71,7 +71,7 @@
                     class="text-area-box"
                     label="Cover Letter"
                     shaped
-                    v-model="jobData.coverLetter"
+                    v-model="jobData.cover_letter"
                     maxlength="10000"
                   />
                 </v-col>
@@ -82,9 +82,9 @@
                   <v-textarea
                     auto-grow
                     class="text-area-box"
-                    label="Comments"
+                    label="Notes"
                     shaped
-                    v-model="jobData.comments"
+                    v-model="jobData.notes"
                     maxlength="10000"
                   />
                 </v-col>
@@ -167,11 +167,11 @@ export default {
           id: -1,
           company: '',
           type: '',
-          columnId: -1,
-          position: '',
+          kcolumn_id: -1,
+          position_title: '',
           description: '',
-          coverLetter: '',
-          comments: '',
+          cover_letter: '',
+          notes: '',
         }
       },
     },
@@ -192,8 +192,8 @@ export default {
   }),
   setup(props) {
     deadlines.value = props.job.deadlines ? props.job.deadlines : []
-    selectedColumnId.value = props.job.columnId
-      ? props.job.columnId
+    selectedColumnId.value = props.job.kcolumn_id
+      ? props.job.kcolumn_id
       : props.columns[0].id
   },
   computed: {
@@ -239,20 +239,23 @@ export default {
 
       if (
         !this.deadlineError &&
-        this.jobData.position &&
+        this.jobData.position_title &&
         this.jobData.company &&
-        this.jobData.position.length > 0 &&
+        this.jobData.position_title.length > 0 &&
         this.jobData.company.length > 0
       ) {
         this.positionErrorIndicator = null
         this.companyErrorIndicator = null
         this.deadlineError = false
         this.jobData.deadlines = deadlines.value
-        this.jobData.columnId = selectedColumnId.value
+        this.jobData.kcolumn_id = selectedColumnId.value
         this.$emit('createOrUpdateJob', this.jobData)
         this.$emit('close')
       } else {
-        if (!this.jobData.position || this.jobData.position.length === 0) {
+        if (
+          !this.jobData.position_title ||
+          this.jobData.position_title.length === 0
+        ) {
           this.positionErrorIndicator = 'red'
         }
         if (!this.jobData.company || this.jobData.company.length === 0) {

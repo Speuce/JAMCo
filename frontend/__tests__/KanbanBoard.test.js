@@ -27,10 +27,10 @@ describe('KanbanBoard', () => {
     let column = wrapper.findAllComponents(VueDraggableNext)
     let job = wrapper.findComponent(JobCard)
 
-    expect(job.vm.job.columnId).toBe(12)
+    expect(job.vm.job.kcolumn_id).toBe(12)
 
     column[4].vm.$emit('change', { added: { element: job.vm.job } }, 8)
-    expect(job.vm.job.columnId).toBe(8)
+    expect(job.vm.job.kcolumn_id).toBe(8)
   })
 
   it('emits showDetailModal when card clicked', () => {
