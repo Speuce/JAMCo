@@ -56,7 +56,7 @@ export default {
   props: {
     user: {
       type: Object,
-      default: () => {},
+      default: undefined,
     },
   },
   data(props) {
@@ -101,9 +101,6 @@ export default {
       let jobWithKColId = { ...job, kcolumn_id: job.kcolumn }
       delete jobWithKColId.kcolumn
 
-      if (!jobsByColumn.value[jobWithKColId.kcolumn_id]) {
-        jobsByColumn.value[jobWithKColId.kcolumn_id] = []
-      }
       jobsByColumn.value[jobWithKColId.kcolumn_id].push(jobWithKColId)
     })
     // Order jobs within a column by job.id (initial, default vertical order)
@@ -171,7 +168,6 @@ export default {
       } else {
         // creating new job
         isNewJob.value = true
-        // TODO: set id to -1
         this.selectedJob = { id: -1 }
         this.detailModalVisible = true
       }

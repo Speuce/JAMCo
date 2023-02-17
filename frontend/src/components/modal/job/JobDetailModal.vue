@@ -205,7 +205,6 @@ export default {
     newDeadline() {
       this.deadlineError = false
       deadlines.value.push({
-        // TODO: set default deadline to -1 (will be corrected in backend)
         id: nextDeadlineId.value++,
         title: '',
         date: '',

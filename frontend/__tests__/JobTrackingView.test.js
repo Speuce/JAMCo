@@ -3,6 +3,7 @@ import JobTrackingView from '../src/views/JobTrackingView.vue'
 import { expect, beforeEach, describe, it, vi, afterEach } from 'vitest'
 import testJobs from './test_data/test_jobs.json'
 import testCols from './test_data/test_column_mapping.json'
+import testJobsByColumn from './test_data/test_jobs_by_column.json'
 import { postRequest } from '@/helpers/requests.js'
 vi.mock('@/helpers/requests.js', () => ({
   postRequest: vi.fn(),
@@ -16,10 +17,17 @@ const mostPostRequest = (url) => {
     return Promise.resolve({ jobs: testJobs })
   }
   if (url === 'job/api/create_job') {
-    return Promise.resolve({ job: testJobs[0] })
+    return Promise.resolve({
+      job: {
+        id: 0,
+        kcolumn_id: 12,
+        position: 'pos',
+        company: 'company',
+      },
+    })
   }
   if (url === 'job/api/update_job') {
-    return Promise.resolve({ data: { id: 633 } })
+    return Promise.resolve({ data: { id: 0, kcolumn_id: 8 } })
   }
   if (url === 'account/api/update_columns') {
     return Promise.resolve({ columns: [{ id: 8 }, { id: 2 }, { id: 1 }] })
@@ -152,22 +160,55 @@ describe('JobTrackingView', () => {
     expect(wrapper.vm.detailModalVisible).toBe(true)
   })
 
-  // it('updates jobsByColumn when job edited', () => {
-  //   wrapper.vm.isNewJob = false
-  //   wrapper.vm.createOrUpdateJob({ id: 0, kcolumn_id: 8 })
-  //   expect(wrapper.vm.jobsByColumn[8]).toEqual([
-  //     {
-  //       id: 12,
-  //       company: 'Minisoft',
-  //       type: 'Frontend',
-  //       position: 'Senior Software Engineer',
-  //       kcolumn_id: 8,
-  //       deadlines: [],
-  //       cover_letter: 'Test',
-  //       description: 'Description',
-  //       notes: 'Test',
-  //     },
-  //     { id: 0, kcolumn_id: 8 },
-  //   ])
-  // })
+  it('posts to update_job when editing job, updating jobsByColumn', async () => {
+    wrapper.vm.isNewJob = false
+    await wrapper.vm.createOrUpdateJob({
+      id: 0,
+      kcolumn_id: 8,
+    })
+    expect(postRequest).toHaveBeenCalledWith('job/api/update_job', {
+      id: 0,
+      kcolumn_id: 8,
+    })
+    expect(wrapper.vm.jobsByColumn[8]).toEqual([
+      {
+        id: 12,
+        company: 'Minisoft',
+        type: 'Frontend',
+        position: 'Senior Software Engineer',
+        kcolumn_id: 8,
+        deadlines: [],
+        cover_letter: 'Test',
+        description: 'Description',
+        notes: 'Test',
+      },
+      { id: 0, kcolumn_id: 8 },
+    ])
+  })
+
+  it('posts to create_job when creating new job, updating jobsByColumn', async () => {
+    wrapper.vm.isNewJob = true
+    await wrapper.vm.createOrUpdateJob({
+      id: 0,
+      kcolumn_id: 12,
+      position: 'pos',
+      company: 'company',
+    })
+    expect(postRequest).toHaveBeenCalledWith('job/api/create_job', {
+      id: 0,
+      kcolumn_id: 12,
+      position: 'pos',
+      company: 'company',
+      user_id: 1,
+    })
+    let jobsAtColumn = testJobsByColumn
+    jobsAtColumn['12'].push({
+      id: 0,
+      kcolumn_id: 12,
+      position: 'pos',
+      company: 'company',
+    })
+
+    expect(wrapper.vm.jobsByColumn[12]).toEqual(jobsAtColumn['12'])
+  })
 })
