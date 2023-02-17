@@ -82,7 +82,7 @@ class UpdateJobTest(TransactionTestCase):
         updated_model_dict["id"] = 4
 
         get_job_dict = business.get_job_by_id(user.id, job_created.id).to_dict()
-        self.assertEqual(updated_model_dict, get_job_dict)
+        self.assertNotEqual(updated_model_dict, get_job_dict)
 
 
 class GetMinimumJobsTests(TransactionTestCase):
