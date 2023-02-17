@@ -55,8 +55,11 @@ def get_job_by_id(in_user: int, job_id: int) -> Job:
 
 
 def get_minimum_jobs(in_user: int) -> QuerySet:
-    # return {id, column, position, company, type} for all user_id user's jobs
-    return Job.objects.all().filter(user__id=in_user).values("id", "kcolumn", "position_title", "company", "type")
+    return (
+        Job.objects.all()
+        .filter(user__id=in_user)
+        .values("id", "kcolumn", "position_title", "company", "type")
+    )
 
 
 def delete_job(in_user: int, job_id: int):
