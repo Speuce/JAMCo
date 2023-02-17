@@ -25,13 +25,13 @@
                 :list="cols"
                 :animation="200"
                 ghost-class="ghost-card"
-                group="column.id"
-                id="column"
+                group="col.id"
+                id="col"
               >
                 <ColumnCard
-                  v-for="column in cols"
-                  :key="column.id"
-                  :column="column"
+                  v-for="col in cols"
+                  :key="col.id"
+                  :column="col"
                   @deleteColumn="deleteColumn"
                   @updateColumn="updateColumn"
                   :tryError="invalidColumns"
