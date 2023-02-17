@@ -32,7 +32,8 @@
         @click="this.$emit('deleteDeadline', this.deadline.id)"
         size="x-small"
         icon="mdi-trash-can-outline"
-      />
+        >🗑️</v-btn
+      >
     </v-col>
   </v-row>
 </template>
@@ -40,6 +41,7 @@
 <script>
 import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
+import '@mdi/font/css/materialdesignicons.css'
 
 export default {
   components: {
@@ -90,11 +92,11 @@ export default {
 
 <style scoped>
 .center-offset {
-  padding-top: 20px;
+  padding-top: 12px;
   margin-left: -15px;
 }
 
 .remove-btn {
-  margin-top: 2px;
+  margin-top: 12px;
 }
 </style>

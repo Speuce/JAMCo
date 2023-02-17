@@ -19,15 +19,18 @@
           size="small"
           icon="mdi-trash-can-outline"
           class="button-pad"
-        />
+          >🗑️</v-btn
+        >
       </v-col>
       <v-col cols="12" sm="2">
         <v-btn
           size="small"
           icon="mdi-arrow-up-down-bold"
           class="button-pad"
+          variant="tonal"
           disabled
-        />
+          >🔀</v-btn
+        >
       </v-col>
     </v-row>
   </div>
