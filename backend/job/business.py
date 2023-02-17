@@ -21,4 +21,3 @@ def create_job(payload: dict) -> Job:
 
 def update_job(payload: dict) -> None:
     query.update_job(payload)
-    return None

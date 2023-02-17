@@ -98,8 +98,6 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content.decode('utf-8'), json.dumps({}))
 
-        # Check that business.update_job was called
-
     @patch('job.business.get_minimum_jobs')
     def test_get_minimum_jobs_with_error(self, mock_get_minimum_jobs):
         mock_get_minimum_jobs.side_effect = Exception("Something went wrong!")
