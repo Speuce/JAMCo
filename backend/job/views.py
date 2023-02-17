@@ -12,7 +12,6 @@ from django.core.serializers import serialize
 from jamco.helper import read_request
 from . import business
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -31,8 +30,9 @@ def get_minimum_jobs(request: HttpRequest):
 
     try:
         jobs = list(business.get_minimum_jobs(user_id))
-        return JsonResponse(status=200, data={'jobs':json.dumps(jobs)})
+        return JsonResponse(status=200, data={'jobs': jobs})
     except Exception as err_msg:
+        logger.error(err_msg)
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
 
