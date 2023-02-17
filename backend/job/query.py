@@ -28,7 +28,7 @@ def create_job(payload: dict) -> Job:
         description=payload["description"] if payload.get("description") else "",
         notes=payload["notes"] if payload.get("notes") else "",
         cover_letter=payload["cover_letter"] if payload.get("cover_letter") else "",
-        deadlines=payload["deadlines"] if payload.get("cover_letter") else None,
+        deadlines=payload["deadlines"] if payload.get("deadlines") else None,
     )
     logger.debug(f"Created Job: {job.to_dict()}")
     return job
@@ -53,6 +53,7 @@ def update_job(payload: dict) -> None:
         # isn't raised. That is, we'll only save changes if the entire payload is
         # error-free.
         job.save()
+
 
 def get_job_by_id(in_user: int, job_id: int) -> Job:
     try:
