@@ -19,11 +19,11 @@ def get_minimum_jobs(request: HttpRequest):
     """
     Gets {id, position, company} for each job a given user has
     Called on Kanban Load
-    Populates Kanban Cards with minimum data
+    Populates Kanban Cards with minimum overview thumbnail data per job
     """
 
     body = read_request(request)
-    user_id = body.get("user_id")
+    user_id = body.get("user_id")  # user whose jobs are needed
 
     logger.debug(f"get_minimum_jobs: {user_id}")
 

@@ -12,9 +12,17 @@ from .models import *
 def create_job(payload: dict) -> Job:
     # need to return Job.objects.create(x,y,z)
     try:
-        return Job.objects.create(id=payload["id"])
-    except ObjectDoesNotExist:
-        return None  # what to put here?
+        return Job.objects.create(
+            user=User.objects.get(id=payload["user_id"]),
+            position_title=payload["position_title"],
+            company=payload["company"],
+            description=payload["description"],
+            notes=payload["notes"],
+            cover_letter=payload["cover_letter"],
+            deadlines=payload["deadlines"],
+        )
+    except:  # some kind of error occurs
+        return None
 
 
 def job_exists(job_id: str) -> bool:
@@ -38,19 +46,18 @@ def update_job(payload: dict) -> None:
         job.save()
 
 
-def get_job_by_id(in_user_id: int, job_id: int) -> Job:
-    job = Job.objects.get(id=job_id)
-    if job.user_id.id == in_user_id:
-        return job
-    else:
+def get_job_by_id(in_user: int, job_id: int) -> Job:
+    try:
+        return Job.objects.get(id=job_id, user__id=in_user)
+    except:
         raise ObjectDoesNotExist("Job with that User does not exist")
 
 
-def get_minimum_jobs(in_user_id: int) -> QuerySet:
+def get_minimum_jobs(in_user: int) -> QuerySet:
     # return {id, position, company} for all user_id user's jobs
 
     return (
         Job.objects.all()
-        .filter(user=in_user_id)
+        .filter(user__id=in_user)
         .values("id", "position_title", "company")
     )

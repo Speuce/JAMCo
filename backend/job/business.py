@@ -7,12 +7,12 @@ from .models import Job
 from . import query
 
 
-def get_minimum_jobs(user_id: int) -> list[Job]:
-    return query.get_minimum_jobs(user_id)
+def get_minimum_jobs(in_user: int) -> list[Job]:
+    return query.get_minimum_jobs(in_user)
 
 
-def get_job_by_id(user_id: int, job_id: int) -> Job:
-    return query.get_job_by_id(user_id, job_id)
+def get_job_by_id(in_user: int, job_id: int) -> Job:
+    return query.get_job_by_id(in_user, job_id)
 
 
 def create_job(payload: dict) -> Job:
