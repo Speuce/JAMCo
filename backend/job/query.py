@@ -15,7 +15,7 @@ def create_job(payload: dict) -> Job:
     # need to return Job.objects.create(x,y,z)
 
     job = Job.objects.create(
-        column=KanbanColumn.objects.get(id=payload["column_id"]),
+        kcolumn=KanbanColumn.objects.get(id=payload["kcolumn_id"]),
         user=User.objects.get(id=payload["user_id"]),
         position_title=payload["position_title"],
         company=payload["company"],
@@ -24,7 +24,7 @@ def create_job(payload: dict) -> Job:
         cover_letter=payload["cover_letter"] if payload.get("cover_letter") else "",
         deadlines=payload["deadlines"] if payload.get("cover_letter") else None,
     )
-    logger.debug(f"Created Job: {job.to_dict}")
+    logger.debug(f"Created Job: {job.to_dict()}")
     return job
 
 
@@ -62,7 +62,7 @@ def get_minimum_jobs(in_user: int) -> QuerySet:
     return (
         Job.objects.all()
         .filter(user__id=in_user)
-        .values("id", "column", "position_title", "company")
+        .values("id", "kcolumn", "position_title", "company")
     )
 
 

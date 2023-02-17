@@ -16,7 +16,7 @@ class GetOrCreateJobTests(TestCase):
         # test creating and getting a job for that user in that column
         job = jquery.create_job(
             {
-                "column_id": new_column.id,
+                "kcolumn_id": new_column.id,
                 "user_id": user.id,
                 "position_title": "Manager",
                 "company": "The Foundation",

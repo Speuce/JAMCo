@@ -15,7 +15,7 @@ from account.models import KanbanColumn, User
 
 class Job(models.Model):
     # column_id commented as causing tests to fail
-    column_id = models.ForeignKey(KanbanColumn, on_delete=models.CASCADE)
+    kcolumn = models.ForeignKey(KanbanColumn, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     position_title = models.TextField()
     company = models.CharField(max_length=60)
@@ -32,6 +32,6 @@ class Job(models.Model):
             "description": self.description,
             "notes": self.notes,
             "cover_letter": self.cover_letter,
-            "column_id": self.column_id,
+            "kcolumn": self.kcolumn,
             "deadlines": self.deadlines,
         }
