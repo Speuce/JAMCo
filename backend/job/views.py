@@ -10,7 +10,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from jamco.helper import read_request
 from . import business
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -28,10 +27,10 @@ def get_minimum_jobs(request: HttpRequest):
     logger.debug(f"get_minimum_jobs: {user_id}")
 
     try:
-        jobs = business.get_minimum_jobs(user_id)
-
-        return JsonResponse(status=200, data={"jobs": [job.to_dict() for job in jobs]})
+        jobs = list(business.get_minimum_jobs(user_id))
+        return JsonResponse(status=200, data={'jobs': jobs})
     except Exception as err_msg:
+        logger.error(err_msg)
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
 
