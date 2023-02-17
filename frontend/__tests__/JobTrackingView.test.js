@@ -57,50 +57,6 @@ describe('JobTrackingView', () => {
     vi.resetAllMocks()
   })
 
-  // it('opens JobDetailModal when New Job clicked', () => {
-  //   expect(wrapper.vm.selectedJob).toEqual({})
-  //   expect(wrapper.vm.detailModalVisible).toBe(false)
-
-  //   // interacted with via modal
-  //   wrapper.vm.createOrUpdateJob({ ...testJobs[0] })
-
-  //   expect(wrapper.vm.selectedJob).toEqual({ id: 633 })
-  //   expect(wrapper.vm.detailModalVisible).toBe(true)
-  // })
-
-  // it('sorts jobs into jobsByColumn', () => {
-  //   // ensure there are the correct number of columns
-  //   expect(Object.keys(wrapper.vm.jobsByColumn).length).toBe(5)
-
-  //   // ensure each column has the correct  number of jobs
-  //   expect(wrapper.vm.jobsByColumn[1].length).toBe(4)
-  //   expect(wrapper.vm.jobsByColumn[2].length).toBe(3)
-  //   expect(wrapper.vm.jobsByColumn[7].length).toBe(4)
-  //   expect(wrapper.vm.jobsByColumn[8].length).toBe(1)
-  //   expect(wrapper.vm.jobsByColumn[12].length).toBe(2)
-
-  //   // ensure each column has the correct jobs
-  //   expect(wrapper.vm.jobsByColumn[1]).toEqual([
-  //     testJobs[0],
-  //     testJobs[1],
-  //     testJobs[2],
-  //     testJobs[3],
-  //   ])
-  //   expect(wrapper.vm.jobsByColumn[2]).toEqual([
-  //     testJobs[4],
-  //     testJobs[5],
-  //     testJobs[6],
-  //   ])
-  //   expect(wrapper.vm.jobsByColumn[7]).toEqual([
-  //     testJobs[7],
-  //     testJobs[8],
-  //     testJobs[9],
-  //     testJobs[10],
-  //   ])
-  //   expect(wrapper.vm.jobsByColumn[8]).toEqual([testJobs[11]])
-  //   expect(wrapper.vm.jobsByColumn[12]).toEqual([testJobs[12], testJobs[13]])
-  // })
-
   it('closes the detail modal when the close event is emitted', async () => {
     expect(wrapper.vm.detailModalVisible).toBe(false)
     wrapper.vm.showDetailModal()
@@ -143,9 +99,6 @@ describe('JobTrackingView', () => {
     })
 
     expect(wrapper.vm.colList).toEqual([{ id: 8 }, { id: 2 }, { id: 1 }])
-    // expect(wrapper.vm.jobsByColumn[8]).toEqual([])
-
-    // TODO assert 2 and 1 aren't empty
   })
 
   it('posts a request to get_job_by_id when job detail opened', async () => {
