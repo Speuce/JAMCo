@@ -70,12 +70,15 @@ export default {
       activeUser: props.user,
     }
   },
-  async setup(props) {
-    jobsByColumn.value = []
-    colList.value = []
 
+  setup() {
+    jobsByColumn.value = {}
+    colList.value = []
+  },
+
+  async mounted() {
     let columnResponse = await postRequest('account/api/get_columns', {
-      user_id: props.user.id,
+      user_id: this.user.id,
     })
 
     columnResponse.columns.forEach((colMapping) => {
@@ -88,22 +91,21 @@ export default {
     })
 
     let jobResponse = await postRequest('job/api/get_minimum_jobs', {
-      user_id: props.user.id,
+      user_id: this.user.id,
     })
 
-    let jobJSON = JSON.parse(jobResponse.jobs)
+    let jobJSON = jobResponse.jobs
 
     // Populate jobsByColumn, mapping each job to their kcolumn_id
     jobJSON.forEach((job) => {
-      let jobWithKColId = job
-      jobWithKColId.kcolumn_id = jobWithKColId.kcolumn
+      let jobWithKColId = { ...job, kcolumn_id: job.kcolumn }
       delete jobWithKColId.kcolumn
+
       if (!jobsByColumn.value[jobWithKColId.kcolumn_id]) {
         jobsByColumn.value[jobWithKColId.kcolumn_id] = []
       }
-      jobsByColumn.value[jobWithKColId.kcolumn_id].push(job)
+      jobsByColumn.value[jobWithKColId.kcolumn_id].push(jobWithKColId)
     })
-
     // Order jobs within a column by job.id (initial, default vertical order)
     // Same process as sortColumnJobsById method below (setup can't call methods)
     colList.value.forEach((column) => {
@@ -117,6 +119,7 @@ export default {
       }
     })
   },
+
   methods: {
     async createOrUpdateJob(job) {
       if (isNewJob.value) {
