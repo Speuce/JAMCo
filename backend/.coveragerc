@@ -8,5 +8,3 @@ omit =
     jamco/asgi.py
     # Exclude package inits
     */__init__.py
-    # The render_vite_bundle Template tag cannot be tested outside of a live production environment
-    account/templatetags/render_vite_bundle.py
