@@ -9,7 +9,7 @@ describe('JobDetailModal', () => {
     company: 'Test Company',
     date: '2022-01-01',
     type: 'Full-time',
-    position: 'Test Position',
+    position_title: 'Test Position',
     description: 'Test description',
     cover_letter: 'Test cover letter',
     notes: 'Test comments',
@@ -44,7 +44,7 @@ describe('JobDetailModal', () => {
       company: '',
       type: '',
       kcolumn_id: -1,
-      position: '',
+      position_title: '',
       description: '',
       cover_letter: '',
       notes: '',
@@ -58,7 +58,7 @@ describe('JobDetailModal', () => {
     expect(wrapper.vm.companyErrorIndicator).toBe(null)
 
     let testJob = { ...job }
-    testJob.position = null
+    testJob.position_title = null
     testJob.company = 'non-empty'
     mountModal(testJob)
 
@@ -74,7 +74,7 @@ describe('JobDetailModal', () => {
 
     let testJob = { ...job }
     testJob.company = null
-    testJob.position = 'non-empty'
+    testJob.position_title = 'non-empty'
     mountModal(testJob)
 
     wrapper.vm.saveClicked()
@@ -157,7 +157,7 @@ describe('JobDetailModal', () => {
       company: 'Test Company',
       date: '2022-01-01',
       type: 'Full-time',
-      position: 'Test Position',
+      position_title: 'Test Position',
       description: 'Test description',
       cover_letter: 'Test cover letter',
       notes: 'Test comments',
