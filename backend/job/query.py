@@ -61,7 +61,7 @@ def get_minimum_jobs(in_user: int) -> QuerySet:
     return (
         Job.objects.all()
         .filter(user__id=in_user)
-        .values("id", "kcolumn", "position_title", "company")
+        .values("id", "kcolumn", "position_title", "company", "type")
     )
 
 
