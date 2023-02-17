@@ -12,21 +12,23 @@ logger = logging.getLogger(__name__)
 
 
 def create_job(payload: dict) -> Job:
-    kcolid = payload["kcolumn_id"] if 'kcolumn_id' in payload else payload[
-        "kcolumn"] if 'kcolumn' in payload else payload["kcolumn__id"]
+    kcolid = (
+        payload["kcolumn_id"]
+        if "kcolumn_id" in payload
+        else payload["kcolumn"]
+        if "kcolumn" in payload
+        else payload["kcolumn__id"]
+    )
     job = Job.objects.create(
         type=payload["type"] if payload.get("type") else None,
         kcolumn=KanbanColumn.objects.get(id=kcolid),
         user=User.objects.get(id=payload["user_id"]),
         position_title=payload["position_title"],
         company=payload["company"],
-        description=payload["description"]
-        if payload.get("description") else "",
+        description=payload["description"] if payload.get("description") else "",
         notes=payload["notes"] if payload.get("notes") else "",
-        cover_letter=payload["cover_letter"]
-        if payload.get("cover_letter") else "",
-        deadlines=payload["deadlines"]
-        if payload.get("cover_letter") else None,
+        cover_letter=payload["cover_letter"] if payload.get("cover_letter") else "",
+        deadlines=payload["deadlines"] if payload.get("cover_letter") else None,
     )
     logger.debug(f"Created Job: {job.to_dict()}")
     return job
@@ -63,8 +65,11 @@ def get_job_by_id(in_user: int, job_id: int) -> Job:
 def get_minimum_jobs(in_user: int) -> QuerySet:
     # return {id, column, position, company} for all user_id user's jobs
 
-    return (Job.objects.all().filter(user__id=in_user).values(
-        "id", "kcolumn", "position_title", "company", "type"))
+    return (
+        Job.objects.all()
+        .filter(user__id=in_user)
+        .values("id", "kcolumn", "position_title", "company", "type")
+    )
 
 
 def delete_job(in_user: int, job_id: int):
