@@ -1,24 +1,26 @@
 <template>
   <div class="page-container">
-    <LoginModalTest v-if="!userData" @signin="userSignedIn" />
+    <LoginModal v-if="!userData" @signin="userSignedIn" />
     <AccountSetupModal
       v-if="setupModalVisible"
       @updateUser="updateUserAccount"
       :user="this.userData"
     />
-    <JobTrackingView :user="this.userData" />
+    <Suspense>
+      <JobTrackingView v-if="this.userData" :user="this.userData" />
+    </Suspense>
   </div>
 </template>
 
 <script>
-import LoginModalTest from '@/components/modal/login/LoginModal.vue'
+import LoginModal from '@/components/modal/login/LoginModal.vue'
 import JobTrackingView from './JobTrackingView.vue'
 import AccountSetupModal from '../components/modal/setup/AccountSetupModal.vue'
 import { postRequest } from '@/helpers/requests.js'
 
 export default {
   components: {
-    LoginModalTest,
+    LoginModal,
     JobTrackingView,
     AccountSetupModal,
   },

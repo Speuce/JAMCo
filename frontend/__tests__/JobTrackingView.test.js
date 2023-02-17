@@ -1,48 +1,60 @@
 import { mount } from '@vue/test-utils'
 import JobTrackingView from '../src/views/JobTrackingView.vue'
-import { expect, beforeEach, describe, it } from 'vitest'
+import { expect, beforeEach, describe, it, vi, afterEach } from 'vitest'
 import testJobs from './test_data/test_jobs.json'
 import testCols from './test_data/test_column_mapping.json'
-import JobCard from '../src/components/kanban/JobCard.vue'
+import testJobsByColumn from './test_data/test_jobs_by_column.json'
+import { postRequest } from '@/helpers/requests.js'
+vi.mock('@/helpers/requests.js', () => ({
+  postRequest: vi.fn(),
+}))
+
+const mostPostRequest = (url) => {
+  if (url === 'account/api/get_columns') {
+    return Promise.resolve({ columns: testCols })
+  }
+  if (url === 'job/api/get_minimum_jobs') {
+    return Promise.resolve({ jobs: testJobs })
+  }
+  if (url === 'job/api/create_job') {
+    return Promise.resolve({
+      job: {
+        id: 0,
+        kcolumn_id: 12,
+        position: 'pos',
+        company: 'company',
+      },
+    })
+  }
+  if (url === 'job/api/update_job') {
+    return Promise.resolve({ data: { id: 0, kcolumn_id: 8 } })
+  }
+  if (url === 'account/api/update_columns') {
+    return Promise.resolve({ columns: [{ id: 8 }, { id: 2 }, { id: 1 }] })
+  }
+  if (url === 'job/api/get_job_by_id') {
+    return Promise.resolve({ job_data: testJobs[1] })
+  }
+  return Promise.resolve({ data: {} })
+}
 
 describe('JobTrackingView', () => {
   let wrapper
+  let mockuser = {
+    id: 1,
+  }
 
-  beforeEach(async () => {
-    wrapper = mount(JobTrackingView, {})
-  })
-
-  it('renders the correct number of jobs', () => {
-    expect(wrapper.findAllComponents(JobCard).length).toBe(testJobs.length)
-  })
-
-  it('opens JobDetailModal when card clicked', () => {
-    expect(wrapper.vm.detailModalVisible).toBe(false)
-    wrapper.findComponent(JobCard).trigger('click')
-    expect(wrapper.vm.detailModalVisible).toBe(true)
-  })
-
-  it('assigns selectedJob when card clicked', () => {
-    expect(wrapper.vm.selectedJob).toEqual({})
-    let job = wrapper.findComponent(JobCard)
-    job.trigger('click')
-    expect(wrapper.vm.selectedJob).toEqual(job.vm.job)
-  })
-
-  it('opens JobDetailModal when New Job clicked', () => {
-    expect(wrapper.vm.selectedJob).toEqual({})
-    expect(wrapper.vm.detailModalVisible).toBe(false)
-    let buttons = wrapper.findAllComponents({ name: 'v-btn' })
-    buttons.forEach((button) => {
-      if (button.text() === 'Add New Application') {
-        button.trigger('click')
-      }
+  beforeEach(() => {
+    postRequest.mockImplementation(mostPostRequest)
+    wrapper = mount(JobTrackingView, {
+      props: {
+        user: mockuser,
+      },
     })
-    // interacted with via modal
-    wrapper.vm.createOrUpdateJob({ ...testJobs[0] })
+  })
 
-    expect(wrapper.vm.selectedJob).toEqual({ id: 633 })
-    expect(wrapper.vm.detailModalVisible).toBe(true)
+  afterEach(() => {
+    vi.resetAllMocks()
   })
 
   it('closes the detail modal when the close event is emitted', async () => {
@@ -72,30 +84,84 @@ describe('JobTrackingView', () => {
     expect(wrapper.vm.boardOptionModalVisible).toBe(false)
   })
 
-  it('updates colList when param passed to updateColumns', () => {
-    expect(wrapper.vm.colList).toEqual(
-      testCols.sort((col1, col2) => col1.number - col2.number),
-    )
-    wrapper.vm.updateColumns([{ id: 8 }, { id: 0 }])
-    expect(wrapper.vm.colList).toEqual([{ id: 8 }, { id: 0 }])
+  it('updateColumns makes a post request', async () => {
+    expect(wrapper.vm.colList).toEqual([
+      { column_number: 4, id: 12, name: 'Test' },
+      { column_number: 0, id: 1, name: 'To Apply' },
+      { column_number: 1, id: 3, name: 'Application Submitted' },
+      { column_number: 2, id: 7, name: 'OA' },
+      { column_number: 3, id: 8, name: 'Interview' },
+    ])
+    await wrapper.vm.updateColumns([{ id: 8 }, { id: 2 }, { id: 1 }])
+    expect(postRequest).toHaveBeenCalledWith('account/api/update_columns', {
+      payload: [{ id: 8 }, { id: 2 }, { id: 1 }],
+      user_id: mockuser.id,
+    })
+
+    expect(wrapper.vm.colList).toEqual([{ id: 8 }, { id: 2 }, { id: 1 }])
   })
 
-  it('updates jobsByColumn when job edited', () => {
+  it('posts a request to get_job_by_id when job detail opened', async () => {
+    await wrapper.vm.showDetailModal(testJobs[1])
+
+    expect(postRequest).toHaveBeenCalledWith('job/api/get_job_by_id', {
+      job_id: testJobs[1].id,
+      user_id: mockuser.id,
+    })
+
+    expect(wrapper.vm.selectedJob).toEqual(testJobs[1])
+    expect(wrapper.vm.detailModalVisible).toBe(true)
+  })
+
+  it('posts to update_job when editing job, updating jobsByColumn', async () => {
     wrapper.vm.isNewJob = false
-    wrapper.vm.createOrUpdateJob({ id: 0, columnId: 8 })
+    await wrapper.vm.createOrUpdateJob({
+      id: 0,
+      kcolumn_id: 8,
+    })
+    expect(postRequest).toHaveBeenCalledWith('job/api/update_job', {
+      id: 0,
+      kcolumn_id: 8,
+    })
     expect(wrapper.vm.jobsByColumn[8]).toEqual([
       {
         id: 12,
         company: 'Minisoft',
         type: 'Frontend',
         position: 'Senior Software Engineer',
-        columnId: 8,
+        kcolumn_id: 8,
         deadlines: [],
-        coverLetter: 'Test',
+        cover_letter: 'Test',
         description: 'Description',
-        comments: 'Test',
+        notes: 'Test',
       },
-      { id: 0, columnId: 8 },
+      { id: 0, kcolumn_id: 8 },
     ])
+  })
+
+  it('posts to create_job when creating new job, updating jobsByColumn', async () => {
+    wrapper.vm.isNewJob = true
+    await wrapper.vm.createOrUpdateJob({
+      id: 0,
+      kcolumn_id: 12,
+      position: 'pos',
+      company: 'company',
+    })
+    expect(postRequest).toHaveBeenCalledWith('job/api/create_job', {
+      id: 0,
+      kcolumn_id: 12,
+      position: 'pos',
+      company: 'company',
+      user_id: 1,
+    })
+    let jobsAtColumn = testJobsByColumn
+    jobsAtColumn['12'].push({
+      id: 0,
+      kcolumn_id: 12,
+      position: 'pos',
+      company: 'company',
+    })
+
+    expect(wrapper.vm.jobsByColumn[12]).toEqual(jobsAtColumn['12'])
   })
 })

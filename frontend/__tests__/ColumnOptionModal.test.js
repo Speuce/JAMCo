@@ -5,9 +5,9 @@ import { expect, describe, it } from 'vitest'
 describe('ColumnOptionModal', () => {
   let wrapper
   const columns = [
-    { id: 0, name: 'colName', number: 2 },
-    { id: 1, name: 'colName', number: 1 },
-    { id: 2, name: 'colName', number: 3 },
+    { id: 0, name: 'colName', column_number: 2 },
+    { id: 1, name: 'colName', column_number: 1 },
+    { id: 2, name: 'colName', column_number: 3 },
   ]
 
   const jobsByColumn = {
@@ -73,12 +73,12 @@ describe('ColumnOptionModal', () => {
   it('updates column when passed', () => {
     mountModal(jobsByColumn)
     const updatedColumns = [
-      { id: 0, name: 'newName', number: 0 },
-      { id: 1, name: 'colName', number: 1 },
-      { id: 2, name: 'colName', number: 2 },
+      { id: 0, name: 'newName', column_number: 0 },
+      { id: 1, name: 'colName', column_number: 1 },
+      { id: 2, name: 'colName', column_number: 2 },
     ]
     expect(wrapper.vm.cols).toEqual(columns)
-    wrapper.vm.updateColumn({ id: 0, name: 'newName', number: 0 })
+    wrapper.vm.updateColumn({ id: 0, name: 'newName', column_number: 0 })
     expect(wrapper.vm.cols).toEqual(updatedColumns)
   })
 

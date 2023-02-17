@@ -11,7 +11,7 @@ describe('ColumnCard', () => {
         column: {
           id: 0,
           name: 'colName',
-          number: -1,
+          column_number: -1,
         },
       },
     })
@@ -25,7 +25,7 @@ describe('ColumnCard', () => {
     expect(wrapper.emitted().updateColumn[0][0]).toEqual({
       id: 0,
       name: 'Test Input',
-      number: -1,
+      column_number: -1,
     })
   })
 

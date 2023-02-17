@@ -4,7 +4,8 @@
     "company": "Gamestation",
     "type": "Full Stack",
     "position": "Software Engineer",
-    "columnId": 1,
+    "kcolumn_id": 1,
+    "kcolumn": 1,
     "deadlines": [
       {
         "id": 0,
@@ -12,150 +13,163 @@
         "date": "Thu Feb 09 2023 20:47:00 GMT-0600 (Central Standard Time)"
       }
     ],
-    "coverLetter": "Test Cover Letter",
+    "cover_letter": "Test Cover Letter",
     "description": "Test Description",
-    "comments": "Test Comments"
+    "notes": "Test Comments"
   },
   {
     "id": 10,
     "company": "Wework",
     "type": "Backend",
     "position": "Software Engineer I",
-    "columnId": 1,
+    "kcolumn_id": 1,
+    "kcolumn": 1,
     "deadlines": [],
-    "coverLetter": "Test Cover Letter",
+    "cover_letter": "Test Cover Letter",
     "description": "Test",
-    "comments": "Test Comments"
+    "notes": "Test Comments"
   },
   {
     "id": 13,
     "company": "Wework",
     "type": "1",
     "position": "Software Engineer I",
-    "columnId": 1,
+    "kcolumn_id": 1,
+    "kcolumn": 1,
     "deadlines": [],
-    "coverLetter": "Test Letter",
+    "cover_letter": "Test Letter",
     "description": "Description",
-    "comments": "Test Comments"
+    "notes": "Test Comments"
   },
   {
     "id": 53,
     "company": "Wework",
     "type": "test",
     "position": "Software Engineer I",
-    "columnId": 1,
+    "kcolumn_id": 1,
+    "kcolumn": 1,
     "deadlines": [],
-    "coverLetter": "Test Cover Letter",
+    "cover_letter": "Test Cover Letter",
     "description": "Description",
-    "comments": "Test Comments"
+    "notes": "Test Comments"
   },
   {
     "id": 6,
     "company": "Doors",
     "type": "Frontend",
     "position": "Software Engineer",
-    "columnId": 3,
+    "kcolumn_id": 3,
+    "kcolumn": 3,
     "deadlines": [],
-    "coverLetter": "Test",
+    "cover_letter": "Test",
     "description": "Test",
-    "comments": "Test"
+    "notes": "Test"
   },
   {
     "id": 62,
     "company": "Doors",
     "type": "",
     "position": "Software Engineer",
-    "columnId": 3,
+    "kcolumn_id": 3,
+    "kcolumn": 3,
     "deadlines": [],
-    "coverLetter": "Test Letter",
+    "cover_letter": "Test Letter",
     "description": "Test Description",
-    "comments": "Test"
+    "notes": "Test"
   },
   {
     "id": 632,
     "company": "Doors",
     "position": "Software Engineer",
-    "columnId": 3,
+    "kcolumn_id": 3,
+    "kcolumn": 3,
     "deadlines": [],
-    "coverLetter": "Test Cover Letter",
+    "cover_letter": "Test Cover Letter",
     "description": "Test Description",
-    "comments": "Test Comments"
+    "notes": "Test Comments"
   },
   {
     "id": 7,
     "company": "Pear",
     "type": "Full Stack",
     "position": "Software Engineer II",
-    "columnId": 7,
+    "kcolumn_id": 7,
+    "kcolumn": 7,
     "deadlines": [],
-    "coverLetter": "Test Cover Letter",
+    "cover_letter": "Test Cover Letter",
     "description": "Test Description",
-    "comments": "Test Comments"
+    "notes": "Test Comments"
   },
   {
     "id": 8,
     "company": "JamCo",
     "type": "Backend",
     "position": "SDE I",
-    "columnId": 7,
+    "kcolumn_id": 7,
+    "kcolumn": 7,
     "deadlines": [],
-    "coverLetter": "Letter",
+    "cover_letter": "Letter",
     "description": "Description",
-    "comments": "Test"
+    "notes": "Test"
   },
   {
     "id": 16,
     "company": "Real Company",
     "type": "Full Stack",
     "position": "Software Developer",
-    "columnId": 7,
+    "kcolumn_id": 7,
+    "kcolumn": 7,
     "deadlines": [],
-    "coverLetter": "Test Cover Letter",
+    "cover_letter": "Test Cover Letter",
     "description": "Test Description",
-    "comments": "Test Comments"
+    "notes": "Test Comments"
   },
   {
     "id": 11,
     "company": "Rainforest",
     "type": "Full Stack",
     "position": "Software Engineer",
-    "columnId": 7,
+    "kcolumn_id": 7,
+    "kcolumn": 7,
     "deadlines": [],
-    "coverLetter": "Cover Letter",
+    "cover_letter": "Cover Letter",
     "description": "Description",
-    "comments": "Comments"
+    "notes": "notes"
   },
   {
     "id": 12,
     "company": "Minisoft",
     "type": "Frontend",
     "position": "Senior Software Engineer",
-    "columnId": 8,
+    "kcolumn_id": 8,
+    "kcolumn": 8,
     "deadlines": [],
-    "coverLetter": "Test",
+    "cover_letter": "Test",
     "description": "Description",
-    "comments": "Test"
+    "notes": "Test"
   },
   {
     "id": 13,
     "company": "Gooble",
     "type": "Full Stack",
     "position": "Software Developer II",
-    "columnId": 12,
+    "kcolumn_id": 12,
+    "kcolumn": 12,
     "deadlines": [],
-    "coverLetter": "Test Letter",
+    "cover_letter": "Test Letter",
     "description": "Description",
-    "comments": "Comments"
+    "notes": "notes"
   },
   {
     "id": 15,
     "company": "Dream Job",
     "type": "Frontend",
     "position": "Software Engineer",
-    "columnId": 12,
+    "kcolumn_id": 12,
+    "kcolumn": 12,
     "deadlines": [],
-    "coverLetter": "Test",
+    "cover_letter": "Test",
     "description": "Description",
-    "comments": "Test"
+    "notes": "Test"
   }
 ]

@@ -1,7 +1,7 @@
 [
-  { "id": 12, "number": 4, "name": "Test" },
-  { "id": 1, "number": 0, "name": "To Apply" },
-  { "id": 3, "number": 1, "name": "Application Submitted" },
-  { "id": 7, "number": 2, "name": "OA" },
-  { "id": 8, "number": 3, "name": "Interview" }
+  { "id": 12, "column_number": 4, "name": "Test" },
+  { "id": 1, "column_number": 0, "name": "To Apply" },
+  { "id": 3, "column_number": 1, "name": "Application Submitted" },
+  { "id": 7, "column_number": 2, "name": "OA" },
+  { "id": 8, "column_number": 3, "name": "Interview" }
 ]

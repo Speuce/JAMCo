@@ -51,7 +51,7 @@ export default {
         type: String,
         default: '',
       },
-      number: {
+      column_number: {
         type: Number,
         default: -1,
       },
