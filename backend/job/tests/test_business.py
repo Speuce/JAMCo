@@ -13,20 +13,20 @@ class CreateJobTests(TransactionTestCase):
 
         jobs = [
             {
-                "id":-1,
-                "user_id":user.id,
-                "kcolumn_id":column.id,
-                "position_title":"pos",
-                "company":"com",
-                "type":"ty"
+                "id": -1,
+                "user_id": user.id,
+                "kcolumn_id": column.id,
+                "position_title": "pos",
+                "company": "com",
+                "type": "ty"
             },
             {
-                "id":-1,
-                "user_id":user.id,
-                "kcolumn_id":column.id,
-                "position_title":"position",
-                "company":"com",
-                "type":"ty"
+                "id": -1,
+                "user_id": user.id,
+                "kcolumn_id": column.id,
+                "position_title": "position",
+                "company": "com",
+                "type": "ty"
             },
         ]
 
@@ -39,62 +39,56 @@ class CreateJobTests(TransactionTestCase):
         job_two = business.get_job_by_id(user.id, job_two_create.id)
         self.assertEqual(job_two_create.to_dict(), job_two.to_dict())
 
+
 class GetMinimumJobsTests(TransactionTestCase):
+    reset_sequences = True
 
     def test_get_minimum_jobs(self):
         user = account_query.get_or_create_user({"sub": "4"})
         column = account_query.create_column(user.id, "New column", 0)
 
-        jobs = [
-            {
-                "id":-1,
-                "user_id":user.id,
-                "kcolumn_id":column.id,
-                "position_title":"pos",
-                "company":"com",
-                "type":"ty"
-            },
-            {
-                "id":-1,
-                "user_id":user.id,
-                "kcolumn_id":column.id,
-                "position_title":"position",
-                "company":"com",
-                "type":"ty"
-            },
-            {
-                "id":-1,
-                "user_id":user.id,
-                "kcolumn_id":column.id,
-                "position_title":"pose",
-                "company":"comp",
-                "notes":"notes"
-            }
-        ]
+        jobs = [{
+            "id": -1,
+            "user_id": user.id,
+            "kcolumn_id": column.id,
+            "position_title": "pos",
+            "company": "com",
+            "type": "ty"
+        }, {
+            "id": -1,
+            "user_id": user.id,
+            "kcolumn_id": column.id,
+            "position_title": "position",
+            "company": "com",
+            "type": "ty"
+        }, {
+            "id": -1,
+            "user_id": user.id,
+            "kcolumn_id": column.id,
+            "position_title": "pose",
+            "company": "comp",
+            "notes": "notes"
+        }]
 
-        min_jobs = [
-            {
-                "id":1,
-                "kcolumn_id":column.id,
-                "position_title":"pos",
-                "company":"com",
-                "type":"ty"
-            },
-            {
-                "id":2,
-                "kcolumn_id":column.id,
-                "position_title":"position",
-                "company":"com",
-                "type":"ty"
-            },
-            {
-                "id":3,
-                "kcolumn_id":column.id,
-                "position_title":"pose",
-                "company":"comp",
-                "type":"None"
-            }
-        ]
+        min_jobs = [{
+            "id": 1,
+            "kcolumn": column.id,
+            "position_title": "pos",
+            "company": "com",
+            "type": "ty"
+        }, {
+            "id": 2,
+            "kcolumn": column.id,
+            "position_title": "position",
+            "company": "com",
+            "type": "ty"
+        }, {
+            "id": 3,
+            "kcolumn": column.id,
+            "position_title": "pose",
+            "company": "comp",
+            "type": None
+        }]
 
         query.create_job(jobs[0])
         query.create_job(jobs[1])
@@ -104,7 +98,9 @@ class GetMinimumJobsTests(TransactionTestCase):
 
         # this test fails
         # something funky with the get_minimum_jobs return value formatting
-        self.assertEqual(json.dumps(list(min_jobs)), json.dumps(list(min_jobs_response)))
+        self.assertEqual(json.dumps(list(min_jobs)),
+                         json.dumps(list(min_jobs_response)))
+
 
 class GetJobByIdTests(TransactionTestCase):
 
@@ -114,27 +110,27 @@ class GetJobByIdTests(TransactionTestCase):
 
         jobs = [
             {
-                "id":1,
-                "user_id":user.id,
-                "kcolumn_id":column.id,
-                "position_title":"pos",
-                "company":"com",
-                "type":"ty",
+                "id": 1,
+                "user_id": user.id,
+                "kcolumn_id": column.id,
+                "position_title": "pos",
+                "company": "com",
+                "type": "ty",
                 "cover_letter": "cover",
-                "notes":"notes",
-                "description":"desc",
+                "notes": "notes",
+                "description": "desc",
                 "deadlines": None
             },
             {
-                "id":2,
-                "user_id":user.id,
-                "kcolumn_id":column.id,
-                "position_title":"position",
-                "company":"com",
-                "type":"ty",
+                "id": 2,
+                "user_id": user.id,
+                "kcolumn_id": column.id,
+                "position_title": "position",
+                "company": "com",
+                "type": "ty",
                 "cover_letter": "cover",
-                "notes":"notes",
-                "description":"desc",
+                "notes": "notes",
+                "description": "desc",
                 "deadlines": None
             },
         ]
