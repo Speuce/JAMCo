@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import 'vite/modulepreload-polyfill'
 import App from './App.vue'
 import router from './router'
-import '@mdi/font/css/materialdesignicons.css' // Ensure you are using css-loader
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import './assets/colours.css'
 
 // Vuetify
