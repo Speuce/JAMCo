@@ -12,7 +12,7 @@
       </v-col>
       <v-col class="py-0">
         <div class="text-end">
-          <v-btn color="primary" flat @click="settingsVisible = true">
+          <v-btn color="primary" flat @click="userInfoModalVisible = true">
             <v-icon size="x-large">mdi-cog</v-icon>
           </v-btn>
         </div>
@@ -29,14 +29,12 @@
         v-if="userInfoModalVisible"
         @updateUser="updateUserAccount"
         :user="this.userData"
-        @close="() => (this.userInfoModalVisible = false)"
+        @close="userInfoModalVisible = false"
       />
       <Suspense>
         <JobTrackingView
           v-if="this.userData"
           :user="this.userData"
-          :column-modal="columnsModalVisible"
-          @showUserInfoModal="() => (this.userInfoModalVisible = true)"
           style="height: 100%"
         />
       </Suspense>

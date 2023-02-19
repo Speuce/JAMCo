@@ -2,176 +2,197 @@
   <v-row>
     <v-dialog v-model="dialog" persistent class="dialog-popup">
       <v-card style="overflow: hidden">
-        <v-row class="inner-page-container">
-          <v-col cols="12" sm="7" class="items">
-            <v-row>
-              <h2>Your Account</h2>
-            </v-row>
-            <v-row><br /></v-row>
-            <v-row><h3 class="pad-left">Info</h3></v-row>
-            <div class="scrollable">
+        <v-row>
+          <v-row class="inner-page-container">
+            <v-col cols="12" sm="7" class="items">
+              <v-row>
+                <v-col cols="12" sm="4">
+                  <h2>Settings</h2>
+                </v-col>
+                <v-col cols="12" sm="4">
+                  <v-btn
+                    class="pad-top"
+                    :variant="outlined"
+                    flat
+                    @click="this.editingEnabled = !this.editingEnabled"
+                  >
+                    <v-icon size="large">mdi-square-edit-outline</v-icon>
+                    {{ !this.editingEnabled ? 'Edit ' : 'Stop Editing ' }}
+                  </v-btn>
+                </v-col>
+              </v-row>
               <v-row><br /></v-row>
               <v-row>
-                <v-text-field
-                  label="First Name*"
-                  required
-                  v-model="this.userData.first_name"
-                  :style="{
-                    color: this.firstNameEmpty ? 'red' : '',
-                  }"
-                  maxlength="30"
-                  :variant="this.editingEnabled ? 'outlined' : 'underlined'"
-                  :readonly="!this.editingEnabled"
-                  :disabled="
-                    this.userData.first_name == '' && !this.editingEnabled
-                  "
-                />
+                <h3 class="pad-left">Account Info</h3>
               </v-row>
+              <v-row><br /></v-row>
+              <div class="scrollable">
+                <v-row><br /></v-row>
+                <v-row>
+                  <v-text-field
+                    label="First Name*"
+                    required
+                    v-model="this.userData.first_name"
+                    :style="{
+                      color: this.firstNameEmpty ? 'red' : '',
+                    }"
+                    maxlength="30"
+                    :variant="this.editingEnabled ? 'outlined' : 'underlined'"
+                    :readonly="!this.editingEnabled"
+                    :disabled="
+                      this.userData.first_name == '' && !this.editingEnabled
+                    "
+                  />
+                </v-row>
+                <v-row>
+                  <v-text-field
+                    label="Last Name*"
+                    required
+                    v-model="this.userData.last_name"
+                    :style="{
+                      color: this.lastNameEmpty ? 'red' : '',
+                    }"
+                    maxlength="30"
+                    :variant="this.editingEnabled ? 'outlined' : 'underlined'"
+                    :readonly="!this.editingEnabled"
+                    :disabled="
+                      this.userData.last_name == '' && !this.editingEnabled
+                    "
+                  />
+                </v-row>
+                <v-row>
+                  <Datepicker
+                    v-if="this.editingEnabled"
+                    v-model="this.userData.birthday"
+                    :enable-time-picker="false"
+                    placeholder="Birthday"
+                    class="datepicker"
+                    :variant="this.editingEnabled ? 'outlined' : 'underlined'"
+                    :readonly="!this.editingEnabled"
+                  />
+                  <v-text-field
+                    v-if="!this.editingEnabled"
+                    label="Birthday"
+                    required
+                    v-model="getBirthdayString"
+                    :style="{
+                      color: this.lastNameEmpty ? 'red' : '',
+                    }"
+                    maxlength="30"
+                    variant="underlined"
+                    readonly
+                    :disabled="getBirthdayString == '' && !this.editingEnabled"
+                  />
+                </v-row>
+                <v-row>
+                  <v-text-field
+                    label="Country*"
+                    v-model="this.userData.country"
+                    :style="{
+                      color: this.countryEmpty ? 'red' : '',
+                    }"
+                    maxlength="30"
+                    :variant="this.editingEnabled ? 'outlined' : 'underlined'"
+                    :readonly="!this.editingEnabled"
+                    :disabled="
+                      this.userData.country == '' && !this.editingEnabled
+                    "
+                  />
+                </v-row>
+                <v-row>
+                  <v-text-field
+                    label="Province/Territory/State"
+                    v-model="this.userData.region"
+                    maxlength="30"
+                    :variant="this.editingEnabled ? 'outlined' : 'underlined'"
+                    :readonly="!this.editingEnabled"
+                    :disabled="
+                      this.userData.region == '' && !this.editingEnabled
+                    "
+                  />
+                </v-row>
+                <v-row>
+                  <v-text-field
+                    label="City"
+                    v-model="this.userData.city"
+                    maxlength="30"
+                    :variant="this.editingEnabled ? 'outlined' : 'underlined'"
+                    :readonly="!this.editingEnabled"
+                    :disabled="this.userData.city == '' && !this.editingEnabled"
+                  />
+                </v-row>
+                <v-row>
+                  <v-text-field
+                    label="Field of Work*"
+                    v-model="this.userData.field_of_work"
+                    :style="{
+                      color: this.workFieldEmpty ? 'red' : '',
+                    }"
+                    maxlength="30"
+                    :variant="this.editingEnabled ? 'outlined' : 'underlined'"
+                    :readonly="!this.editingEnabled"
+                    :disabled="
+                      this.userData.field_of_work == '' && !this.editingEnabled
+                    "
+                /></v-row>
+                <v-row>
+                  <v-text-field
+                    label="Email*"
+                    v-model="this.userData.email"
+                    :style="{ color: this.emailEmpty ? 'red' : '' }"
+                    maxlength="30"
+                    :variant="this.editingEnabled ? 'outlined' : 'underlined'"
+                    :readonly="!this.editingEnabled"
+                    :disabled="
+                      this.userData.email == '' && !this.editingEnabled
+                    "
+                /></v-row>
+              </div>
+            </v-col>
+            <v-col cols="12" sm="5">
+              <v-row> <br /> </v-row>
+              <v-row> <br /> </v-row>
+              <v-row> <br /> </v-row>
+              <v-row> <br /> </v-row>
               <v-row>
-                <v-text-field
-                  label="Last Name*"
-                  required
-                  v-model="this.userData.last_name"
-                  :style="{
-                    color: this.lastNameEmpty ? 'red' : '',
-                  }"
-                  maxlength="30"
-                  :variant="this.editingEnabled ? 'outlined' : 'underlined'"
-                  :readonly="!this.editingEnabled"
-                  :disabled="
-                    this.userData.last_name == '' && !this.editingEnabled
-                  "
-                />
+                <h3>Privacy Options</h3>
               </v-row>
-              <v-row>
-                <Datepicker
-                  v-if="this.editingEnabled"
-                  v-model="this.userData.birthday"
-                  :enable-time-picker="false"
-                  placeholder="Birthday"
-                  class="datepicker"
-                  :variant="this.editingEnabled ? 'outlined' : 'underlined'"
-                  :readonly="!this.editingEnabled"
-                />
-                <v-text-field
-                  v-if="!this.editingEnabled"
-                  label="Birthday"
-                  required
-                  v-model="getBirthdayString"
-                  :style="{
-                    color: this.lastNameEmpty ? 'red' : '',
-                  }"
-                  maxlength="30"
-                  variant="underlined"
-                  readonly
-                  :disabled="getBirthdayString == '' && !this.editingEnabled"
-                />
-              </v-row>
-              <v-row>
-                <v-text-field
-                  label="Country*"
-                  v-model="this.userData.country"
-                  :style="{
-                    color: this.countryEmpty ? 'red' : '',
-                  }"
-                  maxlength="30"
-                  :variant="this.editingEnabled ? 'outlined' : 'underlined'"
-                  :readonly="!this.editingEnabled"
-                  :disabled="
-                    this.userData.country == '' && !this.editingEnabled
-                  "
-                />
-              </v-row>
-              <v-row>
-                <v-text-field
-                  label="Province/Territory/State"
-                  v-model="this.userData.region"
-                  maxlength="30"
-                  :variant="this.editingEnabled ? 'outlined' : 'underlined'"
-                  :readonly="!this.editingEnabled"
-                  :disabled="this.userData.region == '' && !this.editingEnabled"
-                />
-              </v-row>
-              <v-row>
-                <v-text-field
-                  label="City"
-                  v-model="this.userData.city"
-                  maxlength="30"
-                  :variant="this.editingEnabled ? 'outlined' : 'underlined'"
-                  :readonly="!this.editingEnabled"
-                  :disabled="this.userData.city == '' && !this.editingEnabled"
-                />
-              </v-row>
-              <v-row>
-                <v-text-field
-                  label="Field of Work*"
-                  v-model="this.userData.field_of_work"
-                  :style="{
-                    color: this.workFieldEmpty ? 'red' : '',
-                  }"
-                  maxlength="30"
-                  :variant="this.editingEnabled ? 'outlined' : 'underlined'"
-                  :readonly="!this.editingEnabled"
-                  :disabled="
-                    this.userData.field_of_work == '' && !this.editingEnabled
-                  "
-              /></v-row>
-              <v-row>
-                <v-text-field
-                  label="Email*"
-                  v-model="this.userData.email"
-                  :style="{ color: this.emailEmpty ? 'red' : '' }"
-                  maxlength="30"
-                  :variant="this.editingEnabled ? 'outlined' : 'underlined'"
-                  :readonly="!this.editingEnabled"
-                  :disabled="this.userData.email == '' && !this.editingEnabled"
-              /></v-row>
-            </div>
-          </v-col>
-          <v-col cols="12" sm="5">
-            <v-row>
-              <v-col cols="12" sm="6"></v-col>
-              <v-col cols="12" sm="5">
-                <v-btn
-                  @click="this.editingEnabled = !this.editingEnabled"
-                  class="bottom-margin"
-                  >{{
-                    !this.editingEnabled ? 'Edit Info' : 'Stop Editing'
-                  }}</v-btn
+            </v-col>
+            <v-row class="center offset-right">
+              <v-col cols="12" sm="8">
+                <v-row>
+                  <small
+                    class="error"
+                    v-if="
+                      this.firstNameEmpty ||
+                      this.lastNameEmpty ||
+                      this.emailEmpty ||
+                      this.countryEmpty ||
+                      this.workFieldEmpty
+                    "
+                    >Make Sure Required Fields Are Filled</small
+                  ></v-row
                 >
+                <v-row>
+                  <small>* indicates required field</small>
+                </v-row>
               </v-col>
             </v-row>
-            <v-row>
-              <h3>Privacy Options</h3>
-            </v-row>
-          </v-col>
-          <v-row class="center offset-right">
-            <v-col cols="12" sm="8">
-              <v-row>
-                <small
-                  class="error"
-                  v-if="
-                    this.firstNameEmpty ||
-                    this.lastNameEmpty ||
-                    this.emailEmpty ||
-                    this.countryEmpty ||
-                    this.workFieldEmpty
-                  "
-                  >Make Sure Required Fields Are Filled</small
-                ></v-row
-              >
-              <v-row>
-                <small>* indicates required field</small>
-              </v-row>
-            </v-col>
-            <v-col cols="12" sm="4">
-              <v-btn @click="saveChanges" class="">Save</v-btn>
-              <v-btn @click="this.$emit('close')" class="button-margin"
-                >Close</v-btn
-              >
-            </v-col>
           </v-row>
         </v-row>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="blue-darken-1"
+            variant="text"
+            @click="this.$emit('close')"
+          >
+            Close
+          </v-btn>
+          <v-btn color="blue-darken-1" variant="text" @click="saveChanges">
+            Save
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </v-row>
@@ -272,15 +293,16 @@ export default {
 .offset-right {
   padding-left: 20px;
 }
+.pad-top {
+  margin-top: 5px;
+  padding: 2px 8px;
+}
 .pad-left {
   padding-left: 12px;
 }
 .button-margin {
   margin-left: 20px;
   margin-right: 20px;
-}
-.bottom-margin {
-  margin-bottom: 10px;
 }
 
 .scrollable {
