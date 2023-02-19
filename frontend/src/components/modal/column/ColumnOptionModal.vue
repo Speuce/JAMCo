@@ -8,7 +8,16 @@
             <small>Drag and Drop Columns to Change Order</small>
           </v-col>
           <v-col cols="12" sm="4">
-            <v-btn @click="addColumn"> Add Column </v-btn>
+            <v-btn
+              @click="addColumn"
+              color="primary"
+              variant="contained"
+              size="large"
+              class="pt-2"
+            >
+              <v-icon left>mdi-plus</v-icon>
+              Add
+            </v-btn>
           </v-col>
         </v-row>
         <v-row>
