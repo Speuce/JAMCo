@@ -26,6 +26,7 @@
           size="medium"
           flat
           class="button-pad pt-2"
+          id="delete-col-btn"
         >
           <v-icon color="red"> mdi-trash-can-outline </v-icon>
         </v-btn>

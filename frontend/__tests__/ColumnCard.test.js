@@ -30,7 +30,7 @@ describe('ColumnCard', () => {
   })
 
   it('emits deleteColumn when delete clicked', () => {
-    wrapper.findComponent({ name: 'v-btn' }).trigger('click')
+    wrapper.findComponent('#delete-col-btn').trigger('click')
     expect(wrapper.emitted('deleteColumn')).toBeTruthy()
     expect(wrapper.emitted().deleteColumn[0][0]).toEqual(0)
   })
