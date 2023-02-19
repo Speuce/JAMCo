@@ -20,7 +20,7 @@
                     color: this.firstNameEmpty ? 'red' : '',
                   }"
                   maxlength="30"
-                  :variant="this.editingEnabled ? 'filled' : 'underlined'"
+                  :variant="this.editingEnabled ? 'outlined' : 'underlined'"
                   :readonly="!this.editingEnabled"
                   :disabled="
                     this.userData.first_name == '' && !this.editingEnabled
@@ -36,7 +36,7 @@
                     color: this.lastNameEmpty ? 'red' : '',
                   }"
                   maxlength="30"
-                  :variant="this.editingEnabled ? 'filled' : 'underlined'"
+                  :variant="this.editingEnabled ? 'outlined' : 'underlined'"
                   :readonly="!this.editingEnabled"
                   :disabled="
                     this.userData.last_name == '' && !this.editingEnabled
@@ -50,7 +50,7 @@
                   :enable-time-picker="false"
                   placeholder="Birthday"
                   class="datepicker"
-                  :variant="this.editingEnabled ? 'filled' : 'underlined'"
+                  :variant="this.editingEnabled ? 'outlined' : 'underlined'"
                   :readonly="!this.editingEnabled"
                 />
                 <v-text-field
@@ -75,7 +75,7 @@
                     color: this.countryEmpty ? 'red' : '',
                   }"
                   maxlength="30"
-                  :variant="this.editingEnabled ? 'filled' : 'underlined'"
+                  :variant="this.editingEnabled ? 'outlined' : 'underlined'"
                   :readonly="!this.editingEnabled"
                   :disabled="
                     this.userData.country == '' && !this.editingEnabled
@@ -87,7 +87,7 @@
                   label="Province/Territory/State"
                   v-model="this.userData.region"
                   maxlength="30"
-                  :variant="this.editingEnabled ? 'filled' : 'underlined'"
+                  :variant="this.editingEnabled ? 'outlined' : 'underlined'"
                   :readonly="!this.editingEnabled"
                   :disabled="this.userData.region == '' && !this.editingEnabled"
                 />
@@ -97,7 +97,7 @@
                   label="City"
                   v-model="this.userData.city"
                   maxlength="30"
-                  :variant="this.editingEnabled ? 'filled' : 'underlined'"
+                  :variant="this.editingEnabled ? 'outlined' : 'underlined'"
                   :readonly="!this.editingEnabled"
                   :disabled="this.userData.city == '' && !this.editingEnabled"
                 />
@@ -110,7 +110,7 @@
                     color: this.workFieldEmpty ? 'red' : '',
                   }"
                   maxlength="30"
-                  :variant="this.editingEnabled ? 'filled' : 'underlined'"
+                  :variant="this.editingEnabled ? 'outlined' : 'underlined'"
                   :readonly="!this.editingEnabled"
                   :disabled="
                     this.userData.field_of_work == '' && !this.editingEnabled
@@ -122,7 +122,7 @@
                   v-model="this.userData.email"
                   :style="{ color: this.emailEmpty ? 'red' : '' }"
                   maxlength="30"
-                  :variant="this.editingEnabled ? 'filled' : 'underlined'"
+                  :variant="this.editingEnabled ? 'outlined' : 'underlined'"
                   :readonly="!this.editingEnabled"
                   :disabled="this.userData.email == '' && !this.editingEnabled"
               /></v-row>
