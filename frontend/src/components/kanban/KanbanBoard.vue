@@ -3,15 +3,29 @@
 <template>
   <div class="page">
     <div class="board-container">
-      <div class="min-h-screen column-container">
+      <div class="min-h-screen column-container px-4">
         <div
           v-for="column in this.columns"
           :key="column.id"
           class="column-width column"
         >
-          <p class="column-title">
-            {{ column.name }}
-          </p>
+          <v-hover v-slot="{ isHovering, props }">
+            <div class="column-header" v-bind="props">
+              <div class="d-flex justify-between align-center">
+                <p class="column-title">
+                  {{ column.name }}
+                </p>
+                <v-btn
+                  @click="this.$emit('showBoardOptionModal')"
+                  color="greytext"
+                  icon="mdi-pencil"
+                  variant="text"
+                  size="small"
+                  :style="{ opacity: isHovering ? 1 : 0 }"
+                />
+              </div>
+            </div>
+          </v-hover>
           <draggable
             :list="this.jobs[column.id]"
             :animation="200"
@@ -30,6 +44,14 @@
             />
           </draggable>
         </div>
+        <v-btn
+          @click="this.$emit('showBoardOptionModal')"
+          color="greytext"
+          icon="mdi-plus"
+          variant="text"
+          size="small"
+          class="ml-n2"
+        />
       </div>
     </div>
   </div>
@@ -45,7 +67,7 @@ export default {
     JobCard,
     draggable: VueDraggableNext,
   },
-  emits: ['showDetailModal', 'columnChanged'],
+  emits: ['showDetailModal', 'columnChanged', 'showBoardOptionModal'],
   props: {
     columns: {
       type: Object,
@@ -91,7 +113,7 @@ export default {
   background-color: #f7fafc;
   background-color: rgba(220, 220, 220, var(--bg-opacity));
   border-radius: 0.25rem;
-  padding: 0.75rem;
+  padding: 5px 15px 10px 15px;
   margin-right: 1rem;
 }
 
