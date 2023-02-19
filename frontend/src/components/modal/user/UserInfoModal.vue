@@ -9,14 +9,14 @@
                 <v-col cols="12" sm="4">
                   <h2>Settings</h2>
                 </v-col>
-                <v-col cols="12" sm="4">
+                <v-col cols="12" sm="8">
                   <v-btn
-                    class="pad-top"
-                    :variant="outlined"
+                    class="edit-button"
+                    variant="outlined"
+                    prepend-icon="mdi-square-edit-outline"
                     flat
                     @click="this.editingEnabled = !this.editingEnabled"
                   >
-                    <v-icon size="large">mdi-square-edit-outline</v-icon>
                     {{ !this.editingEnabled ? 'Edit ' : 'Stop Editing ' }}
                   </v-btn>
                 </v-col>
@@ -149,11 +149,7 @@
                 /></v-row>
               </div>
             </v-col>
-            <v-col cols="12" sm="5">
-              <v-row> <br /> </v-row>
-              <v-row> <br /> </v-row>
-              <v-row> <br /> </v-row>
-              <v-row> <br /> </v-row>
+            <v-col cols="12" sm="5" class="offset-privacy-col">
               <v-row>
                 <h3>Privacy Options</h3>
               </v-row>
@@ -293,16 +289,15 @@ export default {
 .offset-right {
   padding-left: 20px;
 }
-.pad-top {
+.edit-button {
   margin-top: 5px;
-  padding: 2px 8px;
+  padding: 0px 10px;
+}
+.offset-privacy-col {
+  padding-top: 105px;
 }
 .pad-left {
   padding-left: 12px;
-}
-.button-margin {
-  margin-left: 20px;
-  margin-right: 20px;
 }
 
 .scrollable {
