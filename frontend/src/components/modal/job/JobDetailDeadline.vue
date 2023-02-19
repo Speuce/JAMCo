@@ -9,6 +9,7 @@
           color: this.tryError && deadlineModel.title.length == 0 ? 'red' : '',
         }"
         maxlength="50"
+        variant="outlined"
       />
     </v-col>
     <v-col cols="12" sm="5" class="center-offset">
@@ -26,14 +27,15 @@
         }"
       />
     </v-col>
-    <v-col cols="12" sm="2" class="center-offset">
+    <v-col cols="12" sm="2" class="center-offset pl-6">
       <v-btn
-        class="remove-btn"
         @click="this.$emit('deleteDeadline', this.deadline.id)"
-        size="x-small"
-        icon="mdi-trash-can-outline"
-        >🗑️</v-btn
+        size="medium"
+        flat
+        class="mt-4"
       >
+        <v-icon color="red"> mdi-trash-can-outline </v-icon>
+      </v-btn>
     </v-col>
   </v-row>
 </template>
