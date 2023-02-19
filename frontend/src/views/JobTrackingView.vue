@@ -54,6 +54,7 @@ export default {
     JobDetailModal,
     ColumnOptionModal,
   },
+  emits: ['showUserInfoModal'],
   props: {
     user: {
       type: Object,

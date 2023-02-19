@@ -25,11 +25,18 @@
         @updateUser="updateUserAccount"
         :user="this.userData"
       />
+      <UserInfoModal
+        v-if="userInfoModalVisible"
+        @updateUser="updateUserAccount"
+        :user="this.userData"
+        @close="() => (this.userInfoModalVisible = false)"
+      />
       <Suspense>
         <JobTrackingView
           v-if="this.userData"
           :user="this.userData"
           :column-modal="columnsModalVisible"
+          @showUserInfoModal="() => (this.userInfoModalVisible = true)"
           style="height: 100%"
         />
       </Suspense>
@@ -41,6 +48,7 @@
 import LoginModal from '@/components/modal/login/LoginModal.vue'
 import JobTrackingView from './JobTrackingView.vue'
 import AccountSetupModal from '../components/modal/setup/AccountSetupModal.vue'
+import UserInfoModal from '../components/modal/user/UserInfoModal.vue'
 import { postRequest } from '@/helpers/requests.js'
 
 export default {
@@ -48,13 +56,14 @@ export default {
     LoginModal,
     JobTrackingView,
     AccountSetupModal,
+    UserInfoModal,
   },
   data() {
     return {
       userData: null,
       setupModalVisible: false,
-      // TODO show settings modal
       settingsVisible: false,
+      userInfoModalVisible: false,
       // TODO grab user data from cookie
     }
   },
@@ -70,6 +79,7 @@ export default {
       await postRequest('account/api/update_account', userData)
       this.userData = userData
       this.setupModalVisible = false
+      this.userInfoModalVisible = false
     },
   },
 }
