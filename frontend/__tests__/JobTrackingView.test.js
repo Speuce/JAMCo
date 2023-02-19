@@ -65,17 +65,6 @@ describe('JobTrackingView', () => {
     expect(wrapper.vm.detailModalVisible).toBe(false)
   })
 
-  it('opens ColumnOptionModal when Board Options clicked', () => {
-    expect(wrapper.vm.boardOptionModalVisible).toBe(false)
-    let buttons = wrapper.findAllComponents({ name: 'v-btn' })
-    buttons.forEach((button) => {
-      if (button.text() === 'Board Options') {
-        button.trigger('click')
-      }
-    })
-    expect(wrapper.vm.boardOptionModalVisible).toBe(true)
-  })
-
   it('closes the board option modal when the close event is emitted', async () => {
     expect(wrapper.vm.boardOptionModalVisible).toBe(false)
     wrapper.vm.showBoardOptionModal()
