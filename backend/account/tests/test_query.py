@@ -101,7 +101,7 @@ class GetColumnsTests(TestCase):
 class DeleteColumnsTests(TestCase):
     def test_delete_column(self):
         user = query.get_or_create_user({"sub": "4"})
-        column1 = query.create_column(user.id, "New column", 0)
+        query.create_column(user.id, "New column", 0)
         query.create_column(user.id, "Newester column", 1)
 
         query.delete_column(user.id, 0)

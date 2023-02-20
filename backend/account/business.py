@@ -4,7 +4,7 @@ Account business
 Business logic for account related operations.
 """
 from . import query
-from .models import *
+from account.models import User, KanbanColumn
 from typing import Tuple
 from django.core.exceptions import ValidationError
 
@@ -22,9 +22,7 @@ def update_user(payload: dict) -> None:
     formatted_payload = payload
     try:
         # formats date string from 2023-02-12T16:31:00.000Z to 2023-02-12
-        formatted_payload["birthday"] = (
-            payload.get("birthday")[0:10] if payload.get("birthday") else None
-        )
+        formatted_payload["birthday"] = payload.get("birthday")[0:10] if payload.get("birthday") else None
         query.update_user(formatted_payload)
     except (IndexError, ValidationError):
         raise AttributeError("Failed to format date: " + payload.get("birthday"))
@@ -73,9 +71,7 @@ def update_columns(user_id: int, payload: list[dict]) -> list[KanbanColumn]:
         column_id = column_spec["id"]
         if column_id not in existing_columns:
             # Create a new column
-            query.create_column(
-                user_id, column_spec["name"], column_spec["column_number"]
-            )
+            query.create_column(user_id, column_spec["name"], column_spec["column_number"])
         else:
             # Rename
             existing_columns[column_id].name = column_spec["name"]

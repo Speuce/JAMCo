@@ -1,6 +1,6 @@
 import datetime
 from django.test import TestCase
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from account import business, query
 
 
@@ -18,9 +18,7 @@ class CreateUserTests(TestCase):
 class UpdateUserTests(TestCase):
     def test_update_user_valid_birthday(self):
         user, created = business.get_or_create_user({"sub": "4"})
-        business.update_user(
-            payload={"id": user.id, "birthday": "2023-02-12T16:31:00.000Z"}
-        )
+        business.update_user(payload={"id": user.id, "birthday": "2023-02-12T16:31:00.000Z"})
         updated_user, created = business.get_or_create_user({"sub": "4"})
         self.assertEqual(updated_user.birthday, datetime.date(2023, 2, 12))
 
@@ -42,12 +40,7 @@ class GetColumnsTests(TestCase):
         columns = business.get_columns(user.id)
         column_numbers = [column.column_number for column in columns]
         # Returned columns should be sorted by column number
-        self.assertTrue(
-            all(
-                column_numbers[i] <= column_numbers[i + 1]
-                for i in range(len(column_numbers) - 1)
-            )
-        )
+        self.assertTrue(all(column_numbers[i] <= column_numbers[i + 1] for i in range(len(column_numbers) - 1)))
 
 
 class UpdateColumnsTests(TestCase):

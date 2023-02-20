@@ -14,9 +14,7 @@ class TestViews(TestCase):
         # Prepare data
         user_id = 123
         request_body = json.dumps({"user_id": user_id}).encode("utf-8")
-        request = self.factory.post(
-            "/get_minimum_jobs/", data=request_body, content_type="application/json"
-        )
+        request = self.factory.post("/get_minimum_jobs/", data=request_body, content_type="application/json")
 
         # Set up mock
         jobs = [{"id": 1, "position": "Developer", "company": "Google"}]
@@ -34,12 +32,8 @@ class TestViews(TestCase):
         # Prepare data
         user_id = 123
         job_id = 456
-        request_body = json.dumps({"user_id": user_id, "job_id": job_id}).encode(
-            "utf-8"
-        )
-        request = self.factory.post(
-            "/get_job_by_id/", data=request_body, content_type="application/json"
-        )
+        request_body = json.dumps({"user_id": user_id, "job_id": job_id}).encode("utf-8")
+        request = self.factory.post("/get_job_by_id/", data=request_body, content_type="application/json")
 
         # Set up mock
         job = MagicMock(
@@ -58,18 +52,14 @@ class TestViews(TestCase):
 
         # Check the response
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.content.decode("utf-8"), json.dumps({"job_data": job.to_dict()})
-        )
+        self.assertEqual(response.content.decode("utf-8"), json.dumps({"job_data": job.to_dict()}))
 
     @patch("job.business.create_job")
     def test_create_job(self, mock_create_job):
         # Prepare data
         job_data = {"position": "Developer", "company": "Google"}
         request_body = json.dumps(job_data).encode("utf-8")
-        request = self.factory.post(
-            "/create_job/", data=request_body, content_type="application/json"
-        )
+        request = self.factory.post("/create_job/", data=request_body, content_type="application/json")
 
         # Set up mock
         job = MagicMock(to_dict=MagicMock(return_value={**job_data, "id": 1}))
@@ -80,18 +70,14 @@ class TestViews(TestCase):
 
         # Check the response
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.content.decode("utf-8"), json.dumps({"job": job.to_dict()})
-        )
+        self.assertEqual(response.content.decode("utf-8"), json.dumps({"job": job.to_dict()}))
 
     @patch("job.business.update_job")
     def test_update_job(self, mock_update_job):
         # Prepare data
         job_data = {"id": 1, "position": "Developer", "company": "Google"}
         request_body = json.dumps(job_data).encode("utf-8")
-        request = self.factory.post(
-            "/update_job/", data=request_body, content_type="application/json"
-        )
+        request = self.factory.post("/update_job/", data=request_body, content_type="application/json")
 
         # Call the view function
         response = views.update_job(request)
@@ -106,9 +92,7 @@ class TestViews(TestCase):
         # Prepare data
         user_id = 123
         request_body = json.dumps({"user_id": user_id}).encode("utf-8")
-        request = self.factory.post(
-            "/get_minimum_jobs/", data=request_body, content_type="application/json"
-        )
+        request = self.factory.post("/get_minimum_jobs/", data=request_body, content_type="application/json")
         response = views.get_minimum_jobs(request)
         self.assertEqual(response.status_code, 400)
 
@@ -117,12 +101,8 @@ class TestViews(TestCase):
         mock_get_job_by_id.side_effect = Exception("Something went wrong!")
         user_id = 123
         job_id = 456
-        request_body = json.dumps({"user_id": user_id, "job_id": job_id}).encode(
-            "utf-8"
-        )
-        request = self.factory.post(
-            "/get_job_by_id/", data=request_body, content_type="application/json"
-        )
+        request_body = json.dumps({"user_id": user_id, "job_id": job_id}).encode("utf-8")
+        request = self.factory.post("/get_job_by_id/", data=request_body, content_type="application/json")
 
         response = views.get_job_by_id(request)
         self.assertEqual(response.status_code, 400)
@@ -133,9 +113,7 @@ class TestViews(TestCase):
         # Prepare data
         job_data = {"position": "Developer", "company": "Google"}
         request_body = json.dumps(job_data).encode("utf-8")
-        request = self.factory.post(
-            "/create_job/", data=request_body, content_type="application/json"
-        )
+        request = self.factory.post("/create_job/", data=request_body, content_type="application/json")
 
         # Set up mock
         job = MagicMock(to_dict=MagicMock(return_value={**job_data, "id": 1}))
@@ -149,8 +127,6 @@ class TestViews(TestCase):
         # Prepare data
         job_data = {"id": 1, "position": "Developer", "company": "Google"}
         request_body = json.dumps(job_data).encode("utf-8")
-        request = self.factory.post(
-            "/update_job/", data=request_body, content_type="application/json"
-        )
+        request = self.factory.post("/update_job/", data=request_body, content_type="application/json")
         response = views.update_job(request)
         self.assertEqual(response.status_code, 400)
