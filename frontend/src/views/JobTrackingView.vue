@@ -159,7 +159,7 @@ export default {
     async showDetailModal(job) {
       if (job) {
         // editing job
-        if (!job.deadlines) {
+        if (job.deadlines === undefined) {
           // only get from backend if job not populated
           await postRequest('job/api/get_job_by_id', {
             user_id: this.activeUser.id,
