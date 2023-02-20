@@ -135,8 +135,9 @@ export default {
             ].filter((item) => item.id !== job.id)
           }
         })
-        await postRequest('job/api/update_job', job)
-        jobsByColumn.value[job.kcolumn_id].push(job)
+        await postRequest('job/api/update_job', job).then(
+          jobsByColumn.value[job.kcolumn_id].push(job),
+        )
       }
     },
     async updateColumns(columns) {
@@ -164,6 +165,11 @@ export default {
             user_id: this.activeUser.id,
             job_id: job.id,
           }).then((completeJob) => {
+            jobsByColumn.value[job.kcolumn_id] = jobsByColumn.value[
+              job.kcolumn_id
+            ].filter((item) => item.id !== job.id)
+            jobsByColumn.value[job.kcolumn_id].push(completeJob.job_data)
+
             this.selectedJob = completeJob.job_data
             this.detailModalVisible = true
           })
