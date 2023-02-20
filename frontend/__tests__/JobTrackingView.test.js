@@ -143,6 +143,7 @@ describe('JobTrackingView', () => {
       kcolumn_id: 8,
     })
     expect(wrapper.vm.jobsByColumn[8]).toEqual([
+      { id: 0, kcolumn_id: 8 },
       {
         id: 12,
         company: 'Minisoft',
@@ -154,7 +155,6 @@ describe('JobTrackingView', () => {
         description: 'Description',
         notes: 'Test',
       },
-      { id: 0, kcolumn_id: 8 },
     ])
   })
 
