@@ -185,6 +185,7 @@
             <v-icon v-if="!this.editingEnabled" left
               >mdi-square-edit-outline</v-icon
             >
+            <v-divider class="mx-1" />
             {{ !this.editingEnabled ? 'Edit' : 'Save' }}
           </v-btn>
           <v-btn
