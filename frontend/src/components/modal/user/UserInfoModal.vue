@@ -9,17 +9,6 @@
                 <v-col cols="12" sm="4">
                   <h2>Settings</h2>
                 </v-col>
-                <v-col cols="12" sm="8">
-                  <v-btn
-                    class="edit-button"
-                    variant="outlined"
-                    prepend-icon="mdi-square-edit-outline"
-                    flat
-                    @click="this.editingEnabled = !this.editingEnabled"
-                  >
-                    {{ !this.editingEnabled ? 'Edit ' : 'Stop Editing ' }}
-                  </v-btn>
-                </v-col>
               </v-row>
               <v-row><br /></v-row>
               <v-row>
@@ -181,12 +170,29 @@
           <v-btn
             color="blue-darken-1"
             variant="text"
+            @click="
+              () => {
+                this.editingEnabled = !this.editingEnabled
+                if (!this.editingEnabled) {
+                  saveChanges()
+                }
+              }
+            "
+          >
+            <v-icon v-if="this.editingEnabled" left
+              >mdi-content-save-outline</v-icon
+            >
+            <v-icon v-if="!this.editingEnabled" left
+              >mdi-square-edit-outline</v-icon
+            >
+            {{ !this.editingEnabled ? 'Edit' : 'Save' }}
+          </v-btn>
+          <v-btn
+            color="blue-darken-1"
+            variant="text"
             @click="this.$emit('close')"
           >
             Close
-          </v-btn>
-          <v-btn color="blue-darken-1" variant="text" @click="saveChanges">
-            Save
           </v-btn>
         </v-card-actions>
       </v-card>
