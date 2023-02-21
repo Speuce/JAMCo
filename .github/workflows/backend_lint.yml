@@ -17,7 +17,8 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-          max-line-length: "120"
+          max-line-length: 120
+          exclude: "migrations/"
           path: "backend"
       - name: flake8 Lint
         uses: py-actions/flake8@v2
@@ -28,4 +29,4 @@ jobs:
       - uses: psf/black@stable
         with:
           src: "backend"
-          options: "--line-length 120"
+          options: "--line-length 120 --extend-exclude migrations/"
