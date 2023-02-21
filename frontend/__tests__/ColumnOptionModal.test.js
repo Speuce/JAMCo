@@ -113,4 +113,14 @@ describe('ColumnOptionModal', () => {
     expect(wrapper.vm.minColumnsReached).toBe(true)
     expect(wrapper.vm.cols.length).toBe(1)
   })
+
+  it('emits close when dialog value set to false', async () => {
+    mountModal(jobsByColumn)
+    wrapper.vm.$data.dialog = true
+    await wrapper.vm.$nextTick()
+    expect(wrapper.emitted('close')).toBeFalsy()
+    wrapper.vm.$data.dialog = false
+    await wrapper.vm.$nextTick()
+    expect(wrapper.emitted('close')).toBeTruthy()
+  })
 })
