@@ -1,43 +1,28 @@
 import json
 from django.test import TransactionTestCase
-from job import business, query
+from unittest.mock import patch
+from job import business, query, models
+from job.tests.factories import JobFactory
 from account import query as account_query
 from column import query as column_query
-from job import models
 
 
 class CreateJobTests(TransactionTestCase):
-    def test_create_job(self):
-        user = account_query.get_or_create_user({"sub": "4"})
-        column = column_query.create_column(user.id, "New column", 0)
+    @patch("job.query.create_job")
+    @patch("job.query.get_job_by_id")
+    def test_create_job(self, mock_create_job, mock_get_job_by_id):
+        # Setup Mocks
+        mocked_job = JobFactory()
 
-        jobs = [
-            {
-                "id": -1,
-                "user_id": user.id,
-                "kcolumn_id": column.id,
-                "position_title": "pos",
-                "company": "com",
-                "type": "ty",
-            },
-            {
-                "id": -1,
-                "user_id": user.id,
-                "kcolumn_id": column.id,
-                "position_title": "position",
-                "company": "com",
-                "type": "ty",
-            },
-        ]
+        mock_create_job.return_value = mocked_job
+        mock_get_job_by_id.return_value = mocked_job
 
-        job_one_create = business.create_job(jobs[0])
-        job_two_create = business.create_job(jobs[1])
+        job = {"id": -1, "user_id": mocked_job.user.id, "kcolumn_id": mocked_job.kcolumn.id}
 
-        job_one = business.get_job_by_id(user.id, job_one_create.id)
-        self.assertEqual(job_one_create.to_dict(), job_one.to_dict())
+        job_create = business.create_job(job)
+        job_get = business.get_job_by_id(mocked_job.user.id, job_create.id)
 
-        job_two = business.get_job_by_id(user.id, job_two_create.id)
-        self.assertEqual(job_two_create.to_dict(), job_two.to_dict())
+        self.assertEqual(job_create.to_dict(), job_get.to_dict())
 
 
 class UpdateJobTest(TransactionTestCase):

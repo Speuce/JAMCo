@@ -77,7 +77,6 @@ class UpdateAccountTests(TestCase):
             **self.header,
         )
 
-        logger.debug(f"here!: {user_resp.json()}")
         # Try updating it, the request should succeed
         response = self.client.post(
             reverse("update_account"),
