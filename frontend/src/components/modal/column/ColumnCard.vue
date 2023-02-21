@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="1" sm="2">
         <v-btn icon flat>
-          <v-icon size="large" color="grey" disbled>
+          <v-icon size="large" color="grey">
             mdi-drag-horizontal-variant
           </v-icon>
         </v-btn>
