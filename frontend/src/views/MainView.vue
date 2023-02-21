@@ -29,7 +29,6 @@
         <JobTrackingView
           v-if="this.userData"
           :user="this.userData"
-          :column-modal="columnsModalVisible"
           style="height: 100%"
         />
       </Suspense>
