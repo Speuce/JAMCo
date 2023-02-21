@@ -102,15 +102,15 @@
             </v-col>
             <v-divider vertical class="mt-8 mb-12 mx-2" />
             <v-col class="deadline-col">
-              <v-row class="my-2 ml-4">
+              <v-row class="my-2 mx-4">
                 <h2 class="mr-2">Deadlines</h2>
-
+                <v-spacer></v-spacer>
                 <v-btn
                   @click="newDeadline"
                   color="primary"
-                  variant="contained"
                   size="large"
                   class="pt-2"
+                  variant="text"
                 >
                   <v-icon left>mdi-plus</v-icon>
                   Add
