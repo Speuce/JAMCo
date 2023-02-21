@@ -124,6 +124,7 @@ export default {
         userJob.user_id = this.activeUser.id
         await postRequest('job/api/create_job', userJob).then((newJob) => {
           isNewJob.value = false
+          // Push New Job To Bottom of Column
           jobsByColumn.value[newJob.job.kcolumn_id].push(newJob.job)
         })
       } else {
@@ -135,9 +136,12 @@ export default {
             ].filter((item) => item.id !== job.id)
           }
         })
-        await postRequest('job/api/update_job', job).then(
-          jobsByColumn.value[job.kcolumn_id].push(job),
-        )
+        await postRequest('job/api/update_job', job).then(() => {
+          jobsByColumn.value[job.kcolumn_id].push(job)
+          jobsByColumn.value[job.kcolumn_id] = jobsByColumn.value[
+            job.kcolumn_id
+          ].sort((a, b) => a.id - b.id)
+        })
       }
     },
     async updateColumns(columns) {
@@ -169,6 +173,10 @@ export default {
               job.kcolumn_id
             ].filter((item) => item.id !== job.id)
             jobsByColumn.value[job.kcolumn_id].push(completeJob.job_data)
+
+            jobsByColumn.value[job.kcolumn_id] = jobsByColumn.value[
+              job.kcolumn_id
+            ].sort((a, b) => a.id - b.id)
 
             this.selectedJob = completeJob.job_data
             this.detailModalVisible = true
