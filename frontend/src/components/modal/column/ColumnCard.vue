@@ -1,7 +1,7 @@
 <template>
   <div class="col-card">
     <v-row>
-      <v-col cols="12" sm="2">
+      <v-col cols="1" sm="2">
         <v-btn icon flat>
           <v-icon size="large" color="grey">
             mdi-drag-horizontal-variant

@@ -28,9 +28,6 @@
                     maxlength="30"
                     :variant="this.editingEnabled ? 'outlined' : 'underlined'"
                     :readonly="!this.editingEnabled"
-                    :disabled="
-                      this.userData.first_name == '' && !this.editingEnabled
-                    "
                   />
                 </v-row>
                 <v-row>
@@ -44,9 +41,6 @@
                     maxlength="30"
                     :variant="this.editingEnabled ? 'outlined' : 'underlined'"
                     :readonly="!this.editingEnabled"
-                    :disabled="
-                      this.userData.last_name == '' && !this.editingEnabled
-                    "
                   />
                 </v-row>
                 <v-row>
@@ -83,9 +77,6 @@
                     maxlength="30"
                     :variant="this.editingEnabled ? 'outlined' : 'underlined'"
                     :readonly="!this.editingEnabled"
-                    :disabled="
-                      this.userData.country == '' && !this.editingEnabled
-                    "
                   />
                 </v-row>
                 <v-row>
@@ -120,9 +111,6 @@
                     maxlength="30"
                     :variant="this.editingEnabled ? 'outlined' : 'underlined'"
                     :readonly="!this.editingEnabled"
-                    :disabled="
-                      this.userData.field_of_work == '' && !this.editingEnabled
-                    "
                 /></v-row>
                 <v-row>
                   <v-text-field
@@ -132,9 +120,6 @@
                     maxlength="30"
                     :variant="this.editingEnabled ? 'outlined' : 'underlined'"
                     :readonly="!this.editingEnabled"
-                    :disabled="
-                      this.userData.email == '' && !this.editingEnabled
-                    "
                 /></v-row>
               </div>
             </v-col>
