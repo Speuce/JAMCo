@@ -244,13 +244,15 @@ export default {
       })
     },
     sortDeadlines() {
-      deadlines.value.sort({
-        // custom sort function
+      deadlines.value = deadlines.value.sort({
         deadlinesort(a, b) {
-          if (a.date < b.date) {
+          // custom sort function
+          var aDate = new Date(a.date)
+          var bDate = new Date(b.date)
+          if (aDate.valueOf() < bDate.valueOf()) {
             return -1
           }
-          if (a.date > b.date) {
+          if (aDate.valueOf() > bDate.valueOf()) {
             return 1
           }
           return 0 // then they are equal
