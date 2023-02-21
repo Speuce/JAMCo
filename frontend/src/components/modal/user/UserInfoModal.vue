@@ -26,8 +26,8 @@
                       color: this.firstNameEmpty ? 'red' : '',
                     }"
                     maxlength="30"
-                    :variant="this.editingEnabled ? 'outlined' : 'underlined'"
-                    :readonly="!this.editingEnabled"
+                    variant="outlined"
+                    :disabled="!this.editingEnabled"
                   />
                 </v-row>
                 <v-row>
@@ -39,8 +39,8 @@
                       color: this.lastNameEmpty ? 'red' : '',
                     }"
                     maxlength="30"
-                    :variant="this.editingEnabled ? 'outlined' : 'underlined'"
-                    :readonly="!this.editingEnabled"
+                    variant="outlined"
+                    :disabled="!this.editingEnabled"
                   />
                 </v-row>
                 <v-row>
@@ -50,8 +50,8 @@
                     :enable-time-picker="false"
                     placeholder="Birthday"
                     class="datepicker"
-                    :variant="this.editingEnabled ? 'outlined' : 'underlined'"
-                    :readonly="!this.editingEnabled"
+                    variant="outlined"
+                    :disabled="!this.editingEnabled"
                   />
                   <v-text-field
                     v-if="!this.editingEnabled"
@@ -62,9 +62,8 @@
                       color: this.lastNameEmpty ? 'red' : '',
                     }"
                     maxlength="30"
-                    variant="underlined"
-                    readonly
-                    :disabled="getBirthdayString == '' && !this.editingEnabled"
+                    variant="outlined"
+                    disabled
                   />
                 </v-row>
                 <v-row>
@@ -75,8 +74,8 @@
                       color: this.countryEmpty ? 'red' : '',
                     }"
                     maxlength="30"
-                    :variant="this.editingEnabled ? 'outlined' : 'underlined'"
-                    :readonly="!this.editingEnabled"
+                    variant="outlined"
+                    :disabled="!this.editingEnabled"
                   />
                 </v-row>
                 <v-row>
@@ -84,11 +83,8 @@
                     label="Province/Territory/State"
                     v-model="this.userData.region"
                     maxlength="30"
-                    :variant="this.editingEnabled ? 'outlined' : 'underlined'"
-                    :readonly="!this.editingEnabled"
-                    :disabled="
-                      this.userData.region == '' && !this.editingEnabled
-                    "
+                    variant="outlined"
+                    :disabled="!this.editingEnabled"
                   />
                 </v-row>
                 <v-row>
@@ -96,9 +92,8 @@
                     label="City"
                     v-model="this.userData.city"
                     maxlength="30"
-                    :variant="this.editingEnabled ? 'outlined' : 'underlined'"
-                    :readonly="!this.editingEnabled"
-                    :disabled="this.userData.city == '' && !this.editingEnabled"
+                    variant="outlined"
+                    :disabled="!this.editingEnabled"
                   />
                 </v-row>
                 <v-row>
@@ -109,8 +104,8 @@
                       color: this.workFieldEmpty ? 'red' : '',
                     }"
                     maxlength="30"
-                    :variant="this.editingEnabled ? 'outlined' : 'underlined'"
-                    :readonly="!this.editingEnabled"
+                    variant="outlined"
+                    :disabled="!this.editingEnabled"
                 /></v-row>
                 <v-row>
                   <v-text-field
@@ -118,8 +113,8 @@
                     v-model="this.userData.email"
                     :style="{ color: this.emailEmpty ? 'red' : '' }"
                     maxlength="30"
-                    :variant="this.editingEnabled ? 'outlined' : 'underlined'"
-                    :readonly="!this.editingEnabled"
+                    variant="outlined"
+                    :disabled="!this.editingEnabled"
                 /></v-row>
               </div>
             </v-col>
@@ -281,17 +276,12 @@ export default {
 .offset-right {
   padding-left: 20px;
 }
-.edit-button {
-  margin-top: 5px;
-  padding: 0px 10px;
-}
 .offset-privacy-col {
   padding-top: 105px;
 }
 .pad-left {
   padding-left: 12px;
 }
-
 .scrollable {
   overflow-y: auto;
   overflow-x: hidden;
