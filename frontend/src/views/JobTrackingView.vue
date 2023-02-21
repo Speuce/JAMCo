@@ -77,7 +77,7 @@ export default {
   },
 
   async mounted() {
-    let columnResponse = await postRequest('account/api/get_columns', {
+    let columnResponse = await postRequest('column/api/get_columns', {
       user_id: this.user.id,
     })
 
@@ -140,7 +140,7 @@ export default {
       }
     },
     async updateColumns(columns) {
-      await postRequest('account/api/update_columns', {
+      await postRequest('column/api/update_columns', {
         user_id: this.activeUser.id,
         payload: columns,
       }).then((updatedColumns) => {

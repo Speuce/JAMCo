@@ -2,13 +2,14 @@ import json
 from django.test import TransactionTestCase
 from job import business, query
 from account import query as account_query
+from column import query as column_query
 from job import models
 
 
 class CreateJobTests(TransactionTestCase):
     def test_create_job(self):
         user = account_query.get_or_create_user({"sub": "4"})
-        column = account_query.create_column(user.id, "New column", 0)
+        column = column_query.create_column(user.id, "New column", 0)
 
         jobs = [
             {
@@ -42,7 +43,7 @@ class CreateJobTests(TransactionTestCase):
 class UpdateJobTest(TransactionTestCase):
     def test_update_job(self):
         user = account_query.get_or_create_user({"sub": "4"})
-        column = account_query.create_column(user.id, "New column", 0)
+        column = column_query.create_column(user.id, "New column", 0)
 
         job = {
             "id": -1,
@@ -89,7 +90,7 @@ class GetMinimumJobsTests(TransactionTestCase):
 
     def test_get_minimum_jobs(self):
         user = account_query.get_or_create_user({"sub": "4"})
-        column = account_query.create_column(user.id, "New column", 0)
+        column = column_query.create_column(user.id, "New column", 0)
 
         jobs = [
             {
@@ -148,13 +149,15 @@ class GetMinimumJobsTests(TransactionTestCase):
 
         min_jobs_response = business.get_minimum_jobs(user.id)
 
-        self.assertEqual(json.dumps(list(min_jobs)), json.dumps(list(min_jobs_response)))
+        self.assertEqual(
+            json.dumps(list(min_jobs)), json.dumps(list(min_jobs_response))
+        )
 
 
 class GetJobByIdTests(TransactionTestCase):
     def test_get_job_by_id(self):
         user = account_query.get_or_create_user({"sub": "4"})
-        column = account_query.create_column(user.id, "New column", 0)
+        column = column_query.create_column(user.id, "New column", 0)
 
         jobs = [
             {

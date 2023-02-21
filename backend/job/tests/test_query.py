@@ -3,6 +3,7 @@ from django.test import TransactionTestCase
 from django.core.exceptions import ObjectDoesNotExist
 from job import query as jquery, models as jmodels
 from account import query as aquery
+from column import query as cquery
 
 logger = logging.getLogger(__name__)
 
@@ -11,7 +12,7 @@ class GetOrCreateJobTests(TransactionTestCase):
     def test_create_and_get_job(self):
         # first create a user and a column
         user = aquery.get_or_create_user({"sub": "4"})
-        new_column = aquery.create_column(user.id, "New column", 0)
+        new_column = cquery.create_column(user.id, "New column", 0)
 
         # test creating and getting a job for that user in that column
         new_job = jquery.create_job(
@@ -44,7 +45,7 @@ class GetOrCreateJobTests(TransactionTestCase):
     def test_invalid_get(self):
         # first create a user and a column
         user = aquery.get_or_create_user({"sub": "5"})
-        new_column = aquery.create_column(user.id, "New column", 0)
+        new_column = cquery.create_column(user.id, "New column", 0)
 
         # test creating and getting a job for that user in that column
         jquery.create_job(
@@ -65,7 +66,7 @@ class JobExistsTests(TransactionTestCase):
     def test_job_exists(self):
         # first create a user and a column
         user = aquery.get_or_create_user({"sub": "6"})
-        new_column = aquery.create_column(user.id, "New column", 0)
+        new_column = cquery.create_column(user.id, "New column", 0)
 
         # test creating and getting a job for that user in that column
         new_job = jquery.create_job(
@@ -84,7 +85,7 @@ class UpdateJobTests(TransactionTestCase):
     def test_update_job(self):
         # first create a user and a column
         user = aquery.get_or_create_user({"sub": "7"})
-        new_column = aquery.create_column(user.id, "New column", 0)
+        new_column = cquery.create_column(user.id, "New column", 0)
 
         # test creating and getting a job for that user in that column
         job = jquery.create_job(
@@ -97,12 +98,14 @@ class UpdateJobTests(TransactionTestCase):
         )
 
         jquery.update_job({"id": job.id, "description": "Manage things and stuff"})
-        self.assertEqual(jquery.get_job_by_id(user.id, job.id).description, "Manage things and stuff")
+        self.assertEqual(
+            jquery.get_job_by_id(user.id, job.id).description, "Manage things and stuff"
+        )
 
     def test_invalid_update_job(self):
         # first create a user and a column
         user = aquery.get_or_create_user({"sub": "8"})
-        new_column = aquery.create_column(user.id, "New column", 0)
+        new_column = cquery.create_column(user.id, "New column", 0)
 
         # test creating and getting a job for that user in that column
         job = jquery.create_job(
@@ -125,8 +128,8 @@ class GetAllJobsTests(TransactionTestCase):
     def test_get_minimum_jobs(self):
         # first create a user and a column
         user = aquery.get_or_create_user({"sub": "10"})
-        column1 = aquery.create_column(user.id, "New column", 0)
-        column2 = aquery.create_column(user.id, "Newer column", 1)
+        column1 = cquery.create_column(user.id, "New column", 0)
+        column2 = cquery.create_column(user.id, "Newer column", 1)
 
         # test creating and getting a job for that user in that column
         job1 = jquery.create_job(
@@ -166,7 +169,7 @@ class DeleteJobTests(TransactionTestCase):
     def test_job_deletion(self):
         # first create a user and a column
         user = aquery.get_or_create_user({"sub": "11"})
-        column = aquery.create_column(user.id, "New column", 0)
+        column = cquery.create_column(user.id, "New column", 0)
 
         # test creating and getting a job for that user in that column
         job = jquery.create_job(
@@ -184,7 +187,7 @@ class DeleteJobTests(TransactionTestCase):
     def test_invalid_job_deletion(self):
         # first create a user and a column
         user = aquery.get_or_create_user({"sub": "11"})
-        column = aquery.create_column(user.id, "New column", 0)
+        column = cquery.create_column(user.id, "New column", 0)
 
         # test creating and getting a job for that user in that column
         jquery.create_job(
