@@ -1,24 +1,27 @@
 <template>
   <v-row>
-    <v-dialog v-model="dialog" persistent class="dialog">
+    <v-dialog v-model="dialog" class="dialog" @close="closeClicked">
       <v-card class="card">
-        <v-row class="left-pad">
-          <v-col cols="12" sm="8">
+        <v-row class="left-pad mt-2 mx-2">
+          <div>
             <h2>Customize Columns</h2>
             <small>Drag and Drop Columns to Change Order</small>
-          </v-col>
-          <v-col cols="12" sm="4">
-            <v-btn @click="addColumn"> Add Column </v-btn>
-          </v-col>
+          </div>
+          <v-spacer />
+          <div>
+            <v-btn
+              @click="addColumn"
+              color="primary"
+              size="large"
+              class="pt-2"
+              variant="text"
+            >
+              <v-icon left>mdi-plus</v-icon>
+              Add
+            </v-btn>
+          </div>
         </v-row>
         <v-row>
-          <v-col cols="12" sm="2">
-            <v-row v-for="i in cols.length" :key="i" class="number-rows">
-              <v-col cols="12" sm="3">
-                <h2>{{ i }}</h2>
-              </v-col>
-            </v-row>
-          </v-col>
           <v-col cols="12" sm="10">
             <v-card-text>
               <draggable
@@ -114,6 +117,14 @@ export default {
     props.columns.forEach((col) => {
       cols.value.push(col)
     })
+  },
+  watch: {
+    // eslint-disable-next-line func-names
+    dialog: function (val) {
+      if (!val) {
+        this.closeClicked()
+      }
+    },
   },
   methods: {
     hideWarnings() {

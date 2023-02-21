@@ -1,7 +1,14 @@
 <template>
   <div class="col-card">
     <v-row>
-      <v-col cols="12" sm="8">
+      <v-col cols="1" sm="2">
+        <v-btn icon flat>
+          <v-icon size="large" color="grey">
+            mdi-drag-horizontal-variant
+          </v-icon>
+        </v-btn>
+      </v-col>
+      <v-col cols="10" sm="8">
         <v-text-field
           v-model="columnModel.name"
           @change="updateColumn"
@@ -13,24 +20,16 @@
           maxlength="30"
         />
       </v-col>
-      <v-col cols="12" sm="2">
+      <v-col cols="1" sm="2">
         <v-btn
           @click="this.$emit('deleteColumn', columnModel.id)"
-          size="small"
-          icon="mdi-trash-can-outline"
-          class="button-pad"
-          >🗑️</v-btn
+          size="medium"
+          flat
+          class="button-pad pt-2"
+          id="delete-col-btn"
         >
-      </v-col>
-      <v-col cols="12" sm="2">
-        <v-btn
-          size="small"
-          icon="mdi-arrow-up-down-bold"
-          class="button-pad"
-          variant="tonal"
-          disabled
-          >🔀</v-btn
-        >
+          <v-icon color="red"> mdi-trash-can-outline </v-icon>
+        </v-btn>
       </v-col>
     </v-row>
   </div>

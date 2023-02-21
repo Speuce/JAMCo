@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import 'vite/modulepreload-polyfill'
 import App from './App.vue'
 import router from './router'
-import '@mdi/font/css/materialdesignicons.css' // Ensure you are using css-loader
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import './assets/colours.css'
 
 // Vuetify
@@ -19,6 +19,32 @@ const vuetify = createVuetify({
   directives,
   icons: {
     defaultSet: 'mdi',
+  },
+  theme: {
+    options: {
+      customProperties: true,
+    },
+    defaultTheme: 'jamcoLightTheme',
+    themes: {
+      jamcoLightTheme: {
+        dark: false,
+        colors: {
+          background: '#FFFFFF',
+          surface: '#FFFFFF',
+          primary: '#b996ff',
+          'primary-darken-1': '#3700B3',
+          secondary: '#03DAC6',
+          'secondary-darken-1': '#018786',
+          error: '#B00020',
+          info: '#2196F3',
+          success: '#4CAF50',
+          warning: '#FB8C00',
+          greyback: '#f7fafc',
+          greytext: '#4a5568',
+        },
+        variables: {},
+      },
+    },
   },
 })
 

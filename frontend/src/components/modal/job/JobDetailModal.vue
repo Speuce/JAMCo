@@ -1,10 +1,10 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" persistent>
+    <v-dialog v-model="dialog" persistent max-width="1300px">
       <v-card>
         <v-card-text>
           <v-row>
-            <v-col class="info-col">
+            <v-col class="info-col" cols="7">
               <v-row>
                 <v-col cols="12" sm="6">
                   <v-text-field
@@ -13,6 +13,7 @@
                     v-model="jobData.position_title"
                     :style="{ color: this.positionErrorIndicator }"
                     maxlength="50"
+                    variant="outlined"
                   />
                 </v-col>
 
@@ -23,6 +24,7 @@
                     label="Type"
                     v-model="jobData.type"
                     maxlength="12"
+                    variant="outlined"
                   />
                 </v-col>
               </v-row>
@@ -35,6 +37,7 @@
                     v-model="jobData.company"
                     :style="{ color: this.companyErrorIndicator }"
                     maxlength="50"
+                    variant="outlined"
                   />
                 </v-col>
 
@@ -47,6 +50,7 @@
                     item-value="id"
                     label="Status*"
                     v-model="selectedColumnId"
+                    variant="outlined"
                   />
                 </v-col>
               </v-row>
@@ -60,6 +64,8 @@
                     shaped
                     v-model="jobData.description"
                     maxlength="10000"
+                    variant="outlined"
+                    rows="3"
                   />
                 </v-col>
               </v-row>
@@ -73,6 +79,8 @@
                     shaped
                     v-model="jobData.cover_letter"
                     maxlength="10000"
+                    variant="outlined"
+                    rows="3"
                   />
                 </v-col>
               </v-row>
@@ -86,22 +94,27 @@
                     shaped
                     v-model="jobData.notes"
                     maxlength="10000"
+                    variant="outlined"
+                    rows="3"
                   />
                 </v-col>
               </v-row>
             </v-col>
-
+            <v-divider vertical class="mt-8 mb-12 mx-2" />
             <v-col class="deadline-col">
-              <v-row class="pad-deadlines">
-                <v-col cols="12" sm="6">
-                  <h2>Deadlines</h2>
-                </v-col>
-
-                <v-col cols="12" sm="6">
-                  <v-btn @click="newDeadline" class="add-deadline"
-                    >Add Deadline</v-btn
-                  >
-                </v-col>
+              <v-row class="my-2 mx-4">
+                <h2 class="mr-2">Deadlines</h2>
+                <v-spacer></v-spacer>
+                <v-btn
+                  @click="newDeadline"
+                  color="primary"
+                  size="large"
+                  class="pt-2"
+                  variant="text"
+                >
+                  <v-icon left>mdi-plus</v-icon>
+                  Add
+                </v-btn>
               </v-row>
               <v-col class="scroll-deadlines">
                 <v-row v-for="deadline in deadlines" :key="deadline.id">
@@ -283,23 +296,8 @@ export default {
 </script>
 
 <style scoped>
-.deadline-col {
-  min-width: 420px;
-}
-
-.info-col {
-  min-width: 360px;
-}
 .errorMessage {
   color: red;
-}
-.pad-deadlines {
-  padding-bottom: 1rem;
-  padding-left: 0.5rem;
-}
-
-.add-deadline {
-  min-width: 165px;
 }
 .scroll-deadlines {
   overflow-y: auto;
@@ -308,7 +306,7 @@ export default {
   padding: 20px;
 }
 .text-area-box {
-  max-height: 15vh;
+  padding-top: 10px;
   overflow-y: auto;
   overflow-x: hidden;
 }

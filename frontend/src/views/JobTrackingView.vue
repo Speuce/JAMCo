@@ -14,24 +14,25 @@
       :columns="colList"
       :jobsByColumn="jobsByColumn"
     />
-    <div class="header-container">
-      <h2 class="internal">Your Applications</h2>
-      <div>
-        <v-btn class="internal" @click="showDetailModal()"
-          >Add New Application</v-btn
-        >
-        <v-btn class="settings" @click="showBoardOptionModal()">
-          Board Options
-        </v-btn>
-      </div>
-    </div>
     <div class="kanban">
       <KanbanBoard
         :columns="colList"
         :jobs="jobsByColumn"
         @showDetailModal="showDetailModal"
         @columnChanged="createOrUpdateJob"
+        @showBoardOptionModal="showBoardOptionModal"
       />
+    </div>
+    <div class="floating">
+      <v-btn
+        size="x-large"
+        icon
+        class="internal"
+        @click="showDetailModal()"
+        color="primary"
+      >
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
     </div>
   </div>
 </template>
@@ -201,6 +202,7 @@ export default {
 .kanban {
   overflow-x: auto;
   margin: 0.5rem 0rem;
+  height: 99%;
 }
 h2 {
   color: rgba(74, 85, 104, var(--text-opacity));
@@ -210,11 +212,11 @@ h2 {
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
-.header-container {
-  color: black;
-  display: flex;
-  margin: 1.5rem 1rem 1.5rem 0;
-  justify-content: space-between;
+.floating {
+  position: fixed;
+  bottom: 20px;
+  right: 0px;
+  z-index: 100;
 }
 .internal {
   margin-right: 2rem;
