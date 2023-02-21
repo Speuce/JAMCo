@@ -16,12 +16,7 @@ class GetColumnsTests(TestCase):
         columns = business.get_columns(user.id)
         column_numbers = [column.column_number for column in columns]
         # Returned columns should be sorted by column number
-        self.assertTrue(
-            all(
-                column_numbers[i] <= column_numbers[i + 1]
-                for i in range(len(column_numbers) - 1)
-            )
-        )
+        self.assertTrue(all(column_numbers[i] <= column_numbers[i + 1] for i in range(len(column_numbers) - 1)))
 
 
 class UpdateColumnsTests(TestCase):

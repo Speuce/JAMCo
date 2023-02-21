@@ -9,9 +9,7 @@ from column.models import KanbanColumn
 
 
 def create_column(user_id: int, column_name: str, column_number: int) -> KanbanColumn:
-    return KanbanColumn.objects.create(
-        user=User.objects.get(id=user_id), name=column_name, column_number=column_number
-    )
+    return KanbanColumn.objects.create(user=User.objects.get(id=user_id), name=column_name, column_number=column_number)
 
 
 def get_columns(user_id: int) -> list[KanbanColumn]:

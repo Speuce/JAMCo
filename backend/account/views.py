@@ -37,9 +37,7 @@ def get_or_create_account(request: HttpRequest):
     # Verify Credentials via Google
     try:
         # Specify the CLIENT_ID of the app that accesses the backend:
-        idinfo = id_token.verify_oauth2_token(
-            credential, requests.Request(), client_id, clock_skew_in_seconds=5
-        )
+        idinfo = id_token.verify_oauth2_token(credential, requests.Request(), client_id, clock_skew_in_seconds=5)
 
         # ID token is valid. Get the user's Google Account ID from the decoded token.
         logger.debug(f"Credential Validated for User.google_id: { idinfo['sub'] }")

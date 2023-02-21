@@ -10,7 +10,7 @@ vi.mock('@/helpers/requests.js', () => ({
 }))
 
 const mostPostRequest = (url) => {
-  if (url === 'account/api/get_columns') {
+  if (url === 'column/api/get_columns') {
     return Promise.resolve({ columns: testCols })
   }
   if (url === 'job/api/get_minimum_jobs') {
@@ -29,7 +29,7 @@ const mostPostRequest = (url) => {
   if (url === 'job/api/update_job') {
     return Promise.resolve({ data: { id: 0, kcolumn_id: 8 } })
   }
-  if (url === 'account/api/update_columns') {
+  if (url === 'column/api/update_columns') {
     return Promise.resolve({ columns: [{ id: 8 }, { id: 2 }, { id: 1 }] })
   }
   if (url === 'job/api/get_job_by_id') {
@@ -93,7 +93,7 @@ describe('JobTrackingView', () => {
       { column_number: 3, id: 8, name: 'Interview' },
     ])
     await wrapper.vm.updateColumns([{ id: 8 }, { id: 2 }, { id: 1 }])
-    expect(postRequest).toHaveBeenCalledWith('account/api/update_columns', {
+    expect(postRequest).toHaveBeenCalledWith('column/api/update_columns', {
       payload: [{ id: 8 }, { id: 2 }, { id: 1 }],
       user_id: mockuser.id,
     })

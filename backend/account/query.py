@@ -17,9 +17,7 @@ def get_or_create_user(payload: dict) -> User:
             google_id=payload["sub"],
             email=payload["email"] if payload.get("email") else "No Email Found",
             image_url=payload["picture"] if payload.get("picture") else None,
-            first_name=payload["given_name"]
-            if payload.get("given_name")
-            else "No First Name Found",
+            first_name=payload["given_name"] if payload.get("given_name") else "No First Name Found",
             last_name=payload.get("family_name") if payload.get("family_name") else "",
         )
 

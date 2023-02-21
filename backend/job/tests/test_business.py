@@ -149,9 +149,7 @@ class GetMinimumJobsTests(TransactionTestCase):
 
         min_jobs_response = business.get_minimum_jobs(user.id)
 
-        self.assertEqual(
-            json.dumps(list(min_jobs)), json.dumps(list(min_jobs_response))
-        )
+        self.assertEqual(json.dumps(list(min_jobs)), json.dumps(list(min_jobs_response)))
 
 
 class GetJobByIdTests(TransactionTestCase):

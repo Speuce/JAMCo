@@ -18,9 +18,7 @@ class CreateUserTests(TestCase):
 class UpdateUserTests(TestCase):
     def test_update_user_valid_birthday(self):
         user, created = business.get_or_create_user({"sub": "4"})
-        business.update_user(
-            payload={"id": user.id, "birthday": "2023-02-12T16:31:00.000Z"}
-        )
+        business.update_user(payload={"id": user.id, "birthday": "2023-02-12T16:31:00.000Z"})
         updated_user, created = business.get_or_create_user({"sub": "4"})
         self.assertEqual(updated_user.birthday, datetime.date(2023, 2, 12))
 

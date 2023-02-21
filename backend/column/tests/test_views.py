@@ -109,9 +109,7 @@ class UpdateColumnsTests(TestCase):
             json.dumps(
                 {
                     "user_id": -1,
-                    "payload": [
-                        {"id": columns[0].id, "name": "THE column", "column_number": 0}
-                    ],
+                    "payload": [{"id": columns[0].id, "name": "THE column", "column_number": 0}],
                 }
             ),
             content_type="application/json",

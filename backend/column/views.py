@@ -25,9 +25,7 @@ def get_columns(request: HttpRequest):
     try:
         columns = business.get_columns(user_id)
 
-        return JsonResponse(
-            status=200, data={"columns": [column.to_dict() for column in columns]}
-        )
+        return JsonResponse(status=200, data={"columns": [column.to_dict() for column in columns]})
     except Exception as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
@@ -48,8 +46,6 @@ def update_columns(request: HttpRequest):
 
     try:
         columns = business.update_columns(user_id, payload)
-        return JsonResponse(
-            status=200, data={"columns": [column.to_dict() for column in columns]}
-        )
+        return JsonResponse(status=200, data={"columns": [column.to_dict() for column in columns]})
     except Exception as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})

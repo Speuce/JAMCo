@@ -98,9 +98,7 @@ class UpdateJobTests(TransactionTestCase):
         )
 
         jquery.update_job({"id": job.id, "description": "Manage things and stuff"})
-        self.assertEqual(
-            jquery.get_job_by_id(user.id, job.id).description, "Manage things and stuff"
-        )
+        self.assertEqual(jquery.get_job_by_id(user.id, job.id).description, "Manage things and stuff")
 
     def test_invalid_update_job(self):
         # first create a user and a column

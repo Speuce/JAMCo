@@ -43,9 +43,7 @@ urlpatterns = [
         column_views.update_columns,
         name="update_columns",
     ),
-    path(
-        "job/api/get_minimum_jobs", job_views.get_minimum_jobs, name="get_minimum_jobs"
-    ),
+    path("job/api/get_minimum_jobs", job_views.get_minimum_jobs, name="get_minimum_jobs"),
     path("job/api/get_job_by_id", job_views.get_job_by_id, name="get_job_by_id"),
     path("job/api/create_job", job_views.create_job, name="create_job"),
     path("job/api/update_job", job_views.update_job, name="update_job"),

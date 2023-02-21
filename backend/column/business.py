@@ -50,9 +50,7 @@ def update_columns(user_id: int, payload: list[dict]) -> list[KanbanColumn]:
         column_id = column_spec["id"]
         if column_id not in existing_columns:
             # Create a new column
-            query.create_column(
-                user_id, column_spec["name"], column_spec["column_number"]
-            )
+            query.create_column(user_id, column_spec["name"], column_spec["column_number"])
         else:
             # Rename
             existing_columns[column_id].name = column_spec["name"]
