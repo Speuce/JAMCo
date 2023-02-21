@@ -61,3 +61,17 @@ def delete_column(user_id: int, column_number: int):
 def delete_columns(ids: list[int]):
     for column_id in ids:
         KanbanColumn.objects.filter(id=column_id).delete()
+
+
+def add_friend(user1_id, user2_id):
+    user1 = User.objects.get(id=user1_id)
+    user2 = User.objects.get(id=user2_id)
+
+    user1.friends.add(user2)
+
+
+def remove_friend(user1_id, user2_id):
+    user1 = User.objects.get(id=user1_id)
+    user2 = User.objects.get(id=user2_id)
+
+    user1.friends.remove(user2)

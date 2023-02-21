@@ -357,3 +357,11 @@ class UpdateColumnsTests(TestCase):
                     },
                 ],
             )
+
+
+class FriendTests(TestCase):
+    def test_invalid_add_friend(self):
+        # The only thing the business layer does for this is verify that the users are different, so that's all we're
+        # testing for here
+        with self.assertRaises(ValueError):
+            business.add_friend(0, 0)

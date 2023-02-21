@@ -531,3 +531,113 @@ class AccountTestCase(TestCase):
             **self.header,
         )
         self.assertEqual(response.status_code, 401)
+
+
+class FriendTests(TestCase):
+    def test_add_friend(self):
+        user1 = query.get_or_create_user({"sub": "4"})
+        user2 = query.get_or_create_user({"sub": "5"})
+
+        response = self.client.post(
+            reverse("add_friend"),
+            json.dumps({"user1_id": user1.id, "user2_id": user2.id}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        # Adding the friend again doesn't cause any problems (it's idempotent)
+        response = self.client.post(
+            reverse("add_friend"),
+            json.dumps({"user1_id": user1.id, "user2_id": user2.id}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_invalid_add_friend(self):
+        user = query.get_or_create_user({"sub": "4"})
+
+        # Test user 1 not existing, user 2 not existing, and both users not existing
+        response = self.client.post(
+            reverse("add_friend"),
+            json.dumps({"user1_id": user.id, "user2_id": -1}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+        response = self.client.post(
+            reverse("add_friend"),
+            json.dumps({"user1_id": -1, "user2_id": user.id}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+        response = self.client.post(
+            reverse("add_friend"),
+            json.dumps({"user1_id": -1, "user2_id": -1}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+
+        # A user shouldn't be able to befriend themselves
+        response = self.client.post(
+            reverse("add_friend"),
+            json.dumps({"user1_id": user.id, "user2_id": user.id}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+
+
+    def test_remove_friend(self):
+        user1 = query.get_or_create_user({"sub": "4"})
+        user2 = query.get_or_create_user({"sub": "5"})
+
+        self.client.post(
+            reverse("remove_friend"),
+            json.dumps({"user1_id": user1.id, "user2_id": user2.id}),
+            content_type="application/json"
+        )
+        response = self.client.post(
+            reverse("remove_friend"),
+            json.dumps({"user1_id": user1.id, "user2_id": user2.id}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        # Removing the friend again is idempotent too
+        response = self.client.post(
+            reverse("remove_friend"),
+            json.dumps({"user1_id": user1.id, "user2_id": user2.id}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_invalid_remove_friend(self):
+        user = query.get_or_create_user({"sub": "4"})
+
+        # Test user 1 not existing, user 2 not existing, and both users not existing
+        response = self.client.post(
+            reverse("remove_friend"),
+            json.dumps({"user1_id": user.id, "user2_id": -1}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+        response = self.client.post(
+            reverse("remove_friend"),
+            json.dumps({"user1_id": -1, "user2_id": user.id}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+        response = self.client.post(
+            reverse("remove_friend"),
+            json.dumps({"user1_id": -1, "user2_id": -1}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+
+        # I guess there's nothing stopping a user from removing friends with themselves, since that method is defined
+        # such that it doesn't doesn't do anything if the user(s) involved are already not friends
+        response = self.client.post(
+            reverse("remove_friend"),
+            json.dumps({"user1_id": user.id, "user2_id": user.id}),
+            content_type="application/json"
+        )
+
+        self.assertEqual(response.status_code, 200)
