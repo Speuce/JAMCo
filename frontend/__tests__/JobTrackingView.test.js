@@ -90,11 +90,30 @@ describe('JobTrackingView', () => {
     expect(wrapper.vm.colList).toEqual([{ id: 8 }, { id: 2 }, { id: 1 }])
   })
 
-  it('posts a request to get_job_by_id when job detail opened', async () => {
+  it('doesnt post a request to get_job_by_id when job detail opened with complete job', async () => {
     await wrapper.vm.showDetailModal(testJobs[1])
 
-    expect(postRequest).toHaveBeenCalledWith('job/api/get_job_by_id', {
+    expect(postRequest).not.toHaveBeenCalledWith('job/api/get_job_by_id', {
       job_id: testJobs[1].id,
+      user_id: mockuser.id,
+    })
+
+    expect(wrapper.vm.selectedJob).toEqual(testJobs[1])
+    expect(wrapper.vm.detailModalVisible).toBe(true)
+  })
+
+  it('posts a request to get_job_by_id when job detail opened with minimal job', async () => {
+    let minimalJob = {
+      id: 10,
+      company: 'Wework',
+      type: 'Backend',
+      position: 'Software Engineer I',
+      kcolumn_id: 1,
+    }
+    await wrapper.vm.showDetailModal(minimalJob)
+
+    expect(postRequest).toHaveBeenCalledWith('job/api/get_job_by_id', {
+      job_id: minimalJob.id,
       user_id: mockuser.id,
     })
 
@@ -113,6 +132,7 @@ describe('JobTrackingView', () => {
       kcolumn_id: 8,
     })
     expect(wrapper.vm.jobsByColumn[8]).toEqual([
+      { id: 0, kcolumn_id: 8 },
       {
         id: 12,
         company: 'Minisoft',
@@ -124,7 +144,6 @@ describe('JobTrackingView', () => {
         description: 'Description',
         notes: 'Test',
       },
-      { id: 0, kcolumn_id: 8 },
     ])
   })
 
