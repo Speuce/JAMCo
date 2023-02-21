@@ -8,7 +8,7 @@
           </v-icon>
         </v-btn>
       </v-col>
-      <v-col cols="12" sm="8">
+      <v-col cols="10" sm="8">
         <v-text-field
           v-model="columnModel.name"
           @change="updateColumn"
@@ -20,7 +20,7 @@
           maxlength="30"
         />
       </v-col>
-      <v-col cols="12" sm="2">
+      <v-col cols="1" sm="2">
         <v-btn
           @click="this.$emit('deleteColumn', columnModel.id)"
           size="medium"

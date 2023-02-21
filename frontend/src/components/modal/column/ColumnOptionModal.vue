@@ -1,24 +1,25 @@
 <template>
   <v-row>
-    <v-dialog v-model="dialog" class="dialog" @close="close">
+    <v-dialog v-model="dialog" class="dialog" @close="closeClicked">
       <v-card class="card">
-        <v-row class="left-pad">
-          <v-col cols="12" sm="8">
+        <v-row class="left-pad mt-2 mx-2">
+          <div>
             <h2>Customize Columns</h2>
             <small>Drag and Drop Columns to Change Order</small>
-          </v-col>
-          <v-col cols="12" sm="4">
+          </div>
+          <v-spacer />
+          <div>
             <v-btn
               @click="addColumn"
               color="primary"
-              variant="contained"
               size="large"
               class="pt-2"
+              variant="text"
             >
               <v-icon left>mdi-plus</v-icon>
               Add
             </v-btn>
-          </v-col>
+          </div>
         </v-row>
         <v-row>
           <v-col cols="12" sm="10">
