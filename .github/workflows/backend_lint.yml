@@ -25,6 +25,7 @@ jobs:
           path: "backend"
   black-format:
     runs-on: ubuntu-latest
+    name: Format
     steps:
       - uses: actions/checkout@v3
       - uses: psf/black@stable
