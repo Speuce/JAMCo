@@ -3,12 +3,10 @@ Job views
 
 API-layer for job related operations.
 """
-import json
 import logging
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_POST
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.serializers import serialize
 from jamco.helper import read_request
 from . import business
 
@@ -30,7 +28,7 @@ def get_minimum_jobs(request: HttpRequest):
 
     try:
         jobs = list(business.get_minimum_jobs(user_id))
-        return JsonResponse(status=200, data={'jobs': jobs})
+        return JsonResponse(status=200, data={"jobs": jobs})
     except Exception as err_msg:
         logger.error(err_msg)
         return JsonResponse(status=400, data={"error": repr(err_msg)})

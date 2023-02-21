@@ -4,7 +4,6 @@ from account import query, models
 
 
 class GetOrCreateUserTests(TestCase):
-
     def test_create_and_get_account(self):
         # 'sub' is the field name from google tokens
         query.get_or_create_user({"sub": "4"})
@@ -19,7 +18,6 @@ class GetOrCreateUserTests(TestCase):
 
 
 class UserExistsTests(TestCase):
-
     def test_user_exists(self):
         self.assertFalse(query.user_exists("4"))
         query.get_or_create_user({"sub": "4"})
@@ -27,7 +25,6 @@ class UserExistsTests(TestCase):
 
 
 class UpdateAccountTests(TestCase):
-
     def test_update_account(self):
         # Create an account first # 'sub' is the field name from google tokens
         user = query.get_or_create_user({"sub": "4"})
@@ -36,10 +33,7 @@ class UpdateAccountTests(TestCase):
         query.update_user({"id": user.id, "first_name": "Rob"})
 
         # The modifications should hold
-        self.assertEqual(
-            query.get_or_create_user({
-                "sub": "4"
-            }).first_name, "Rob")
+        self.assertEqual(query.get_or_create_user({"sub": "4"}).first_name, "Rob")
 
     def test_invalid_update_account(self):
         # Create an account first # 'sub' is the field name from google tokens
@@ -52,17 +46,13 @@ class UpdateAccountTests(TestCase):
         # Update the "user"
         # User doesn't exist
         with self.assertRaises(ValueError):
-            query.update_user({
-                "id": "41 6D 6F 6E 67 20 55 73",
-                "first_name": "Rob"
-            })
+            query.update_user({"id": "41 6D 6F 6E 67 20 55 73", "first_name": "Rob"})
         # User not specified
         with self.assertRaises(ObjectDoesNotExist):
             query.update_user({"first_name": "Rob"})
 
 
 class CreateColumnTests(TestCase):
-
     def test_create_column(self):
         user = query.get_or_create_user({"sub": "4"})
         new_column = query.create_column(user.id, "New column", 0)
@@ -88,7 +78,6 @@ class CreateColumnTests(TestCase):
 
 
 class GetColumnsTests(TestCase):
-
     def test_get_columns(self):
         user = query.get_or_create_user({"sub": "4"})
         query.create_column(user.id, "New column", 0)
@@ -110,10 +99,9 @@ class GetColumnsTests(TestCase):
 
 
 class DeleteColumnsTests(TestCase):
-
     def test_delete_column(self):
         user = query.get_or_create_user({"sub": "4"})
-        column1 = query.create_column(user.id, "New column", 0)
+        query.create_column(user.id, "New column", 0)
         query.create_column(user.id, "Newester column", 1)
 
         query.delete_column(user.id, 0)

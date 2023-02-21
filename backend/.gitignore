@@ -1,4 +1,6 @@
 env-ignore/
+jamco/__pycache__/
+.coverage
 *.DS_STORE
 */dist/*
 *.log

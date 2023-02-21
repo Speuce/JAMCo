@@ -1,6 +1,5 @@
 import json
 from django.test import TransactionTestCase
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from job import business, query
 from account import query as account_query
 from job import models
@@ -149,9 +148,7 @@ class GetMinimumJobsTests(TransactionTestCase):
 
         min_jobs_response = business.get_minimum_jobs(user.id)
 
-        self.assertEqual(
-            json.dumps(list(min_jobs)), json.dumps(list(min_jobs_response))
-        )
+        self.assertEqual(json.dumps(list(min_jobs)), json.dumps(list(min_jobs_response)))
 
 
 class GetJobByIdTests(TransactionTestCase):

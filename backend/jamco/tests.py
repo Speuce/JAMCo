@@ -5,7 +5,6 @@ from django.test import TestCase
 
 
 class FooTest(TestCase):
-
     def test_index_view(self):
         # Create an instance of the request factory
         request_factory = RequestFactory()

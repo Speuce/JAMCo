@@ -1,8 +1,8 @@
 import logging
-from django.test import TestCase, TransactionTestCase
+from django.test import TransactionTestCase
 from django.core.exceptions import ObjectDoesNotExist
 from job import query as jquery, models as jmodels
-from account import query as aquery, models as amodels
+from account import query as aquery
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ class GetOrCreateJobTests(TransactionTestCase):
         new_column = aquery.create_column(user.id, "New column", 0)
 
         # test creating and getting a job for that user in that column
-        new_job = jquery.create_job(
+        jquery.create_job(
             {
                 "kcolumn_id": new_column.id,
                 "user_id": user.id,
@@ -97,9 +97,7 @@ class UpdateJobTests(TransactionTestCase):
         )
 
         jquery.update_job({"id": job.id, "description": "Manage things and stuff"})
-        self.assertEqual(
-            jquery.get_job_by_id(user.id, job.id).description, "Manage things and stuff"
-        )
+        self.assertEqual(jquery.get_job_by_id(user.id, job.id).description, "Manage things and stuff")
 
     def test_invalid_update_job(self):
         # first create a user and a column
@@ -189,7 +187,7 @@ class DeleteJobTests(TransactionTestCase):
         column = aquery.create_column(user.id, "New column", 0)
 
         # test creating and getting a job for that user in that column
-        job = jquery.create_job(
+        jquery.create_job(
             {
                 "kcolumn_id": column.id,
                 "user_id": user.id,

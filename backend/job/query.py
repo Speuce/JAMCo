@@ -6,7 +6,8 @@ Query functions for job related operations.
 import logging
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.query import QuerySet
-from .models import *
+from account.models import User, KanbanColumn
+from job.models import Job
 
 logger = logging.getLogger(__name__)
 
@@ -58,17 +59,13 @@ def update_job(payload: dict) -> None:
 def get_job_by_id(in_user: int, job_id: int) -> Job:
     try:
         return Job.objects.get(id=job_id, user__id=in_user)
-    except:
+    except ObjectDoesNotExist:
         raise ObjectDoesNotExist("Job with that User does not exist")
 
 
 def get_minimum_jobs(in_user: int) -> QuerySet:
     # return {id, column, position, company, type} for all user_id user's jobs
-    return (
-        Job.objects.all()
-        .filter(user__id=in_user)
-        .values("id", "kcolumn", "position_title", "company", "type")
-    )
+    return Job.objects.all().filter(user__id=in_user).values("id", "kcolumn", "position_title", "company", "type")
 
 
 def delete_job(in_user: int, job_id: int):

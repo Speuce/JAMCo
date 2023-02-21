@@ -2,10 +2,9 @@ import logging
 import json
 from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
-from account import business, models, query
+from account import business, query
 from unittest import mock
 from django.http.cookie import SimpleCookie
-from django.core.exceptions import ObjectDoesNotExist
 
 logger = logging.getLogger(__name__)
 
@@ -213,9 +212,7 @@ class UpdateColumnsTests(TestCase):
             json.dumps(
                 {
                     "user_id": -1,
-                    "payload": [
-                        {"id": columns[0].id, "name": "THE column", "column_number": 0}
-                    ],
+                    "payload": [{"id": columns[0].id, "name": "THE column", "column_number": 0}],
                 }
             ),
             content_type="application/json",
@@ -487,7 +484,7 @@ class AccountTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 401)
 
-        ## No CSRF in Cookie
+        # No CSRF in Cookie
         self.client.cookies = SimpleCookie({"not_a_csrftoken": "not_the_droid"})
         self.header = {
             "ACCEPT": "application/json",
@@ -502,7 +499,7 @@ class AccountTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 401)
 
-        ## No CSRF in Header
+        # No CSRF in Header
         self.client.cookies = SimpleCookie({"csrftoken": "valid_csrf_token"})
         self.header = {
             "ACCEPT": "application/json",
@@ -517,7 +514,7 @@ class AccountTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 401)
 
-        ## CSRFs do not match
+        # CSRFs do not match
         self.client.cookies = SimpleCookie({"csrftoken": "one_csrf_token"})
         self.header = {
             "ACCEPT": "application/json",
