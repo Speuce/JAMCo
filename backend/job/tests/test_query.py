@@ -1,4 +1,4 @@
-from django.test import TransactionTestCase
+from django.test import TestCase
 from django.core.exceptions import ObjectDoesNotExist
 from job import query, models
 from job.tests.factories import JobFactory
@@ -6,7 +6,7 @@ from account.tests.factories import UserFactory
 from column.tests.factories import KanbanColumnFactory
 
 
-class GetOrCreateJobTests(TransactionTestCase):
+class GetOrCreateJobTests(TestCase):
     def test_create_and_get_job(self):
         # first create a user and a column
         user = UserFactory(google_id=4)
@@ -47,13 +47,13 @@ class GetOrCreateJobTests(TransactionTestCase):
             query.get_job_by_id(999, 999)
 
 
-class JobExistsTests(TransactionTestCase):
+class JobExistsTests(TestCase):
     def test_job_exists(self):
         job = JobFactory()
         self.assertTrue(query.job_exists(job.id))
 
 
-class UpdateJobTests(TransactionTestCase):
+class UpdateJobTests(TestCase):
     def test_update_job(self):
         job = JobFactory()
         query.update_job({"id": job.id, "description": "Manage things and stuff"})
@@ -70,7 +70,7 @@ class UpdateJobTests(TransactionTestCase):
             query.update_job({"id": -1, "description": "Manage things and stuff"})
 
 
-class GetAllJobsTests(TransactionTestCase):
+class GetAllJobsTests(TestCase):
     def test_get_minimum_jobs(self):
         job_one = JobFactory()
         job_two = JobFactory(user=job_one.user)
@@ -84,7 +84,7 @@ class GetAllJobsTests(TransactionTestCase):
             self.assertIn(currJob["id"], jobs)
 
 
-class DeleteJobTests(TransactionTestCase):
+class DeleteJobTests(TestCase):
     def test_job_deletion(self):
         # create job
         mocked_job = JobFactory()
