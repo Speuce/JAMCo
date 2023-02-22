@@ -157,9 +157,11 @@ class UpdateColumnsTests(TestCase):
         col2 = KanbanColumnFactory(user=user, column_number=1)
         col3 = KanbanColumnFactory(user=user, column_number=2)
 
-        all = KanbanColumn.objects.all()
-        all.filter(id=col2.id).delete()
-        mock_get_columns.return_value = all
+        mock_get_columns.side_effect = [
+            KanbanColumn.objects.all(),
+            KanbanColumn.objects.exclude(id=col2.id),
+            KanbanColumn.objects.exclude(id=col2.id),
+        ]
 
         result_columns = business.update_columns(
             user.id,
@@ -173,6 +175,28 @@ class UpdateColumnsTests(TestCase):
         self.assertEqual(result_columns[0].id, col1.id)
         self.assertEqual(result_columns[1].id, col3.id)
         self.assertEqual(len(query.get_columns(user.id)), 2)
+
+    def test_create(self, mock_create_column, mock_delete_column, mock_get_columns):
+        user = UserFactory()
+
+        col1 = KanbanColumnFactory(user=user, column_number=0)
+
+        mock_get_columns.side_effect = [
+            KanbanColumn.objects.none(),
+            KanbanColumn.objects.all(),
+            KanbanColumn.objects.all(),
+        ]
+
+        result_columns = business.update_columns(
+            user.id,
+            [
+                {"id": col1.id, "name": "New column", "column_number": 0},
+            ],
+        )
+
+        # Since column 1 was absent from the update request, it should be gone
+        self.assertEqual(result_columns[0].id, col1.id)
+        self.assertEqual(len(query.get_columns(user.id)), 1)
 
     def test_nonexistent_user(self, mock_create_column, mock_delete_column, mock_get_columns):
         mock_get_columns.side_effect = ObjectDoesNotExist("Nonexistant User")
