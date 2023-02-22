@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "account",
     "job",
+    "column",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

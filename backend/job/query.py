@@ -6,7 +6,8 @@ Query functions for job related operations.
 import logging
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.query import QuerySet
-from account.models import User, KanbanColumn
+from account.models import User
+from column.models import KanbanColumn
 from job.models import Job
 
 logger = logging.getLogger(__name__)

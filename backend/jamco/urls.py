@@ -19,6 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from account import views as account_views
+from column import views as column_views
 from job import views as job_views
 from .views import index
 
@@ -36,10 +37,10 @@ urlpatterns = [
         account_views.update_account,
         name="update_account",
     ),
-    path("account/api/get_columns", account_views.get_columns, name="get_columns"),
+    path("column/api/get_columns", column_views.get_columns, name="get_columns"),
     path(
-        "account/api/update_columns",
-        account_views.update_columns,
+        "column/api/update_columns",
+        column_views.update_columns,
         name="update_columns",
     ),
     path("job/api/get_minimum_jobs", job_views.get_minimum_jobs, name="get_minimum_jobs"),

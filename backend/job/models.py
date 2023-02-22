@@ -1,5 +1,6 @@
 from django.db import models
-from account.models import KanbanColumn, User
+from account.models import User
+from column.models import KanbanColumn
 
 
 class Job(models.Model):
