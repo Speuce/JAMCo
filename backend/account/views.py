@@ -43,6 +43,7 @@ def get_or_create_account(request: HttpRequest):
         logger.debug(f"Credential Validated for User.google_id: { idinfo['sub'] }")
 
         user, created = business.get_or_create_user(idinfo)
+        logger.debug(f"Created user: {user.to_dict()}")
         return JsonResponse({"data": user.to_dict(), "created": created})
 
     except ValueError as err_msg:
