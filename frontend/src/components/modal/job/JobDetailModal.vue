@@ -244,17 +244,10 @@ export default {
       })
     },
     sortDeadlines() {
-      deadlines.value = deadlines.value.sort(function customSorter(a, b) {
-        // custom sort function
-        var aDate = new Date(a.date)
-        var bDate = new Date(b.date)
-        if (aDate.valueOf() < bDate.valueOf()) {
-          return -1
-        }
-        if (aDate.valueOf() > bDate.valueOf()) {
-          return 1
-        }
-        return a.title.localeCompare(b.title) // then they are equal
+      deadlines.value = deadlines.value.sort((a, b) => {
+        return (
+          new Date(a.date) - new Date(b.date) || a.title.localeCompare(b.title)
+        )
       })
     },
     saveClicked() {
