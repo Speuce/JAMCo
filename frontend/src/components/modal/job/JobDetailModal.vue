@@ -244,19 +244,17 @@ export default {
       })
     },
     sortDeadlines() {
-      deadlines.value = deadlines.value.sort({
-        deadlinesort(a, b) {
-          // custom sort function
-          var aDate = new Date(a.date)
-          var bDate = new Date(b.date)
-          if (aDate.valueOf() < bDate.valueOf()) {
-            return -1
-          }
-          if (aDate.valueOf() > bDate.valueOf()) {
-            return 1
-          }
-          return 0 // then they are equal
-        },
+      deadlines.value = deadlines.value.sort(function customSorter(a, b) {
+        // custom sort function
+        var aDate = new Date(a.date)
+        var bDate = new Date(b.date)
+        if (aDate.valueOf() < bDate.valueOf()) {
+          return -1
+        }
+        if (aDate.valueOf() > bDate.valueOf()) {
+          return 1
+        }
+        return 0 // then they are equal
       })
     },
     saveClicked() {
