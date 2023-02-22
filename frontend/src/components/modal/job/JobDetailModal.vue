@@ -254,7 +254,7 @@ export default {
         if (aDate.valueOf() > bDate.valueOf()) {
           return 1
         }
-        return 0 // then they are equal
+        return a.title.localeCompare(b.title) // then they are equal
       })
     },
     saveClicked() {

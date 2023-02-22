@@ -207,6 +207,7 @@ describe('JobDetailModal', () => {
     wrapper.vm.newDeadline()
     wrapper.vm.newDeadline()
     wrapper.vm.newDeadline()
+    wrapper.vm.newDeadline()
     wrapper.vm.handleDeadlineUpdate({
       id: 0,
       title: 'Latest',
@@ -216,6 +217,11 @@ describe('JobDetailModal', () => {
       id: 1,
       title: 'Earliest',
       date: '2022-01-01',
+    })
+    wrapper.vm.handleDeadlineUpdate({
+      id: 3,
+      title: 'Middle-copy',
+      date: '2022-03-03',
     })
     wrapper.vm.handleDeadlineUpdate({
       id: 2,
@@ -232,6 +238,11 @@ describe('JobDetailModal', () => {
       {
         id: 2,
         title: 'Middle',
+        date: '2022-03-03',
+      },
+      {
+        id: 3,
+        title: 'Middle-copy',
         date: '2022-03-03',
       },
       {
