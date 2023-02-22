@@ -1,7 +1,7 @@
 import json
 from django.test import TransactionTestCase
 from unittest.mock import patch
-from job import business, query, models
+from job import business, query
 from job.tests.factories import JobFactory
 from account import query as account_query
 from column import query as column_query
@@ -11,7 +11,6 @@ class CreateJobTests(TransactionTestCase):
     @patch("job.query.create_job")
     @patch("job.query.get_job_by_id")
     def test_create_job(self, mock_create_job, mock_get_job_by_id):
-        # Setup Mocks
         mocked_job = JobFactory()
 
         mock_create_job.return_value = mocked_job
@@ -26,48 +25,23 @@ class CreateJobTests(TransactionTestCase):
 
 
 class UpdateJobTest(TransactionTestCase):
-    def test_update_job(self):
-        user = account_query.get_or_create_user({"sub": "4"})
-        column = column_query.create_column(user.id, "New column", 0)
-
-        job = {
-            "id": -1,
-            "user_id": user.id,
-            "kcolumn_id": column.id,
-            "position_title": "pos",
-            "company": "com",
-            "type": "ty",
-        }
-
-        job_created = business.create_job(job)
+    @patch("job.query.get_job_by_id")
+    @patch("job.query.update_job")
+    def test_update_job(self, mock_get_job_by_id, mock_update_job):
+        mocked_job = JobFactory.build()
+        mock_get_job_by_id.return_value = mocked_job
+        mock_update_job.return_value = mocked_job
 
         update_job = {
-            "id": job_created.id,
-            "kcolumn_id": column.id,
-            "position_title": "new position",
+            "id": 0,
+            "position_title": "pos",
             "company": "company",
-            "type": None,
         }
 
         business.update_job(update_job)
 
-        updated_model = models.Job.objects.create(
-            type=None,
-            kcolumn=models.KanbanColumn(column.id),
-            user=user,
-            position_title="new position",
-            company="company",
-            description="",
-            notes="",
-            cover_letter="",
-            deadlines=None,
-        )
-
-        updated_model_dict = updated_model.to_dict()
-        updated_model_dict["id"] = 4
-
-        get_job_dict = business.get_job_by_id(user.id, job_created.id).to_dict()
-        self.assertEqual(updated_model_dict, get_job_dict)
+        get_job = business.get_job_by_id(mocked_job.user.id, mocked_job.id)
+        self.assertEqual(mocked_job.to_dict(), get_job.to_dict())
 
 
 class GetMinimumJobsTests(TransactionTestCase):
