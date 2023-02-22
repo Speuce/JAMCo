@@ -1,8 +1,8 @@
 import { mount } from '@vue/test-utils'
 import { expect, describe, it, afterEach } from 'vitest'
-import AccountSetupModal from '../src/components/modal/setup/AccountSetupModal.vue'
+import UserInfoModal from '../src/components/modal/user/UserInfoModal.vue'
 
-describe('AccountSetupModal', () => {
+describe('UserInfoModal', () => {
   let wrapper
   const user = {
     id: 12,
@@ -17,7 +17,7 @@ describe('AccountSetupModal', () => {
   }
 
   function mountModal(userProp) {
-    wrapper = mount(AccountSetupModal, {
+    wrapper = mount(UserInfoModal, {
       props: {
         user: userProp,
       },
@@ -47,69 +47,69 @@ describe('AccountSetupModal', () => {
     })
   })
 
-  it('displays error when first name is empty & sign up is pressed', () => {
+  it('displays error when first name is empty & saveChanges is pressed', () => {
     expect(wrapper.vm.firstNameEmpty).toBe(false)
 
     let testJob = { ...user }
     testJob.first_name = null
     mountModal(testJob)
 
-    wrapper.vm.signUpClicked()
+    wrapper.vm.saveChanges()
 
     expect(wrapper.vm.firstNameEmpty).toBe(true)
   })
 
-  it('displays error when last name is empty & sign up is pressed', () => {
+  it('displays error when last name is empty & saveChanges is pressed', () => {
     expect(wrapper.vm.lastNameEmpty).toBe(false)
 
     let testJob = { ...user }
     testJob.last_name = null
     mountModal(testJob)
 
-    wrapper.vm.signUpClicked()
+    wrapper.vm.saveChanges()
 
     expect(wrapper.vm.lastNameEmpty).toBe(true)
   })
 
-  it('displays error when email is empty & sign up is pressed', () => {
+  it('displays error when email is empty & saveChanges is pressed', () => {
     expect(wrapper.vm.emailEmpty).toBe(false)
 
     let testJob = { ...user }
     testJob.email = null
     mountModal(testJob)
 
-    wrapper.vm.signUpClicked()
+    wrapper.vm.saveChanges()
 
     expect(wrapper.vm.emailEmpty).toBe(true)
   })
 
-  it('displays error when country is empty & sign up is pressed', () => {
+  it('displays error when country is empty & saveChanges is pressed', () => {
     expect(wrapper.vm.countryEmpty).toBe(false)
 
     let testJob = { ...user }
     testJob.country = null
     mountModal(testJob)
 
-    wrapper.vm.signUpClicked()
+    wrapper.vm.saveChanges()
 
     expect(wrapper.vm.countryEmpty).toBe(true)
   })
 
-  it('displays error when workField is empty & sign up is pressed', () => {
+  it('displays error when workField is empty & saveChanges is pressed', () => {
     expect(wrapper.vm.workFieldEmpty).toBe(false)
 
     let testJob = { ...user }
     testJob.field_of_work = null
     mountModal(testJob)
 
-    wrapper.vm.signUpClicked()
+    wrapper.vm.saveChanges()
 
     expect(wrapper.vm.workFieldEmpty).toBe(true)
   })
 
-  it('emits updateUser when sign up clicked', () => {
+  it('emits updateUser when saveChanges clicked', () => {
     mountModal(user)
-    wrapper.vm.signUpClicked()
+    wrapper.vm.saveChanges()
 
     expect(wrapper.emitted('updateUser')).toBeTruthy()
     expect(wrapper.emitted().updateUser[0][0]).toEqual({

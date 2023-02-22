@@ -12,7 +12,7 @@
       </v-col>
       <v-col class="py-0">
         <div class="text-end">
-          <v-btn color="primary" flat @click="settingsVisible = true">
+          <v-btn color="primary" flat @click="userInfoModalVisible = true">
             <v-icon size="x-large">mdi-cog</v-icon>
           </v-btn>
         </div>
@@ -24,6 +24,12 @@
         v-if="setupModalVisible"
         @updateUser="updateUserAccount"
         :user="this.userData"
+      />
+      <UserInfoModal
+        v-if="userInfoModalVisible"
+        @updateUser="updateUserAccount"
+        :user="this.userData"
+        @close="userInfoModalVisible = false"
       />
       <Suspense>
         <JobTrackingView
@@ -40,6 +46,7 @@
 import LoginModal from '@/components/modal/login/LoginModal.vue'
 import JobTrackingView from './JobTrackingView.vue'
 import AccountSetupModal from '../components/modal/setup/AccountSetupModal.vue'
+import UserInfoModal from '../components/modal/user/UserInfoModal.vue'
 import { postRequest } from '@/helpers/requests.js'
 
 export default {
@@ -47,13 +54,13 @@ export default {
     LoginModal,
     JobTrackingView,
     AccountSetupModal,
+    UserInfoModal,
   },
   data() {
     return {
       userData: null,
       setupModalVisible: false,
-      // TODO show settings modal
-      settingsVisible: false,
+      userInfoModalVisible: false,
       // TODO grab user data from cookie
     }
   },
@@ -69,6 +76,7 @@ export default {
       await postRequest('account/api/update_account', userData)
       this.userData = userData
       this.setupModalVisible = false
+      this.userInfoModalVisible = false
     },
   },
 }
