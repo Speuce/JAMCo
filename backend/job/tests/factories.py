@@ -14,8 +14,3 @@ class JobFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     position_title = "Position"
     company = "Company"
-    description = None
-    notes = None
-    cover_letter = None
-    deadlines = None
-    type = None
