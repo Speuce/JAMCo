@@ -13,9 +13,3 @@ class UserFactory(factory.django.DjangoModelFactory):
     username = factory.Faker("domain_word")
     email = factory.Faker("ascii_safe_email")
     google_id = factory.Faker("localized_ean8")
-    image_url = None
-    country = None
-    region = None
-    city = None
-    birthday = None
-    field_of_work = None
