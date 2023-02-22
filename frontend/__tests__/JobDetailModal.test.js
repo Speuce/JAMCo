@@ -252,4 +252,37 @@ describe('JobDetailModal', () => {
       },
     ])
   })
+  it('updates a deadline in a sorted list', () => {
+    mountModal(job)
+    wrapper.vm.newDeadline()
+    wrapper.vm.newDeadline()
+    wrapper.vm.handleDeadlineUpdate({
+      id: 0,
+      title: 'Latest',
+      date: '2022-05-05',
+    })
+    wrapper.vm.handleDeadlineUpdate({
+      id: 1,
+      title: 'Earliest',
+      date: '2022-01-01',
+    })
+    wrapper.vm.saveClicked()
+    wrapper.vm.handleDeadlineUpdate({
+      id: 1,
+      title: 'Earliest-edited',
+      date: '2022-01-01',
+    })
+    expect(wrapper.vm.deadlines).toEqual([
+      {
+        id: 1,
+        title: 'Earliest-edited',
+        date: '2022-01-01',
+      },
+      {
+        id: 0,
+        title: 'Latest',
+        date: '2022-05-05',
+      },
+    ])
+  })
 })
