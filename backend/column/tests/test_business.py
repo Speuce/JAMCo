@@ -4,6 +4,10 @@ from account.query import get_or_create_user
 from column import query, business
 
 
+class CreateDefaultColumnsTests(TestCase):
+    pass
+
+
 class GetColumnsTests(TestCase):
     def test_get_columns(self):
         # Using the query function for creating a user means that we don't have

@@ -1,14 +1,11 @@
-import logging
 import json
 from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
-from unittest import mock
+from unittest.mock import patch
 from django.http.cookie import SimpleCookie
+from account.tests.factories import UserFactory
 
-logger = logging.getLogger(__name__)
 
-
-@mock.patch("google.oauth2.id_token.verify_oauth2_token")
 class GetOrCreateAccountTests(TransactionTestCase):
     reset_sequences = True
 
@@ -19,42 +16,31 @@ class GetOrCreateAccountTests(TransactionTestCase):
             "HTTP_X-CSRFToken": "valid_csrf_token",
         }
 
-    def test_create_account(self, mock_verify_oauth2_token):
+    @patch("google.oauth2.id_token.verify_oauth2_token")
+    @patch("account.business.get_or_create_user")
+    def test_create_account(self, mock_get_or_create_user, mock_verify_oauth2_token):
+        mocked_user = UserFactory()
+        mock_get_or_create_user.return_value = mocked_user, True
+
         mock_verify_oauth2_token.return_value = {
-            "sub": "unique_user_id",
-            "given_name": "firstname",
-            "email": "useremail",
+            "sub": mocked_user.google_id,
+            "given_name": mocked_user.first_name,
+            "email": mocked_user.email,
         }
+
         response = self.client.post(
             reverse("get_or_create_account"),
             json.dumps({"credential": "whatever", "client_id": "8675309"}),
             content_type="application/json",
             **self.header,
         )
+
         self.assertEqual(response.status_code, 200)
-        # The query should return the User object. Since a mock is used,
-        # the id is as given
-        self.assertEqual(
-            json.loads(response.content)["data"],
-            {
-                "id": 1,
-                "google_id": "unique_user_id",
-                "username": 0,
-                "image_url": None,
-                "last_name": "",
-                "birthday": None,
-                "city": None,
-                "country": None,
-                "region": None,
-                "email": "useremail",
-                "field_of_work": None,
-                "first_name": "firstname",
-                "last_login": None,
-            },
-        )
+
+        self.assertEqual(json.loads(response.content)["data"], mocked_user.to_dict())
 
 
-@mock.patch("google.oauth2.id_token.verify_oauth2_token")
+@patch("account.business.update_user")
 class UpdateAccountTests(TestCase):
     def setUp(self):
         self.client.cookies = SimpleCookie({"csrftoken": "valid_csrf_token"})
@@ -63,53 +49,33 @@ class UpdateAccountTests(TestCase):
             "HTTP_X-CSRFToken": "valid_csrf_token",
         }
 
-    def test_update_account(self, mock_verify_oauth2_token):
-        mock_verify_oauth2_token.return_value = {
-            "sub": "unique_user_id",
-            "given_name": "firstname",
-            "email": "useremail",
-        }
-        # Create an account first
-        user_resp = self.client.post(
-            reverse("get_or_create_account"),
-            json.dumps({"credential": "whatever", "client_id": "8675309"}),
-            content_type="application/json",
-            **self.header,
-        )
+    def test_update_account(self, mock_update_user):
+        user = UserFactory()
 
         # Try updating it, the request should succeed
         response = self.client.post(
             reverse("update_account"),
-            json.dumps({"id": user_resp.json()["data"]["id"], "first_name": "Rob"}),
+            json.dumps({"id": user.id, "first_name": "Rob"}),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
+        mock_update_user.assert_called_with({"id": user.id, "first_name": "Rob"})
 
-    def test_invalid_account_update(self, mock_verify_oauth2_token):
-        mock_verify_oauth2_token.return_value = {
-            "sub": "unique_user_id",
-            "given_name": "firstname",
-            "email": "useremail",
-        }
-        # Create an account first
-        response = self.client.post(
-            reverse("get_or_create_account"),
-            json.dumps({"credential": "unique_user_id", "client_id": "8675309"}),
-            content_type="application/json",
-            **self.header,
-        )
-        self.assertEqual(response.status_code, 200)
+    def test_invalid_account_update(self, mock_update_user):
+        user = UserFactory()
+        mock_update_user.side_effect = AttributeError("User has no attribute " + "favourite_prof")
 
         # Should fail if the given fields don't exist
         response = self.client.post(
             reverse("update_account"),
-            json.dumps({"google_id": "unique_user_id", "favourite_prof": "Rob"}),
+            json.dumps({"google_id": user.google_id, "favourite_prof": "Rob"}),
             content_type="application/json",
         )
+        mock_update_user.assert_called_with({"google_id": user.google_id, "favourite_prof": "Rob"})
         self.assertEqual(response.status_code, 400)
 
 
-@mock.patch("google.oauth2.id_token.verify_oauth2_token")
+@patch("account.business.get_or_create_user")
 class AccountTestCase(TestCase):
     def setUp(self):
         self.client.cookies = SimpleCookie({"csrftoken": "valid_csrf_token"})
@@ -118,7 +84,7 @@ class AccountTestCase(TestCase):
             "HTTP_X-CSRFToken": "valid_csrf_token",
         }
 
-    def test_invalid_oauth_properties(self, mock_verify_oauth2_token):
+    def test_invalid_oauth_properties(self, mock_get_or_create_user):
         # Try to create a user when providing an incorrect id
         response = self.client.post(
             reverse("get_or_create_account"),
@@ -127,6 +93,7 @@ class AccountTestCase(TestCase):
             **self.header,
         )
         self.assertEqual(response.status_code, 401)
+        mock_get_or_create_user.assert_not_called()
 
         # No CSRF in Cookie
         self.client.cookies = SimpleCookie({"not_a_csrftoken": "not_the_droid"})
@@ -142,6 +109,7 @@ class AccountTestCase(TestCase):
             **self.header,
         )
         self.assertEqual(response.status_code, 401)
+        mock_get_or_create_user.assert_not_called()
 
         # No CSRF in Header
         self.client.cookies = SimpleCookie({"csrftoken": "valid_csrf_token"})
@@ -157,6 +125,7 @@ class AccountTestCase(TestCase):
             **self.header,
         )
         self.assertEqual(response.status_code, 401)
+        mock_get_or_create_user.assert_not_called()
 
         # CSRFs do not match
         self.client.cookies = SimpleCookie({"csrftoken": "one_csrf_token"})
@@ -172,3 +141,4 @@ class AccountTestCase(TestCase):
             **self.header,
         )
         self.assertEqual(response.status_code, 401)
+        mock_get_or_create_user.assert_not_called()
