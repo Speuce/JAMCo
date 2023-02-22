@@ -201,4 +201,44 @@ describe('JobDetailModal', () => {
       { id: 2, title: '', date: '' },
     ])
   })
+
+  it('sorts deadlines in list by date', () => {
+    mountModal(job)
+    wrapper.vm.newDeadline()
+    wrapper.vm.newDeadline()
+    wrapper.vm.newDeadline()
+    wrapper.vm.handleDeadlineUpdate({
+      id: 0,
+      title: 'Latest',
+      date: '2022-05-05',
+    })
+    wrapper.vm.handleDeadlineUpdate({
+      id: 1,
+      title: 'Earliest',
+      date: '2022-01-01',
+    })
+    wrapper.vm.handleDeadlineUpdate({
+      id: 2,
+      title: 'Middle',
+      date: '2022-03-03',
+    })
+    wrapper.vm.saveClicked()
+    expect(wrapper.vm.deadlines).toEqual([
+      {
+        id: 1,
+        title: 'Earliest',
+        date: '2022-01-01',
+      },
+      {
+        id: 2,
+        title: 'Middle',
+        date: '2022-03-03',
+      },
+      {
+        id: 0,
+        title: 'Latest',
+        date: '2022-05-05',
+      },
+    ])
+  })
 })
