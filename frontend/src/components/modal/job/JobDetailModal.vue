@@ -243,6 +243,13 @@ export default {
         }
       })
     },
+    sortDeadlines() {
+      deadlines.value = deadlines.value.sort((a, b) => {
+        return (
+          new Date(a.date) - new Date(b.date) || a.title.localeCompare(b.title)
+        )
+      })
+    },
     saveClicked() {
       this.positionErrorIndicator = null
       this.companyErrorIndicator = null
@@ -256,6 +263,7 @@ export default {
         this.jobData.position_title.length > 0 &&
         this.jobData.company.length > 0
       ) {
+        this.sortDeadlines()
         this.positionErrorIndicator = null
         this.companyErrorIndicator = null
         this.deadlineError = false
