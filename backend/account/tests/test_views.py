@@ -40,7 +40,7 @@ class GetOrCreateAccountTests(TransactionTestCase):
                 "id": 1,
                 "google_id": "unique_user_id",
                 "username": 0,
-                "image_url": "localhost:8000/static/logo-compact.png",
+                "image_url": "https://imgur.com/a/NGYJVzJ",
                 "last_name": "",
                 "birthday": None,
                 "city": None,
