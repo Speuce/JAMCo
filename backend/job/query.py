@@ -30,9 +30,7 @@ def create_job(payload: dict) -> Job:
         description=payload["description"] if payload.get("description") else "",
         notes=payload["notes"] if payload.get("notes") else "",
         cover_letter=payload["cover_letter"] if payload.get("cover_letter") else "",
-        deadlines=payload["deadlines"]
-        if payload.get("deadlines")
-        else None,  # I want an empty json.dumps([]) here but causes issues
+        deadlines=payload["deadlines"] if payload.get("deadlines") else None,
     )
     logger.debug(f"Created Job: {job.to_dict()}")
     return job
