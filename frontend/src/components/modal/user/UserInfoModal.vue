@@ -212,7 +212,8 @@ export default {
       workFieldEmpty: false,
       emailEmpty: false,
       editingEnabled: false,
-      userData: props.user,
+      userData: { ...props.user },
+      initialData: { ...props.user },
     }
   },
   computed: {
@@ -260,7 +261,7 @@ export default {
       }
     },
     safeClose() {
-      this.userData = this.props.user
+      this.userData = { ...this.initialData }
       this.$emit('close')
     },
   },
