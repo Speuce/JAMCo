@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils'
 import { expect, describe, it, afterEach } from 'vitest'
 import AccountSetupModal from '../src/components/modal/setup/AccountSetupModal.vue'
 
-describe('JobDetailModal', () => {
+describe('AccountSetupModal', () => {
   let wrapper
   const user = {
     id: 12,

@@ -1,10 +1,5 @@
 env-ignore/
-backend/jamco/__pycache__/
-backend/.coverage
 *.DS_STORE
 */dist/*
 *.log
 */tmp/*
-
-backend/.coverage
-backend/.vscode/settings.json

@@ -1,14 +1,44 @@
 <template>
-  <div class="page-container">
-    <LoginModal v-if="!userData" @signin="userSignedIn" />
-    <AccountSetupModal
-      v-if="setupModalVisible"
-      @updateUser="updateUserAccount"
-      :user="this.userData"
-    />
-    <Suspense>
-      <JobTrackingView v-if="this.userData" :user="this.userData" />
-    </Suspense>
+  <div style="height: 100vh" class="d-flex flex-column">
+    <v-row class="align-center headerbar ma-0 flex-grow-0">
+      <v-col class="py-0"></v-col>
+      <v-col class="py-0">
+        <v-img
+          class="mx-auto"
+          src="/static/logo-long.png"
+          width="80"
+          height="80"
+        ></v-img>
+      </v-col>
+      <v-col class="py-0">
+        <div class="text-end">
+          <v-btn color="primary" flat @click="userInfoModalVisible = true">
+            <v-icon size="x-large">mdi-cog</v-icon>
+          </v-btn>
+        </div>
+      </v-col>
+    </v-row>
+    <div class="page-container flex-grow-1">
+      <LoginModal v-if="!userData" @signin="userSignedIn" />
+      <AccountSetupModal
+        v-if="setupModalVisible"
+        @updateUser="updateUserAccount"
+        :user="this.userData"
+      />
+      <UserInfoModal
+        v-if="userInfoModalVisible"
+        @updateUser="updateUserAccount"
+        :user="this.userData"
+        @close="userInfoModalVisible = false"
+      />
+      <Suspense>
+        <JobTrackingView
+          v-if="this.userData"
+          :user="this.userData"
+          style="height: 100%"
+        />
+      </Suspense>
+    </div>
   </div>
 </template>
 
@@ -16,6 +46,7 @@
 import LoginModal from '@/components/modal/login/LoginModal.vue'
 import JobTrackingView from './JobTrackingView.vue'
 import AccountSetupModal from '../components/modal/setup/AccountSetupModal.vue'
+import UserInfoModal from '../components/modal/user/UserInfoModal.vue'
 import { postRequest } from '@/helpers/requests.js'
 
 export default {
@@ -23,11 +54,13 @@ export default {
     LoginModal,
     JobTrackingView,
     AccountSetupModal,
+    UserInfoModal,
   },
   data() {
     return {
       userData: null,
       setupModalVisible: false,
+      userInfoModalVisible: false,
       // TODO grab user data from cookie
     }
   },
@@ -43,6 +76,7 @@ export default {
       await postRequest('account/api/update_account', userData)
       this.userData = userData
       this.setupModalVisible = false
+      this.userInfoModalVisible = false
     },
   },
 }
@@ -50,9 +84,12 @@ export default {
 
 <style scoped>
 .page-container {
-  margin: 1rem 2rem 2rem 2rem;
   min-width: 100vw;
-  padding-right: 3.5rem;
-  overflow: auto;
+  overflow-y: hidden;
+}
+
+.headerbar {
+  background-color: var(--vt-c-primary);
+  padding: 5px 20px;
 }
 </style>

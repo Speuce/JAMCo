@@ -14,24 +14,25 @@
       :columns="colList"
       :jobsByColumn="jobsByColumn"
     />
-    <div class="header-container">
-      <h2 class="internal">Your Applications</h2>
-      <div>
-        <v-btn class="internal" @click="showDetailModal()"
-          >Add New Application</v-btn
-        >
-        <v-btn class="settings" @click="showBoardOptionModal()">
-          Board Options
-        </v-btn>
-      </div>
-    </div>
     <div class="kanban">
       <KanbanBoard
         :columns="colList"
         :jobs="jobsByColumn"
         @showDetailModal="showDetailModal"
         @columnChanged="createOrUpdateJob"
+        @showBoardOptionModal="showBoardOptionModal"
       />
+    </div>
+    <div class="floating">
+      <v-btn
+        size="x-large"
+        icon
+        class="internal"
+        @click="showDetailModal()"
+        color="primary"
+      >
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
     </div>
   </div>
 </template>
@@ -77,7 +78,7 @@ export default {
   },
 
   async mounted() {
-    let columnResponse = await postRequest('account/api/get_columns', {
+    let columnResponse = await postRequest('column/api/get_columns', {
       user_id: this.user.id,
     })
 
@@ -124,6 +125,7 @@ export default {
         userJob.user_id = this.activeUser.id
         await postRequest('job/api/create_job', userJob).then((newJob) => {
           isNewJob.value = false
+          // Push New Job To Bottom of Column
           jobsByColumn.value[newJob.job.kcolumn_id].push(newJob.job)
         })
       } else {
@@ -135,12 +137,16 @@ export default {
             ].filter((item) => item.id !== job.id)
           }
         })
-        await postRequest('job/api/update_job', job)
-        jobsByColumn.value[job.kcolumn_id].push(job)
+        await postRequest('job/api/update_job', job).then(() => {
+          jobsByColumn.value[job.kcolumn_id].push(job)
+          jobsByColumn.value[job.kcolumn_id] = jobsByColumn.value[
+            job.kcolumn_id
+          ].sort((a, b) => a.id - b.id)
+        })
       }
     },
     async updateColumns(columns) {
-      await postRequest('account/api/update_columns', {
+      await postRequest('column/api/update_columns', {
         user_id: this.activeUser.id,
         payload: columns,
       }).then((updatedColumns) => {
@@ -158,13 +164,28 @@ export default {
     async showDetailModal(job) {
       if (job) {
         // editing job
-        await postRequest('job/api/get_job_by_id', {
-          user_id: this.activeUser.id,
-          job_id: job.id,
-        }).then((completeJob) => {
-          this.selectedJob = completeJob.job_data
+        if (job.deadlines === undefined) {
+          // only get from backend if job not populated
+          await postRequest('job/api/get_job_by_id', {
+            user_id: this.activeUser.id,
+            job_id: job.id,
+          }).then((completeJob) => {
+            jobsByColumn.value[job.kcolumn_id] = jobsByColumn.value[
+              job.kcolumn_id
+            ].filter((item) => item.id !== job.id)
+            jobsByColumn.value[job.kcolumn_id].push(completeJob.job_data)
+
+            jobsByColumn.value[job.kcolumn_id] = jobsByColumn.value[
+              job.kcolumn_id
+            ].sort((a, b) => a.id - b.id)
+
+            this.selectedJob = completeJob.job_data
+            this.detailModalVisible = true
+          })
+        } else {
+          this.selectedJob = job
           this.detailModalVisible = true
-        })
+        }
       } else {
         // creating new job
         isNewJob.value = true
@@ -201,6 +222,7 @@ export default {
 .kanban {
   overflow-x: auto;
   margin: 0.5rem 0rem;
+  height: 99%;
 }
 h2 {
   color: rgba(74, 85, 104, var(--text-opacity));
@@ -210,11 +232,11 @@ h2 {
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
-.header-container {
-  color: black;
-  display: flex;
-  margin: 1.5rem 1rem 1.5rem 0;
-  justify-content: space-between;
+.floating {
+  position: fixed;
+  bottom: 20px;
+  right: 0px;
+  z-index: 100;
 }
 .internal {
   margin-right: 2rem;
