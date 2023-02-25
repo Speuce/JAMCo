@@ -4,6 +4,7 @@ from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
 from unittest import mock
 from django.http.cookie import SimpleCookie
+from .factories import UserFactory
 
 logger = logging.getLogger(__name__)
 
@@ -177,44 +178,37 @@ class AccountTestCase(TestCase):
 
 class FriendTests(TestCase):
     def test_add_friend(self):
-        user1 = query.get_or_create_user({"sub": "4"})
-        user2 = query.get_or_create_user({"sub": "5"})
+        user1 = UserFactory()
+        user2 = UserFactory()
 
         response = self.client.post(
             reverse("add_friend"),
             json.dumps({"user1_id": user1.id, "user2_id": user2.id}),
-            content_type="application/json"
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
         # Adding the friend again doesn't cause any problems (it's idempotent)
         response = self.client.post(
             reverse("add_friend"),
             json.dumps({"user1_id": user1.id, "user2_id": user2.id}),
-            content_type="application/json"
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
 
-
     def test_invalid_add_friend(self):
-        user = query.get_or_create_user({"sub": "4"})
+        user = UserFactory()
 
         # Test user 1 not existing, user 2 not existing, and both users not existing
         response = self.client.post(
-            reverse("add_friend"),
-            json.dumps({"user1_id": user.id, "user2_id": -1}),
-            content_type="application/json"
+            reverse("add_friend"), json.dumps({"user1_id": user.id, "user2_id": -1}), content_type="application/json"
         )
         self.assertEqual(response.status_code, 400)
         response = self.client.post(
-            reverse("add_friend"),
-            json.dumps({"user1_id": -1, "user2_id": user.id}),
-            content_type="application/json"
+            reverse("add_friend"), json.dumps({"user1_id": -1, "user2_id": user.id}), content_type="application/json"
         )
         self.assertEqual(response.status_code, 400)
         response = self.client.post(
-            reverse("add_friend"),
-            json.dumps({"user1_id": -1, "user2_id": -1}),
-            content_type="application/json"
+            reverse("add_friend"), json.dumps({"user1_id": -1, "user2_id": -1}), content_type="application/json"
         )
         self.assertEqual(response.status_code, 400)
 
@@ -222,55 +216,47 @@ class FriendTests(TestCase):
         response = self.client.post(
             reverse("add_friend"),
             json.dumps({"user1_id": user.id, "user2_id": user.id}),
-            content_type="application/json"
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
 
-
     def test_remove_friend(self):
-        user1 = query.get_or_create_user({"sub": "4"})
-        user2 = query.get_or_create_user({"sub": "5"})
+        user1 = UserFactory()
+        user2 = UserFactory()
 
         self.client.post(
             reverse("remove_friend"),
             json.dumps({"user1_id": user1.id, "user2_id": user2.id}),
-            content_type="application/json"
+            content_type="application/json",
         )
         response = self.client.post(
             reverse("remove_friend"),
             json.dumps({"user1_id": user1.id, "user2_id": user2.id}),
-            content_type="application/json"
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
         # Removing the friend again is idempotent too
         response = self.client.post(
             reverse("remove_friend"),
             json.dumps({"user1_id": user1.id, "user2_id": user2.id}),
-            content_type="application/json"
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
 
-
     def test_invalid_remove_friend(self):
-        user = query.get_or_create_user({"sub": "4"})
+        user = UserFactory()
 
         # Test user 1 not existing, user 2 not existing, and both users not existing
         response = self.client.post(
-            reverse("remove_friend"),
-            json.dumps({"user1_id": user.id, "user2_id": -1}),
-            content_type="application/json"
+            reverse("remove_friend"), json.dumps({"user1_id": user.id, "user2_id": -1}), content_type="application/json"
         )
         self.assertEqual(response.status_code, 400)
         response = self.client.post(
-            reverse("remove_friend"),
-            json.dumps({"user1_id": -1, "user2_id": user.id}),
-            content_type="application/json"
+            reverse("remove_friend"), json.dumps({"user1_id": -1, "user2_id": user.id}), content_type="application/json"
         )
         self.assertEqual(response.status_code, 400)
         response = self.client.post(
-            reverse("remove_friend"),
-            json.dumps({"user1_id": -1, "user2_id": -1}),
-            content_type="application/json"
+            reverse("remove_friend"), json.dumps({"user1_id": -1, "user2_id": -1}), content_type="application/json"
         )
         self.assertEqual(response.status_code, 400)
 
@@ -279,7 +265,6 @@ class FriendTests(TestCase):
         response = self.client.post(
             reverse("remove_friend"),
             json.dumps({"user1_id": user.id, "user2_id": user.id}),
-            content_type="application/json"
+            content_type="application/json",
         )
-
         self.assertEqual(response.status_code, 200)
