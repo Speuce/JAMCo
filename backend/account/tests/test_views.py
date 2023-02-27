@@ -1,5 +1,6 @@
 import logging
 import json
+from unittest.mock import patch
 from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
 from unittest import mock
@@ -177,7 +178,8 @@ class AccountTestCase(TestCase):
 
 
 class FriendTests(TestCase):
-    def test_add_friend(self):
+    @patch("account.business.add_friend")
+    def test_add_friend(self, mock_add_friend):
         user1 = UserFactory()
         user2 = UserFactory()
 
@@ -187,6 +189,7 @@ class FriendTests(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
+        mock_add_friend.assert_called()
         # Adding the friend again doesn't cause any problems (it's idempotent)
         response = self.client.post(
             reverse("add_friend"),
@@ -194,47 +197,36 @@ class FriendTests(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
+        mock_add_friend.assert_called()
 
-    def test_invalid_add_friend(self):
-        user = UserFactory()
+    @patch("account.business.add_friend")
+    def test_invalid_add_friend(self, mock_add_friend):
+        # All error handling is performed in the business and query layers, so this just checks that exceptions lead to
+        # 400 errors
+        def mock_add_friend_implementation(id1, id2):
+            raise ValueError
 
-        # Test user 1 not existing, user 2 not existing, and both users not existing
-        response = self.client.post(
-            reverse("add_friend"), json.dumps({"user1_id": user.id, "user2_id": -1}), content_type="application/json"
-        )
-        self.assertEqual(response.status_code, 400)
-        response = self.client.post(
-            reverse("add_friend"), json.dumps({"user1_id": -1, "user2_id": user.id}), content_type="application/json"
-        )
-        self.assertEqual(response.status_code, 400)
+        mock_add_friend.side_effect = mock_add_friend_implementation
+
         response = self.client.post(
             reverse("add_friend"), json.dumps({"user1_id": -1, "user2_id": -1}), content_type="application/json"
         )
         self.assertEqual(response.status_code, 400)
+        mock_add_friend.assert_called()
 
-        # A user shouldn't be able to befriend themselves
-        response = self.client.post(
-            reverse("add_friend"),
-            json.dumps({"user1_id": user.id, "user2_id": user.id}),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, 400)
-
-    def test_remove_friend(self):
+    @patch("account.business.remove_friend")
+    def test_remove_friend(self, mock_remove_friend):
         user1 = UserFactory()
         user2 = UserFactory()
 
-        self.client.post(
-            reverse("remove_friend"),
-            json.dumps({"user1_id": user1.id, "user2_id": user2.id}),
-            content_type="application/json",
-        )
         response = self.client.post(
             reverse("remove_friend"),
             json.dumps({"user1_id": user1.id, "user2_id": user2.id}),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
+        mock_remove_friend.assert_called()
+
         # Removing the friend again is idempotent too
         response = self.client.post(
             reverse("remove_friend"),
@@ -242,29 +234,18 @@ class FriendTests(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
+        mock_remove_friend.assert_called()
 
-    def test_invalid_remove_friend(self):
-        user = UserFactory()
+    @patch("account.business.remove_friend")
+    def test_invalid_remove_friend(self, mock_remove_friend):
+        # Like test_invalid_add_friend, we're just making sure exceptions lead to errors
+        def mock_remove_friend_implementation(id1, id2):
+            raise ValueError
 
-        # Test user 1 not existing, user 2 not existing, and both users not existing
-        response = self.client.post(
-            reverse("remove_friend"), json.dumps({"user1_id": user.id, "user2_id": -1}), content_type="application/json"
-        )
-        self.assertEqual(response.status_code, 400)
-        response = self.client.post(
-            reverse("remove_friend"), json.dumps({"user1_id": -1, "user2_id": user.id}), content_type="application/json"
-        )
-        self.assertEqual(response.status_code, 400)
+        mock_remove_friend.side_effect = mock_remove_friend_implementation
+
         response = self.client.post(
             reverse("remove_friend"), json.dumps({"user1_id": -1, "user2_id": -1}), content_type="application/json"
         )
         self.assertEqual(response.status_code, 400)
-
-        # I guess there's nothing stopping a user from removing friends with themselves, since that method is defined
-        # such that it doesn't doesn't do anything if the user(s) involved are already not friends
-        response = self.client.post(
-            reverse("remove_friend"),
-            json.dumps({"user1_id": user.id, "user2_id": user.id}),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, 200)
+        mock_remove_friend.assert_called()
