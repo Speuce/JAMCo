@@ -1,4 +1,5 @@
 import datetime
+from unittest.mock import patch
 from django.test import TestCase
 from account import business
 from column.business import get_columns
@@ -28,9 +29,14 @@ class UpdateUserTests(TestCase):
             business.update_user(payload={"id": user.id, "birthday": "2023-02"})
 
 
+@patch("account.query.add_friend")
 class FriendTests(TestCase):
-    def test_invalid_add_friend(self):
+    def test_invalid_add_friend(self, mock_add_friend):
         # The only thing the business layer does for this is verify that the users are different, so that's all we're
         # testing for here
         with self.assertRaises(ValueError):
             business.add_friend(0, 0)
+
+        # The query layer handles verifying that the users exist, so here we only care that it calls the query function
+        business.add_friend(0, 1)
+        mock_add_friend.assert_called()
