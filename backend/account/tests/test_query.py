@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.core.exceptions import ObjectDoesNotExist
 from account import query, models
+from .factories import UserFactory
 
 
 class GetOrCreateUserTests(TestCase):
@@ -54,8 +55,8 @@ class UpdateAccountTests(TestCase):
 
 class FriendTests(TestCase):
     def test_add_friend(self):
-        user1 = query.get_or_create_user({"sub": "4"})
-        user2 = query.get_or_create_user({"sub": "4"})
+        user1 = UserFactory()
+        user2 = UserFactory()
 
         query.add_friend(user1.id, user2.id)
 
@@ -73,7 +74,7 @@ class FriendTests(TestCase):
         self.assertEqual(user2.friends.count(), user2_num_friends)
 
     def test_invalid_add_friend(self):
-        user = query.get_or_create_user({"sub": "4"})
+        user = UserFactory()
 
         # Test user 1 not existing, user 2 not existing, and both users not existing
         with self.assertRaises(ObjectDoesNotExist):
@@ -84,8 +85,8 @@ class FriendTests(TestCase):
             query.add_friend(-1, -1)
 
     def test_remove_friend(self):
-        user1 = query.get_or_create_user({"sub": "4"})
-        user2 = query.get_or_create_user({"sub": "4"})
+        user1 = UserFactory()
+        user2 = UserFactory()
 
         query.add_friend(user1.id, user2.id)
         # Make sure they were friends beforehand
@@ -111,7 +112,7 @@ class FriendTests(TestCase):
         self.assertEqual(user2.friends.count(), user2_num_friends)
 
     def test_invalid_remove_friend(self):
-        user = query.get_or_create_user({"sub": "4"})
+        user = UserFactory()
 
         # Test user 1 not existing, user 2 not existing, and both users not existing
         with self.assertRaises(ObjectDoesNotExist):
