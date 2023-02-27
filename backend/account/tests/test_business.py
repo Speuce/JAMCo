@@ -29,8 +29,8 @@ class UpdateUserTests(TestCase):
             business.update_user(payload={"id": user.id, "birthday": "2023-02"})
 
 
-@patch("account.query.add_friend")
 class FriendTests(TestCase):
+    @patch("account.query.add_friend")
     def test_invalid_add_friend(self, mock_add_friend):
         # The only thing the business layer does for this is verify that the users are different, so that's all we're
         # testing for here
@@ -40,3 +40,10 @@ class FriendTests(TestCase):
         # The query layer handles verifying that the users exist, so here we only care that it calls the query function
         business.add_friend(0, 1)
         mock_add_friend.assert_called()
+
+    @patch("account.query.remove_friend")
+    def test_invalid_remove_friend(self, mock_remove_friend):
+        # I guess there's nothing stopping a user from removing friends with themselves, since that method is defined
+        # such that it doesn't doesn't do anything if the user(s) involved are already not friends
+        business.remove_friend(0, 0)
+        mock_remove_friend.assert_called()
