@@ -51,6 +51,8 @@ jobs:
     
   integration_test:
     needs: build_and_test
+    runs-on: ubuntu-latest
+    steps:
     - name: Run Integration Tests
       run: |
         python manage.py test tests/integration/
