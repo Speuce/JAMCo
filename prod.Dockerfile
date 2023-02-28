@@ -4,7 +4,7 @@ COPY ./frontend ./frontend
 WORKDIR /frontend
 RUN npm install -g npm
 RUN npm install
-RUN npx vite build
+RUN npx vite build --base /static/dist/
 
 # build the backend (actually used in production)
 FROM python:3.11-alpine3.17
