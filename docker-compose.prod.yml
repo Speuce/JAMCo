@@ -1,0 +1,14 @@
+version: '1.0'
+services:
+  prod:
+    build:
+      context: .
+      dockerfile: prod.Dockerfile
+    command: ./docker-entrypoint.sh
+    ports:
+      - "8000:8000"
+    environment:
+      POSTGRES_NAME: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_HOST: db
