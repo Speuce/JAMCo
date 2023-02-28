@@ -33,6 +33,9 @@ jobs:
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
+  integration_test:
+    needs: build_and_test
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -45,6 +48,6 @@ jobs:
         pip install -r requirements.txt
     - name: Run migrations
       run: python manage.py migrate
-    - name: Run Tests
+    - name: Run Integration Tests
       run: |
-        python manage.py test
+        python manage.py test tests/integration/
