@@ -8,7 +8,6 @@ on:
 
 jobs:
   build_and_test:
-
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -49,3 +48,10 @@ jobs:
     - name: Run Tests
       run: |
         python manage.py test
+    
+  integration_test:
+    needs: build_and_test
+    steps:
+    - name: Run Integration Tests
+      run: |
+        python manage.py test tests/integration/
