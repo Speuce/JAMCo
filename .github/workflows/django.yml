@@ -51,7 +51,6 @@ jobs:
     
   integration_test:
     needs: build_and_test
-    steps:
     - name: Run Integration Tests
       run: |
         python manage.py test tests/integration/
