@@ -3,3 +3,4 @@ env-ignore/
 */dist/*
 *.log
 */tmp/*
+*/static/*
