@@ -1,5 +1,5 @@
 ## Tickets
-Closes [Ticket]
+Closes #XYZ
 ## Summary Of Changes
 
 ## Notes for Reviewers
