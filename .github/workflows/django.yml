@@ -51,6 +51,8 @@ jobs:
     
   integration_test:
     needs: build_and_test
+    runs-on: ubuntu-latest
+    steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
@@ -62,8 +64,6 @@ jobs:
         pip install -r requirements.txt
     - name: Run migrations
       run: python manage.py migrate
-    runs-on: ubuntu-latest
-    steps:
     - name: Run Integration Tests
       run: |
         python manage.py test tests/integration/
