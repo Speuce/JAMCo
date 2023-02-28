@@ -1,0 +1,15 @@
+// Dockerrun.aws.json
+
+{
+    "AWSEBDockerrunVersion": "1",
+    "Image": {
+        "Name": "speuce/jamco:prod",
+        "Update": "true"
+    },
+    "Ports": [
+        {
+            "ContainerPort": "8000"
+        }
+    ],
+    "Logging": "/backend/debug.log"
+}
