@@ -22,11 +22,38 @@ describe('MainView', () => {
     expect(wrapper.vm.setupModalVisible).toEqual(true)
   })
 
-  it('doesnt open setupModal when created is false', () => {
+  it('doesnt open setupModal when created is false and required fields are filled', () => {
     const wrapper = shallowMount(MainView)
-    const resp = { data: { id: -1 }, created: false }
+    const resp = {
+      data: {
+        id: -1,
+        first_name: 'Spongeboy',
+        last_name: 'Brownpants',
+        country: 'Pacific Ocean',
+        field_of_work: 'Fry Cook',
+        email: 'bob@krab.com',
+      },
+      created: false,
+    }
     wrapper.vm.userSignedIn(resp)
     expect(wrapper.vm.setupModalVisible).toEqual(false)
+  })
+
+  it('opens setupModal when created is false and a required field is not filled', () => {
+    const wrapper = shallowMount(MainView)
+    const resp = {
+      // no email present
+      data: {
+        id: -1,
+        first_name: 'Spongeboy',
+        last_name: 'Brownpants',
+        country: 'Pacific Ocean',
+        field_of_work: 'Fry Cook',
+      },
+      created: false,
+    }
+    wrapper.vm.userSignedIn(resp)
+    expect(wrapper.vm.setupModalVisible).toEqual(true)
   })
 
   it('posts userData to update_account, closes setupModal on updateUserAccount call', async () => {
