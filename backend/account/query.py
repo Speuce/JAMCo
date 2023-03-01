@@ -40,3 +40,17 @@ def update_user(payload: dict):
     # isn't raised. That is, we'll only save changes if the entire payload is
     # error-free.
     user.save()
+
+
+def add_friend(user1_id, user2_id):
+    user1 = User.objects.get(id=user1_id)
+    user2 = User.objects.get(id=user2_id)
+
+    user1.friends.add(user2)
+
+
+def remove_friend(user1_id, user2_id):
+    user1 = User.objects.get(id=user1_id)
+    user2 = User.objects.get(id=user2_id)
+
+    user1.friends.remove(user2)
