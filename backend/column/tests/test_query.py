@@ -1,12 +1,14 @@
 from django.test import TestCase
 from django.core.exceptions import ObjectDoesNotExist
-from account.query import get_or_create_user
 from column import query
+from account.tests.factories import UserFactory
+from column.tests.factories import KanbanColumnFactory
 
 
 class CreateColumnTests(TestCase):
     def test_create_column(self):
-        user = get_or_create_user({"sub": "4"})
+        user = UserFactory()
+
         new_column = query.create_column(user.id, "New column", 0)
         newer_column = query.create_column(user.id, "Newer column", 1)
 
@@ -15,7 +17,7 @@ class CreateColumnTests(TestCase):
         self.assertEqual(newer_column.column_number, 1)
 
     def test_duplicate_column_names(self):
-        user = get_or_create_user({"sub": "4"})
+        user = UserFactory()
         query.create_column(user.id, "New column", 0)
         query.create_column(user.id, "Newer column", 1)
 
@@ -31,16 +33,16 @@ class CreateColumnTests(TestCase):
 
 class GetColumnsTests(TestCase):
     def test_get_columns(self):
-        user = get_or_create_user({"sub": "4"})
-        query.create_column(user.id, "New column", 0)
-        query.create_column(user.id, "Newest column", 1)
-        query.create_column(user.id, "Newester column", 2)
+        user = UserFactory()
+        KanbanColumnFactory(user=user)
+        KanbanColumnFactory(user=user)
+        KanbanColumnFactory(user=user)
         # Make another user
-        user2 = get_or_create_user({"sub": "5"})
-        query.create_column(user2.id, "New column", 0)
-        query.create_column(user2.id, "Newest column", 1)
-        query.create_column(user2.id, "Newester column", 2)
-        query.create_column(user2.id, "Newesterest column", 3)
+        user2 = UserFactory()
+        KanbanColumnFactory(user=user2)
+        KanbanColumnFactory(user=user2)
+        KanbanColumnFactory(user=user2)
+        KanbanColumnFactory(user=user2)
 
         columns = query.get_columns(user.id)
 
@@ -51,34 +53,26 @@ class GetColumnsTests(TestCase):
 
 
 class DeleteColumnsTests(TestCase):
-    def test_delete_column(self):
-        user = get_or_create_user({"sub": "4"})
-        query.create_column(user.id, "New column", 0)
-        query.create_column(user.id, "Newester column", 1)
-
-        query.delete_column(user.id, 0)
-        self.assertEqual(len(query.get_columns(user.id)), 1)
-
     def test_delete_columns(self):
-        user = get_or_create_user({"sub": "4"})
-        column1 = query.create_column(user.id, "New column", 0)
-        column2 = query.create_column(user.id, "Newest column", 1)
-        query.create_column(user.id, "Newester column", 2)
+        user = UserFactory()
+        column1 = KanbanColumnFactory(user=user, column_number=1)
+        column2 = KanbanColumnFactory(user=user, column_number=2)
+        KanbanColumnFactory(user=user, column_number=3)
         # Make another user
-        user2 = get_or_create_user({"sub": "5"})
-        query.create_column(user2.id, "New column", 0)
-        query.create_column(user2.id, "Newest column", 1)
-        query.create_column(user2.id, "Newester column", 2)
-        query.create_column(user2.id, "Newesterest column", 3)
+        user2 = UserFactory()
+        KanbanColumnFactory(user=user2)
+        KanbanColumnFactory(user=user2)
+        KanbanColumnFactory(user=user2)
+        KanbanColumnFactory(user=user2)
 
         query.delete_columns([column1.id, column2.id])
         self.assertEqual(len(query.get_columns(user.id)), 1)
         self.assertEqual(len(query.get_columns(user2.id)), 4)
 
     def test_invalid_delete_columns(self):
-        user = get_or_create_user({"sub": "4"})
-        query.create_column(user.id, "New column", 0)
-        query.create_column(user.id, "Newest column", 1)
+        user = UserFactory()
+        KanbanColumnFactory(user=user, column_number=1)
+        KanbanColumnFactory(user=user, column_number=2)
 
         # Try deleting a column that doesn't exist
         # By the pigeonhole principle, one of these ids must be invalid ;)

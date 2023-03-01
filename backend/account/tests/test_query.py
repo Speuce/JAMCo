@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.exceptions import ObjectDoesNotExist
 from account import query, models
-from .factories import UserFactory
+from account.tests.factories import UserFactory
 
 
 class GetOrCreateUserTests(TestCase):
@@ -28,17 +28,18 @@ class UserExistsTests(TestCase):
 class UpdateAccountTests(TestCase):
     def test_update_account(self):
         # Create an account first # 'sub' is the field name from google tokens
-        user = query.get_or_create_user({"sub": "4"})
+        user = UserFactory()
 
         # Update the user
         query.update_user({"id": user.id, "first_name": "Rob"})
 
         # The modifications should hold
-        self.assertEqual(query.get_or_create_user({"sub": "4"}).first_name, "Rob")
+        # Unable to properly mock this access without making test trivial
+        self.assertEqual(query.get_or_create_user({"sub": user.google_id}).first_name, "Rob")
 
     def test_invalid_update_account(self):
         # Create an account first # 'sub' is the field name from google tokens
-        user = query.get_or_create_user({"sub": "4"})
+        user = UserFactory()
 
         # "Update" the user
         with self.assertRaises(AttributeError):

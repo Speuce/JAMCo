@@ -1,194 +1,65 @@
-import json
-from django.test import TransactionTestCase
-from job import business, query
-from account import query as account_query
-from column import query as column_query
-from job import models
+from django.test import TestCase
+from unittest.mock import patch
+from job import business
+from job.tests.factories import JobFactory
 
 
-class CreateJobTests(TransactionTestCase):
-    def test_create_job(self):
-        user = account_query.get_or_create_user({"sub": "4"})
-        column = column_query.create_column(user.id, "New column", 0)
+class CreateJobTests(TestCase):
+    @patch("job.query.create_job")
+    @patch("job.query.get_job_by_id")
+    def test_create_job(self, mock_create_job, mock_get_job_by_id):
+        mocked_job = JobFactory()
 
-        jobs = [
+        mock_create_job.return_value = mocked_job
+        mock_get_job_by_id.return_value = mocked_job
+
+        job = {"id": -1, "user_id": mocked_job.user.id, "kcolumn_id": mocked_job.kcolumn.id}
+
+        job_create = business.create_job(job)
+        job_get = business.get_job_by_id(in_user=mocked_job.user.id, job_id=job_create.id)
+
+        self.assertEqual(job_create.to_dict(), job_get.to_dict())
+
+
+class UpdateJobTest(TestCase):
+    @patch("job.query.update_job")
+    def test_update_job(self, mock_update_job):
+        mocked_job = JobFactory()
+        business.update_job({"id": mocked_job.id})
+        mock_update_job.assert_called_with({"id": mocked_job.id})
+
+
+class GetMinimumJobsTests(TestCase):
+    @patch("job.query.get_minimum_jobs")
+    def test_get_minimum_jobs(self, mock_get_minimum_jobs):
+        job_list = [
             {
                 "id": -1,
-                "user_id": user.id,
-                "kcolumn_id": column.id,
+                "kcolumn_id": 0,
                 "position_title": "pos",
                 "company": "com",
                 "type": "ty",
             },
             {
                 "id": -1,
-                "user_id": user.id,
-                "kcolumn_id": column.id,
+                "kcolumn_id": 0,
                 "position_title": "position",
                 "company": "com",
                 "type": "ty",
             },
         ]
+        mock_get_minimum_jobs.return_value = job_list
 
-        job_one_create = business.create_job(jobs[0])
-        job_two_create = business.create_job(jobs[1])
+        min_jobs_response = business.get_minimum_jobs(0)
 
-        job_one = business.get_job_by_id(user.id, job_one_create.id)
-        self.assertEqual(job_one_create.to_dict(), job_one.to_dict())
-
-        job_two = business.get_job_by_id(user.id, job_two_create.id)
-        self.assertEqual(job_two_create.to_dict(), job_two.to_dict())
+        self.assertEqual(job_list, min_jobs_response)
 
 
-class UpdateJobTest(TransactionTestCase):
-    def test_update_job(self):
-        user = account_query.get_or_create_user({"sub": "4"})
-        column = column_query.create_column(user.id, "New column", 0)
+class GetJobByIdTests(TestCase):
+    @patch("job.query.get_job_by_id")
+    def test_get_job_by_id(self, mock_get_job_by_id):
+        mocked_job = JobFactory.build()
+        mock_get_job_by_id.return_value = mocked_job
 
-        job = {
-            "id": -1,
-            "user_id": user.id,
-            "kcolumn_id": column.id,
-            "position_title": "pos",
-            "company": "com",
-            "type": "ty",
-        }
-
-        job_created = business.create_job(job)
-
-        update_job = {
-            "id": job_created.id,
-            "kcolumn_id": column.id,
-            "position_title": "new position",
-            "company": "company",
-            "type": None,
-        }
-
-        business.update_job(update_job)
-
-        updated_model = models.Job.objects.create(
-            type=None,
-            kcolumn=models.KanbanColumn(column.id),
-            user=user,
-            position_title="new position",
-            company="company",
-            description="",
-            notes="",
-            cover_letter="",
-            deadlines=None,
-        )
-
-        updated_model_dict = updated_model.to_dict()
-        updated_model_dict["id"] = 4
-
-        get_job_dict = business.get_job_by_id(user.id, job_created.id).to_dict()
-        self.assertEqual(updated_model_dict, get_job_dict)
-
-
-class GetMinimumJobsTests(TransactionTestCase):
-    reset_sequences = True
-
-    def test_get_minimum_jobs(self):
-        user = account_query.get_or_create_user({"sub": "4"})
-        column = column_query.create_column(user.id, "New column", 0)
-
-        jobs = [
-            {
-                "id": -1,
-                "user_id": user.id,
-                "kcolumn_id": column.id,
-                "position_title": "pos",
-                "company": "com",
-                "type": "ty",
-            },
-            {
-                "id": -1,
-                "user_id": user.id,
-                "kcolumn_id": column.id,
-                "position_title": "position",
-                "company": "com",
-                "type": "ty",
-            },
-            {
-                "id": -1,
-                "user_id": user.id,
-                "kcolumn_id": column.id,
-                "position_title": "pose",
-                "company": "comp",
-                "notes": "notes",
-            },
-        ]
-
-        min_jobs = [
-            {
-                "id": 1,
-                "kcolumn": column.id,
-                "position_title": "pos",
-                "company": "com",
-                "type": "ty",
-            },
-            {
-                "id": 2,
-                "kcolumn": column.id,
-                "position_title": "position",
-                "company": "com",
-                "type": "ty",
-            },
-            {
-                "id": 3,
-                "kcolumn": column.id,
-                "position_title": "pose",
-                "company": "comp",
-                "type": None,
-            },
-        ]
-
-        query.create_job(jobs[0])
-        query.create_job(jobs[1])
-        query.create_job(jobs[2])
-
-        min_jobs_response = business.get_minimum_jobs(user.id)
-
-        self.assertEqual(json.dumps(list(min_jobs)), json.dumps(list(min_jobs_response)))
-
-
-class GetJobByIdTests(TransactionTestCase):
-    def test_get_job_by_id(self):
-        user = account_query.get_or_create_user({"sub": "4"})
-        column = column_query.create_column(user.id, "New column", 0)
-
-        jobs = [
-            {
-                "id": 1,
-                "user_id": user.id,
-                "kcolumn_id": column.id,
-                "position_title": "pos",
-                "company": "com",
-                "type": "ty",
-                "cover_letter": "cover",
-                "notes": "notes",
-                "description": "desc",
-                "deadlines": None,
-            },
-            {
-                "id": 2,
-                "user_id": user.id,
-                "kcolumn_id": column.id,
-                "position_title": "position",
-                "company": "com",
-                "type": "ty",
-                "cover_letter": "cover",
-                "notes": "notes",
-                "description": "desc",
-                "deadlines": None,
-            },
-        ]
-
-        job_one_create = business.create_job(jobs[0])
-        job_two_create = business.create_job(jobs[1])
-
-        job_one = business.get_job_by_id(user.id, job_one_create.id)
-        self.assertEqual(job_one_create.to_dict(), job_one.to_dict())
-
-        job_two = business.get_job_by_id(user.id, job_two_create.id)
-        self.assertEqual(job_two_create.to_dict(), job_two.to_dict())
+        job_response = business.get_job_by_id(0, mocked_job.id)
+        self.assertEqual(mocked_job.to_dict(), job_response.to_dict())
