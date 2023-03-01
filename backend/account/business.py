@@ -41,4 +41,3 @@ def add_friend(user1_id, user2_id):
 
 def remove_friend(user1_id, user2_id):
     query.remove_friend(user1_id, user2_id)
-

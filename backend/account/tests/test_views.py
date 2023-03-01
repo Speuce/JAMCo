@@ -2,7 +2,6 @@ import json
 from unittest.mock import patch
 from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
-from unittest.mock import patch
 from django.http.cookie import SimpleCookie
 from account.tests.factories import UserFactory
 
