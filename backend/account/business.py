@@ -27,3 +27,14 @@ def update_user(payload: dict) -> None:
         query.update_user(formatted_payload)
     except (IndexError, ValidationError):
         raise AttributeError("Failed to format date: " + payload.get("birthday"))
+
+
+def add_friend(user1_id, user2_id):
+    if user1_id == user2_id:
+        raise ValueError("A user can't befriend themselves")
+    else:
+        query.add_friend(user1_id, user2_id)
+
+
+def remove_friend(user1_id, user2_id):
+    query.remove_friend(user1_id, user2_id)
