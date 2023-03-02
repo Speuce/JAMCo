@@ -51,7 +51,7 @@ import JobTrackingView from './JobTrackingView.vue'
 import AccountSetupModal from '../components/modal/setup/AccountSetupModal.vue'
 import UserInfoModal from '../components/modal/user/UserInfoModal.vue'
 import { postRequest } from '@/helpers/requests.js'
-import { getAuthCookie, setAuthCookie } from '@/helpers/auth-cookie.js'
+import { getAuthToken, setAuthToken } from '@/helpers/auth-cookie.js'
 
 export default {
   components: {
@@ -69,7 +69,7 @@ export default {
     }
   },
   async mounted() {
-    let token = getAuthCookie()
+    let token = getAuthToken()
     if (token) {
       let response = await postRequest('account/api/validate_auth_token', token)
       if (response.user) {
@@ -87,7 +87,7 @@ export default {
         this.setupModalVisible = true
       }
       // TODO: add token field to get_or_create_user
-      setAuthCookie(resp.token)
+      setAuthToken(resp.token)
     },
     setupIncomplete() {
       // check if any req. fields are empty
