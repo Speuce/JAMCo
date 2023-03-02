@@ -1,14 +1,19 @@
-version: '1.0'
+version: '3.0'
 services:
   prod:
     build:
       context: .
       dockerfile: prod.Dockerfile
+    #restart: always
+    #container_name: app-jamco
+    #image: speuce/jamco:prod
     command: ./docker-entrypoint.sh
     ports:
-      - "8000:8000"
+      - "80:8000"
     environment:
-      POSTGRES_NAME: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: admin
-      POSTGRES_HOST: db
+      POSTGRES_NAME: ${RDS_DB_NAME:-postgres}
+      POSTGRES_USER: ${RDS_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${RDS_PASSWORD:-admin}
+      POSTGRES_HOST: ${RDS_HOSTNAME:-db}
+      POSTGRES_PORT: ${RDS_PORT:-5432}
+      PROD: ${PROD:-1}
