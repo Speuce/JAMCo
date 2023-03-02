@@ -19,7 +19,10 @@
       </v-col>
     </v-row>
     <div class="page-container flex-grow-1">
-      <LoginModal v-if="!userData" @signin="userSignedIn" />
+      <LoginModal
+        v-if="!userData && failedAuthentication"
+        @signin="userSignedIn"
+      />
       <AccountSetupModal
         v-if="setupModalVisible"
         @updateUser="updateUserAccount"
@@ -62,6 +65,7 @@ export default {
       userData: null,
       setupModalVisible: false,
       userInfoModalVisible: false,
+      failedAuthentication: false,
     }
   },
   async mounted() {
@@ -69,10 +73,12 @@ export default {
     if (token) {
       let response = await postRequest('account/api/validate_auth_token', token)
       if (response.user) {
-        this.userData = response.user
-        setAuthCookie(response.token)
+        // Assuming `created` flag is being removed
+        this.userSignedIn({ data: response.user, token: response.token })
+        return
       }
     }
+    this.failedAuthentication = true
   },
   methods: {
     userSignedIn(resp) {
