@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 from pathlib import Path
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,6 +27,7 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = not os.getenv("PROD", 0)
+print(f'*_*_*_*_*_*_* RUNNING WITH DEBUG = {DEBUG} *_*_*__*_*__*_*_*_*_*', file=sys.stderr)
 
 SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
 
