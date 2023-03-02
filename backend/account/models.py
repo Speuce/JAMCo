@@ -27,5 +27,4 @@ class User(AbstractUser):
             "city": self.city,
             "birthday": self.birthday,
             "field_of_work": self.field_of_work,
-            "last_login": self.last_login,
         }

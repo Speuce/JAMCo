@@ -8,6 +8,8 @@ from account.models import User
 from typing import Tuple
 from django.core.exceptions import ValidationError
 from column.business import create_default_columns
+from account.auth_utils import decrypt_token, encrypt_token
+from django.utils import timezone
 
 
 def get_or_create_user(payload: dict) -> Tuple[User, bool]:
@@ -41,3 +43,13 @@ def add_friend(user1_id, user2_id):
 
 def remove_friend(user1_id, user2_id):
     query.remove_friend(user1_id, user2_id)
+
+
+def authenticate_token(token):
+    try:
+        google_id, last_login = decrypt_token(token)
+        user = query.get_matching_user(google_id, last_login)
+        user.last_login = timezone.now()
+        return user, encrypt_token(user.google_id, user.last_login)
+    except Exception:
+        raise ValidationError("Failed to Authenticate Token")

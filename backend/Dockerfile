@@ -5,6 +5,9 @@ ENV PYTHONUNBUFFERED=1
 
 RUN apk add alpine-sdk build-base
 
+# gcc required for python cryptography package
+RUN apk add gcc musl-dev python3-dev libffi-dev openssl-dev
+
 RUN mkdir /backend
 COPY requirements.txt /backend/
 WORKDIR /backend
