@@ -81,6 +81,7 @@ class TestViews(TestCase):
 
         # Call the view function
         response = views.update_job(request)
+        mock_update_job.assert_called_with(job_data)
 
         # Check the response
         self.assertEqual(response.status_code, 200)
@@ -129,4 +130,5 @@ class TestViews(TestCase):
         request_body = json.dumps(job_data).encode("utf-8")
         request = self.factory.post("/update_job/", data=request_body, content_type="application/json")
         response = views.update_job(request)
+        mock_update_job.assert_called_with(job_data)
         self.assertEqual(response.status_code, 400)

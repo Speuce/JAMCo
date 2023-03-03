@@ -23,7 +23,21 @@ def update_user(payload: dict) -> None:
     formatted_payload = payload
     try:
         # formats date string from 2023-02-12T16:31:00.000Z to 2023-02-12
-        formatted_payload["birthday"] = payload.get("birthday")[0:10] if payload.get("birthday") else None
+        birthday = payload.get("birthday")
+        if birthday and len(birthday) < 10:
+            raise ValidationError("Invalid Length")
+        formatted_payload["birthday"] = birthday[0:10] if birthday else None
         query.update_user(formatted_payload)
-    except (IndexError, ValidationError):
-        raise AttributeError("Failed to format date: " + payload.get("birthday"))
+    except (IndexError, ValidationError) as err:
+        raise AttributeError(err.message + " - " + payload.get("birthday"))
+
+
+def add_friend(user1_id, user2_id):
+    if user1_id == user2_id:
+        raise ValueError("A user can't befriend themselves")
+    else:
+        query.add_friend(user1_id, user2_id)
+
+
+def remove_friend(user1_id, user2_id):
+    query.remove_friend(user1_id, user2_id)

@@ -37,6 +37,8 @@ urlpatterns = [
         account_views.update_account,
         name="update_account",
     ),
+    path("account/api/add_friend", account_views.add_friend, name="add_friend"),
+    path("account/api/remove_friend", account_views.remove_friend, name="remove_friend"),
     path("column/api/get_columns", column_views.get_columns, name="get_columns"),
     path(
         "column/api/update_columns",

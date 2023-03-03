@@ -16,10 +16,6 @@ def get_columns(user_id: int) -> list[KanbanColumn]:
     return KanbanColumn.objects.filter(user=User.objects.get(id=user_id))
 
 
-def delete_column(user_id: int, column_number: int):
-    KanbanColumn.objects.get(user=user_id, column_number=column_number).delete()
-
-
 def delete_columns(ids: list[int]):
     for column_id in ids:
         KanbanColumn.objects.filter(id=column_id).delete()

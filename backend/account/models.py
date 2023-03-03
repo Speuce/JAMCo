@@ -11,6 +11,7 @@ class User(AbstractUser):
     city = models.CharField(max_length=30, null=True)
     birthday = models.DateField(verbose_name="Date of Birth", null=True)
     field_of_work = models.CharField(max_length=30, null=True)
+    friends = models.ManyToManyField("self")
 
     def to_dict(self):
         return {
