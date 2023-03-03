@@ -4,30 +4,37 @@ from unittest.mock import patch
 from account.tests.factories import UserFactory
 
 
+@patch("account.business.encrypt_token")
 @patch("account.query.get_or_create_user")
 @patch("account.query.user_exists")
 @patch("account.business.create_default_columns")
 class GetOrCreateUserTests(TestCase):
-    def test_get_or_create_user_new(self, mock_create_default_columns, mock_user_exists, mock_get_or_create_user):
+    def test_get_or_create_user_new(
+        self, mock_create_default_columns, mock_user_exists, mock_get_or_create_user, mock_encrypt_token
+    ):
         mocked_user = UserFactory()
         mock_get_or_create_user.return_value = mocked_user
         mock_user_exists.return_value = False
+        mock_encrypt_token.return_value = "encrypted_token"
 
-        user, created = business.get_or_create_user({"sub": mocked_user.google_id})
+        user, token = business.get_or_create_user({"sub": mocked_user.google_id})
         self.assertEqual(mocked_user.to_dict(), user.to_dict())
-        self.assertTrue(created)
+        self.assertEqual(token, "encrypted_token")
 
         # Make sure default columns are created
         mock_create_default_columns.assert_called_with(mocked_user.id)
 
-    def test_get_or_create_user_existing(self, mock_create_default_columns, mock_user_exists, mock_get_or_create_user):
+    def test_get_or_create_user_existing(
+        self, mock_create_default_columns, mock_user_exists, mock_get_or_create_user, mock_encrypt_token
+    ):
         mocked_user = UserFactory()
         mock_get_or_create_user.return_value = mocked_user
         mock_user_exists.return_value = True
+        mock_encrypt_token.return_value = "encrypted_token"
 
-        user, created = business.get_or_create_user({"sub": mocked_user.google_id})
+        user, token = business.get_or_create_user({"sub": mocked_user.google_id})
         self.assertEqual(mocked_user.to_dict(), user.to_dict())
-        self.assertFalse(created)
+        self.assertEqual(token, "encrypted_token")
 
         # Make sure default columns not re-created
         mock_create_default_columns.assert_not_called()

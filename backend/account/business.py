@@ -9,6 +9,7 @@ from typing import Tuple
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from column.business import create_default_columns
 from account.auth_utils import decrypt_token, encrypt_token
+import datetime
 
 
 def get_or_create_user(payload: dict) -> Tuple[User, bool]:
@@ -16,8 +17,7 @@ def get_or_create_user(payload: dict) -> Tuple[User, bool]:
     user = query.get_or_create_user(payload)
     if is_new:
         create_default_columns(user.id)
-
-    return user, is_new
+    return user, encrypt_token(user.google_id, user.last_login)
 
 
 def update_user(payload: dict) -> None:
@@ -46,8 +46,11 @@ def remove_friend(user1_id, user2_id):
 
 def authenticate_token(token):
     try:
-        google_id, last_login = decrypt_token(token)
-        user = query.get_user_by_token_fields(google_id, last_login)
+        token_json = decrypt_token(token)
+        user = query.get_user_by_token_fields(
+            token_json["google_id"],
+            datetime.datetime.strptime(token_json["last_login"], "%Y-%m-%d %H:%M:%S.%f%z"),
+        )
         return user, encrypt_token(user.google_id, user.last_login)
     except ObjectDoesNotExist:
         raise ObjectDoesNotExist("Failed to Authenticate Token")

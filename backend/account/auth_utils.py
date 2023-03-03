@@ -13,5 +13,5 @@ def decrypt_token(token) -> tuple:
 
 
 def encrypt_token(google_id, last_login) -> str:
-    byte_string = json.dumps({"google_id": google_id, "last_login": last_login}).encode()
-    return f.encrypt(byte_string)
+    byte_string = json.dumps({"google_id": google_id, "last_login": str(last_login)}).encode()
+    return f.encrypt(byte_string).decode()
