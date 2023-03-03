@@ -71,14 +71,15 @@ export default {
   async mounted() {
     let token = getAuthToken()
     if (token) {
-      let response = await postRequest('account/api/validate_auth_token', token)
-      if (response.user) {
-        // Assuming `created` flag is being removed
-        this.userSignedIn({ data: response.user, token: response.token })
-        return
-      }
+      await postRequest('account/api/validate_auth_token', token).then(
+        (response) => {
+          if (response.user) {
+            this.userSignedIn({ data: response.user, token: response.token })
+          }
+        },
+      )
     }
-    this.failedAuthentication = true
+    if (!this.userData) this.failedAuthentication = true
   },
   methods: {
     userSignedIn(resp) {
@@ -86,7 +87,6 @@ export default {
       if (resp.created || this.setupIncomplete()) {
         this.setupModalVisible = true
       }
-      // TODO: add token field to get_or_create_user
       setAuthToken(resp.token)
     },
     setupIncomplete() {

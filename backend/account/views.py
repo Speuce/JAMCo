@@ -42,9 +42,8 @@ def get_or_create_account(request: HttpRequest):
         # ID token is valid. Get the user's Google Account ID from the decoded token.
         logger.debug(f"Credential Validated for User.google_id: { idinfo['sub'] }")
 
-        user, created = business.get_or_create_user(idinfo)
-        logger.debug(f"Created user: {user.to_dict()}")
-        return JsonResponse({"data": user.to_dict(), "created": created})
+        user, token = business.get_or_create_user(idinfo)
+        return JsonResponse({"data": user.to_dict(), "token": token})
 
     except ValueError as err_msg:
         # Invalid token
@@ -117,8 +116,7 @@ def validate_auth_token(request: HttpRequest):
     Authenticates auth_token retrieved from local cookies
     """
 
-    body = read_request(request)
-    token = body["token"]
+    token = read_request(request)
     logger.debug(f"validate_auth_token: {token}")
 
     try:
