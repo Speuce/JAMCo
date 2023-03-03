@@ -84,7 +84,7 @@ export default {
   methods: {
     userSignedIn(resp) {
       this.userData = resp.data
-      if (resp.created || this.setupIncomplete()) {
+      if (this.setupIncomplete()) {
         this.setupModalVisible = true
       }
       setAuthToken(resp.token)
