@@ -67,10 +67,20 @@ export default {
   methods: {
     userSignedIn(resp) {
       this.userData = resp.data
-      if (resp.created) {
+      if (resp.created || this.setupIncomplete()) {
         this.setupModalVisible = true
       }
       // TODO set cookie
+    },
+    setupIncomplete() {
+      // check if any req. fields are empty
+      return (
+        !this.userData.first_name ||
+        !this.userData.last_name ||
+        !this.userData.email ||
+        !this.userData.country ||
+        !this.userData.field_of_work
+      )
     },
     async updateUserAccount(userData) {
       await postRequest('account/api/update_account', userData)

@@ -216,7 +216,7 @@ export default {
       workFieldEmpty: false,
       emailEmpty: false,
       editingEnabled: false,
-      userData: props.user,
+      userData: { ...props.user },
     }
   },
   computed: {
