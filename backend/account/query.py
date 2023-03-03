@@ -12,8 +12,7 @@ from account.models import User
 def get_or_create_user(payload: dict) -> User:
     try:
         user = User.objects.get(google_id=payload["sub"])
-        user.last_login = timezone.now()
-        user.save(update_fields=["last_login"])
+        update_user_last_login(user)
         return user
     except ObjectDoesNotExist:
         return User.objects.create(
@@ -61,5 +60,12 @@ def remove_friend(user1_id, user2_id):
     user1.friends.remove(user2)
 
 
-def get_matching_user(google_id, last_login) -> User:
-    return User.objects.get(google_id=google_id, last_login=last_login)
+def get_user_token_fields(google_id, last_login) -> User:
+    user = User.objects.get(google_id=google_id, last_login=last_login)
+    update_user_last_login(user)
+    return user
+
+
+def update_user_last_login(user) -> None:
+    user.last_login = timezone.now()
+    user.save(update_fields=["last_login"])
