@@ -60,7 +60,7 @@ def remove_friend(user1_id, user2_id):
     user1.friends.remove(user2)
 
 
-def get_user_token_fields(google_id, last_login) -> User:
+def get_user_by_token_fields(google_id, last_login) -> User:
     user = User.objects.get(google_id=google_id, last_login=last_login)
     update_user_last_login(user)
     return user

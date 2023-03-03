@@ -47,7 +47,7 @@ def remove_friend(user1_id, user2_id):
 def authenticate_token(token):
     try:
         google_id, last_login = decrypt_token(token)
-        user = query.get_user_token_fields(google_id, last_login)
+        user = query.get_user_by_token_fields(google_id, last_login)
         return user, encrypt_token(user.google_id, user.last_login)
     except ObjectDoesNotExist:
         raise ObjectDoesNotExist("Failed to Authenticate Token")
