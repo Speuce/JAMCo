@@ -15,9 +15,9 @@ def get_or_create_user(payload: dict) -> User:
         return User.objects.create(
             username=User.objects.all().count(),
             google_id=payload["sub"],
-            email=payload["email"] if payload.get("email") else "No Email Found",
-            image_url=payload["picture"] if payload.get("picture") else None,
-            first_name=payload["given_name"] if payload.get("given_name") else "No First Name Found",
+            email=payload["email"] if payload.get("email") else "",
+            image_url=payload["picture"] if payload.get("picture") else "https://i.imgur.com/QJpNyuN.png",
+            first_name=payload["given_name"] if payload.get("given_name") else "",
             last_name=payload.get("family_name") if payload.get("family_name") else "",
         )
 
