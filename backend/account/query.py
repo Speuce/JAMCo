@@ -5,7 +5,7 @@ Query functions for account related operations.
 """
 
 from django.core.exceptions import ObjectDoesNotExist
-from account.models import User
+from account.models import User, Privacy
 
 
 def get_or_create_user(payload: dict) -> User:
@@ -40,6 +40,32 @@ def update_user(payload: dict):
     # isn't raised. That is, we'll only save changes if the entire payload is
     # error-free.
     user.save()
+
+
+def create_privacies(user_id) -> Privacy:
+    # potential default option? i.e. all True vs all False
+    return Privacy.objects.create(
+        user=User.objects.get(id=user_id),
+        is_searchable=True,
+        share_kanban=True,
+        cover_letter_requestable=True,
+    )
+
+
+def update_privacies(user_id, payload: dict):
+    privacies = Privacy.objects.get(user__id=user_id)
+    for key, value in payload.items():
+        # If there are invalid keys in the payload (e.g. the frontend misspelled
+        # the name of a field), raise an exception
+        if hasattr(privacies, key):
+            setattr(privacies, key, value)
+        else:
+            raise AttributeError("Privacy has no attribute " + key)
+
+    # Since this is at the end of the func, it'll only execute if an exception
+    # isn't raised. That is, we'll only save changes if the entire payload is
+    # error-free.
+    privacies.save()
 
 
 def add_friend(user1_id, user2_id):
