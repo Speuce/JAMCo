@@ -56,12 +56,19 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://0.0.0.0:3000",
-]
+if DEBUG:
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://0.0.0.0:3000",
+    ]
+else:
+    CORS_ALLOWED_ORIGINS = [
+        "https://jamco.pro",
+        "https://jamco.pro/",
+        "http://jamco.pro",
+        "http://jamco.pro/",
+    ]
 
 ROOT_URLCONF = "jamco.urls"
 
