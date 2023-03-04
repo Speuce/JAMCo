@@ -2,7 +2,7 @@
 import Cookies from 'js-cookie'
 
 const prodMode = import.meta.env.PROD
-const baseUrl = prodMode ? 'http://jamco.pro/' : 'http://localhost:8000/'
+const baseUrl = prodMode ? 'https://jamco.pro/' : 'http://localhost:8000/'
 /**
  * Send a post request to the backend
  */
