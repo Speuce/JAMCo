@@ -48,15 +48,19 @@ jobs:
           flags: 'g'
 
       - name: Generate Deployment Package
-        run: zip deploy.zip Dockerrun.aws.json
+        run: >
+          rm docker-compose.yml
+          && cp docker-compose.prod.yml docker-compose.yml
+          && cp backend/docker-entrypoint.sh docker-entrypoint.sh
+          && zip deploy.zip docker-compose.yml docker-entrypoint.sh
 
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v21
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: jamco-prod
-          environment_name: Jamcoprod-env
+          application_name: jamco
+          environment_name: Jamco-env
           version_label: "docker-app-${{ steps.format-time.outputs.replaced }}"
           region: us-east-1
           deployment_package: deploy.zip
