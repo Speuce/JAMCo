@@ -1,15 +1,14 @@
 version: '3.0'
 services:
   prod:
-    build:
-      context: .
-      dockerfile: prod.Dockerfile
-    #restart: always
-    #container_name: app-jamco
-    #image: speuce/jamco:prod
+    restart: always
+    container_name: app-jamco
+    image: speuce/jamco:prod
     command: ./docker-entrypoint.sh
     ports:
       - "80:8000"
+    volumes:
+      - ./static:/backend/static/
     environment:
       POSTGRES_NAME: ${RDS_DB_NAME:-postgres}
       POSTGRES_USER: ${RDS_USERNAME:-postgres}
