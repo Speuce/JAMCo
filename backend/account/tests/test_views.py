@@ -223,11 +223,18 @@ class FriendTests(TestCase):
 @patch("account.business.authenticate_token")
 class AuthenticateTokenTests(TestCase):
     def test_authenticate_valid_token(self, mock_authenticate_token):
-        pass
+        user = UserFactory()
+        mock_authenticate_token.return_value = user, "encrypted_token"
+        valid_token = "xyz"
+        response = self.client.post("/authenticate_token/", data=valid_token, content_type="application/json")
+        self.assertEqual(response.status_code, 200)
+        mock_authenticate_token.assert_called()
+        self.assertEqual(response.user, user)
+        self.assertEqual(response.token, "encrypted_token")
 
     def test_authenticate_invalid_token(self, mock_authenticate_token):
         mock_authenticate_token.side_effect = ObjectDoesNotExist("Invalid Token")
         invalid_token = "xyz"
-        response = self.factory.post("/authenticate_token/", data=invalid_token, content_type="application/json")
+        response = self.client.post("/authenticate_token/", data=invalid_token, content_type="application/json")
         self.assertEqual(response.status_code, 401)
         mock_authenticate_token.assert_called()
