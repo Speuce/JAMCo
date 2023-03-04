@@ -9,7 +9,7 @@ from typing import Tuple
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from column.business import create_default_columns
 from account.auth_utils import decrypt_token, encrypt_token
-import datetime
+from datetime import datetime
 
 
 def get_or_create_user(payload: dict) -> Tuple[User, bool]:
@@ -49,7 +49,7 @@ def authenticate_token(token):
         token_json = decrypt_token(token)
         user = query.get_user_by_token_fields(
             token_json["google_id"],
-            datetime.datetime.strptime(token_json["last_login"], "%Y-%m-%d %H:%M:%S.%f%z"),
+            datetime.strptime(token_json["last_login"], "%Y-%m-%d %H:%M:%S.%f%z"),
         )
         return user, encrypt_token(user.google_id, user.last_login)
     except ObjectDoesNotExist:

@@ -2,6 +2,7 @@ from django.test import TestCase
 from account import business
 from unittest.mock import patch
 from account.tests.factories import UserFactory
+from django.core.exceptions import ObjectDoesNotExist
 
 
 @patch("account.business.encrypt_token")
@@ -72,3 +73,21 @@ class FriendTests(TestCase):
         # such that it doesn't doesn't do anything if the user(s) involved are already not friends
         business.remove_friend(0, 0)
         mock_remove_friend.assert_called()
+
+
+@patch("account.query.get_user_by_token_fields")
+class AuthenticateTokenTests(TestCase):
+    @patch("account.business.encrypt_token")
+    def test_authenticate_token_valid(self, mock_encrypt_token, mock_get_user_by_token_fields):
+        user = UserFactory()
+        mock_get_user_by_token_fields.return_value = user
+        valid_token = "xyz"
+        mock_encrypt_token.return_value = "new_token"
+        response = business.authenticate_token(valid_token)
+        self.assertEqual(response, (user, "new_token"))
+
+    def test_authenticate_token_invalid(self, mock_get_user_by_token_fields):
+        mock_get_user_by_token_fields.side_effect = ObjectDoesNotExist("Invalid Get")
+        invalid_token = "xyz"
+        with self.assertRaises(ObjectDoesNotExist):
+            business.authenticate_token(invalid_token)

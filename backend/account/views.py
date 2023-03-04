@@ -122,6 +122,6 @@ def validate_auth_token(request: HttpRequest):
     try:
         user, new_token = business.authenticate_token(token)
         return JsonResponse({"user": user.to_dict(), "token": new_token})
-    except ValidationError as err_msg:
+    except ObjectDoesNotExist as err_msg:
         logger.debug(f"Invalid Token: {err_msg}")
         return JsonResponse(status=401, data={"error": repr(err_msg)})
