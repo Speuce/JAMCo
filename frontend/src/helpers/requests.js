@@ -17,6 +17,7 @@ export async function postRequest(url, data) {
         'X-CSRFToken': getCSRFToken(),
       },
       referrerPolicy: 'no-referrer-when-downgrade',
+      credentials: 'include',
       body: JSON.stringify(data),
     })
     if (response.status !== 200) {
@@ -31,10 +32,5 @@ export async function postRequest(url, data) {
 }
 
 export function getCSRFToken() {
-  const cookie = document.querySelector('[name=csrfmiddlewaretoken]').value
-  if (cookie === undefined) {
-    throw new Error('CSRF token not found')
-  }
-  Cookies.set('csrftoken', cookie)
-  return cookie
+  return Cookies.get('csrftoken')
 }
