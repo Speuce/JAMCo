@@ -6,7 +6,7 @@ API-layer for account related operations.
 import logging
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_POST
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from jamco.helper import read_request
@@ -122,6 +122,6 @@ def validate_auth_token(request: HttpRequest):
     try:
         user, new_token = business.authenticate_token(token)
         return JsonResponse({"user": user.to_dict(), "token": new_token})
-    except ValidationError as err_msg:
+    except ObjectDoesNotExist as err_msg:
         logger.debug(f"Invalid Token: {err_msg}")
         return JsonResponse(status=401, data={"error": repr(err_msg)})

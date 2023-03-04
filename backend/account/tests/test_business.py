@@ -72,3 +72,11 @@ class FriendTests(TestCase):
         # such that it doesn't doesn't do anything if the user(s) involved are already not friends
         business.remove_friend(0, 0)
         mock_remove_friend.assert_called()
+
+
+class AuthenticateTokenTests(TestCase):
+    def test_authenticate_token_valid():
+        pass
+
+    def test_authenticate_token_invalid():
+        pass

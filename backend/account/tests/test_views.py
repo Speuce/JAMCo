@@ -4,6 +4,7 @@ from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
 from django.http.cookie import SimpleCookie
 from account.tests.factories import UserFactory
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class GetOrCreateAccountTests(TransactionTestCase):
@@ -217,3 +218,16 @@ class FriendTests(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         mock_remove_friend.assert_called()
+
+
+@patch("account.business.authenticate_token")
+class AuthenticateTokenTests(TestCase):
+    def test_authenticate_valid_token(self, mock_authenticate_token):
+        pass
+
+    def test_authenticate_invalid_token(self, mock_authenticate_token):
+        mock_authenticate_token.side_effect = ObjectDoesNotExist("Invalid Token")
+        invalid_token = "xyz"
+        response = self.factory.post("/authenticate_token/", data=invalid_token, content_type="application/json")
+        self.assertEqual(response.status_code, 401)
+        mock_authenticate_token.assert_called()

@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.core.exceptions import ObjectDoesNotExist
 from account import query, models
 from account.tests.factories import UserFactory
+from django.utils import timezone
 
 
 class GetOrCreateUserTests(TestCase):
@@ -122,3 +123,11 @@ class FriendTests(TestCase):
             query.remove_friend(user.id, -1)
         with self.assertRaises(ObjectDoesNotExist):
             query.remove_friend(-1, -1)
+
+
+class GetUserByTokenFieldsTests(TestCase):
+    def test_get_user_by_token_fields(self):
+        login = timezone.now()
+        user = UserFactory(google_id="gID", last_login=login)
+        retrieved_user = query.get_user_by_token_fields(user.google_id, login)
+        self.assertEqual(user, retrieved_user)
