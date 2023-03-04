@@ -67,6 +67,7 @@ else:
         "http://jamco.pro",
     ]
     CSRF_TRUSTED_ORIGINS = ["https://jamco.pro", "http://jamco.pro"]
+    CSRF_COOKIE_SECURE = True
 
 ROOT_URLCONF = "jamco.urls"
 
