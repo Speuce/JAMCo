@@ -52,7 +52,7 @@ jobs:
           rm docker-compose.yml
           && cp docker-compose.prod.yml docker-compose.yml
           && cp backend/docker-entrypoint.sh docker-entrypoint.sh
-          && zip deploy.zip docker-compose.yml docker-entrypoint.sh
+          && zip deploy.zip docker-compose.yml docker-entrypoint.sh .platform/hooks/postdeploy/copy_staticfiles.sh
 
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v21
