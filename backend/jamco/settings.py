@@ -64,9 +64,7 @@ if DEBUG:
 else:
     CORS_ALLOWED_ORIGINS = [
         "https://jamco.pro",
-        "https://jamco.pro/",
         "http://jamco.pro",
-        "http://jamco.pro/",
     ]
 
 ROOT_URLCONF = "jamco.urls"
