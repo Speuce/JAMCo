@@ -31,13 +31,9 @@ export async function postRequest(url, data) {
 }
 
 export function getCSRFToken() {
-  let cookie = Cookies.get('csrftoken')
+  const cookie = document.querySelector('[name=csrfmiddlewaretoken]').value
   if (cookie === undefined) {
-    cookie = document.querySelector('[name=csrfmiddlewaretoken]').value
-    if (cookie === undefined) {
-      throw new Error('CSRF token not found')
-    }
-    Cookies.set('csrftoken', cookie)
+    throw new Error('CSRF token not found')
   }
   return cookie
 }
