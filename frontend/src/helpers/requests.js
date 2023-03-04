@@ -35,5 +35,6 @@ export function getCSRFToken() {
   if (cookie === undefined) {
     throw new Error('CSRF token not found')
   }
+  Cookies.set('csrftoken', cookie)
   return cookie
 }
