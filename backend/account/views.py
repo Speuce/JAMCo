@@ -74,6 +74,40 @@ def update_account(request: HttpRequest):
 
 
 @require_POST
+def update_privacies(request: HttpRequest):
+    """
+    Updates privacy settings given a user id
+    """
+
+    body = read_request(request)
+    logger.debug(f"update_privacies: {id}")
+
+    try:
+        business.update_privacies(body)
+    except AttributeError as err_msg:
+        logger.debug(f"Update error:\n{err_msg}")
+        return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+@require_POST
+def get_user_privacies(request: HttpRequest):
+    """
+    Gets Privacy options for the specified user
+    """
+
+    body = read_request(request)
+    user_id = body.get("user_id")
+
+    logger.debug(f"get_user_privacies: user: {user_id}")
+
+    try:
+        priv = business.get_privacies(user_id)
+        return JsonResponse(status=200, data={"privacy_data": priv.to_dict()})
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+@require_POST
 def add_friend(request: HttpRequest):
     """
     Takes two users' ids and makes it so those two users are friends with each other. If they were friends already, this

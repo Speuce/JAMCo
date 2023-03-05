@@ -39,7 +39,7 @@ class GetOrCreateJobTests(TestCase):
             },
         )
 
-    def test_invalid_get(self):
+    def test_invalid_job_get(self):
         JobFactory()
         self.assertEqual(models.Job.objects.count(), 1)
         # test invalid getting

@@ -27,6 +27,7 @@ def user_exists(google_id: str) -> bool:
 
 
 def update_user(payload: dict):
+    # updates based on user_id rather than google_id
     user = User.objects.get(id=payload.get("id"))
     for key, value in payload.items():
         # If there are invalid keys in the payload (e.g. the frontend misspelled
@@ -43,13 +44,17 @@ def update_user(payload: dict):
 
 
 def create_privacies(user_id) -> Privacy:
-    # potential default option? i.e. all True vs all False
+    # potential option for defaults? i.e. all True vs all False
     return Privacy.objects.create(
         user=User.objects.get(id=user_id),
         is_searchable=True,
         share_kanban=True,
         cover_letter_requestable=True,
     )
+
+
+def get_privacies(user_id) -> Privacy:
+    return Privacy.objects.get(user__id=user_id)
 
 
 def update_privacies(user_id, payload: dict):
