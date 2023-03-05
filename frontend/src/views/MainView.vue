@@ -70,7 +70,9 @@ export default {
   },
   async mounted() {
     let token = getAuthToken()
+    console.log(token)
     if (token) {
+      console.log(token)
       await postRequest('account/api/validate_auth_token', token).then(
         (response) => {
           if (response.user) {

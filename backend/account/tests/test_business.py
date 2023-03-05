@@ -76,18 +76,21 @@ class FriendTests(TestCase):
 
 
 @patch("account.query.get_user_by_token_fields")
+@patch("account.business.decrypt_token")
 class AuthenticateTokenTests(TestCase):
     @patch("account.business.encrypt_token")
-    def test_authenticate_token_valid(self, mock_encrypt_token, mock_get_user_by_token_fields):
+    def test_authenticate_token_valid(self, mock_encrypt_token, mock_decrypt_token, mock_get_user_by_token_fields):
         user = UserFactory()
         mock_get_user_by_token_fields.return_value = user
-        valid_token = "xyz"
         mock_encrypt_token.return_value = "new_token"
+        mock_decrypt_token.return_value = {"google_id": "gid", "last_login": "2023-03-03 01:28:02.710196+00:00"}
+        valid_token = "xyz"
         response = business.authenticate_token(valid_token)
         self.assertEqual(response, (user, "new_token"))
 
-    def test_authenticate_token_invalid(self, mock_get_user_by_token_fields):
+    def test_authenticate_token_invalid(self, mock_decrypt_token, mock_get_user_by_token_fields):
         mock_get_user_by_token_fields.side_effect = ObjectDoesNotExist("Invalid Get")
+        mock_decrypt_token.return_value = {"google_id": "gid", "last_login": "2023-03-03 01:28:02.710196+00:00"}
         invalid_token = "xyz"
         with self.assertRaises(ObjectDoesNotExist):
             business.authenticate_token(invalid_token)
