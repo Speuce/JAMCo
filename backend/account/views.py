@@ -6,7 +6,7 @@ API-layer for account related operations.
 import logging
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_POST
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from jamco.helper import read_request
