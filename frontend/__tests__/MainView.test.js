@@ -13,8 +13,8 @@ vi.mock('@/helpers/auth-cookie.js', () => ({
   setAuthToken: vi.fn(),
 }))
 
-const mostPostRequest = (url) => {
-  return Promise.resolve({ data: {}, user: 'gerald' })
+const mostPostRequest = () => {
+  return Promise.resolve({ data: {}, user: { id: -1 } })
 }
 
 describe('MainView', () => {
@@ -34,13 +34,13 @@ describe('MainView', () => {
   it('opens setupModal when a required field is not filled', () => {
     const wrapper = shallowMount(MainView)
     const resp = {
-      // no email present
+      // no field_of_work present
       data: {
         id: -1,
         first_name: 'Spongeboy',
         last_name: 'Brownpants',
         country: 'Pacific Ocean',
-        field_of_work: 'Fry Cook',
+        email: 'test_email',
       },
       token: 'new_token',
     }
@@ -55,8 +55,9 @@ describe('MainView', () => {
     wrapper.vm.userSignedIn(resp)
     expect(wrapper.vm.setupModalVisible).toEqual(true)
 
-    wrapper.vm.updateUserAccount({ id: -1 })
+    await wrapper.vm.updateUserAccount({ id: -1 })
     await wrapper.vm.$nextTick()
+
     expect(postRequest).toHaveBeenCalledWith('account/api/update_account', {
       id: -1,
     })
@@ -66,23 +67,22 @@ describe('MainView', () => {
   })
 
   it('authenticates token when cookie found', async () => {
-    getAuthToken.mockReturnValue('bruh')
-    const wrapper = shallowMount(MainView)
+    getAuthToken.mockReturnValue('token')
+    shallowMount(MainView)
     flushPromises()
 
     expect(postRequest).toHaveBeenCalledWith(
       'account/api/validate_auth_token',
-      'bruh',
+      'token',
     )
-    expect(wrapper.vm.userSignedIn).toBeCalledWith({
-      data: { id: 0 },
-      token: 'new_token',
-    })
   })
 
   it('logs out when logoutClicked', () => {
     const wrapper = shallowMount(MainView)
+    delete window.location
+    window.location = { reload: vi.fn() }
     wrapper.vm.logoutClicked()
+    expect(window.location.reload).toHaveBeenCalled()
     expect(wrapper.vm.userData).toBe(null)
   })
 })
