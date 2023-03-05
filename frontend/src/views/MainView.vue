@@ -33,6 +33,7 @@
         @updateUser="updateUserAccount"
         :user="this.userData"
         @close="userInfoModalVisible = false"
+        @logout="logoutClicked"
       />
       <Suspense>
         <JobTrackingView
@@ -70,9 +71,7 @@ export default {
   },
   async mounted() {
     let token = getAuthToken()
-    console.log(token)
     if (token) {
-      console.log(token)
       await postRequest('account/api/validate_auth_token', token).then(
         (response) => {
           if (response.user) {
@@ -84,6 +83,10 @@ export default {
     if (!this.userData) this.failedAuthentication = true
   },
   methods: {
+    logoutClicked() {
+      setAuthToken('')
+      location.reload()
+    },
     userSignedIn(resp) {
       this.userData = resp.data
       if (this.setupIncomplete()) {
