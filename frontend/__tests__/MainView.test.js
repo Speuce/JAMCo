@@ -79,4 +79,10 @@ describe('MainView', () => {
       token: 'new_token',
     })
   })
+
+  it('logs out when logoutClicked', () => {
+    const wrapper = shallowMount(MainView)
+    wrapper.vm.logoutClicked()
+    expect(wrapper.vm.userData).toBe(null)
+  })
 })
