@@ -34,8 +34,7 @@ class UpdateAccountTests(TestCase):
         query.update_user({"id": user.id, "first_name": "Rob"})
 
         # The modifications should hold
-        # Unable to properly mock this access without making test trivial
-        self.assertEqual(query.get_or_create_user({"sub": user.google_id}).first_name, "Rob")
+        self.assertEqual(models.User.objects.get(id=user.id).first_name, "Rob")
 
     def test_invalid_update_account(self):
         # Create an account first # 'sub' is the field name from google tokens
