@@ -103,6 +103,35 @@ class UpdatePrivacyTests(TestCase):
         )
         self.assertNotEqual(priv.to_dict(), newPriv.to_dict())
 
+    def test_invalid_update_privacies(self):
+        user = UserFactory()
+        priv = query.create_privacies(user.id)
+        # update privacies to opposite of default
+        with self.assertRaises(AttributeError):
+            query.update_privacies(
+                user.id,
+                {
+                    # invalid name
+                    "searchable": False,
+                    "share_kanban": False,
+                    "cover_letter_requestable": False,
+                },
+            )
+
+        newPriv = query.get_privacies(user.id)
+
+        # verify updates went thru
+        self.assertDictEqual(
+            newPriv.to_dict(),
+            {
+                "id": priv.id,
+                "is_searchable": True,
+                "share_kanban": True,
+                "cover_letter_requestable": True,
+            },
+        )
+        self.assertEqual(priv.to_dict(), newPriv.to_dict())
+
 
 class FriendTests(TestCase):
     def test_add_friend(self):

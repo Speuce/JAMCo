@@ -171,6 +171,26 @@ class PrivacyTests(TestCase):
         self.assertEqual(response.status_code, 200)
         mock_update_privacies.assert_called_with({"user_id": priv.user.id, "privacies": newPrivDict})
 
+    @patch("account.business.update_privacies")
+    def test_invalid_update_privacies(self, mock_update_privacies):
+        priv = PrivacyFactory()
+        newPrivDict = {
+            # invalid name
+            "searchable": False,
+            "share_kanban": True,
+            "cover_letter_requestable": False,
+        }
+        mock_update_privacies.side_effect = AttributeError
+
+        response = self.client.post(
+            reverse("update_privacies"),
+            json.dumps({"user_id": priv.user.id, "privacies": newPrivDict}),
+            content_type="application/json",
+            **self.header,
+        )
+        self.assertEqual(response.status_code, 400)
+        mock_update_privacies.assert_called_with({"user_id": priv.user.id, "privacies": newPrivDict})
+
     @patch("account.business.get_privacies")
     def test_get_user_privacies(self, mock_get_privacies):
         priv = PrivacyFactory()
