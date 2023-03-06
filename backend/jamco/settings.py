@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-p4enq_&$q7e%a+cs3@5lcb4h#^9j!*c07ci-9o(v1#k8!ebaos
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = not os.getenv("PROD", 0)
 
 SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
 
@@ -55,12 +55,18 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://0.0.0.0:3000",
-]
+if DEBUG:
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://0.0.0.0:3000",
+    ]
+else:
+    CORS_ALLOWED_ORIGINS = [
+        "https://jamco.pro",
+        "http://jamco.pro",
+    ]
+    CSRF_TRUSTED_ORIGINS = ["https://jamco.pro", "http://jamco.pro"]
 
 ROOT_URLCONF = "jamco.urls"
 
@@ -71,6 +77,7 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                "jamco.context_processors.debug",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
@@ -92,7 +99,7 @@ DATABASES = {
         "USER": os.getenv("POSTGRES_USER"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
         "HOST": os.getenv("POSTGRES_HOST"),
-        "PORT": 5432,
+        "PORT": os.getenv("POSTGRES_PORT"),
     }
 }
 
@@ -163,11 +170,8 @@ LOGGING = {
 # ALLOWED_HOSTS = ['your-production-domain.com']
 ALLOWED_HOSTS = ["*"]
 
-DJANGO_VITE_ASSETS_PATH = os.path.join("static", "dist")
-
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-    os.path.join(BASE_DIR, DJANGO_VITE_ASSETS_PATH),
+    os.path.join(BASE_DIR, "global_static"),
 ]
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, "templates"),)
 
@@ -175,4 +179,4 @@ DJANGO_VITE_DEV_MODE = DEBUG
 
 VITE_APP_DIR = os.path.join("static")
 
-# STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")

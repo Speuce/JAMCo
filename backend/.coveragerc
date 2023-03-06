@@ -6,5 +6,6 @@ omit =
     # These files are omitted as they are boilerplate added by django, and aren't testable
     jamco/wsgi.py
     jamco/asgi.py
+    jamco/views.py
     # Exclude package inits
     */__init__.py
