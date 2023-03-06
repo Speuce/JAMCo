@@ -23,13 +23,13 @@ def render_vite_bundle():
 
     imports_files = "".join(
         [
-            f'<script type="module" src="/static/{manifest[file]["file"]}"></script>'
-            for file in manifest["index.html"]["imports"]
+            f'<script type="module" src="/static/dist/{manifest[file]["file"]}"></script>'
+            for file in manifest["src/main.js"]["dynamicImports"]
         ]
     )
 
     return mark_safe(
-        f"""<script type="module" src="/static/{manifest['index.html']['file']}"></script>
-        <link rel="stylesheet" type="text/css" href="/static/{manifest['index.html']['css'][0]}" />
+        f"""<script type="module" src="/static/dist/{manifest['src/main.js']['file']}"></script>
+        <link rel="stylesheet" type="text/css" href="/static/dist/{manifest['src/main.js']['css'][0]}" />
         {imports_files}"""
     )

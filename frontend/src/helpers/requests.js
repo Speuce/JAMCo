@@ -2,7 +2,7 @@
 import Cookies from 'js-cookie'
 
 const prodMode = import.meta.env.PROD
-const baseUrl = prodMode ? '' : 'http://localhost:8000/'
+const baseUrl = prodMode ? 'https://jamco.pro/' : 'http://localhost:8000/'
 /**
  * Send a post request to the backend
  */
@@ -17,6 +17,7 @@ export async function postRequest(url, data) {
         'X-CSRFToken': getCSRFToken(),
       },
       referrerPolicy: 'no-referrer-when-downgrade',
+      credentials: 'include',
       body: JSON.stringify(data),
     })
     if (response.status !== 200) {
