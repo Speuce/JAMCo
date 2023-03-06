@@ -141,4 +141,4 @@ class UpdateLastUserLoginTest(TestCase):
         self.assertEqual(user.last_login, prev_login)
         query.update_user_last_login(user)
         self.assertNotEqual(user.last_login, prev_login)
-        self.assertTrue(models.User.objects.get(id=user.id).last_login > prev_login)
+        self.assertTrue(user.last_login > prev_login)
