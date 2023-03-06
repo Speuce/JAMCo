@@ -25,6 +25,7 @@ describe('requests.js', () => {
         'X-CSRFToken': 'test_csrf_token',
       },
       referrerPolicy: 'no-referrer-when-downgrade',
+      credentials: 'include',
       body: JSON.stringify(mockData),
     })
   })
