@@ -376,7 +376,7 @@ class TestViews(TransactionTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content.decode("utf-8"), json.dumps({"jobs": jobs}))
 
-    def test_get_minimum_jobs_nonexistant_user(self):
+    def test_get_minimum_jobs_nonexistent_user(self):
         # Get Min Jobs
         response = self.client.post(
             reverse("get_minimum_jobs"),
