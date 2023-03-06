@@ -110,7 +110,7 @@ class TestViews(TestCase):
 
     @patch("job.business.create_job")
     def test_create_job_with_error(self, mock_create_job):
-        mock_create_job.side_effect = ObjectDoesNotExist("Something went wrong!")
+        mock_create_job.side_effect = KeyError("Something went wrong!")
         # Prepare data
         job_data = {"position": "Developer", "company": "Google"}
         request_body = json.dumps(job_data).encode("utf-8")
