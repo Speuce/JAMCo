@@ -1,7 +1,7 @@
 from django.test import TestCase
 from account import business
 from unittest.mock import patch
-from account.tests.factories import UserFactory
+from account.tests.factories import UserFactory, PrivacyFactory
 
 
 @patch("account.query.get_or_create_user")
@@ -45,6 +45,25 @@ class UpdateUserTests(TestCase):
         with self.assertRaises(AttributeError):
             business.update_user(payload={"id": user.id, "birthday": "2023-02"})
         mock_update_user.assert_not_called()
+
+
+class PrivacyTests(TestCase):
+    @patch("account.query.create_privacies")
+    def test_get_privacies(self, mock_create_privacies):
+        mocked_priv = PrivacyFactory()
+        mock_create_privacies.return_value = mocked_priv
+
+        priv = business.get_privacies(mocked_priv.user.id)
+        self.assertEqual(mocked_priv.to_dict(), priv.to_dict())
+
+    @patch("account.query.update_privacies")
+    def test_update_privacies(self, mock_update_privacies):
+        pass
+
+    @patch("account.query.update_privacies")
+    def test_invalid_update_privacies(self, mock_update_privacies):
+        mock_update_privacies.side_effect = AttributeError("Attribute not found.")
+        pass
 
 
 class FriendTests(TestCase):
