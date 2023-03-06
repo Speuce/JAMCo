@@ -52,5 +52,5 @@ def authenticate_token(token):
             datetime.strptime(token_json["last_login"], "%Y-%m-%d %H:%M:%S.%f%z"),
         )
         return user, encrypt_token(user.google_id, user.last_login)
-    except ObjectDoesNotExist:
-        raise ObjectDoesNotExist("Failed to Authenticate Token")
+    except ObjectDoesNotExist as err:
+        raise ObjectDoesNotExist("Failed to Authenticate Token") from err
