@@ -2,6 +2,13 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 
+class DemoUser(models.Model):
+    first_name = models.CharField(max_length=30, null=False)
+    last_name = models.CharField(max_length=30, null=False)
+    birthday = models.DateField(verbose_name="Date of Birth", null=True)
+    age = models.IntegerField(null=True)
+
+
 class User(AbstractUser):
     # Name, username, and email are included with AbstractUser
     google_id = models.TextField(unique=True)
