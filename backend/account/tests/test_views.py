@@ -174,6 +174,7 @@ class PrivacyTests(TestCase):
     @patch("account.business.get_privacies")
     def test_get_user_privacies(self, mock_get_privacies):
         priv = PrivacyFactory()
+        mock_get_privacies.return_value = priv
 
         response = self.client.post(
             reverse("get_user_privacies"),
@@ -182,7 +183,19 @@ class PrivacyTests(TestCase):
             **self.header,
         )
         self.assertEqual(response.status_code, 200)
-        mock_get_privacies.assert_called_with({"user_id": priv.user.id})
+        mock_get_privacies.assert_called_with(priv.user.id)
+
+    @patch("account.business.get_privacies")
+    def test_invalid_get_user_privacies(self, mock_get_privacies):
+        mock_get_privacies.side_effect = Exception
+
+        response = self.client.post(
+            reverse("get_user_privacies"),
+            json.dumps({"user_id": -1}),
+            content_type="application/json",
+            **self.header,
+        )
+        self.assertEqual(response.status_code, 400)
 
 
 class FriendTests(TestCase):
