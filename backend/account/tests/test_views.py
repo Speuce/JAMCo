@@ -3,7 +3,7 @@ from unittest.mock import patch
 from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
 from django.http.cookie import SimpleCookie
-from account.tests.factories import UserFactory
+from account.tests.factories import UserFactory, PrivacyFactory
 
 
 class GetOrCreateAccountTests(TransactionTestCase):
@@ -143,6 +143,46 @@ class AccountTestCase(TestCase):
         self.assertEqual(response.status_code, 401)
 
         mock_get_or_create_user.assert_not_called()
+
+
+class PrivacyTests(TestCase):
+    def setUp(self):
+        self.client.cookies = SimpleCookie({"csrftoken": "valid_csrf_token"})
+        self.header = {
+            "ACCEPT": "application/json",
+            "HTTP_X-CSRFToken": "valid_csrf_token",
+        }
+
+    @patch("account.business.update_privacies")
+    def test_update_privacies(self, mock_update_privacies):
+        priv = PrivacyFactory()
+        newPrivDict = {
+            "is_searchable": False,
+            "share_kanban": True,
+            "cover_letter_requestable": False,
+        }
+
+        response = self.client.post(
+            reverse("update_privacies"),
+            json.dumps({"user_id": priv.user.id, "privacies": newPrivDict}),
+            content_type="application/json",
+            **self.header,
+        )
+        self.assertEqual(response.status_code, 200)
+        mock_update_privacies.assert_called_with({"user_id": priv.user.id, "privacies": newPrivDict})
+
+    @patch("account.business.get_privacies")
+    def test_get_user_privacies(self, mock_get_privacies):
+        priv = PrivacyFactory()
+
+        response = self.client.post(
+            reverse("get_user_privacies"),
+            json.dumps({"user_id": priv.user.id}),
+            content_type="application/json",
+            **self.header,
+        )
+        self.assertEqual(response.status_code, 200)
+        mock_get_privacies.assert_called_with({"user_id": priv.user.id})
 
 
 class FriendTests(TestCase):

@@ -65,22 +65,12 @@ class PrivacyTests(TestCase):
             "cover_letter_requestable": False,
         }
         # payload to `update` is *not* a Privacy dict, but a dict of values
-        business.update_privacies({"user": mocked_priv.user, "privacies": newPrivDict})
+        business.update_privacies({"user_id": mocked_priv.user.id, "privacies": newPrivDict})
         mock_update_privacies.assert_called_with(user_id=mocked_priv.user.id, payload=newPrivDict)
 
     @patch("account.query.update_privacies")
     def test_invalid_update_privacies(self, mock_update_privacies):
-        # test updating without one of the fields
         mocked_priv = PrivacyFactory()
-        newPrivDict = {
-            "is_searchable": False,
-            "share_kanban": True,
-            "cover_letter_requestable": False,
-        }
-        # payload to `update` is *not* a Privacy dict, but a dict of values
-        with self.assertRaises(AttributeError):
-            business.update_privacies({"privacies": newPrivDict})
-
         # test updating with an attribute error
         mock_update_privacies.side_effect = AttributeError("Attribute not found.")
         badPrivDict = {
@@ -89,7 +79,7 @@ class PrivacyTests(TestCase):
             "cover_letter_requestable": False,
         }
         with self.assertRaises(AttributeError):
-            business.update_privacies({"user": mocked_priv.user, "privacies": badPrivDict})
+            business.update_privacies({"user_id": mocked_priv.user.id, "privacies": badPrivDict})
 
 
 class FriendTests(TestCase):

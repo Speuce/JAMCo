@@ -88,6 +88,8 @@ def update_privacies(request: HttpRequest):
         logger.debug(f"Update error:\n{err_msg}")
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
+    return JsonResponse(status=200, data={})
+
 
 @require_POST
 def get_user_privacies(request: HttpRequest):
