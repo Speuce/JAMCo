@@ -37,13 +37,13 @@ def get_privacies(user_id: int) -> Privacy:
     return query.get_privacies(user_id)
 
 
-def update_privacies(payload: dict):
+def update_privacies(payload: dict) -> None:
     try:
         privacies = payload.get("privacies")
         user = payload.get("user")
         query.update_privacies(user_id=user.id, payload=privacies)
-    except (IndexError, ValidationError) as err:
-        raise AttributeError(err.message)
+    except (AttributeError, IndexError, ValidationError):
+        raise AttributeError("Error updating")
 
 
 def add_friend(user1_id, user2_id):
