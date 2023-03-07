@@ -7,7 +7,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
-    id = factory.Faker("localized_ean13")
+    id = factory.Sequence(lambda n: n)
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
     username = factory.Sequence(lambda n: "username%d" % n)
