@@ -114,7 +114,7 @@ jobs:
         barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
         lcov-file: "./backend/coverage.lcov"
         base-lcov-file: "./coverage.lcov"
-        minimum-ratio: 0.5
+        minimum-ratio: 1
         send-summary-comment: true
         show-annotations: "warning" # Possible options warning|error
         app-name: "Backend"
