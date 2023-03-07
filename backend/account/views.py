@@ -42,9 +42,8 @@ def get_or_create_account(request: HttpRequest):
         # ID token is valid. Get the user's Google Account ID from the decoded token.
         logger.debug(f"Credential Validated for User.google_id: { idinfo['sub'] }")
 
-        user, created = business.get_or_create_user(idinfo)
-        logger.debug(f"Created user: {user.to_dict()}")
-        return JsonResponse({"data": user.to_dict(), "created": created})
+        user, token = business.get_or_create_user(idinfo)
+        return JsonResponse({"data": user.to_dict(), "token": token})
 
     except ValueError as err_msg:
         # Invalid token
@@ -109,3 +108,20 @@ def remove_friend(request: HttpRequest):
         return JsonResponse(status=200, data={})
     except Exception as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+@require_POST
+def validate_auth_token(request: HttpRequest):
+    """
+    Authenticates auth_token retrieved from local cookies
+    """
+
+    token = read_request(request)
+    logger.debug(f"validate_auth_token: {token}")
+
+    try:
+        user, new_token = business.authenticate_token(token)
+        return JsonResponse({"user": user.to_dict(), "token": new_token})
+    except ObjectDoesNotExist as err_msg:
+        logger.debug(f"Invalid Token: {err_msg}")
+        return JsonResponse(status=401, data={"error": repr(err_msg)})

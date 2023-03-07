@@ -1,56 +1,48 @@
-import { shallowMount } from '@vue/test-utils'
+import { flushPromises, shallowMount } from '@vue/test-utils'
 import MainView from '@/views/MainView.vue'
-import { expect, describe, it, vi } from 'vitest'
+import { expect, describe, it, vi, afterEach, beforeEach } from 'vitest'
 import { postRequest } from '@/helpers/requests.js'
+import { getAuthToken } from '@/helpers/auth-cookie.js'
 
 vi.mock('@/helpers/requests.js', () => ({
   postRequest: vi.fn(),
 }))
 
+vi.mock('@/helpers/auth-cookie.js', () => ({
+  getAuthToken: vi.fn(),
+  setAuthToken: vi.fn(),
+}))
+
+const mostPostRequest = () => {
+  return Promise.resolve({ data: {}, user: { id: -1 } })
+}
+
 describe('MainView', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+  beforeEach(() => {
+    postRequest.mockImplementation(mostPostRequest)
+  })
   it('sets userData when userSignedIn is called', () => {
     const wrapper = shallowMount(MainView)
-    const resp = { data: { id: -1 }, created: true }
+    const resp = { data: { id: -1 }, token: 'new_token' }
     wrapper.vm.userSignedIn(resp)
     expect(wrapper.vm.userData).toEqual({ id: -1 })
   })
 
-  it('opens setupModal when created is true', () => {
-    const wrapper = shallowMount(MainView)
-    const resp = { data: { id: -1 }, created: true }
-    wrapper.vm.userSignedIn(resp)
-    expect(wrapper.vm.setupModalVisible).toEqual(true)
-  })
-
-  it('doesnt open setupModal when created is false and required fields are filled', () => {
+  it('opens setupModal when a required field is not filled', () => {
     const wrapper = shallowMount(MainView)
     const resp = {
+      // no field_of_work present
       data: {
         id: -1,
         first_name: 'Spongeboy',
         last_name: 'Brownpants',
         country: 'Pacific Ocean',
-        field_of_work: 'Fry Cook',
-        email: 'bob@krab.com',
+        email: 'test_email',
       },
-      created: false,
-    }
-    wrapper.vm.userSignedIn(resp)
-    expect(wrapper.vm.setupModalVisible).toEqual(false)
-  })
-
-  it('opens setupModal when created is false and a required field is not filled', () => {
-    const wrapper = shallowMount(MainView)
-    const resp = {
-      // no email present
-      data: {
-        id: -1,
-        first_name: 'Spongeboy',
-        last_name: 'Brownpants',
-        country: 'Pacific Ocean',
-        field_of_work: 'Fry Cook',
-      },
-      created: false,
+      token: 'new_token',
     }
     wrapper.vm.userSignedIn(resp)
     expect(wrapper.vm.setupModalVisible).toEqual(true)
@@ -59,17 +51,38 @@ describe('MainView', () => {
   it('posts userData to update_account, closes setupModal on updateUserAccount call', async () => {
     const wrapper = shallowMount(MainView)
     expect(wrapper.vm.setupModalVisible).toEqual(false)
-    const resp = { data: { id: -1 }, created: true }
+    const resp = { data: { id: -1 }, token: 'new_token' }
     wrapper.vm.userSignedIn(resp)
     expect(wrapper.vm.setupModalVisible).toEqual(true)
 
-    wrapper.vm.updateUserAccount({ id: -1 })
+    await wrapper.vm.updateUserAccount({ id: -1 })
     await wrapper.vm.$nextTick()
+
     expect(postRequest).toHaveBeenCalledWith('account/api/update_account', {
       id: -1,
     })
 
     expect(wrapper.vm.userData).toEqual({ id: -1 })
     expect(wrapper.vm.setupModalVisible).toEqual(false)
+  })
+
+  it('authenticates token when cookie found', async () => {
+    getAuthToken.mockReturnValue('token')
+    shallowMount(MainView)
+    flushPromises()
+
+    expect(postRequest).toHaveBeenCalledWith(
+      'account/api/validate_auth_token',
+      'token',
+    )
+  })
+
+  it('logs out when logoutClicked', () => {
+    const wrapper = shallowMount(MainView)
+    delete window.location
+    window.location = { reload: vi.fn() }
+    wrapper.vm.logoutClicked()
+    expect(window.location.reload).toHaveBeenCalled()
+    expect(wrapper.vm.userData).toBe(null)
   })
 })
