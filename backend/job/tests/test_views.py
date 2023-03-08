@@ -81,6 +81,7 @@ class TestViews(TestCase):
 
         # Call the view function
         response = views.update_job(request)
+        mock_update_job.assert_called_with(job_data)
 
         # Check the response
         self.assertEqual(response.status_code, 200)
@@ -109,7 +110,7 @@ class TestViews(TestCase):
 
     @patch("job.business.create_job")
     def test_create_job_with_error(self, mock_create_job):
-        mock_create_job.side_effect = ObjectDoesNotExist("Something went wrong!")
+        mock_create_job.side_effect = KeyError("Something went wrong!")
         # Prepare data
         job_data = {"position": "Developer", "company": "Google"}
         request_body = json.dumps(job_data).encode("utf-8")
@@ -129,4 +130,5 @@ class TestViews(TestCase):
         request_body = json.dumps(job_data).encode("utf-8")
         request = self.factory.post("/update_job/", data=request_body, content_type="application/json")
         response = views.update_job(request)
+        mock_update_job.assert_called_with(job_data)
         self.assertEqual(response.status_code, 400)

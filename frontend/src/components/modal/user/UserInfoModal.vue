@@ -6,8 +6,15 @@
           <v-row class="inner-page-container">
             <v-col cols="12" sm="7" class="items">
               <v-row>
-                <v-col cols="12" sm="4">
+                <v-col cols="12" sm="5">
                   <h2>Settings</h2>
+                </v-col>
+                <v-col cols="12" sm="5">
+                  <v-btn class="margin-top" @click="this.$emit('logout')"
+                    >LOGOUT<v-divider class="mx-1" /><v-icon
+                      >mdi-logout</v-icon
+                    ></v-btn
+                  >
                 </v-col>
               </v-row>
               <v-row><br /></v-row>
@@ -188,7 +195,7 @@ export default {
   components: {
     Datepicker,
   },
-  emits: ['close', 'updateUser'],
+  emits: ['logout', 'close', 'updateUser'],
   props: {
     user: {
       type: Object,
@@ -216,7 +223,7 @@ export default {
       workFieldEmpty: false,
       emailEmpty: false,
       editingEnabled: false,
-      userData: props.user,
+      userData: { ...props.user },
     }
   },
   computed: {
@@ -281,6 +288,9 @@ export default {
 }
 .pad-left {
   padding-left: 12px;
+}
+.margin-top {
+  margin-top: 5px;
 }
 .scrollable {
   overflow-y: auto;

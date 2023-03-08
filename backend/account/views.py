@@ -42,8 +42,8 @@ def get_or_create_account(request: HttpRequest):
         # ID token is valid. Get the user's Google Account ID from the decoded token.
         logger.debug(f"Credential Validated for User.google_id: { idinfo['sub'] }")
 
-        user, created = business.get_or_create_user(idinfo)
-        return JsonResponse({"data": user.to_dict(), "created": created})
+        user, token = business.get_or_create_user(idinfo)
+        return JsonResponse({"data": user.to_dict(), "token": token})
 
     except ValueError as err_msg:
         # Invalid token
@@ -70,3 +70,58 @@ def update_account(request: HttpRequest):
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
     return JsonResponse(status=200, data={})
+
+
+@require_POST
+def add_friend(request: HttpRequest):
+    """
+    Takes two users' ids and makes it so those two users are friends with each other. If they were friends already, this
+    method doesn't do anything
+    """
+
+    try:
+        body = read_request(request)
+        user1_id = body["user1_id"]
+        user2_id = body["user2_id"]
+        logger.debug(f"add_friend: {user1_id}, {user2_id}")
+
+        business.add_friend(user1_id, user2_id)
+        return JsonResponse(status=200, data={})
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+@require_POST
+def remove_friend(request: HttpRequest):
+    """
+    Takes two users' ids and makes it so those two users are no longer friends with each other. If they weren't friends
+    before, this method doesn't do anything.
+    """
+
+    try:
+        body = read_request(request)
+        user1_id = body["user1_id"]
+        user2_id = body["user2_id"]
+        logger.debug(f"add_friend: {user1_id}, {user2_id}")
+
+        business.remove_friend(user1_id, user2_id)
+        return JsonResponse(status=200, data={})
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+@require_POST
+def validate_auth_token(request: HttpRequest):
+    """
+    Authenticates auth_token retrieved from local cookies
+    """
+
+    token = read_request(request)
+    logger.debug(f"validate_auth_token: {token}")
+
+    try:
+        user, new_token = business.authenticate_token(token)
+        return JsonResponse({"user": user.to_dict(), "token": new_token})
+    except ObjectDoesNotExist as err_msg:
+        logger.debug(f"Invalid Token: {err_msg}")
+        return JsonResponse(status=401, data={"error": repr(err_msg)})

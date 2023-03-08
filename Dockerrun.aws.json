@@ -9,5 +9,4 @@
             "ContainerPort": "8000"
         }
     ],
-    "Logging": "/backend/debug.log"
 }

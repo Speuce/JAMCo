@@ -21,6 +21,8 @@ jobs:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
       POSTGRES_HOST: '127.0.0.1'
+      TOKEN_ENCRYPTION_KEY: 4xu3i8YiTDl5Zm7HOAZTPlHh3gpqBbe7Gfn6vanqPyI=
+      PROD: 0
     services:
       postgres:
         image: postgres:15.1-alpine
@@ -113,7 +115,7 @@ jobs:
         barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
         lcov-file: "./backend/coverage.lcov"
         base-lcov-file: "./coverage.lcov"
-        minimum-ratio: 0
+        minimum-ratio: 1
         send-summary-comment: true
         show-annotations: "warning" # Possible options warning|error
         app-name: "Backend"

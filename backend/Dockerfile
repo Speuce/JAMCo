@@ -3,7 +3,7 @@ FROM python:3.11-alpine3.17
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-RUN apk add alpine-sdk build-base
+RUN apk add alpine-sdk build-base gcc musl-dev python3-dev libffi-dev openssl-dev
 
 RUN mkdir /backend
 COPY requirements.txt /backend/

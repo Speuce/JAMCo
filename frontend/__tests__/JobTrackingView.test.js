@@ -5,6 +5,7 @@ import testJobs from './test_data/test_jobs.json'
 import testCols from './test_data/test_column_mapping.json'
 import testJobsByColumn from './test_data/test_jobs_by_column.json'
 import { postRequest } from '@/helpers/requests.js'
+
 vi.mock('@/helpers/requests.js', () => ({
   postRequest: vi.fn(),
 }))
