@@ -20,6 +20,7 @@ export default {
         shape: 'pill',
       },
     )
+    window.signIn = this.onSignin
   },
 
   methods: {
