@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.exceptions import ObjectDoesNotExist
 from account import query, models
-from account.tests.factories import UserFactory
+from account.tests.factories import UserFactory, PrivacyFactory
 from django.utils import timezone
 from datetime import datetime
 
@@ -63,14 +63,14 @@ class PrivacyTests(TestCase):
         self.assertEqual(priv.user.id, user.id)
 
     def test_get_privacies(self):
-        user = UserFactory()
-        priv = query.create_privacies(user.id)
+        priv = PrivacyFactory()
+        user = priv.user
         privFetch = query.get_privacies(user.id)
         self.assertEqual(priv.id, privFetch.id)
 
     def test_invalid_privacies_get(self):
-        user = UserFactory()
-        query.create_privacies(user.id)
+        priv = PrivacyFactory()
+        user = priv.user
         self.assertEqual(models.Privacy.objects.count(), 1)
         # test invalid getting
         with self.assertRaises(ObjectDoesNotExist):
@@ -79,8 +79,8 @@ class PrivacyTests(TestCase):
 
 class UpdatePrivacyTests(TestCase):
     def test_update_privacies(self):
-        user = UserFactory()
-        priv = query.create_privacies(user.id)
+        priv = PrivacyFactory()
+        user = priv.user
         # update privacies to opposite of default
         query.update_privacies(
             user.id,
@@ -105,8 +105,8 @@ class UpdatePrivacyTests(TestCase):
         self.assertNotEqual(priv.to_dict(), newPriv.to_dict())
 
     def test_invalid_update_privacies(self):
-        user = UserFactory()
-        priv = query.create_privacies(user.id)
+        priv = PrivacyFactory()
+        user = priv.user
         # update privacies to opposite of default
         with self.assertRaises(AttributeError):
             query.update_privacies(
