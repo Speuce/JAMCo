@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.core.exceptions import ObjectDoesNotExist
 from account import query, models
 from account.tests.factories import UserFactory
+from django.utils import timezone
+from datetime import datetime
 
 
 class GetOrCreateUserTests(TestCase):
@@ -34,8 +36,7 @@ class UpdateAccountTests(TestCase):
         query.update_user({"id": user.id, "first_name": "Rob"})
 
         # The modifications should hold
-        # Unable to properly mock this access without making test trivial
-        self.assertEqual(query.get_or_create_user({"sub": user.google_id}).first_name, "Rob")
+        self.assertEqual(models.User.objects.get(id=user.id).first_name, "Rob")
 
     def test_invalid_update_account(self):
         # Create an account first # 'sub' is the field name from google tokens
@@ -201,3 +202,21 @@ class FriendTests(TestCase):
             query.remove_friend(user.id, -1)
         with self.assertRaises(ObjectDoesNotExist):
             query.remove_friend(-1, -1)
+
+
+class GetUserByTokenFieldsTests(TestCase):
+    def test_get_user_by_token_fields(self):
+        login = timezone.now()
+        user = UserFactory(google_id="gID", last_login=login)
+        retrieved_user = query.get_user_by_token_fields(user.google_id, login)
+        self.assertEqual(user, retrieved_user)
+
+
+class UpdateLastUserLoginTest(TestCase):
+    def test_update_last_user_login(self):
+        prev_login = datetime.strptime("2023-03-03 01:28:02.710196+00:00", "%Y-%m-%d %H:%M:%S.%f%z")
+        user = UserFactory(last_login=prev_login)
+        self.assertEqual(user.last_login, prev_login)
+        query.update_user_last_login(user)
+        self.assertNotEqual(user.last_login, prev_login)
+        self.assertTrue(user.last_login > prev_login)

@@ -19,7 +19,10 @@
       </v-col>
     </v-row>
     <div class="page-container flex-grow-1">
-      <LoginModal v-if="!userData" @signin="userSignedIn" />
+      <LoginModal
+        v-if="!userData && failedAuthentication"
+        @signin="userSignedIn"
+      />
       <AccountSetupModal
         v-if="setupModalVisible"
         @updateUser="updateUserAccount"
@@ -30,6 +33,7 @@
         @updateUser="updateUserAccount"
         :user="this.userData"
         @close="userInfoModalVisible = false"
+        @logout="logoutClicked"
       />
       <Suspense>
         <JobTrackingView
@@ -48,6 +52,7 @@ import JobTrackingView from './JobTrackingView.vue'
 import AccountSetupModal from '../components/modal/setup/AccountSetupModal.vue'
 import UserInfoModal from '../components/modal/user/UserInfoModal.vue'
 import { postRequest } from '@/helpers/requests.js'
+import { getAuthToken, setAuthToken } from '@/helpers/auth-cookie.js'
 
 export default {
   components: {
@@ -62,16 +67,33 @@ export default {
       userPrivacies: null,
       setupModalVisible: false,
       userInfoModalVisible: false,
-      // TODO grab user data from cookie
+      failedAuthentication: false,
     }
   },
+  async mounted() {
+    let token = getAuthToken()
+    if (token) {
+      await postRequest('account/api/validate_auth_token', token).then(
+        (response) => {
+          if (response.user) {
+            this.userSignedIn({ data: response.user, token: response.token })
+          }
+        },
+      )
+    }
+    if (!this.userData) this.failedAuthentication = true
+  },
   methods: {
+    logoutClicked() {
+      setAuthToken('')
+      location.reload()
+    },
     userSignedIn(resp) {
       this.userData = resp.data
-      if (resp.created || this.setupIncomplete()) {
+      if (this.setupIncomplete()) {
         this.setupModalVisible = true
       }
-      // TODO set cookie
+      setAuthToken(resp.token)
     },
     setupIncomplete() {
       // check if any req. fields are empty

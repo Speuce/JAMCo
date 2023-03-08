@@ -69,7 +69,7 @@ def create_job(request: HttpRequest):
     try:
         job = business.create_job(body)
         return JsonResponse(status=200, data={"job": job.to_dict()})
-    except ObjectDoesNotExist as err_msg:
+    except KeyError as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
 
@@ -85,5 +85,5 @@ def update_job(request: HttpRequest):
     try:
         business.update_job(body)
         return JsonResponse(status=200, data={})
-    except ObjectDoesNotExist as err_msg:
+    except (ObjectDoesNotExist, AttributeError) as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})
