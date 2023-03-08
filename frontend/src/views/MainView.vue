@@ -59,6 +59,7 @@ export default {
   data() {
     return {
       userData: null,
+      userPrivacies: null,
       setupModalVisible: false,
       userInfoModalVisible: false,
       // TODO grab user data from cookie

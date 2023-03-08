@@ -122,6 +122,43 @@
               <v-row>
                 <h3>Privacy Options</h3>
               </v-row>
+              <v-row><br /></v-row>
+              <v-list lines="three" select-strategy="classic">
+                <v-list-item value="is_searchable">
+                  <template v-slot:prepend="{ isActive }">
+                    <v-list-item-action start>
+                      <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
+                    </v-list-item-action>
+                  </template>
+                  <v-list-item-title>Searchable</v-list-item-title>
+                  <v-list-item-subtitle>
+                    Let other users find and add me as a friend (does not affect
+                    your current friends).
+                  </v-list-item-subtitle>
+                </v-list-item>
+                <v-list-item value="share_kanban">
+                  <template v-slot:prepend="{ isActive }">
+                    <v-list-item-action start>
+                      <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
+                    </v-list-item-action>
+                  </template>
+                  <v-list-item-title>Share Applications</v-list-item-title>
+                  <v-list-item-subtitle>
+                    Allow my friends to view my application board.
+                  </v-list-item-subtitle>
+                </v-list-item>
+                <v-list-item value="cover_letter_requestable">
+                  <template v-slot:prepend="{ isActive }">
+                    <v-list-item-action start>
+                      <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
+                    </v-list-item-action>
+                  </template>
+                  <v-list-item-title>Cover Letter Requests</v-list-item-title>
+                  <v-list-item-subtitle>
+                    Allow my friends to request cover letter reviews from me.
+                  </v-list-item-subtitle>
+                </v-list-item>
+              </v-list>
             </v-col>
             <v-row class="center offset-right">
               <v-col cols="12" sm="8">
