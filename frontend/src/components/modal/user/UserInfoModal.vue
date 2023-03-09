@@ -261,6 +261,7 @@ export default {
       emailEmpty: false,
       editingEnabled: false,
       userData: { ...props.user },
+      privacies: { ...props.privacies },
     }
   },
   computed: {

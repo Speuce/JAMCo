@@ -32,7 +32,8 @@
         v-if="userInfoModalVisible"
         @updateUser="updateUserAccount"
         :user="this.userData"
-        @close="userInfoModalVisible = false"
+        :privacies="this.userPrivacies"
+        @close="updateUserPrivacies"
         @logout="logoutClicked"
       />
       <Suspense>
@@ -109,6 +110,14 @@ export default {
       await postRequest('account/api/update_account', userData)
       this.userData = userData
       this.setupModalVisible = false
+      this.userInfoModalVisible = false
+    },
+    async updateUserPrivacies(userPrivacies) {
+      await postRequest('account/api/update_privacies', {
+        privacies: userPrivacies,
+        user_id: this.userData.id,
+      })
+      this.userPrivacies = userPrivacies
       this.userInfoModalVisible = false
     },
   },
