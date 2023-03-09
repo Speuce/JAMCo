@@ -146,7 +146,7 @@ class ReviewRequestTests(TestCase):
         # Prepare data
         review_request_data = {"job_id": job.id, "message": "i showed you my cover letter please respond"}
         request_body = json.dumps(review_request_data).encode("utf-8")
-        request = self.factory.post("/create_job/", data=request_body, content_type="application/json")
+        request = self.factory.post("/create_review_request/", data=request_body, content_type="application/json")
 
         # Set up mock
         review_request = MagicMock(to_dict=MagicMock(return_value={**review_request_data, "id": 1}))
@@ -161,7 +161,7 @@ class ReviewRequestTests(TestCase):
 
     def test_create_review_request_with_error(self, mock_create_review_request):
         request_body = json.dumps({}).encode("utf-8")
-        request = self.factory.post("/create_job/", data=request_body, content_type="application/json")
+        request = self.factory.post("/create_review_request/", data=request_body, content_type="application/json")
 
         # Set up mock
         mock_create_review_request.side_effect = Exception("Something went wrong!")
