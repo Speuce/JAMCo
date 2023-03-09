@@ -212,11 +212,7 @@
             <v-divider class="mx-1" />
             {{ !this.editingEnabled ? 'Edit' : 'Save' }}
           </v-btn>
-          <v-btn
-            color="blue-darken-1"
-            variant="text"
-            @click="this.$emit('close')"
-          >
+          <v-btn color="blue-darken-1" variant="text" @click="closeInfo">
             Close
           </v-btn>
         </v-card-actions>
@@ -307,6 +303,9 @@ export default {
       } else {
         this.editingEnabled = true
       }
+    },
+    closeInfo() {
+      this.$emit('close', this.privacies)
     },
   },
 }

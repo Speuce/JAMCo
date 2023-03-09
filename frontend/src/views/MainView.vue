@@ -95,6 +95,7 @@ export default {
         this.setupModalVisible = true
       }
       setAuthToken(resp.token)
+      this.fetchUserPrivacies()
     },
     setupIncomplete() {
       // check if any req. fields are empty
@@ -105,6 +106,12 @@ export default {
         !this.userData.country ||
         !this.userData.field_of_work
       )
+    },
+    async fetchUserPrivacies() {
+      const resp = await postRequest('account/api/get_user_privacies', {
+        user_id: this.userData.id,
+      })
+      this.userPrivacies = resp.data
     },
     async updateUserAccount(userData) {
       await postRequest('account/api/update_account', userData)

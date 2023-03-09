@@ -79,7 +79,7 @@ def update_privacies(request: HttpRequest):
     """
 
     body = read_request(request)
-    logger.debug(f"update_privacies: {id}")
+    logger.debug(f"update_privacies: {body.user_id}")
 
     try:
         business.update_privacies(body)
