@@ -1,22 +1,13 @@
 name: Dev deployment from Github to AWS
 on:
-  push:
-    # Pattern matched against refs/tags
-    tags:        
-      - '*'     
+  release:
+    types: [published]
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@master
-        with:
-          fetch-depth: 0
-
-      - name: Checkout latest release tag
-        run: |
-          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
-          git checkout $LATEST_TAG
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
