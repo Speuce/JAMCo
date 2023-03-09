@@ -33,7 +33,7 @@
         @updateUser="updateUserAccount"
         :user="this.userData"
         :privacies="this.userPrivacies"
-        @close="updateUserPrivacies"
+        @close="this.userInfoModalVisible = false"
         @logout="logoutClicked"
       />
       <Suspense>
@@ -114,18 +114,15 @@ export default {
         this.userPrivacies = privs
       })
     },
-    async updateUserAccount(userData) {
+    async updateUserAccount(userData, userPrivacies) {
       await postRequest('account/api/update_account', userData)
-      this.userData = userData
-      this.setupModalVisible = false
-      this.userInfoModalVisible = false
-    },
-    async updateUserPrivacies(userPrivacies) {
       await postRequest('account/api/update_privacies', {
         privacies: userPrivacies,
         user_id: this.userData.id,
       })
+      this.userData = userData
       this.userPrivacies = userPrivacies
+      this.setupModalVisible = false
       this.userInfoModalVisible = false
     },
   },

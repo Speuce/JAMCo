@@ -136,6 +136,13 @@
                     <v-list-item-action start>
                       <v-checkbox-btn
                         :model-value="this.userPrivacies.is_searchable"
+                        :disabled="!this.editingEnabled"
+                        @click="
+                          () => {
+                            this.userPrivacies.is_searchable =
+                              !this.userPrivacies.is_searchable
+                          }
+                        "
                       ></v-checkbox-btn>
                     </v-list-item-action>
                   </template>
@@ -146,9 +153,18 @@
                   </v-list-item-subtitle>
                 </v-list-item>
                 <v-list-item value="share_kanban">
-                  <template v-slot:prepend="{ isActive }">
+                  <template v-slot:prepend>
                     <v-list-item-action start>
-                      <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
+                      <v-checkbox-btn
+                        :model-value="this.userPrivacies.share_kanban"
+                        :disabled="!this.editingEnabled"
+                        @click="
+                          () => {
+                            this.userPrivacies.share_kanban =
+                              !this.userPrivacies.share_kanban
+                          }
+                        "
+                      ></v-checkbox-btn>
                     </v-list-item-action>
                   </template>
                   <v-list-item-title>Share Applications</v-list-item-title>
@@ -157,9 +173,20 @@
                   </v-list-item-subtitle>
                 </v-list-item>
                 <v-list-item value="cover_letter_requestable">
-                  <template v-slot:prepend="{ isActive }">
+                  <template v-slot:prepend>
                     <v-list-item-action start>
-                      <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
+                      <v-checkbox-btn
+                        :model-value="
+                          this.userPrivacies.cover_letter_requestable
+                        "
+                        :disabled="!this.editingEnabled"
+                        @click="
+                          () => {
+                            this.userPrivacies.cover_letter_requestable =
+                              !this.userPrivacies.cover_letter_requestable
+                          }
+                        "
+                      ></v-checkbox-btn>
                     </v-list-item-action>
                   </template>
                   <v-list-item-title>Cover Letter Requests</v-list-item-title>
@@ -214,7 +241,11 @@
             <v-divider class="mx-1" />
             {{ !this.editingEnabled ? 'Edit' : 'Save' }}
           </v-btn>
-          <v-btn color="blue-darken-1" variant="text" @click="closeInfo">
+          <v-btn
+            color="blue-darken-1"
+            variant="text"
+            @click="this.$emit('close')"
+          >
             Close
           </v-btn>
         </v-card-actions>
@@ -312,13 +343,10 @@ export default {
         !this.workFieldEmpty &&
         !this.emailEmpty
       ) {
-        this.$emit('updateUser', this.userData)
+        this.$emit('updateUser', this.userData, this.userPrivacies)
       } else {
         this.editingEnabled = true
       }
-    },
-    closeInfo() {
-      this.$emit('close', this.userPrivacies)
     },
   },
 }

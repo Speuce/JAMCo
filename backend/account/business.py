@@ -42,7 +42,7 @@ def update_privacies(payload: dict) -> None:
     try:
         privacies = payload.get("privacies")
         uid = payload.get("user_id")
-        query.update_privacies(user_id=uid, payload=privacies)
+        query.update_privacies(in_user_id=uid, payload=privacies)
     except (AttributeError, IndexError, ValidationError):
         raise AttributeError("Error updating")
 
