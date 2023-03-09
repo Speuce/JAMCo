@@ -26,3 +26,32 @@ class Job(models.Model):
             "deadlines": self.deadlines,
             "type": self.type,
         }
+
+
+class ReviewRequest(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    message = models.TextField(blank=True)
+    fulfilled = models.BooleanField(default=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "job_id": self.job.id,
+            "message": self.message,
+            "fulfilled": self.fulfilled,
+        }
+
+
+class Review(models.Model):
+    reviewer = models.ForeignKey(User, on_delete=models.CASCADE)
+    request = models.ForeignKey(ReviewRequest, on_delete=models.SET_NULL, null=True)
+    response = models.TextField(blank=True)
+    completed = models.DateTimeField(null=True)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "reviewer_id": self.reviewer.id,
+            "response": self.response,
+            "completed": self.completed,
+        }
