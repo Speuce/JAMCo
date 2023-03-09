@@ -158,3 +158,17 @@ class ReviewRequestTests(TestCase):
         # Check the response
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content.decode("utf-8"), json.dumps({"review_request": review_request.to_dict()}))
+
+    def test_create_review_request_with_error(self, mock_create_review_request):
+        request_body = json.dumps({}).encode("utf-8")
+        request = self.factory.post("/create_job/", data=request_body, content_type="application/json")
+
+        # Set up mock
+        mock_create_review_request.side_effect = Exception("Something went wrong!")
+
+        # Call the view function
+        response = views.create_review_request(request)
+
+        # Check the response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.content.decode("utf-8"), json.dumps({"error": "Exception('Something went wrong!')"}))
