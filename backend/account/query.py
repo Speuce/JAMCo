@@ -47,9 +47,9 @@ def update_user(payload: dict):
     user.save()
 
 
-def create_privacies(in_user_id) -> Privacy:
+def create_privacies(in_user_id):
     # potential option for defaults? i.e. all True vs all False
-    return Privacy.objects.create(
+    Privacy.objects.create(
         user=User.objects.get(id=in_user_id),
         is_searchable=True,
         share_kanban=True,

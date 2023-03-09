@@ -58,9 +58,8 @@ class UpdateAccountTests(TestCase):
 class PrivacyTests(TestCase):
     def test_create_privacies(self):
         user = UserFactory()
-        priv = query.create_privacies(user.id)
+        query.create_privacies(user.id)
         self.assertEqual(models.Privacy.objects.count(), 1)
-        self.assertEqual(priv.user.id, user.id)
 
     def test_get_privacies(self):
         priv = PrivacyFactory()

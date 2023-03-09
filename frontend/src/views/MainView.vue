@@ -110,8 +110,8 @@ export default {
     async fetchUserPrivacies() {
       await postRequest('account/api/get_user_privacies', {
         user_id: this.userData.id,
-      }).then((resp) => {
-        this.userPrivacies = resp.data
+      }).then((privs) => {
+        this.userPrivacies = privs
       })
     },
     async updateUserAccount(userData) {

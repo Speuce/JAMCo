@@ -104,7 +104,7 @@ def get_user_privacies(request: HttpRequest):
 
     try:
         priv = business.get_privacies(user_id)
-        return JsonResponse(status=200, data={"privacy_data": priv.to_dict()})
+        return JsonResponse(data=priv.to_dict())
     except Exception as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
