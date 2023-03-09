@@ -7,19 +7,19 @@ class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
-    id = factory.Faker("localized_ean8")
+    id = factory.Sequence(lambda n: n)
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
-    username = factory.Faker("domain_word")
+    username = factory.Sequence(lambda n: "username%d" % n)
     email = factory.Faker("ascii_safe_email")
-    google_id = factory.Faker("localized_ean8")
+    google_id = factory.Faker("localized_ean13")
 
 
 class PrivacyFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Privacy
 
-    id = factory.Faker("localized_ean8")
+    id = factory.Sequence(lambda n: n)
     user = factory.SubFactory(UserFactory)
     is_searchable = True
     share_kanban = True
