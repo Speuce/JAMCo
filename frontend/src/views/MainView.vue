@@ -108,10 +108,11 @@ export default {
       )
     },
     async fetchUserPrivacies() {
-      const resp = await postRequest('account/api/get_user_privacies', {
+      await postRequest('account/api/get_user_privacies', {
         user_id: this.userData.id,
+      }).then((resp) => {
+        this.userPrivacies = resp.data
       })
-      this.userPrivacies = resp.data
     },
     async updateUserAccount(userData) {
       await postRequest('account/api/update_account', userData)

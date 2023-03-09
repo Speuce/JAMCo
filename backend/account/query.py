@@ -47,22 +47,22 @@ def update_user(payload: dict):
     user.save()
 
 
-def create_privacies(user_id) -> Privacy:
+def create_privacies(in_user_id) -> Privacy:
     # potential option for defaults? i.e. all True vs all False
     return Privacy.objects.create(
-        user=User.objects.get(id=user_id),
+        user=User.objects.get(id=in_user_id),
         is_searchable=True,
         share_kanban=True,
         cover_letter_requestable=True,
     )
 
 
-def get_privacies(user_id) -> Privacy:
-    return Privacy.objects.get(user__id=user_id)
+def get_privacies(in_user_id) -> Privacy:
+    return Privacy.objects.get(user__id=in_user_id)
 
 
-def update_privacies(user_id, payload: dict):
-    privacies = Privacy.objects.get(user__id=user_id)
+def update_privacies(in_user_id, payload: dict):
+    privacies = Privacy.objects.get(user__id=in_user_id)
     for key, value in payload.items():
         # If there are invalid keys in the payload (e.g. the frontend misspelled
         # the name of a field), raise an exception

@@ -132,9 +132,11 @@
               <v-row><br /></v-row>
               <v-list lines="three" select-strategy="classic">
                 <v-list-item value="is_searchable">
-                  <template v-slot:prepend="{ isActive }">
+                  <template v-slot:prepend>
                     <v-list-item-action start>
-                      <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
+                      <v-checkbox-btn
+                        :model-value="this.userPrivacies.is_searchable"
+                      ></v-checkbox-btn>
                     </v-list-item-action>
                   </template>
                   <v-list-item-title>Searchable</v-list-item-title>
@@ -246,6 +248,17 @@ export default {
         }
       },
     },
+    privacies: {
+      type: Object,
+      default: () => {
+        return {
+          id: -1,
+          is_searchable: false,
+          share_kanban: false,
+          cover_letter_requestable: false,
+        }
+      },
+    },
   },
   data(props) {
     return {
@@ -257,7 +270,7 @@ export default {
       emailEmpty: false,
       editingEnabled: false,
       userData: { ...props.user },
-      privacies: { ...props.privacies },
+      userPrivacies: { ...props.privacies },
     }
   },
   computed: {
@@ -305,7 +318,7 @@ export default {
       }
     },
     closeInfo() {
-      this.$emit('close', this.privacies)
+      this.$emit('close', this.userPrivacies)
     },
   },
 }
