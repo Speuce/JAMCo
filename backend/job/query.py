@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.query import QuerySet
 from account.models import User
 from column.models import KanbanColumn
-from job.models import Job
+from job.models import Job, ReviewRequest
 
 logger = logging.getLogger(__name__)
 
@@ -71,3 +71,9 @@ def get_minimum_jobs(in_user: int) -> QuerySet:
 
 def delete_job(in_user: int, job_id: int):
     Job.objects.get(id=job_id, user__id=in_user).delete()
+
+
+def create_review_request(payload: dict):
+    return ReviewRequest.objects.create(
+        job=Job.objects.get(id=payload["job_id"]), message=payload["message"], fulfilled=False
+    )

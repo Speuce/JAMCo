@@ -24,4 +24,4 @@ def update_job(payload: dict) -> None:
 
 
 def create_review_request(payload: dict) -> ReviewRequest:
-    pass
+    query.create_review_request(payload)

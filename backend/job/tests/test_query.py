@@ -103,3 +103,26 @@ class DeleteJobTests(TestCase):
             query.delete_job(-1, -1)
 
         self.assertEqual(models.Job.objects.count(), 1)
+
+
+class CreateReviewRequestTests(TestCase):
+    def test_create_review_request(self):
+        job = JobFactory()
+        message = "You should review my cover letter... NOW!"
+        payload = {"job_id": job.id, "message": message}
+
+        review_request = query.create_review_request(payload)
+        self.assertEqual(review_request.job_id, job.id)
+        self.assertEqual(review_request.message, message)
+        self.assertEqual(review_request.fulfilled, False)
+
+    def test_invalid_create_review_request(self):
+        # Payload has missing fields
+        with self.assertRaises(KeyError):
+            query.create_review_request({})
+
+        # Job doesn't exist
+        message = "Like and subscribe for more cover letters"
+        payload_nonexistent_job = {"job_id": -1, "reviewer_id": -1, "message": message}
+        with self.assertRaises(ObjectDoesNotExist):
+            query.create_review_request(payload_nonexistent_job)
