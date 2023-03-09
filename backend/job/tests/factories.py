@@ -9,7 +9,7 @@ class JobFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Job
 
-    id = factory.Faker("localized_ean8")
+    id = factory.Sequence(lambda n: n)
     kcolumn = factory.SubFactory(KanbanColumnFactory)
     user = factory.SubFactory(UserFactory)
     position_title = "Position"
