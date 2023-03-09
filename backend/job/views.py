@@ -87,3 +87,19 @@ def update_job(request: HttpRequest):
         return JsonResponse(status=200, data={})
     except (ObjectDoesNotExist, AttributeError) as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+@require_POST
+def create_review_request(request: HttpRequest):
+    """
+    Creates a request for a cover letter review
+    """
+
+    body = read_request(request)
+    logger.debug(f"create_review_request: {body}")
+
+    try:
+        review_request = business.create_review_request(body)
+        return JsonResponse(status=200, data={"review_request": review_request.to_dict()})
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})

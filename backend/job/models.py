@@ -52,6 +52,7 @@ class Review(models.Model):
         return {
             "id": self.id,
             "reviewer_id": self.reviewer.id,
+            "request_id": self.request_id,
             "response": self.response,
             "completed": self.completed,
         }

@@ -3,6 +3,7 @@ from unittest.mock import patch, MagicMock
 from django.test import RequestFactory, TestCase
 from django.core.exceptions import ObjectDoesNotExist
 from job import views
+from job.tests.factories import JobFactory
 
 
 class TestViews(TestCase):
@@ -132,3 +133,28 @@ class TestViews(TestCase):
         response = views.update_job(request)
         mock_update_job.assert_called_with(job_data)
         self.assertEqual(response.status_code, 400)
+
+
+@patch("job.business.create_review_request")
+class ReviewRequestTests(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+
+    def test_create_review_request(self, mock_create_review_request):
+        job = JobFactory()
+
+        # Prepare data
+        review_request_data = {"job_id": job.id, "message": "i showed you my cover letter please respond"}
+        request_body = json.dumps(review_request_data).encode("utf-8")
+        request = self.factory.post("/create_job/", data=request_body, content_type="application/json")
+
+        # Set up mock
+        review_request = MagicMock(to_dict=MagicMock(return_value={**review_request_data, "id": 1}))
+        mock_create_review_request.return_value = review_request
+
+        # Call the view function
+        response = views.create_review_request(request)
+
+        # Check the response
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode("utf-8"), json.dumps({"review_request": review_request.to_dict()}))
