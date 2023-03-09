@@ -4,9 +4,9 @@
       <v-card style="overflow: hidden">
         <v-row>
           <v-row class="inner-page-container">
-            <v-col cols="12" sm="7" class="items">
+            <v-col cols="12" sm="6" class="items">
               <v-row>
-                <v-col cols="12" sm="5">
+                <v-col cols="12" sm="7">
                   <h2>Settings</h2>
                 </v-col>
                 <v-col cols="12" sm="5">
