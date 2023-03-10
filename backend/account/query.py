@@ -109,15 +109,15 @@ def create_friend_request(from_user_id, to_user_id) -> FriendRequest:
     )
 
 
-def accept_friend_request(request_id, to_user_id) -> None:
-    request = FriendRequest.objects.get(id=request_id, to_user_id=to_user_id)
+def accept_friend_request(request_id, to_user_id, from_user_id) -> None:
+    request = FriendRequest.objects.get(id=request_id, to_user_id=to_user_id, from_user_id=from_user_id)
     request.accepted = True
     request.acknowledged = timezone.now()
     request.save()
 
 
-def deny_friend_request(request_id, to_user_id) -> None:
-    request = FriendRequest.objects.get(id=request_id, to_user__id=to_user_id)
+def deny_friend_request(request_id, to_user_id, from_user_id) -> None:
+    request = FriendRequest.objects.get(id=request_id, to_user__id=to_user_id, from_user_id=from_user_id)
     request.acknowledged = timezone.now()
     request.save()
 

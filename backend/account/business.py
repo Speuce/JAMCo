@@ -95,9 +95,9 @@ def accept_friend_request(request_id, to_user_id, from_user_id) -> None:
         raise ObjectDoesNotExist("Friend Request Does Not Exist")
 
 
-def deny_friend_request(request_id, user_id) -> None:
-    if query.pending_friend_request_exists(request_id=request_id, to_user_id=user_id):
-        query.deny_friend_request(request_id=request_id, to_user_id=user_id)
+def deny_friend_request(request_id, to_user_id, from_user_id) -> None:
+    if query.pending_friend_request_exists(request_id=request_id, to_user_id=to_user_id, from_user_id=from_user_id):
+        query.deny_friend_request(request_id=request_id, to_user_id=to_user_id, from_user_id=from_user_id)
     else:
         raise ObjectDoesNotExist("Friend Request Does Not Exist")
 

@@ -346,7 +346,9 @@ class AcceptFriendRequestTests(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
-        mock_accept_friend_request.assert_called_with(request_id=mocked_req.id, user_id=mocked_req.to_user.id)
+        mock_accept_friend_request.assert_called_with(
+            request_id=mocked_req.id, to_user_id=mocked_req.to_user.id, from_user_id=mocked_req.from_user.id
+        )
 
     def test_accept_friend_request_error(self, mock_accept_friend_request):
         mock_accept_friend_request.side_effect = ObjectDoesNotExist()
@@ -356,7 +358,7 @@ class AcceptFriendRequestTests(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
-        mock_accept_friend_request.assert_called_with(request_id=0, user_id=0)
+        mock_accept_friend_request.assert_called_with(request_id=0, to_user_id=0, from_user_id=0)
 
 
 @patch("account.business.deny_friend_request")
@@ -375,7 +377,9 @@ class DenyFriendRequestTests(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
-        mock_deny_friend_request.assert_called_with(request_id=mocked_req.id, user_id=mocked_req.to_user.id)
+        mock_deny_friend_request.assert_called_with(
+            request_id=mocked_req.id, to_user_id=mocked_req.to_user.id, from_user_id=mocked_req.from_user.id
+        )
 
     def test_deny_friend_request_error(self, mock_deny_friend_request):
         mock_deny_friend_request.side_effect = ObjectDoesNotExist()
@@ -385,7 +389,7 @@ class DenyFriendRequestTests(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
-        mock_deny_friend_request.assert_called_with(request_id=0, user_id=0)
+        mock_deny_friend_request.assert_called_with(request_id=0, to_user_id=0, from_user_id=0)
 
 
 class GetFriendRequestsStatusTests(TestCase):

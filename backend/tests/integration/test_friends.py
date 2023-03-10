@@ -93,7 +93,7 @@ class AcceptFriendRequestTests(TransactionTestCase):
         self.assertFalse(FriendRequest.objects.get(id=req.id).acknowledged)
         response = self.client.post(
             reverse("accept_friend_request"),
-            json.dumps({"request_id": req.id, "user_id": req.to_user.id}),
+            json.dumps({"request_id": req.id, "to_user_id": req.to_user.id, "from_user_id": req.from_user.id}),
             content_type="application/json",
         )
 
@@ -110,7 +110,7 @@ class AcceptFriendRequestTests(TransactionTestCase):
         self.assertTrue(FriendRequest.objects.get(id=req.id))
         response = self.client.post(
             reverse("accept_friend_request"),
-            json.dumps({"request_id": req.id, "user_id": req.to_user.id}),
+            json.dumps({"request_id": req.id, "to_user_id": req.to_user.id, "from_user_id": req.from_user.id}),
             content_type="application/json",
         )
 
@@ -129,7 +129,7 @@ class DenyFriendRequestTests(TransactionTestCase):
         self.assertFalse(FriendRequest.objects.get(id=req.id).acknowledged)
         response = self.client.post(
             reverse("deny_friend_request"),
-            json.dumps({"request_id": req.id, "user_id": req.to_user.id}),
+            json.dumps({"request_id": req.id, "to_user_id": req.to_user.id, "from_user_id": req.from_user.id}),
             content_type="application/json",
         )
 
@@ -147,7 +147,7 @@ class DenyFriendRequestTests(TransactionTestCase):
         self.assertTrue(FriendRequest.objects.get(id=req.id))
         response = self.client.post(
             reverse("deny_friend_request"),
-            json.dumps({"request_id": req.id, "user_id": alt_user.id}),
+            json.dumps({"request_id": req.id, "user_id": alt_user.id, "from_user_id": req.from_user.id}),
             content_type="application/json",
         )
 
