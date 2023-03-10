@@ -1,9 +1,10 @@
 import json
 from django.test import TransactionTestCase
 from django.urls import reverse
-from job.models import Job
+from job.models import Job, ReviewRequest
 from account.tests.factories import UserFactory
 from column.tests.factories import KanbanColumnFactory
+from job.tests.factories import JobFactory
 
 
 class TestViews(TransactionTestCase):
@@ -509,3 +510,24 @@ class TestViews(TransactionTestCase):
             response.content.decode("utf-8"),
             json.dumps({"error": "ObjectDoesNotExist('Job with that User does not exist')"}),
         )
+
+    def test_create_review_request(self):
+        self.assertEqual(len(ReviewRequest.objects.all()), 0)
+
+        job = JobFactory()
+        payload = {"job_id": job.id, "message": "i showed you my cover letter please respond"}
+
+        response = self.client.post(
+            reverse("create_review_request"),
+            json.dumps(payload),
+            content_type="application/json",
+        )
+
+        # Check the response
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(ReviewRequest.objects.all()), 1)
+        response_dict = json.loads(response.content)["review_request"]
+        self.assertGreaterEqual(response_dict["id"], 0)
+        self.assertEqual(response_dict["job_id"], payload["job_id"])
+        self.assertEqual(response_dict["message"], payload["message"])
+        self.assertEqual(response_dict["fulfilled"], False)
