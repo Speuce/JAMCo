@@ -129,7 +129,6 @@ def get_friend_requests_status(user_id) -> list[QuerySet, QuerySet]:
     received = FriendRequest.objects.filter(to_user__id=user_id).values(
         "accepted", "acknowledged", "from_user_id", "id", "sent", "to_user_id"
     )
-
     return sent, received
 
 

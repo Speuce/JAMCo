@@ -392,9 +392,35 @@ class DenyFriendRequestTests(TestCase):
         mock_deny_friend_request.assert_called_with(request_id=0, to_user_id=0, from_user_id=0)
 
 
+@patch("account.business.get_friend_requests_status")
 class GetFriendRequestsStatusTests(TestCase):
-    def test_get_friend_requests_status_valid(self):
-        self.assertTrue(False)
+    def test_get_friend_requests_status_valid(self, mock_get_friend_requests_status):
+        sent = [
+            {"id": 0, "from_user_id": 0, "to_user_id": 0, "sent": "now", "accepted": False, "acknowledged": None},
+            {"id": 1, "from_user_id": 0, "to_user_id": 0, "sent": "now", "accepted": False, "acknowledged": None},
+        ]
+        received = [
+            {"id": 2, "from_user_id": 0, "to_user_id": 0, "sent": "now", "accepted": False, "acknowledged": None},
+            {"id": 3, "from_user_id": 0, "to_user_id": 0, "sent": "later", "accepted": False, "acknowledged": None},
+        ]
+        mock_get_friend_requests_status.return_value = sent, received
 
-    def test_get_friend_requests_status_error(self):
-        self.assertTrue(False)
+        response = self.client.post(
+            reverse("get_friend_requests_status"),
+            json.dumps({"user_id": 0}),
+            content_type="application/json",
+        )
+        content = json.loads(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(content["sent"], sent)
+        self.assertEqual(content["received"], received)
+
+    def test_get_friend_requests_status_error(self, mock_get_friend_requests_status):
+        mock_get_friend_requests_status.side_effect = Exception()
+        response = self.client.post(
+            reverse("get_friend_requests_status"),
+            json.dumps({"user_id": 0}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        mock_get_friend_requests_status.assert_called_with(user_id=0)

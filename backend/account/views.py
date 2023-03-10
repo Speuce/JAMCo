@@ -236,7 +236,7 @@ def get_friend_requests_status(request: HttpRequest):
         user_id = body["user_id"]
         logger.debug(f"get_friend_requests_status: {user_id}")
 
-        sent, received = business.get_friend_requests_status(user_id)
+        sent, received = business.get_friend_requests_status(user_id=user_id)
 
         return JsonResponse(data={"sent": list(sent), "received": list(received)})
     except Exception as err_msg:
