@@ -48,7 +48,6 @@ def update_user(payload: dict):
 
 
 def create_privacies(in_user_id):
-    # potential option for defaults? i.e. all True vs all False
     Privacy.objects.create(
         user=User.objects.get(id=in_user_id),
         is_searchable=True,
@@ -64,16 +63,13 @@ def get_privacies(in_user_id) -> Privacy:
 def update_privacies(in_user_id, payload: dict):
     privacies = Privacy.objects.get(user__id=in_user_id)
     for key, value in payload.items():
-        # If there are invalid keys in the payload (e.g. the frontend misspelled
-        # the name of a field), raise an exception
+        # If there are invalid keys in the payload, raise an exception
         if hasattr(privacies, key):
             setattr(privacies, key, value)
         else:
             raise AttributeError("Privacy has no attribute " + key)
 
-    # Since this is at the end of the func, it'll only execute if an exception
-    # isn't raised. That is, we'll only save changes if the entire payload is
-    # error-free.
+    # Will only execute if an exception isn't raised
     privacies.save()
 
 

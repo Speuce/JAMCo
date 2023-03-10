@@ -31,10 +31,10 @@ class User(AbstractUser):
 
 
 class Privacy(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    is_searchable = models.BooleanField()
-    share_kanban = models.BooleanField()
-    cover_letter_requestable = models.BooleanField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    is_searchable = models.BooleanField(null=False)
+    share_kanban = models.BooleanField(null=False)
+    cover_letter_requestable = models.BooleanField(null=False)
 
     def to_dict(self):
         return {

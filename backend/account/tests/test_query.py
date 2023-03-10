@@ -91,7 +91,7 @@ class UpdatePrivacyTests(TestCase):
         )
         newPriv = models.Privacy.objects.get(user__id=user.id)
 
-        # verify updates went thru
+        # verify updates succeeded
         self.assertDictEqual(
             newPriv.to_dict(),
             {
@@ -120,7 +120,7 @@ class UpdatePrivacyTests(TestCase):
 
         newPriv = models.Privacy.objects.get(user__id=user.id)
 
-        # verify updates went thru
+        # verify updates succeeded
         self.assertDictEqual(
             newPriv.to_dict(),
             {
