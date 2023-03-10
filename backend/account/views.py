@@ -201,6 +201,7 @@ def accept_friend_request(request: HttpRequest):
         logger.debug(f"accept_friend_request: User:{user_id}, Request: {request_id}")
 
         business.accept_friend_request(request_id=request_id, user_id=user_id)
+        return JsonResponse(status=200, data={})
     except Exception as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
@@ -217,6 +218,7 @@ def deny_friend_request(request: HttpRequest):
         logger.debug(f"deny_friend_request: User:{user_id}, Request: {request_id}")
 
         business.deny_friend_request(request_id=request_id, user_id=user_id)
+        return JsonResponse(status=200, data={})
     except Exception as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
@@ -233,7 +235,6 @@ def get_friend_requests_status(request: HttpRequest):
 
         sent, received = business.get_friend_requests_status(user_id)
 
-        # might need .to_dict foreach in both lists?
         return JsonResponse(data={"sent": list(sent), "received": list(received)})
     except Exception as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})

@@ -303,3 +303,35 @@ class AuthenticateTokenTests(TestCase):
         )
         self.assertEqual(response.status_code, 401)
         mock_authenticate_token.assert_called()
+
+
+class CreateFriendRequestTests(TestCase):
+    def test_create_friend_request_valid(self):
+        self.assertTrue(False)
+
+    def test_create_friend_request_error(self):
+        self.assertTrue(False)
+
+
+class AcceptFriendRequestTests(TestCase):
+    def test_accept_friend_request_valid(self):
+        self.assertTrue(False)
+
+    def test_accept_friend_request_error(self):
+        self.assertTrue(False)
+
+
+class DenyFriendRequestTests(TestCase):
+    def test_deny_friend_request_valid(self):
+        self.assertTrue(False)
+
+    def test_deny_friend_request_error(self):
+        self.assertTrue(False)
+
+
+class GetFriendRequestsStatusTests(TestCase):
+    def test_get_friend_requests_status_valid(self):
+        self.assertTrue(False)
+
+    def test_get_friend_requests_status_error(self):
+        self.assertTrue(False)

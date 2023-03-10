@@ -7,7 +7,6 @@ from . import query
 from account.models import User, Privacy, FriendRequest
 from typing import Tuple
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from django.db.models.query import QuerySet
 from column.business import create_default_columns
 from account.auth_utils import decrypt_token, encrypt_token
 from datetime import datetime
@@ -80,7 +79,7 @@ def create_friend_request(from_user_id, to_user_id) -> FriendRequest:
         if pending_request_exists or already_friends or user_not_searchable:
             raise ValueError("Unable to Create Friend Request")
 
-        return query.create_friend_request()
+        return query.create_friend_request(from_user_id, to_user_id)
     except Exception as err:
         raise err
 
@@ -99,5 +98,5 @@ def deny_friend_request(request_id, user_id) -> None:
         raise ObjectDoesNotExist("Friend Request Does Not Exist")
 
 
-def get_friend_requests_status(user_id) -> list[QuerySet, QuerySet]:
+def get_friend_requests_status(user_id) -> list[FriendRequest, FriendRequest]:
     return query.get_friend_requests_status(user_id)

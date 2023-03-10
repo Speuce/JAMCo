@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from datetime import datetime
 
 
 class User(AbstractUser):
@@ -56,7 +57,7 @@ class FriendRequest(models.Model):
         return {
             "from_user_id": self.from_user.id,
             "to_user_id": self.to_user.id,
-            "sent": self.sent,
+            "sent": datetime.strftime(self.sent, "%Y-%m-%d %H:%M:%S.%f%z"),
             "accepted": self.accepted,
             "acknowledged": self.acknowledged,
         }

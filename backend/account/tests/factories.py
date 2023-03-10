@@ -1,6 +1,7 @@
 from account.models import User, Privacy, FriendRequest
 import factory
 import factory.django
+from django.utils import timezone
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -33,6 +34,6 @@ class FriendRequestFactory(factory.django.DjangoModelFactory):
     id = factory.Sequence(lambda n: n)
     from_user = factory.SubFactory(UserFactory)
     to_user = factory.SubFactory(UserFactory)
-    sent = None
+    sent = timezone.now()
     accepted = False
     acknowledged = None

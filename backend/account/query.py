@@ -129,18 +129,22 @@ def deny_friend_request(request_id, to_user_id) -> None:
 
 
 def get_friend_requests_status(user_id) -> list[QuerySet, QuerySet]:
-    sent = FriendRequest.objects.filter(from_user__id=user_id)
-    received = FriendRequest.objects.filter(to_user__id=user_id)
+    sent = FriendRequest.objects.filter(from_user__id=user_id).values(
+        "accepted", "acknowledged", "from_user_id", "id", "sent", "to_user_id"
+    )
+    received = FriendRequest.objects.filter(to_user__id=user_id).values(
+        "accepted", "acknowledged", "from_user_id", "id", "sent", "to_user_id"
+    )
 
     return sent, received
 
 
 def pending_friend_request_exists(request_id=None, from_user_id=None, to_user_id=None) -> bool:
-    if request_id:
-        if not to_user_id:
+    if request_id is not None:
+        if to_user_id is None:
             raise ValidationError("to_user_id must be passed when request_id passed")
         return FriendRequest.objects.filter(id=request_id, to_user__id=to_user_id, acknowledged=None).exists()
-    if not to_user_id or not from_user_id:
+    if to_user_id is None or from_user_id is None:
         raise ValidationError("both to_user_id and from_user_id must be passed when request_id not passed")
     return (
         FriendRequest.objects.filter(from_user__id=from_user_id, to_user__id=to_user_id, acknowledged=None).exists()
