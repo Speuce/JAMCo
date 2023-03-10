@@ -170,3 +170,70 @@ def validate_auth_token(request: HttpRequest):
     except ObjectDoesNotExist as err_msg:
         logger.debug(f"Invalid Token: {err_msg}")
         return JsonResponse(status=401, data={"error": repr(err_msg)})
+
+
+def create_friend_request(request: HttpRequest):
+    """
+    Creates new FriendRequest
+    """
+
+    try:
+        body = read_request(request)
+        from_user_id = body["from_user_id"]
+        to_user_id = body["to_user_id"]
+        logger.debug(f"create_friend_request: {from_user_id} -> {to_user_id}")
+
+        req = business.create_friend_request(from_user_id=from_user_id, to_user_id=to_user_id)
+        return JsonResponse(data=req.to_dict())
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+def accept_friend_request(request: HttpRequest):
+    """
+    Accepts friend request sent to this user (the user sending accept)
+    """
+
+    try:
+        body = read_request(request)
+        request_id = body["request_id"]
+        user_id = body["user_id"]
+        logger.debug(f"accept_friend_request: User:{user_id}, Request: {request_id}")
+
+        business.accept_friend_request(request_id=request_id, user_id=user_id)
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+def deny_friend_request(request: HttpRequest):
+    """
+    Denies friend request sent to this user (the user sending deny)
+    """
+
+    try:
+        body = read_request(request)
+        request_id = body["request_id"]
+        user_id = body["user_id"]
+        logger.debug(f"deny_friend_request: User:{user_id}, Request: {request_id}")
+
+        business.deny_friend_request(request_id=request_id, user_id=user_id)
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+def get_friend_requests_status(request: HttpRequest):
+    """
+    Get sent & received requests for a user
+    """
+
+    try:
+        body = read_request(request)
+        user_id = body["user_id"]
+        logger.debug(f"get_friend_requests_status: {user_id}")
+
+        sent, received = business.get_friend_requests_status(user_id)
+
+        # might need .to_dict foreach in both lists?
+        return JsonResponse(data={"sent": list(sent), "received": list(received)})
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})

@@ -4,9 +4,10 @@ Account business
 Business logic for account related operations.
 """
 from . import query
-from account.models import User, Privacy
+from account.models import User, Privacy, FriendRequest
 from typing import Tuple
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.db.models.query import QuerySet
 from column.business import create_default_columns
 from account.auth_utils import decrypt_token, encrypt_token
 from datetime import datetime
@@ -68,3 +69,35 @@ def authenticate_token(token):
         return user, encrypt_token(user.google_id, user.last_login)
     except ObjectDoesNotExist as err:
         raise ObjectDoesNotExist("Failed to Authenticate Token") from err
+
+
+def create_friend_request(from_user_id, to_user_id) -> FriendRequest:
+    try:
+        pending_request_exists = query.pending_friend_request_exists(from_user_id=from_user_id, to_user_id=to_user_id)
+        already_friends = query.are_friends(user_id_one=from_user_id, user_id_two=to_user_id)
+
+        if pending_request_exists or already_friends:
+            raise ValueError("Invalid User Pairing")
+
+        # TODO: check that to_user allows friend requests
+        return query.create_friend_request()
+    except Exception as err:
+        raise err
+
+
+def accept_friend_request(request_id, user_id) -> None:
+    if query.pending_friend_request_exists(request_id=request_id, to_user_id=user_id):
+        query.accept_friend_request(request_id=request_id, to_user_id=user_id)
+    else:
+        raise ObjectDoesNotExist("Friend Request Does Not Exist")
+
+
+def deny_friend_request(request_id, user_id) -> None:
+    if query.pending_friend_request_exists(request_id=request_id, to_user_id=user_id):
+        query.deny_friend_request(request_id=request_id, to_user_id=user_id)
+    else:
+        raise ObjectDoesNotExist("Friend Request Does Not Exist")
+
+
+def get_friend_requests_status(user_id) -> list[QuerySet, QuerySet]:
+    return query.get_friend_requests_status(user_id)

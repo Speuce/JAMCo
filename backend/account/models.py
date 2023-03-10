@@ -43,3 +43,20 @@ class Privacy(models.Model):
             "share_kanban": self.share_kanban,
             "cover_letter_requestable": self.cover_letter_requestable,
         }
+
+
+class FriendRequest(models.Model):
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    sent = models.DateTimeField(verbose_name="Timestamp when request sent")
+    accepted = models.BooleanField(default=False)
+    acknowledged = models.DateTimeField(null=True, default=None)
+
+    def to_dict(self):
+        return {
+            "from_user_id": self.from_user.id,
+            "to_user_id": self.to_user.id,
+            "sent": self.sent,
+            "accepted": self.accepted,
+            "acknowledged": self.acknowledged,
+        }

@@ -4,9 +4,10 @@ Account queries
 Query functions for account related operations.
 """
 
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.utils import timezone
-from account.models import User, Privacy
+from account.models import User, Privacy, FriendRequest
+from django.db.models.query import QuerySet
 
 
 def get_or_create_user(payload: dict) -> User:
@@ -96,3 +97,67 @@ def get_user_by_token_fields(google_id, last_login) -> User:
 def update_user_last_login(user) -> None:
     user.last_login = timezone.now()
     user.save(update_fields=["last_login"])
+
+
+def create_friend_request(from_user_id, to_user_id) -> FriendRequest:
+    return FriendRequest.objects.create(
+        from_user=User.objects.get(user__id=from_user_id),
+        to_user=User.objects.get(user__id=to_user_id),
+        sent=timezone.now(),
+        accepted=False,
+        acknowledged=None,
+    )
+
+
+def accept_friend_request(request_id) -> None:
+    request = FriendRequest.objects.get(id=request_id)
+
+    to_user = request.to_user
+    from_user = request.from_user
+
+    from_user.friends.add(to_user)
+    to_user.friends.add(from_user)
+
+    to_user.save()
+    from_user.save()
+
+    request.accepted = True
+    request.acknowledged = timezone.now()
+    request.save()
+
+
+def deny_friend_request(request_id, to_user_id) -> None:
+    request = FriendRequest.objects.get(id=request_id, to_user__id=to_user_id)
+
+    request.acknowledged = timezone.now()
+    request.save()
+
+
+def get_friend_requests_status(user_id) -> list[QuerySet, QuerySet]:
+    sent = FriendRequest.objects.filter(from_user__id=user_id)
+    received = FriendRequest.objects.filter(to_user__id=user_id)
+
+    return sent, received
+
+
+def pending_friend_request_exists(request_id, from_user_id, to_user_id) -> bool:
+    if request_id:
+        if not to_user_id:
+            raise ValidationError("to_user_id must be passed when request_id passed")
+        return FriendRequest.objects.filter(id=request_id, to_user__id=to_user_id, acknowledged=None).exists()
+    if not to_user_id or not from_user_id:
+        raise ValidationError("both to_user_id and from_user_id must be passed when request_id not passed")
+    return (
+        FriendRequest.objects.filter(from_user__id=from_user_id, to_user__id=to_user_id, acknowledged=None).exists()
+        or FriendRequest.objects.filter(from_user__id=to_user_id, to_user__id=from_user_id, acknowledged=None).exists()
+    )
+
+
+def are_friends(user_id_one, user_id_two) -> bool:
+    user_one = User.objects.get(user_id=user_id_one)
+    user_two = User.objects.get(user_id=user_id_two)
+    one_friends_two = user_one.friends.contains(user_two)
+    two_friends_one = user_two.friends.contains(user_one)
+    if one_friends_two != two_friends_one:
+        raise ValidationError(f"Friends Out Of Sync: {user_id_one}, {user_id_two}")
+    return one_friends_two
