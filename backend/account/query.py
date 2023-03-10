@@ -112,13 +112,8 @@ def create_friend_request(from_user_id, to_user_id) -> FriendRequest:
 def accept_friend_request(request_id, to_user_id) -> None:
     request = FriendRequest.objects.get(id=request_id, to_user_id=to_user_id)
 
-    to_user = request.to_user
     from_user = request.from_user
-
-    from_user.friends.add(to_user)
-    to_user.friends.add(from_user)
-
-    to_user.save()
+    from_user.friends.add(request.to_user)
     from_user.save()
 
     request.accepted = True
