@@ -1,7 +1,7 @@
 from django.test import TestCase
 from account import business
 from unittest.mock import patch
-from account.tests.factories import UserFactory, PrivacyFactory
+from account.tests.factories import UserFactory, PrivacyFactory, FriendRequestFactory
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -129,3 +129,105 @@ class AuthenticateTokenTests(TestCase):
         invalid_token = "xyz"
         with self.assertRaises(ObjectDoesNotExist):
             business.authenticate_token(invalid_token)
+
+
+@patch("account.query.pending_friend_request_exists")
+@patch("account.query.are_friends")
+@patch("account.query.get_privacies")
+@patch("account.query.create_friend_request")
+class CreateFriendRequestTests(TestCase):
+    def test_create_friend_request_valid(
+        self, mock_create_friend_request, mock_get_privacies, mock_are_friends, mock_pending_friend_request_exists
+    ):
+        req = FriendRequestFactory()
+        mock_create_friend_request.return_value = req
+        mock_are_friends.return_value = False
+        mock_get_privacies.return_value = PrivacyFactory(is_searchable=True)
+        mock_pending_friend_request_exists.return_value = False
+
+        self.assertEqual(business.create_friend_request(req.from_user.id, req.to_user.id).to_dict(), req.to_dict())
+
+    def test_create_friend_pending_request_exists(
+        self, mock_create_friend_request, mock_get_privacies, mock_are_friends, mock_pending_friend_request_exists
+    ):
+        req = FriendRequestFactory()
+        mock_create_friend_request.return_value = req
+        mock_are_friends.return_value = False
+        mock_get_privacies.return_value = PrivacyFactory(is_searchable=True)
+        mock_pending_friend_request_exists.return_value = True
+
+        with self.assertRaises(ValueError):
+            business.create_friend_request(req.from_user.id, req.to_user.id)
+
+    def test_create_friend_request_already_friends(
+        self, mock_create_friend_request, mock_get_privacies, mock_are_friends, mock_pending_friend_request_exists
+    ):
+        req = FriendRequestFactory()
+        mock_create_friend_request.return_value = req
+        mock_are_friends.return_value = True
+        mock_get_privacies.return_value = PrivacyFactory(is_searchable=True)
+        mock_pending_friend_request_exists.return_value = False
+
+        with self.assertRaises(ValueError):
+            business.create_friend_request(req.from_user.id, req.to_user.id)
+
+    def test_create_friend_request_user_not_searchable(
+        self, mock_create_friend_request, mock_get_privacies, mock_are_friends, mock_pending_friend_request_exists
+    ):
+        req = FriendRequestFactory()
+        mock_create_friend_request.return_value = req
+        mock_are_friends.return_value = False
+        mock_get_privacies.return_value = PrivacyFactory(is_searchable=False)
+        mock_pending_friend_request_exists.return_value = False
+
+        with self.assertRaises(ValueError):
+            business.create_friend_request(req.from_user.id, req.to_user.id)
+
+
+@patch("account.query.pending_friend_request_exists")
+@patch("account.query.accept_friend_request")
+class AcceptFriendRequestTests(TestCase):
+    def test_accept_friend_request_valid(self, mock_accept_friend_request, mock_pending_friend_request_exists):
+        req = FriendRequestFactory()
+        mock_pending_friend_request_exists.return_value = True
+
+        business.accept_friend_request(request_id=req.id, user_id=req.to_user.id)
+        mock_accept_friend_request.assert_called_with(request_id=req.id, to_user_id=req.to_user.id)
+
+    def test_accept_friend_request_no_pending_request(
+        self, mock_accept_friend_request, mock_pending_friend_request_exists
+    ):
+        req = FriendRequestFactory()
+        mock_pending_friend_request_exists.return_value = False
+
+        with self.assertRaises(ObjectDoesNotExist):
+            business.accept_friend_request(request_id=req.id, user_id=req.to_user.id)
+        mock_accept_friend_request.assert_not_called()
+
+
+@patch("account.query.pending_friend_request_exists")
+@patch("account.query.deny_friend_request")
+class DenyFriendRequestTests(TestCase):
+    def test_deny_friend_request_valid(self, mock_deny_friend_request, mock_pending_friend_request_exists):
+        req = FriendRequestFactory()
+        mock_pending_friend_request_exists.return_value = True
+
+        business.deny_friend_request(request_id=req.id, user_id=req.to_user.id)
+        mock_deny_friend_request.assert_called_with(request_id=req.id, to_user_id=req.to_user.id)
+
+    def test_deny_friend_request_no_pending_request(self, mock_deny_friend_request, mock_pending_friend_request_exists):
+        req = FriendRequestFactory()
+        mock_pending_friend_request_exists.return_value = False
+
+        with self.assertRaises(ObjectDoesNotExist):
+            business.deny_friend_request(request_id=req.id, user_id=req.to_user.id)
+        mock_deny_friend_request.assert_not_called()
+
+
+@patch("account.query.get_friend_requests_status")
+class GetFriendRequestsStatusTests(TestCase):
+    def test_get_friend_requests_status(self, mock_get_friend_requests_status):
+        return_val = [], []
+        mock_get_friend_requests_status.return_value = return_val
+        val = business.get_friend_requests_status(user_id=0)
+        self.assertEqual(val, return_val)
