@@ -147,13 +147,6 @@ class AccountTestCase(TestCase):
 
 
 class PrivacyTests(TestCase):
-    def setUp(self):
-        self.client.cookies = SimpleCookie({"csrftoken": "valid_csrf_token"})
-        self.header = {
-            "ACCEPT": "application/json",
-            "HTTP_X-CSRFToken": "valid_csrf_token",
-        }
-
     @patch("account.business.update_privacies")
     def test_update_privacies(self, mock_update_privacies):
         priv = PrivacyFactory()
@@ -167,7 +160,6 @@ class PrivacyTests(TestCase):
             reverse("update_privacies"),
             json.dumps({"user_id": priv.user.id, "privacies": newPrivDict}),
             content_type="application/json",
-            **self.header,
         )
         self.assertEqual(response.status_code, 200)
         mock_update_privacies.assert_called_with({"user_id": priv.user.id, "privacies": newPrivDict})
@@ -187,7 +179,6 @@ class PrivacyTests(TestCase):
             reverse("update_privacies"),
             json.dumps({"user_id": priv.user.id, "privacies": newPrivDict}),
             content_type="application/json",
-            **self.header,
         )
         self.assertEqual(response.status_code, 400)
         mock_update_privacies.assert_called_with({"user_id": priv.user.id, "privacies": newPrivDict})
@@ -201,7 +192,6 @@ class PrivacyTests(TestCase):
             reverse("get_user_privacies"),
             json.dumps({"user_id": priv.user.id}),
             content_type="application/json",
-            **self.header,
         )
         self.assertEqual(response.status_code, 200)
         mock_get_privacies.assert_called_with(priv.user.id)
@@ -214,7 +204,6 @@ class PrivacyTests(TestCase):
             reverse("get_user_privacies"),
             json.dumps({"user_id": -1}),
             content_type="application/json",
-            **self.header,
         )
         self.assertEqual(response.status_code, 400)
 

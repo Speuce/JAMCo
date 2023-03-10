@@ -116,14 +116,20 @@ export default {
     },
     async updateUserAccount(userData, userPrivacies) {
       await postRequest('account/api/update_account', userData)
-      await postRequest('account/api/update_privacies', {
-        privacies: userPrivacies,
-        user_id: this.userData.id,
-      })
+
       this.userData = userData
-      this.userPrivacies = userPrivacies
+
       this.setupModalVisible = false
       this.userInfoModalVisible = false
+
+      // handles case when AccountSetupModal calls updateUserAccount without privacies
+      if (userPrivacies) {
+        await postRequest('account/api/update_privacies', {
+          privacies: userPrivacies,
+          user_id: this.userData.id,
+        })
+        this.userPrivacies = userPrivacies
+      }
     },
   },
 }

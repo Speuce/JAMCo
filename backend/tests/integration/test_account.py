@@ -4,7 +4,7 @@ from django.test import TransactionTestCase
 from django.urls import reverse
 from unittest import mock
 from django.http.cookie import SimpleCookie
-from account.models import User
+from account.models import User, Privacy
 
 logger = logging.getLogger(__name__)
 
@@ -59,6 +59,13 @@ class GetOrCreateAccountTests(TransactionTestCase):
         self.assertEqual(
             User.objects.get(google_id="unique_user_id").to_dict(),
             user_data,
+        )
+
+        # Verify User Privacy Created
+        self.assertEqual(len(Privacy.objects.all()), 1)
+        self.assertEqual(
+            Privacy.objects.get(user__id=user_data["id"]).to_dict(),
+            {"id": 1, "is_searchable": True, "share_kanban": True, "cover_letter_requestable": True},
         )
 
 
@@ -216,6 +223,7 @@ class AccountTestCase(TransactionTestCase):
         )
         self.assertEqual(response.status_code, 401)
         self.assertEqual(len(User.objects.all()), 0)
+        self.assertEqual(len(Privacy.objects.all()), 0)
 
         # No CSRF in Cookie
         self.client.cookies = SimpleCookie({"not_a_csrftoken": "not_the_droid"})
@@ -232,6 +240,7 @@ class AccountTestCase(TransactionTestCase):
         )
         self.assertEqual(response.status_code, 401)
         self.assertEqual(len(User.objects.all()), 0)
+        self.assertEqual(len(Privacy.objects.all()), 0)
 
         # No CSRF in Header
         self.client.cookies = SimpleCookie({"csrftoken": "valid_csrf_token"})
@@ -248,6 +257,7 @@ class AccountTestCase(TransactionTestCase):
         )
         self.assertEqual(response.status_code, 401)
         self.assertEqual(len(User.objects.all()), 0)
+        self.assertEqual(len(Privacy.objects.all()), 0)
 
         # CSRFs do not match
         self.client.cookies = SimpleCookie({"csrftoken": "one_csrf_token"})
@@ -264,3 +274,4 @@ class AccountTestCase(TransactionTestCase):
         )
         self.assertEqual(response.status_code, 401)
         self.assertEqual(len(User.objects.all()), 0)
+        self.assertEqual(len(Privacy.objects.all()), 0)

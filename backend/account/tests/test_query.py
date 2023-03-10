@@ -89,7 +89,7 @@ class UpdatePrivacyTests(TestCase):
                 "cover_letter_requestable": False,
             },
         )
-        newPriv = query.get_privacies(user.id)
+        newPriv = models.Privacy.objects.get(user__id=user.id)
 
         # verify updates went thru
         self.assertDictEqual(
@@ -118,7 +118,7 @@ class UpdatePrivacyTests(TestCase):
                 },
             )
 
-        newPriv = query.get_privacies(user.id)
+        newPriv = models.Privacy.objects.get(user__id=user.id)
 
         # verify updates went thru
         self.assertDictEqual(
