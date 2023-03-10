@@ -111,11 +111,6 @@ def create_friend_request(from_user_id, to_user_id) -> FriendRequest:
 
 def accept_friend_request(request_id, to_user_id) -> None:
     request = FriendRequest.objects.get(id=request_id, to_user_id=to_user_id)
-
-    from_user = request.from_user
-    from_user.friends.add(request.to_user)
-    from_user.save()
-
     request.accepted = True
     request.acknowledged = timezone.now()
     request.save()
@@ -123,7 +118,6 @@ def accept_friend_request(request_id, to_user_id) -> None:
 
 def deny_friend_request(request_id, to_user_id) -> None:
     request = FriendRequest.objects.get(id=request_id, to_user__id=to_user_id)
-
     request.acknowledged = timezone.now()
     request.save()
 
@@ -139,11 +133,13 @@ def get_friend_requests_status(user_id) -> list[QuerySet, QuerySet]:
     return sent, received
 
 
-def pending_friend_request_exists(request_id=None, from_user_id=None, to_user_id=None) -> bool:
+def pending_friend_request_exists(from_user_id, to_user_id, request_id=None) -> bool:
     if request_id is not None:
         if to_user_id is None:
             raise ValidationError("to_user_id must be passed when request_id passed")
-        return FriendRequest.objects.filter(id=request_id, to_user__id=to_user_id, acknowledged=None).exists()
+        return FriendRequest.objects.filter(
+            id=request_id, to_user__id=to_user_id, from_user_id=from_user_id, acknowledged=None
+        ).exists()
     if to_user_id is None or from_user_id is None:
         raise ValidationError("both to_user_id and from_user_id must be passed when request_id not passed")
     return (

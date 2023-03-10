@@ -3,7 +3,7 @@ from unittest.mock import patch
 from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
 from django.http.cookie import SimpleCookie
-from account.tests.factories import UserFactory, PrivacyFactory
+from account.tests.factories import UserFactory, PrivacyFactory, FriendRequestFactory
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -305,28 +305,87 @@ class AuthenticateTokenTests(TestCase):
         mock_authenticate_token.assert_called()
 
 
+@patch("account.business.create_friend_request")
 class CreateFriendRequestTests(TestCase):
-    def test_create_friend_request_valid(self):
-        self.assertTrue(False)
+    def test_create_friend_request_valid(self, mock_create_friend_request):
+        mocked_req = FriendRequestFactory()
+        mock_create_friend_request.return_value = mocked_req
+        response = self.client.post(
+            reverse("create_friend_request"),
+            json.dumps({"from_user_id": mocked_req.from_user.id, "to_user_id": mocked_req.to_user.id}),
+            content_type="application/json",
+        )
+        content = json.loads(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(content, mocked_req.to_dict())
 
-    def test_create_friend_request_error(self):
-        self.assertTrue(False)
+    def test_create_friend_request_error(self, mock_create_friend_request):
+        mock_create_friend_request.side_effect = ObjectDoesNotExist()
+        response = self.client.post(
+            reverse("create_friend_request"),
+            json.dumps({"from_user_id": 0, "to_user_id": 1}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        mock_create_friend_request.assert_called()
 
 
+@patch("account.business.accept_friend_request")
 class AcceptFriendRequestTests(TestCase):
-    def test_accept_friend_request_valid(self):
-        self.assertTrue(False)
+    def test_accept_friend_request_valid(self, mock_accept_friend_request):
+        mocked_req = FriendRequestFactory()
+        response = self.client.post(
+            reverse("accept_friend_request"),
+            json.dumps(
+                {
+                    "request_id": mocked_req.id,
+                    "to_user_id": mocked_req.to_user.id,
+                    "from_user_id": mocked_req.from_user.id,
+                }
+            ),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        mock_accept_friend_request.assert_called_with(request_id=mocked_req.id, user_id=mocked_req.to_user.id)
 
-    def test_accept_friend_request_error(self):
-        self.assertTrue(False)
+    def test_accept_friend_request_error(self, mock_accept_friend_request):
+        mock_accept_friend_request.side_effect = ObjectDoesNotExist()
+        response = self.client.post(
+            reverse("accept_friend_request"),
+            json.dumps({"request_id": 0, "to_user_id": 0, "from_user_id": 0}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        mock_accept_friend_request.assert_called_with(request_id=0, user_id=0)
 
 
+@patch("account.business.deny_friend_request")
 class DenyFriendRequestTests(TestCase):
-    def test_deny_friend_request_valid(self):
-        self.assertTrue(False)
+    def test_deny_friend_request_valid(self, mock_deny_friend_request):
+        mocked_req = FriendRequestFactory()
+        response = self.client.post(
+            reverse("deny_friend_request"),
+            json.dumps(
+                {
+                    "request_id": mocked_req.id,
+                    "to_user_id": mocked_req.to_user.id,
+                    "from_user_id": mocked_req.from_user.id,
+                }
+            ),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        mock_deny_friend_request.assert_called_with(request_id=mocked_req.id, user_id=mocked_req.to_user.id)
 
-    def test_deny_friend_request_error(self):
-        self.assertTrue(False)
+    def test_deny_friend_request_error(self, mock_deny_friend_request):
+        mock_deny_friend_request.side_effect = ObjectDoesNotExist()
+        response = self.client.post(
+            reverse("deny_friend_request"),
+            json.dumps({"request_id": 0, "to_user_id": 0, "from_user_id": 0}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        mock_deny_friend_request.assert_called_with(request_id=0, user_id=0)
 
 
 class GetFriendRequestsStatusTests(TestCase):

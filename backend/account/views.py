@@ -117,6 +117,7 @@ def get_user_privacies(request: HttpRequest):
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
 
+# This endpoint will likely be unused
 @require_POST
 def add_friend(request: HttpRequest):
     """
@@ -185,7 +186,7 @@ def create_friend_request(request: HttpRequest):
 
         req = business.create_friend_request(from_user_id=from_user_id, to_user_id=to_user_id)
         return JsonResponse(data=req.to_dict())
-    except Exception as err_msg:
+    except (ObjectDoesNotExist, ValueError) as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
 
@@ -197,10 +198,11 @@ def accept_friend_request(request: HttpRequest):
     try:
         body = read_request(request)
         request_id = body["request_id"]
-        user_id = body["user_id"]
-        logger.debug(f"accept_friend_request: User:{user_id}, Request: {request_id}")
+        from_user_id = body["from_user_id"]
+        to_user_id = body["to_user_id"]
+        logger.debug(f"accept_friend_request: ToUser:{to_user_id}, FromUser:{from_user_id}, Request: {request_id}")
 
-        business.accept_friend_request(request_id=request_id, user_id=user_id)
+        business.accept_friend_request(request_id=request_id, to_user_id=to_user_id, from_user_id=from_user_id)
         return JsonResponse(status=200, data={})
     except Exception as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})

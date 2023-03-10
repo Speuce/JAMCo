@@ -80,13 +80,17 @@ def create_friend_request(from_user_id, to_user_id) -> FriendRequest:
             raise ValueError("Unable to Create Friend Request")
 
         return query.create_friend_request(from_user_id, to_user_id)
-    except Exception as err:
-        raise err
+    except ObjectDoesNotExist as err:
+        raise ObjectDoesNotExist("Error Creating Friend Request") from err
 
 
-def accept_friend_request(request_id, user_id) -> None:
-    if query.pending_friend_request_exists(request_id=request_id, to_user_id=user_id):
-        query.accept_friend_request(request_id=request_id, to_user_id=user_id)
+def accept_friend_request(request_id, to_user_id, from_user_id) -> None:
+    if query.pending_friend_request_exists(request_id=request_id, to_user_id=to_user_id, from_user_id=from_user_id):
+        try:
+            add_friend(to_user_id, from_user_id)
+            query.accept_friend_request(request_id=request_id, to_user_id=to_user_id, from_user_id=from_user_id)
+        except ValueError as err:
+            raise err
     else:
         raise ObjectDoesNotExist("Friend Request Does Not Exist")
 
