@@ -140,7 +140,7 @@ def get_friend_requests_status(user_id) -> list[QuerySet, QuerySet]:
     return sent, received
 
 
-def pending_friend_request_exists(request_id, from_user_id, to_user_id) -> bool:
+def pending_friend_request_exists(request_id=None, from_user_id=None, to_user_id=None) -> bool:
     if request_id:
         if not to_user_id:
             raise ValidationError("to_user_id must be passed when request_id passed")
@@ -154,10 +154,6 @@ def pending_friend_request_exists(request_id, from_user_id, to_user_id) -> bool:
 
 
 def are_friends(user_id_one, user_id_two) -> bool:
-    user_one = User.objects.get(user_id=user_id_one)
-    user_two = User.objects.get(user_id=user_id_two)
-    one_friends_two = user_one.friends.contains(user_two)
-    two_friends_one = user_two.friends.contains(user_one)
-    if one_friends_two != two_friends_one:
-        raise ValidationError(f"Friends Out Of Sync: {user_id_one}, {user_id_two}")
-    return one_friends_two
+    user_one = User.objects.get(id=user_id_one)
+    user_two = User.objects.get(id=user_id_two)
+    return user_one.friends.contains(user_two)
