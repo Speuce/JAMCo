@@ -101,16 +101,16 @@ def update_user_last_login(user) -> None:
 
 def create_friend_request(from_user_id, to_user_id) -> FriendRequest:
     return FriendRequest.objects.create(
-        from_user=User.objects.get(user__id=from_user_id),
-        to_user=User.objects.get(user__id=to_user_id),
+        from_user=User.objects.get(id=from_user_id),
+        to_user=User.objects.get(id=to_user_id),
         sent=timezone.now(),
         accepted=False,
         acknowledged=None,
     )
 
 
-def accept_friend_request(request_id) -> None:
-    request = FriendRequest.objects.get(id=request_id)
+def accept_friend_request(request_id, to_user_id) -> None:
+    request = FriendRequest.objects.get(id=request_id, to_user_id=to_user_id)
 
     to_user = request.to_user
     from_user = request.from_user

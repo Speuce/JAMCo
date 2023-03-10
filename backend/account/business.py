@@ -75,11 +75,11 @@ def create_friend_request(from_user_id, to_user_id) -> FriendRequest:
     try:
         pending_request_exists = query.pending_friend_request_exists(from_user_id=from_user_id, to_user_id=to_user_id)
         already_friends = query.are_friends(user_id_one=from_user_id, user_id_two=to_user_id)
+        user_not_searchable = not query.get_privacies(to_user_id).is_searchable
 
-        if pending_request_exists or already_friends:
-            raise ValueError("Invalid User Pairing")
+        if pending_request_exists or already_friends or user_not_searchable:
+            raise ValueError("Unable to Create Friend Request")
 
-        # TODO: check that to_user allows friend requests
         return query.create_friend_request()
     except Exception as err:
         raise err

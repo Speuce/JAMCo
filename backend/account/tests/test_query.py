@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.exceptions import ObjectDoesNotExist
 from account import query, models
-from account.tests.factories import UserFactory, PrivacyFactory
+from account.tests.factories import UserFactory, PrivacyFactory, FriendRequestFactory
 from django.utils import timezone
 from datetime import datetime
 
@@ -219,3 +219,55 @@ class UpdateLastUserLoginTest(TestCase):
         query.update_user_last_login(user)
         self.assertNotEqual(user.last_login, prev_login)
         self.assertTrue(user.last_login > prev_login)
+
+
+class CreateFriendRequestTest(TestCase):
+    def test_create_friend_request(self):
+        user_one = UserFactory()
+        user_two = UserFactory()
+        req = query.create_friend_request(from_user_id=user_one.id, to_user_id=user_two.id)
+        self.assertEqual(models.FriendRequest.objects.count(), 1)
+        self.assertEqual(models.FriendRequest.objects.get(id=req.id).to_dict(), req.to_dict())
+
+
+class AcceptFriendRequestTest(TestCase):
+    def test_accept_friend_request(self):
+        req = FriendRequestFactory()
+        self.assertEqual(models.FriendRequest.objects.count(), 1)
+        self.assertFalse(req.acknowledged)
+        to_user = req.to_user
+        query.accept_friend_request(req.id, to_user.id)
+        self.assertEqual(models.FriendRequest.objects.count(), 1)
+
+        updated_req = models.FriendRequest.objects.get(id=req.id)
+        self.assertEqual(updated_req.accepted, True)
+        self.assertTrue(updated_req.acknowledged)
+
+
+class DenyFriendRequestTest(TestCase):
+    def test_deny_friend_request(self):
+        req = FriendRequestFactory()
+        self.assertEqual(models.FriendRequest.objects.count(), 1)
+        self.assertFalse(req.acknowledged)
+        to_user = req.to_user
+        query.deny_friend_request(req.id, to_user.id)
+        self.assertEqual(models.FriendRequest.objects.count(), 1)
+
+        updated_req = models.FriendRequest.objects.get(id=req.id)
+        self.assertEqual(updated_req.accepted, False)
+        self.assertTrue(updated_req.acknowledged)
+
+
+class GetFriendRequestsStatusTest(TestCase):
+    def test(self):
+        self.assertTrue(False)
+
+
+class PendingFriendRequestExistsTest(TestCase):
+    def test(self):
+        self.assertTrue(False)
+
+
+class AreFriendsTest(TestCase):
+    def test(self):
+        self.assertTrue(False)

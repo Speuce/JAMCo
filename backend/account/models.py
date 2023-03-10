@@ -46,10 +46,10 @@ class Privacy(models.Model):
 
 
 class FriendRequest(models.Model):
-    from_user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, related_name="request_sender")
     to_user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
-    sent = models.DateTimeField(verbose_name="Timestamp when request sent")
-    accepted = models.BooleanField(default=False)
+    sent = models.DateTimeField(verbose_name="Timestamp when request sent", null=True)
+    accepted = models.BooleanField(default=False, null=False)
     acknowledged = models.DateTimeField(null=True, default=None)
 
     def to_dict(self):
