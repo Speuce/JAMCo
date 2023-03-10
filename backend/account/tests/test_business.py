@@ -74,7 +74,7 @@ class PrivacyTests(TestCase):
         }
         # payload to `update` is *not* a Privacy dict, but a dict of values
         business.update_privacies({"user_id": mocked_priv.user.id, "privacies": newPrivDict})
-        mock_update_privacies.assert_called_with(user_id=mocked_priv.user.id, payload=newPrivDict)
+        mock_update_privacies.assert_called_with(in_user_id=mocked_priv.user.id, payload=newPrivDict)
 
     @patch("account.query.update_privacies")
     def test_invalid_update_privacies(self, mock_update_privacies):
