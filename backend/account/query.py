@@ -4,7 +4,7 @@ Account queries
 Query functions for account related operations.
 """
 
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from account.models import User, Privacy, FriendRequest
 from django.db.models.query import QuerySet
@@ -135,13 +135,9 @@ def get_friend_requests_status(user_id) -> list[QuerySet, QuerySet]:
 
 def pending_friend_request_exists(from_user_id, to_user_id, request_id=None) -> bool:
     if request_id is not None:
-        if to_user_id is None:
-            raise ValidationError("to_user_id must be passed when request_id passed")
         return FriendRequest.objects.filter(
             id=request_id, to_user__id=to_user_id, from_user_id=from_user_id, acknowledged=None
         ).exists()
-    if to_user_id is None or from_user_id is None:
-        raise ValidationError("both to_user_id and from_user_id must be passed when request_id not passed")
     return (
         FriendRequest.objects.filter(from_user__id=from_user_id, to_user__id=to_user_id, acknowledged=None).exists()
         or FriendRequest.objects.filter(from_user__id=to_user_id, to_user__id=from_user_id, acknowledged=None).exists()

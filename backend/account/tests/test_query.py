@@ -1,5 +1,5 @@
 from django.test import TestCase
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from account import query, models
 from account.tests.factories import UserFactory, PrivacyFactory, FriendRequestFactory
 from django.utils import timezone
@@ -235,8 +235,8 @@ class AcceptFriendRequestTest(TestCase):
         req = FriendRequestFactory()
         self.assertEqual(models.FriendRequest.objects.count(), 1)
         self.assertFalse(req.acknowledged)
-        to_user = req.to_user
-        query.accept_friend_request(req.id, to_user.id)
+
+        query.accept_friend_request(request_id=req.id, to_user_id=req.to_user.id, from_user_id=req.from_user.id)
         self.assertEqual(models.FriendRequest.objects.count(), 1)
 
         updated_req = models.FriendRequest.objects.get(id=req.id)
@@ -249,8 +249,8 @@ class DenyFriendRequestTest(TestCase):
         req = FriendRequestFactory()
         self.assertEqual(models.FriendRequest.objects.count(), 1)
         self.assertFalse(req.acknowledged)
-        to_user = req.to_user
-        query.deny_friend_request(req.id, to_user.id)
+
+        query.deny_friend_request(request_id=req.id, to_user_id=req.to_user.id, from_user_id=req.from_user.id)
         self.assertEqual(models.FriendRequest.objects.count(), 1)
 
         updated_req = models.FriendRequest.objects.get(id=req.id)
@@ -288,11 +288,19 @@ class GetFriendRequestsStatusTest(TestCase):
 class PendingFriendRequestExistsTest(TestCase):
     def test_pending_friend_request_exists_true_request_id(self):
         req = FriendRequestFactory()
-        self.assertTrue(query.pending_friend_request_exists(request_id=req.id, to_user_id=req.to_user.id))
+        self.assertTrue(
+            query.pending_friend_request_exists(
+                request_id=req.id, to_user_id=req.to_user.id, from_user_id=req.from_user.id
+            )
+        )
 
     def test_pending_friend_request_exists_false_request_id(self):
         req = FriendRequestFactory(acknowledged=timezone.now())
-        self.assertFalse(query.pending_friend_request_exists(request_id=req.id, to_user_id=req.to_user.id))
+        self.assertFalse(
+            query.pending_friend_request_exists(
+                request_id=req.id, to_user_id=req.to_user.id, from_user_id=req.from_user.id
+            )
+        )
 
     def test_pending_friend_request_exists_true_user_pair(self):
         req = FriendRequestFactory()
@@ -301,19 +309,6 @@ class PendingFriendRequestExistsTest(TestCase):
     def test_pending_friend_request_exists_false_user_pair(self):
         req = FriendRequestFactory(acknowledged=timezone.now())
         self.assertFalse(query.pending_friend_request_exists(to_user_id=req.to_user.id, from_user_id=req.from_user.id))
-
-    def test_pending_friend_request_exists_error(self):
-        # Error - to_user_id required when request_id provided
-        with self.assertRaises(ValidationError):
-            query.pending_friend_request_exists(request_id=1, from_user_id=1)
-
-        # Error - to_user_id required when request_id not provided
-        with self.assertRaises(ValidationError):
-            query.pending_friend_request_exists(from_user_id=1)
-
-        # Error - from_user_id required when request_id not provided
-        with self.assertRaises(ValidationError):
-            query.pending_friend_request_exists(to_user_id=1)
 
 
 class AreFriendsTest(TestCase):
