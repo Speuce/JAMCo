@@ -541,7 +541,6 @@ class TestViews(TransactionTestCase):
         self.assertEqual(len(ReviewRequest.objects.all()), 0)
 
         # Job doesn't exist
-        job = JobFactory()
         payload = {"job_id": -1, "message": "REVIEW COVER LETTER NOW (2019) (NO VIRUS)"}
         response = self.client.post(
             reverse("create_review"),

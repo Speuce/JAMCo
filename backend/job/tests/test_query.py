@@ -157,4 +157,4 @@ class CreateReviewTests(TestCase):
         user = UserFactory()
         payload_nonexistent_request = {"reviewer_id": user.id, "request_id": -1, "response": response}
         with self.assertRaises(ObjectDoesNotExist):
-            query.create_review(payload_nonexistent_user)
+            query.create_review(payload_nonexistent_request)

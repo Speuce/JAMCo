@@ -1,5 +1,4 @@
 import json
-from datetime import datetime
 from unittest.mock import patch, MagicMock
 from django.test import RequestFactory, TestCase
 from django.core.exceptions import ObjectDoesNotExist
