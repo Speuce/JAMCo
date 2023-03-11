@@ -17,7 +17,7 @@ class GetOrCreateAccountTests(TransactionTestCase):
             "HTTP_X-CSRFToken": "valid_csrf_token",
         }
 
-    @patch("google.oauth2.id_token.verify_oauth2_token")
+    @patch("account.stubs.stub_verify_oauth2_token")
     @patch("account.business.get_or_create_user")
     def test_create_account(self, mock_get_or_create_user, mock_verify_oauth2_token):
         mocked_user = UserFactory()
@@ -31,11 +31,12 @@ class GetOrCreateAccountTests(TransactionTestCase):
 
         response = self.client.post(
             reverse("get_or_create_account"),
-            json.dumps({"credential": "whatever", "client_id": "8675309"}),
+            json.dumps({"credential": "test", "client_id": "test"}),
             content_type="application/json",
             **self.header,
         )
-        self.assertEqual(response.data["error"], None)
+
+        self.assertEqual(json.loads(response.data)["error"], None)
 
         self.assertEqual(response.status_code, 200)
 
@@ -106,7 +107,7 @@ class AccountTestCase(TestCase):
         # Post the request
         response = self.client.post(
             reverse("get_or_create_account"),
-            json.dumps({"credential": "whatever", "client_id": "8675309"}),
+            json.dumps({"credential": "test", "client_id": "test"}),
             content_type="application/json",
             **self.header,
         )
@@ -122,7 +123,7 @@ class AccountTestCase(TestCase):
         # Post the request
         response = self.client.post(
             reverse("get_or_create_account"),
-            json.dumps({"credential": "whatever", "client_id": "8675309"}),
+            json.dumps({"credential": "test", "client_id": "test"}),
             content_type="application/json",
             **self.header,
         )
@@ -138,7 +139,7 @@ class AccountTestCase(TestCase):
         # Post the request
         response = self.client.post(
             reverse("get_or_create_account"),
-            json.dumps({"credential": "whatever", "client_id": "8675309"}),
+            json.dumps({"credential": "test", "client_id": "test"}),
             content_type="application/json",
             **self.header,
         )
