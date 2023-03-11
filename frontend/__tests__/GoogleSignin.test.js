@@ -1,13 +1,11 @@
 import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import SigninButton from '@/components/signin/GoogleSignin.vue'
-import { postRequest } from '@/helpers/requests.js'
 
 vi.mock('@/helpers/requests.js', () => ({
   postRequest: vi.fn(),
 }))
 describe('GoogleSignin.vue', () => {
-  let wrapper
   let mockWindow
 
   beforeEach(() => {
@@ -24,7 +22,7 @@ describe('GoogleSignin.vue', () => {
     }
     vi.stubGlobal('addEventListener', mockWindow.addEventListener)
     vi.stubGlobal('google', mockWindow.google)
-    wrapper = mount(SigninButton, {
+    mount(SigninButton, {
       attachToDocument: true,
       stubs: ['router-link'],
     })
