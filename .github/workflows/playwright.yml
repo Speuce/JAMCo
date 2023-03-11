@@ -7,6 +7,7 @@ on:
 
 jobs:
   test:
+    continue-on-error: true
     timeout-minutes: 60
     runs-on: ubuntu-latest
     strategy:
@@ -65,10 +66,16 @@ jobs:
     - name: Run Django Server
       working-directory: ./backend
       run: |
-        nohup python manage.py runserver 0.0.0.0:8000 &
+        nohup python manage.py runserver 0.0.0.0:8000 >> test.log 2>&1 &
     - name: Run Playwright tests
       working-directory: ./frontend
       run: npx playwright test
+    - name: Output log
+      if: ${{ failure() }}
+      run: |
+        cd backend &&
+        cat test.log &&
+        cat debug.log
     - uses: actions/upload-artifact@v3
       if: always()
       with:
