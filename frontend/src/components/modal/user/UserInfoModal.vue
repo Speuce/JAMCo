@@ -130,7 +130,11 @@
                 <h3>Privacy Options</h3>
               </v-row>
               <v-row><br /></v-row>
-              <v-list lines="three" select-strategy="classic">
+              <v-list
+                lines="three"
+                select-strategy="classic"
+                :disabled="!this.editingEnabled"
+              >
                 <v-list-item
                   value="is_searchable"
                   @click="
