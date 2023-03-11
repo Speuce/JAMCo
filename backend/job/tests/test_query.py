@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.exceptions import ObjectDoesNotExist
 from job import query, models
-from job.tests.factories import JobFactory
+from job.tests.factories import JobFactory, ReviewRequestFactory
 from account.tests.factories import UserFactory
 from column.tests.factories import KanbanColumnFactory
 
@@ -126,3 +126,35 @@ class CreateReviewRequestTests(TestCase):
         payload_nonexistent_job = {"job_id": -1, "reviewer_id": -1, "message": message}
         with self.assertRaises(ObjectDoesNotExist):
             query.create_review_request(payload_nonexistent_job)
+
+
+class CreateReviewTests(TestCase):
+    def test_create_review(self):
+        reviewer = UserFactory()
+        request = ReviewRequestFactory()
+        response = "2/10 has a little something for everyone"
+        payload = {"reviewer_id": reviewer.id, "request_id": request.id, "response": response}
+
+        review = query.create_review(payload)
+        self.assertEqual(review.reviewer_id, reviewer.id)
+        self.assertEqual(review.request_id, request.id)
+        self.assertEqual(review.response, response)
+        self.assertEqual(review.completed, None)
+
+    def test_invalid_create_review(self):
+        # Payload has missing fields
+        with self.assertRaises(KeyError):
+            query.create_review({})
+
+        # User doesn't exist
+        request = ReviewRequestFactory()
+        response = "sorry can't review this i don't exist"
+        payload_nonexistent_user = {"reviewer_id": -1, "request_id": request.id, "response": response}
+        with self.assertRaises(ObjectDoesNotExist):
+            query.create_review(payload_nonexistent_user)
+
+        # Request doesn't exist
+        user = UserFactory()
+        payload_nonexistent_request = {"reviewer_id": user.id, "request_id": -1, "response": response}
+        with self.assertRaises(ObjectDoesNotExist):
+            query.create_review(payload_nonexistent_user)

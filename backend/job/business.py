@@ -28,4 +28,4 @@ def create_review_request(payload: dict) -> ReviewRequest:
 
 
 def create_review(payload: dict) -> Review:
-    pass
+    return query.create_review(payload)
