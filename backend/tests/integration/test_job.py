@@ -532,6 +532,28 @@ class TestViews(TransactionTestCase):
         self.assertEqual(response_dict["message"], payload["message"])
         self.assertEqual(response_dict["fulfilled"], False)
 
+    def test_create_review_request_with_error(self):
+        self.assertEqual(len(ReviewRequest.objects.all()), 0)
+
+        # Payload has missing fields
+        response = self.client.post(reverse("create_review_request"), "{}", content_type="application/JSON")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(len(ReviewRequest.objects.all()), 0)
+
+        # Job doesn't exist
+        job = JobFactory()
+        payload = {"job_id": -1, "message": "REVIEW COVER LETTER NOW (2019) (NO VIRUS)"}
+        response = self.client.post(
+            reverse("create_review_request"),
+            json.dumps(payload),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(len(ReviewRequest.objects.all()), 0)
+
+    def test_create_review(self):
+        pass
+
     def test_create_review_with_error(self):
         self.assertEqual(len(Review.objects.all()), 0)
 
