@@ -1,10 +1,10 @@
 import json
 from django.test import TransactionTestCase
 from django.urls import reverse
-from job.models import Job, ReviewRequest
+from job.models import Job, ReviewRequest, Review
 from account.tests.factories import UserFactory
 from column.tests.factories import KanbanColumnFactory
-from job.tests.factories import JobFactory
+from job.tests.factories import JobFactory, ReviewRequestFactory
 
 
 class TestViews(TransactionTestCase):
@@ -531,3 +531,59 @@ class TestViews(TransactionTestCase):
         self.assertEqual(response_dict["job_id"], payload["job_id"])
         self.assertEqual(response_dict["message"], payload["message"])
         self.assertEqual(response_dict["fulfilled"], False)
+
+    def test_create_review_with_error(self):
+        self.assertEqual(len(Review.objects.all()), 0)
+
+        review_request = ReviewRequestFactory()
+        reviewer = UserFactory()
+
+        # Reviewer doesn't exist
+        review_data = {"reviewer_id": -1, "request_id": review_request.id, "response": "7.8/10 too much water"}
+        response = self.client.post(
+            reverse("create_review"),
+            json.dumps(review_data),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(len(Review.objects.all()), 0)
+
+        # Request doesn't exist
+        review_data = {"reviewer_id": reviewer.id, "request_id": -1, "response": "🤓"}
+        response = self.client.post(
+            reverse("create_review"),
+            json.dumps(review_data),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(len(Review.objects.all()), 0)
+
+        # Response not given
+        review_data = {"reviewer_id": reviewer.id, "request_id": review_request.id}
+        response = self.client.post(
+            reverse("create_review"),
+            json.dumps(review_data),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(len(Review.objects.all()), 0)
+
+        # (an empty response is fine, though)
+        review_data = {"reviewer_id": reviewer.id, "request_id": review_request.id, "response": ""}
+        response = self.client.post(
+            reverse("create_review"),
+            json.dumps(review_data),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(Review.objects.all()), 1)
+
+        # Field(s) missing
+        review_data = {"request_id": review_request.id}
+        response = self.client.post(
+            reverse("create_review"),
+            json.dumps(review_data),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(len(Review.objects.all()), 1)
