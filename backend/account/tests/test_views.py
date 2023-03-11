@@ -35,6 +35,7 @@ class GetOrCreateAccountTests(TransactionTestCase):
             content_type="application/json",
             **self.header,
         )
+        self.assertEqual(response.data["error"], None)
 
         self.assertEqual(response.status_code, 200)
 
