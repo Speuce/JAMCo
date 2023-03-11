@@ -552,7 +552,25 @@ class TestViews(TransactionTestCase):
         self.assertEqual(len(ReviewRequest.objects.all()), 0)
 
     def test_create_review(self):
-        pass
+        self.assertEqual(len(Review.objects.all()), 0)
+
+        reviewer = UserFactory()
+        review_request = ReviewRequestFactory()
+        payload = {"reviewer_id": reviewer.id, "request_id": review_request.id, "response": "W"}
+
+        response = self.client.post(
+            reverse("create_review"),
+            json.dumps(payload),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(Review.objects.all()), 1)
+        response_dict = json.loads(response.content)["review"]
+        self.assertGreaterEqual(response_dict["id"], 0)
+        self.assertEqual(response_dict["reviewer_id"], payload["reviewer_id"])
+        self.assertEqual(response_dict["request_id"], payload["request_id"])
+        self.assertEqual(response_dict["response"], payload["response"])
+        self.assertEqual(response_dict["completed"], None)
 
     def test_create_review_with_error(self):
         self.assertEqual(len(Review.objects.all()), 0)
