@@ -31,7 +31,7 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 DEBUG = not os.getenv("PROD", 0)
 IS_TEST = os.getenv("TEST", 1)
 PROD = os.getenv("PROD", 0)
-logger.log("--------------- PROD: %s", PROD)
+logger.info("--------------- PROD: %s", PROD)
 
 SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
 
