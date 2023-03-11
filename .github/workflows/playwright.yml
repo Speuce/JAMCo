@@ -37,30 +37,39 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
+      working-directory: ./frontend
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: frontend/package-lock.json
+        cache-dependency-path: package-lock.json
     - name: Install dependencies
+      working-directory: ./frontend
       run: npm i
     - name: Install Playwright Browsers
+      working-directory: ./frontend
       run: npx playwright install --with-deps
     - name: Set up Python ${{ matrix.python-version }}
+      working-directory: ./backend
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install Python Dependencies
+      working-directory: ./backend
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Run migrations
+      working-directory: ./backend
       run: python manage.py migrate
     - name: Run Vite dev Server
+      working-directory: ./frontend
       run: npm run dev
     - name: Run Django Server
+      working-directory: ./backend
       run: |
         python manage.py runserver 0.0.0.0:8000 &
     - name: Run Playwright tests
+      working-directory: ./frontend
       run: npx playwright test
     - uses: actions/upload-artifact@v3
       if: always()
