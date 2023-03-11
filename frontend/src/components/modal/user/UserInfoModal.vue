@@ -131,7 +131,17 @@
               </v-row>
               <v-row><br /></v-row>
               <v-list lines="three" select-strategy="classic">
-                <v-list-item value="is_searchable">
+                <v-list-item
+                  value="is_searchable"
+                  @click="
+                    () => {
+                      if (this.editingEnabled) {
+                        this.userPrivacies.is_searchable =
+                          !this.userPrivacies.is_searchable
+                      }
+                    }
+                  "
+                >
                   <template v-slot:prepend>
                     <v-list-item-action start>
                       <v-checkbox-btn
@@ -139,8 +149,10 @@
                         :disabled="!this.editingEnabled"
                         @click="
                           () => {
-                            this.userPrivacies.is_searchable =
-                              !this.userPrivacies.is_searchable
+                            if (this.editingEnabled) {
+                              this.userPrivacies.is_searchable =
+                                !this.userPrivacies.is_searchable
+                            }
                           }
                         "
                       ></v-checkbox-btn>
@@ -152,7 +164,17 @@
                     your current friends).
                   </v-list-item-subtitle>
                 </v-list-item>
-                <v-list-item value="share_kanban">
+                <v-list-item
+                  value="share_kanban"
+                  @click="
+                    () => {
+                      if (this.editingEnabled) {
+                        this.userPrivacies.share_kanban =
+                          !this.userPrivacies.share_kanban
+                      }
+                    }
+                  "
+                >
                   <template v-slot:prepend>
                     <v-list-item-action start>
                       <v-checkbox-btn
@@ -160,8 +182,10 @@
                         :disabled="!this.editingEnabled"
                         @click="
                           () => {
-                            this.userPrivacies.share_kanban =
-                              !this.userPrivacies.share_kanban
+                            if (this.editingEnabled) {
+                              this.userPrivacies.share_kanban =
+                                !this.userPrivacies.share_kanban
+                            }
                           }
                         "
                       ></v-checkbox-btn>
@@ -172,7 +196,17 @@
                     Allow my friends to view my application board.
                   </v-list-item-subtitle>
                 </v-list-item>
-                <v-list-item value="cover_letter_requestable">
+                <v-list-item
+                  value="cover_letter_requestable"
+                  @click="
+                    () => {
+                      if (this.editingEnabled) {
+                        this.userPrivacies.cover_letter_requestable =
+                          !this.userPrivacies.cover_letter_requestable
+                      }
+                    }
+                  "
+                >
                   <template v-slot:prepend>
                     <v-list-item-action start>
                       <v-checkbox-btn
@@ -182,8 +216,10 @@
                         :disabled="!this.editingEnabled"
                         @click="
                           () => {
-                            this.userPrivacies.cover_letter_requestable =
-                              !this.userPrivacies.cover_letter_requestable
+                            if (this.editingEnabled) {
+                              this.userPrivacies.cover_letter_requestable =
+                                !this.userPrivacies.cover_letter_requestable
+                            }
                           }
                         "
                       ></v-checkbox-btn>
