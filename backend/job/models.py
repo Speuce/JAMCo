@@ -54,5 +54,5 @@ class Review(models.Model):
             "reviewer_id": self.reviewer.id,
             "request_id": self.request_id,
             "response": self.response,
-            "completed": self.completed,
+            "completed": self.completed.isoformat(),
         }

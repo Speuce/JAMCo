@@ -103,3 +103,19 @@ def create_review_request(request: HttpRequest):
         return JsonResponse(status=200, data={"review_request": review_request.to_dict()})
     except Exception as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+@require_POST
+def create_review(request: HttpRequest):
+    """
+    Creates a cover letter review
+    """
+
+    body = read_request(request)
+    logger.debug(f"create_review: {body}")
+
+    try:
+        review = business.create_review(body)
+        return JsonResponse(status=200, data={"review": review.to_dict()})
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})

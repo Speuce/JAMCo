@@ -3,7 +3,7 @@ Job business
 
 Business logic for job related operations.
 """
-from .models import Job, ReviewRequest
+from .models import Job, ReviewRequest, Review
 from . import query
 
 
@@ -25,3 +25,7 @@ def update_job(payload: dict) -> None:
 
 def create_review_request(payload: dict) -> ReviewRequest:
     return query.create_review_request(payload)
+
+
+def create_review(payload: dict) -> Review:
+    pass
