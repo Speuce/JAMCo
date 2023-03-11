@@ -46,15 +46,4 @@ describe('GoogleSignin.vue', () => {
       },
     )
   })
-
-  it('calls the onSignin method with the response and makes the post request', async () => {
-    postRequest.mockResolvedValue({ data: { client_id: 'some-client' } })
-    const response = { credential: 'some-credential', client_id: 'some-client' }
-    wrapper.vm.onSignin(response)
-    await wrapper.vm.$nextTick()
-    expect(postRequest).toHaveBeenCalledWith(
-      'account/api/get_or_create_account',
-      response,
-    )
-  })
 })

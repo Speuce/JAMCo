@@ -85,4 +85,16 @@ describe('MainView', () => {
     expect(window.location.reload).toHaveBeenCalled()
     expect(wrapper.vm.userData).toBe(null)
   })
+
+  it('calls the onSignin method with the response and makes the post request', async () => {
+    const wrapper = shallowMount(MainView)
+    postRequest.mockResolvedValue({ data: { client_id: 'some-client' } })
+    const response = { credential: 'some-credential', client_id: 'some-client' }
+    wrapper.vm.onSignin(response)
+    await wrapper.vm.$nextTick()
+    expect(postRequest).toHaveBeenCalledWith(
+      'account/api/get_or_create_account',
+      response,
+    )
+  })
 })
