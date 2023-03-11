@@ -544,7 +544,7 @@ class TestViews(TransactionTestCase):
         job = JobFactory()
         payload = {"job_id": -1, "message": "REVIEW COVER LETTER NOW (2019) (NO VIRUS)"}
         response = self.client.post(
-            reverse("create_review_request"),
+            reverse("create_review"),
             json.dumps(payload),
             content_type="application/json",
         )
