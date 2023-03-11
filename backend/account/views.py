@@ -8,7 +8,7 @@ from django.conf import settings
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_POST
 from django.core.exceptions import ObjectDoesNotExist
-from backend.account.models import User
+from account.models import User
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from account.stubs import stub_verify_oauth2_token
@@ -42,7 +42,6 @@ def get_or_create_account(request: HttpRequest):
         # Specify the CLIENT_ID of the app that accesses the backend:
         idinfo = None
         if not settings.IS_TEST:
-            
             idinfo = id_token.verify_oauth2_token(credential, requests.Request(), client_id, clock_skew_in_seconds=5)
         else:
             User.objects.filter(google_id="1234567890").delete()
