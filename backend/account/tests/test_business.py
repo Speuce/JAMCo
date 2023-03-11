@@ -100,14 +100,22 @@ class FriendTests(TestCase):
 
         # The query layer handles verifying that the users exist, so here we only care that it calls the query function
         business.add_friend(0, 1)
-        mock_add_friend.assert_called()
+        mock_add_friend.assert_called_with(0, 1)
 
+    @patch("account.query.are_friends")
     @patch("account.query.remove_friend")
-    def test_invalid_remove_friend(self, mock_remove_friend):
-        # I guess there's nothing stopping a user from removing friends with themselves, since that method is defined
-        # such that it doesn't doesn't do anything if the user(s) involved are already not friends
+    def test_invalid_remove_friend(self, mock_remove_friend, mock_are_friends):
+        mock_are_friends.return_value = False
+        with self.assertRaises(ObjectDoesNotExist):
+            business.remove_friend(0, 0)
+        mock_remove_friend.assert_not_called()
+
+    @patch("account.query.are_friends")
+    @patch("account.query.remove_friend")
+    def test_valid_remove_friend(self, mock_remove_friend, mock_are_friends):
+        mock_are_friends.return_value = True
         business.remove_friend(0, 0)
-        mock_remove_friend.assert_called()
+        mock_remove_friend.assert_called_with(0, 0)
 
 
 @patch("account.query.get_user_by_token_fields")

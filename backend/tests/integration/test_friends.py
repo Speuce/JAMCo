@@ -11,6 +11,7 @@ class CreateFriendRequestTests(TransactionTestCase):
     reset_sequences = True
 
     def test_create_friend_request_valid(self):
+        self.assertEqual(len(FriendRequest.objects.all()), 0)
         user_one = UserFactory()
         PrivacyFactory(user=user_one)
         user_two = UserFactory()
@@ -30,8 +31,10 @@ class CreateFriendRequestTests(TransactionTestCase):
         self.assertEqual(content["accepted"], False)
         self.assertEqual(content["acknowledged"], None)
         self.assertTrue(datetime.strptime(content["sent"], "%Y-%m-%d %H:%M:%S.%f%z") < timezone.now())
+        self.assertEqual(len(FriendRequest.objects.all()), 1)
 
     def test_create_friend_request_error(self):
+        self.assertEqual(len(FriendRequest.objects.all()), 0)
         # to_user not searchable
         user_one = UserFactory()
         PrivacyFactory(user=user_one)
@@ -209,3 +212,75 @@ class GetFriendRequestsStatusTests(TransactionTestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
+
+
+class RemoveFriendTests(TransactionTestCase):
+    reset_sequences = True
+
+    def test_remove_friend_valid(self):
+        # setup users, add as friends
+        user_one = UserFactory()
+        PrivacyFactory(user=user_one)
+        user_two = UserFactory()
+        PrivacyFactory(user=user_two)
+        user_three = UserFactory()
+        PrivacyFactory(user=user_three)
+
+        user_one.friends.add(user_two)
+        user_one.friends.add(user_three)
+
+        self.assertTrue(user_one.friends.contains(user_two))
+        self.assertTrue(user_two.friends.contains(user_one))
+        self.assertTrue(user_one.friends.contains(user_three))
+        self.assertTrue(user_three.friends.contains(user_one))
+        self.assertFalse(user_two.friends.contains(user_three))
+        self.assertFalse(user_three.friends.contains(user_two))
+
+        # remove friends, validate other expected relationships exist
+        response = self.client.post(
+            reverse("remove_friend"),
+            json.dumps({"user1_id": user_one.id, "user2_id": user_two.id}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.assertFalse(user_one.friends.contains(user_two))
+        self.assertFalse(user_two.friends.contains(user_one))
+        self.assertTrue(user_one.friends.contains(user_three))
+        self.assertTrue(user_three.friends.contains(user_one))
+        self.assertFalse(user_two.friends.contains(user_three))
+        self.assertFalse(user_three.friends.contains(user_two))
+
+    def test_remove_friend_invalid(self):
+        # setup users, add as friends
+        user_one = UserFactory()
+        PrivacyFactory(user=user_one)
+        user_two = UserFactory()
+        PrivacyFactory(user=user_two)
+        user_three = UserFactory()
+        PrivacyFactory(user=user_three)
+
+        user_one.friends.add(user_two)
+        user_one.friends.add(user_three)
+
+        self.assertTrue(user_one.friends.contains(user_two))
+        self.assertTrue(user_two.friends.contains(user_one))
+        self.assertTrue(user_one.friends.contains(user_three))
+        self.assertTrue(user_three.friends.contains(user_one))
+        self.assertFalse(user_two.friends.contains(user_three))
+        self.assertFalse(user_three.friends.contains(user_two))
+
+        # remove friends, validate other expected relationships exist
+        response = self.client.post(
+            reverse("remove_friend"),
+            json.dumps({"user1_id": user_two.id, "user2_id": user_three.id}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+
+        self.assertTrue(user_one.friends.contains(user_two))
+        self.assertTrue(user_two.friends.contains(user_one))
+        self.assertTrue(user_one.friends.contains(user_three))
+        self.assertTrue(user_three.friends.contains(user_one))
+        self.assertFalse(user_two.friends.contains(user_three))
+        self.assertFalse(user_three.friends.contains(user_two))

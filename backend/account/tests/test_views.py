@@ -208,43 +208,7 @@ class PrivacyTests(TestCase):
         self.assertEqual(response.status_code, 400)
 
 
-class FriendTests(TestCase):
-    @patch("account.business.add_friend")
-    def test_add_friend(self, mock_add_friend):
-        user1 = UserFactory()
-        user2 = UserFactory()
-
-        response = self.client.post(
-            reverse("add_friend"),
-            json.dumps({"user1_id": user1.id, "user2_id": user2.id}),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, 200)
-        mock_add_friend.assert_called()
-        # Adding the friend again doesn't cause any problems (it's idempotent)
-        response = self.client.post(
-            reverse("add_friend"),
-            json.dumps({"user1_id": user1.id, "user2_id": user2.id}),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, 200)
-        mock_add_friend.assert_called()
-
-    @patch("account.business.add_friend")
-    def test_invalid_add_friend(self, mock_add_friend):
-        # All error handling is performed in the business and query layers, so this just checks that exceptions lead to
-        # 400 errors
-        def mock_add_friend_implementation(id1, id2):
-            raise ValueError
-
-        mock_add_friend.side_effect = mock_add_friend_implementation
-
-        response = self.client.post(
-            reverse("add_friend"), json.dumps({"user1_id": -1, "user2_id": -1}), content_type="application/json"
-        )
-        self.assertEqual(response.status_code, 400)
-        mock_add_friend.assert_called()
-
+class RemoveFriendTests(TestCase):
     @patch("account.business.remove_friend")
     def test_remove_friend(self, mock_remove_friend):
         user1 = UserFactory()

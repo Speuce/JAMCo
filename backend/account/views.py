@@ -117,26 +117,6 @@ def get_user_privacies(request: HttpRequest):
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
 
-# This endpoint will likely be unused
-@require_POST
-def add_friend(request: HttpRequest):
-    """
-    Takes two users' ids and makes it so those two users are friends with each other. If they were friends already, this
-    method doesn't do anything
-    """
-
-    try:
-        body = read_request(request)
-        user1_id = body["user1_id"]
-        user2_id = body["user2_id"]
-        logger.debug(f"add_friend: {user1_id}, {user2_id}")
-
-        business.add_friend(user1_id, user2_id)
-        return JsonResponse(status=200, data={})
-    except Exception as err_msg:
-        return JsonResponse(status=400, data={"error": repr(err_msg)})
-
-
 @require_POST
 def remove_friend(request: HttpRequest):
     """

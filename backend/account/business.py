@@ -55,6 +55,8 @@ def add_friend(user1_id, user2_id):
 
 
 def remove_friend(user1_id, user2_id):
+    if not query.are_friends(user1_id, user2_id):
+        raise ObjectDoesNotExist("Error Removing Friends")
     query.remove_friend(user1_id, user2_id)
 
 
