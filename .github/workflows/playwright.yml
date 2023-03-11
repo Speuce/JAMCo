@@ -37,7 +37,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
-      working-directory: ./frontend
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
@@ -49,7 +48,6 @@ jobs:
       working-directory: ./frontend
       run: npx playwright install --with-deps
     - name: Set up Python ${{ matrix.python-version }}
-      working-directory: ./backend
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
