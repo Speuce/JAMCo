@@ -61,11 +61,11 @@ jobs:
       run: python manage.py migrate
     - name: Run Vite dev Server
       working-directory: ./frontend
-      run: npm run dev
+      run: nohup npm run dev &
     - name: Run Django Server
       working-directory: ./backend
       run: |
-        python manage.py runserver 0.0.0.0:8000 &
+        nohup python manage.py runserver 0.0.0.0:8000 &
     - name: Run Playwright tests
       working-directory: ./frontend
       run: npx playwright test
