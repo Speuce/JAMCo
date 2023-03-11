@@ -83,7 +83,7 @@ def update_privacies(request: HttpRequest):
 
     try:
         business.update_privacies(body)
-    except AttributeError as err_msg:
+    except Exception as err_msg:
         logger.debug(f"Update error:\n{err_msg}")
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
