@@ -72,13 +72,18 @@ export default {
   async mounted() {
     let token = getAuthToken()
     if (token) {
-      await postRequest('account/api/validate_auth_token', token).then(
-        (response) => {
-          if (response.user) {
-            this.userSignedIn({ data: response.user, token: response.token })
-          }
-        },
-      )
+      try {
+        await postRequest('account/api/validate_auth_token', token).then(
+          (response) => {
+            if (response.user) {
+              this.userSignedIn({ data: response.user, token: response.token })
+            }
+          },
+        )
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.warn('Token Authentication Failed')
+      }
     }
     if (!this.userData) this.failedAuthentication = true
   },
