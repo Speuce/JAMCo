@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test'
 
 test('account creation', async ({ page }) => {
   await page.goto('http://localhost:8000/')
-  // wait 5 seconds for the page to load
+  // wait 1 second for the page to load
   await page.waitForTimeout(1000)
   await expect(page).toHaveTitle('JamCo')
 
