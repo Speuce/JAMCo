@@ -6,6 +6,7 @@
 
 <RequestCard
     :request="req"
+    :user="user"
     @acceptRequest="acceptFriendRequest(req)"
     @denyRequest="denyFriendRequest(req)"
 />

@@ -46,6 +46,7 @@ TODO:
           v-for="req in requests"
           :key="req.id"
           :request="req"
+          :user="userData"
           @acceptRequest="acceptFriendRequest(req)"
           @denyRequest="denyFriendRequest(req)"
         />
