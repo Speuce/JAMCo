@@ -90,7 +90,7 @@
                   <v-btn
                     color="blue-darken-1"
                     variant="text"
-                    @click="this.requestReviewClicked"
+                    @click="ReviewRequestModalVisible = true"
                   >
                     Request Review
                   </v-btn>
@@ -168,11 +168,15 @@
       </v-card>
     </v-dialog>
   </v-row>
+  <div class="page-container flex-grow-1">
+    <ReviewRequestModal v-if="ReviewRequestModalVisible" />
+  </div>
 </template>
 
 <script>
 import JobDetailDeadline from '../job/JobDetailDeadline.vue'
 import { ref } from 'vue'
+import ReviewRequestModal from './ReviewRequestModal.vue'
 
 const nextDeadlineId = ref(0) // TODO: remove once backend integration complete
 const deadlines = ref([])
@@ -181,7 +185,8 @@ const selectedColumnId = ref(-1)
 export default {
   components: {
     JobDetailDeadline,
-  },
+    ReviewRequestModal,
+},
   emits: ['close', 'createOrUpdateJob'],
   props: {
     job: {
@@ -214,6 +219,7 @@ export default {
     positionErrorIndicator: null,
     companyErrorIndicator: null,
     deadlineError: false,
+    ReviewRequestModalVisible: false,
   }),
   setup(props) {
     deadlines.value = props.job.deadlines ? props.job.deadlines : []
