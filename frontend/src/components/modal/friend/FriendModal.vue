@@ -50,6 +50,7 @@ import RequestCard from './RequestCard.vue'
 import SearchFriendsModal from './SearchFriendsModal.vue'
 
 export default {
+  name: 'FriendModal',
   components: {
     RequestCard,
     SearchFriendsModal,

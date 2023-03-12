@@ -1,22 +1,38 @@
 <template>
   <div class="card-container">
-    <div class="id-company">
-      <p class="company">name</p>
-      <span class="small-gray">status</span>
+    <div class="name-country">
+      <h4>{{ userData.first_name }} {{ userData.last_name }}</h4>
+      <p>, {{ userData.country }}</p>
     </div>
-    <div class="position-container">
-      <span class="small-gray" id="job-position">status</span>
-    </div>
+    <v-btn
+      v-if="!isFriend"
+      @click="this.$emit('sendFriendRequest', userData.id)"
+      ><v-icon>mdi-account-plus</v-icon></v-btn
+    >
+    <v-btn v-if="isFriend" variant="text" disabled
+      ><v-icon>mdi-account-check</v-icon></v-btn
+    >
   </div>
 </template>
 
 <script>
 export default {
-  name: 'RequestCard',
+  name: 'FriendCard',
   props: {
-    request: {
+    userData: {
       type: Object,
-      default: null,
+      default: () => {
+        return {
+          id: -1,
+          first_name: 'first',
+          last_name: 'last',
+          country: 'CA',
+        }
+      },
+    },
+    isFriend: {
+      type: Boolean,
+      default: false,
     },
   },
 }
@@ -24,6 +40,8 @@ export default {
 
 <style scoped>
 .card-container {
+  display: flex;
+  justify-content: space-between;
   --bg-opacity: 1;
   background-color: #fff;
   background-color: rgba(255, 255, 255, var(--bg-opacity));
@@ -35,34 +53,7 @@ export default {
   border-color: rgba(255, 255, 255, var(--border-opacity));
 }
 
-.id-company {
+.name-country {
   display: flex;
-  justify-content: space-between;
-}
-
-.company {
-  --text-opacity: 1;
-  color: #4a5568;
-  color: rgba(74, 85, 104, var(--text-opacity));
-  font-weight: 600;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  letter-spacing: 0.025em;
-  font-size: 0.875rem;
-}
-
-.small-gray {
-  font-size: 0.875rem;
-  --text-opacity: 1;
-  color: #718096;
-  color: rgba(113, 128, 150, var(--text-opacity));
-}
-
-.position-container {
-  display: flex;
-  margin-top: 1rem;
-  justify-content: space-between;
-  align-items: center;
 }
 </style>

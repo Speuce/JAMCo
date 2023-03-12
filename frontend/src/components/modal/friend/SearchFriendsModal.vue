@@ -11,16 +11,26 @@
               <v-text-field
                 v-model="searchField"
                 @keyup.enter="triggerSearch"
+                placeholder="Search For Friends"
               />
-              <v-btn @click="triggerSearch" />
+              <v-btn @click="triggerSearch"
+                >Search <v-divider class="mx-1" /><v-icon
+                  >mdi-magnify</v-icon
+                ></v-btn
+              >
             </v-row>
             <v-row><br /></v-row>
             <div class="scrollable">
               <FriendCard
                 v-for="user in searchResults"
                 :key="user.id"
-                :user="user"
-                @requestFriend="sendFriendRequest(user)"
+                :userData="user"
+                :isFriend="
+                  userData && userData.friends
+                    ? userData.friends.contains(user.id)
+                    : false
+                "
+                @sendFriendRequest="sendFriendRequest(user)"
               />
             </div>
             <v-row class="center offset-right">
@@ -47,30 +57,30 @@ const searchResults = ref([
     id: 0,
     first_name: 'first',
     last_name: 'last',
+    country: 'CA',
   },
   {
     id: 1,
     first_name: 'firstname',
     last_name: 'lastname',
+    country: 'CA',
   },
   {
     id: 2,
     first_name: 'f',
     last_name: 'l',
+    country: 'US',
   },
 ])
 export default {
+  name: 'SearchFriendsModal',
   components: {
     FriendCard,
   },
   emits: ['close'],
   props: {
-    user: {
+    userData: {
       type: Object,
-      default: undefined,
-    },
-    userFriends: {
-      type: Array,
       default: undefined,
     },
   },
@@ -105,7 +115,6 @@ export default {
 .offset-right {
   padding-left: 20px;
 }
-
 .scrollable {
   overflow-y: auto;
   overflow-x: hidden;
@@ -116,7 +125,6 @@ export default {
   justify-content: center;
   align-items: center;
 }
-
 .dialog-popup {
   max-width: 700px;
 }

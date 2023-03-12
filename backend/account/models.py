@@ -28,7 +28,7 @@ class User(AbstractUser):
             "city": self.city,
             "birthday": self.birthday,
             "field_of_work": self.field_of_work,
-            "friends": list(self.friends.values("id", "first_name", "last_name")),
+            "friends": list(self.friends.values("id", "first_name", "last_name", "country")),
         }
 
 
