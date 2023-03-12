@@ -16,10 +16,18 @@ describe('UserInfoModal', () => {
     birthday: '12/12/1212',
   }
 
-  function mountModal(userProp) {
+  const privacies = {
+    id: 12,
+    is_searchable: true,
+    share_kanban: true,
+    cover_letter_requestable: true,
+  }
+
+  function mountModal(userProp, privProp) {
     wrapper = mount(UserInfoModal, {
       props: {
         user: userProp,
+        privacies: privProp,
       },
     })
   }
@@ -45,6 +53,12 @@ describe('UserInfoModal', () => {
       city: '',
       birthday: '',
     })
+    expect(wrapper.vm.userPrivacies).toEqual({
+      id: -1,
+      is_searchable: false,
+      share_kanban: false,
+      cover_letter_requestable: false,
+    })
   })
 
   it('displays error when first name is empty & saveChanges is pressed', () => {
@@ -52,7 +66,7 @@ describe('UserInfoModal', () => {
 
     let testJob = { ...user }
     testJob.first_name = null
-    mountModal(testJob)
+    mountModal(testJob, privacies)
 
     wrapper.vm.saveChanges()
 
@@ -64,7 +78,7 @@ describe('UserInfoModal', () => {
 
     let testJob = { ...user }
     testJob.last_name = null
-    mountModal(testJob)
+    mountModal(testJob, privacies)
 
     wrapper.vm.saveChanges()
 
@@ -76,7 +90,7 @@ describe('UserInfoModal', () => {
 
     let testJob = { ...user }
     testJob.email = null
-    mountModal(testJob)
+    mountModal(testJob, privacies)
 
     wrapper.vm.saveChanges()
 
@@ -88,7 +102,7 @@ describe('UserInfoModal', () => {
 
     let testJob = { ...user }
     testJob.country = null
-    mountModal(testJob)
+    mountModal(testJob, privacies)
 
     wrapper.vm.saveChanges()
 
@@ -100,7 +114,7 @@ describe('UserInfoModal', () => {
 
     let testJob = { ...user }
     testJob.field_of_work = null
-    mountModal(testJob)
+    mountModal(testJob, privacies)
 
     wrapper.vm.saveChanges()
 
@@ -108,7 +122,7 @@ describe('UserInfoModal', () => {
   })
 
   it('emits updateUser when saveChanges clicked', () => {
-    mountModal(user)
+    mountModal(user, privacies)
     wrapper.vm.saveChanges()
 
     expect(wrapper.emitted('updateUser')).toBeTruthy()
@@ -122,6 +136,12 @@ describe('UserInfoModal', () => {
       region: 'MB',
       city: 'WPG',
       birthday: '12/12/1212',
+    })
+    expect(wrapper.emitted().updateUser[0][1]).toEqual({
+      id: 12,
+      is_searchable: true,
+      share_kanban: true,
+      cover_letter_requestable: true,
     })
   })
 })

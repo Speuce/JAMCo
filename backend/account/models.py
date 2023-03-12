@@ -28,3 +28,18 @@ class User(AbstractUser):
             "birthday": self.birthday,
             "field_of_work": self.field_of_work,
         }
+
+
+class Privacy(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    is_searchable = models.BooleanField(null=False)
+    share_kanban = models.BooleanField(null=False)
+    cover_letter_requestable = models.BooleanField(null=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "is_searchable": self.is_searchable,
+            "share_kanban": self.share_kanban,
+            "cover_letter_requestable": self.cover_letter_requestable,
+        }

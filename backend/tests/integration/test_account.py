@@ -3,7 +3,7 @@ import json
 from django.test import TransactionTestCase
 from django.urls import reverse
 from django.http.cookie import SimpleCookie
-from account.models import User
+from account.models import User, Privacy
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +52,13 @@ class GetOrCreateAccountTests(TransactionTestCase):
         self.assertEqual(
             User.objects.get(google_id="1234567890").to_dict(),
             user_data,
+        )
+
+        # Verify User Privacy Created
+        self.assertEqual(len(Privacy.objects.all()), 1)
+        self.assertEqual(
+            Privacy.objects.get(user__id=user_data["id"]).to_dict(),
+            {"id": 1, "is_searchable": True, "share_kanban": True, "cover_letter_requestable": True},
         )
 
 
@@ -177,6 +184,136 @@ class UpdateAccountTests(TransactionTestCase):
         )
 
 
+class CreatePrivacyTests(TransactionTestCase):
+    reset_sequences = True
+
+    def setUp(self):
+        self.client.cookies = SimpleCookie({"csrftoken": "valid_csrf_token"})
+        self.header = {
+            "ACCEPT": "application/json",
+            "HTTP_X-CSRFToken": "valid_csrf_token",
+        }
+
+    def test_get_privacies(self):
+        # Create an account first -- this generates privacies
+        response = self.client.post(
+            reverse("get_or_create_account"),
+            json.dumps({"credential": "test", "client_id": "test"}),
+            content_type="application/json",
+            **self.header,
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(len(User.objects.all()), 1)
+
+        # Assert that the privacies exist as default
+        user = json.loads(response.content)["data"]
+        response = self.client.post(
+            reverse("get_user_privacies"),
+            json.dumps({"user_id": user["id"]}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        privs = json.loads(response.content)
+        self.assertEqual(
+            privs, {"id": 1, "is_searchable": True, "share_kanban": True, "cover_letter_requestable": True}
+        )
+
+    def test_invalid_get_privacies(self):
+        # Create an account first -- this generates privacies
+        response = self.client.post(
+            reverse("get_or_create_account"),
+            json.dumps({"credential": "test", "client_id": "test"}),
+            content_type="application/json",
+            **self.header,
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(len(User.objects.all()), 1)
+        self.assertEqual(len(Privacy.objects.all()), 1)
+
+        # Assert that the privacies exist as default
+        response = self.client.post(
+            reverse("get_user_privacies"),
+            json.dumps({"user_id": -1}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+
+
+class UpdatePrivacyTests(TransactionTestCase):
+    reset_sequences = True
+
+    def setUp(self):
+        self.client.cookies = SimpleCookie({"csrftoken": "valid_csrf_token"})
+        self.header = {
+            "ACCEPT": "application/json",
+            "HTTP_X-CSRFToken": "valid_csrf_token",
+        }
+
+    def test_update_privacies(self):
+        # Create an account first -- this generates privacies
+        response = self.client.post(
+            reverse("get_or_create_account"),
+            json.dumps({"credential": "test", "client_id": "test"}),
+            content_type="application/json",
+            **self.header,
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(len(User.objects.all()), 1)
+
+        # Assert that the privacies exist as default
+        user = json.loads(response.content)["data"]
+        self.assertEqual(
+            Privacy.objects.get(user__id=user["id"]).to_dict(),
+            {"id": 1, "is_searchable": True, "share_kanban": True, "cover_letter_requestable": True},
+        )
+
+        newPriv = {"id": 1, "is_searchable": False, "share_kanban": True, "cover_letter_requestable": False}
+        # Update privacies
+        response = self.client.post(
+            reverse("update_privacies"),
+            json.dumps({"user_id": user["id"], "privacies": newPriv}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        outPriv = Privacy.objects.get(id=1).to_dict()
+        self.assertEqual(newPriv, outPriv)
+
+    def test_invalid_update_privacies(self):
+        # Create an account first -- this generates privacies
+        response = self.client.post(
+            reverse("get_or_create_account"),
+            json.dumps({"credential": "test", "client_id": "test"}),
+            content_type="application/json",
+            **self.header,
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(len(User.objects.all()), 1)
+
+        # Assert that the privacies exist as default
+        user = json.loads(response.content)["data"]
+        self.assertEqual(
+            Privacy.objects.get(user__id=user["id"]).to_dict(),
+            {"id": 1, "is_searchable": True, "share_kanban": True, "cover_letter_requestable": True},
+        )
+
+        newPriv = {"id": 1, "is_searchable": False, "share_kanban": True, "cover_letter_requestable": False}
+        # Update privacies
+        response = self.client.post(
+            reverse("update_privacies"),
+            json.dumps({"user_id": -1, "privacies": newPriv}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+
+        outPriv = Privacy.objects.get(id=1).to_dict()
+        self.assertNotEqual(newPriv, outPriv)
+
+
 class AccountTestCase(TransactionTestCase):
     reset_sequences = True
 
@@ -197,6 +334,7 @@ class AccountTestCase(TransactionTestCase):
         )
         self.assertEqual(response.status_code, 401)
         self.assertEqual(len(User.objects.all()), 0)
+        self.assertEqual(len(Privacy.objects.all()), 0)
 
         # No CSRF in Cookie
         self.client.cookies = SimpleCookie({"not_a_csrftoken": "not_the_droid"})
@@ -213,6 +351,7 @@ class AccountTestCase(TransactionTestCase):
         )
         self.assertEqual(response.status_code, 401)
         self.assertEqual(len(User.objects.all()), 0)
+        self.assertEqual(len(Privacy.objects.all()), 0)
 
         # No CSRF in Header
         self.client.cookies = SimpleCookie({"csrftoken": "valid_csrf_token"})
@@ -229,6 +368,7 @@ class AccountTestCase(TransactionTestCase):
         )
         self.assertEqual(response.status_code, 401)
         self.assertEqual(len(User.objects.all()), 0)
+        self.assertEqual(len(Privacy.objects.all()), 0)
 
         # CSRFs do not match
         self.client.cookies = SimpleCookie({"csrftoken": "one_csrf_token"})
@@ -245,3 +385,4 @@ class AccountTestCase(TransactionTestCase):
         )
         self.assertEqual(response.status_code, 401)
         self.assertEqual(len(User.objects.all()), 0)
+        self.assertEqual(len(Privacy.objects.all()), 0)

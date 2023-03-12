@@ -29,7 +29,8 @@
         v-if="userInfoModalVisible"
         @updateUser="updateUserAccount"
         :user="this.userData"
-        @close="userInfoModalVisible = false"
+        :privacies="this.userPrivacies"
+        @close="this.userInfoModalVisible = false"
         @logout="logoutClicked"
       />
       <Suspense>
@@ -61,6 +62,7 @@ export default {
   data() {
     return {
       userData: null,
+      userPrivacies: null,
       setupModalVisible: false,
       userInfoModalVisible: false,
       failedAuthentication: false,
@@ -104,6 +106,7 @@ export default {
         this.setupModalVisible = true
       }
       setAuthToken(resp.token)
+      this.fetchUserPrivacies()
     },
     setupIncomplete() {
       // check if any req. fields are empty
@@ -115,11 +118,29 @@ export default {
         !this.userData.field_of_work
       )
     },
-    async updateUserAccount(userData) {
+    async fetchUserPrivacies() {
+      await postRequest('account/api/get_user_privacies', {
+        user_id: this.userData.id,
+      }).then((privs) => {
+        this.userPrivacies = privs
+      })
+    },
+    async updateUserAccount(userData, userPrivacies) {
       await postRequest('account/api/update_account', userData)
+
       this.userData = userData
+
       this.setupModalVisible = false
       this.userInfoModalVisible = false
+
+      // handles case when AccountSetupModal calls updateUserAccount without privacies
+      if (userPrivacies) {
+        await postRequest('account/api/update_privacies', {
+          privacies: userPrivacies,
+          user_id: this.userData.id,
+        })
+        this.userPrivacies = userPrivacies
+      }
     },
   },
 }

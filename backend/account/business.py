@@ -4,7 +4,7 @@ Account business
 Business logic for account related operations.
 """
 from . import query
-from account.models import User
+from account.models import User, Privacy
 from typing import Tuple
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from column.business import create_default_columns
@@ -17,6 +17,7 @@ def get_or_create_user(payload: dict) -> Tuple[User, bool]:
     user = query.get_or_create_user(payload)
     if is_new:
         create_default_columns(user.id)
+        query.create_privacies(user.id)
     return user, encrypt_token(user.google_id, user.last_login)
 
 
@@ -31,6 +32,19 @@ def update_user(payload: dict) -> None:
         query.update_user(formatted_payload)
     except (IndexError, ValidationError) as err:
         raise AttributeError(err.message + " - " + payload.get("birthday"))
+
+
+def get_privacies(user_id: int) -> Privacy:
+    return query.get_privacies(user_id)
+
+
+def update_privacies(payload: dict) -> None:
+    try:
+        privacies = payload.get("privacies")
+        uid = payload.get("user_id")
+        query.update_privacies(in_user_id=uid, payload=privacies)
+    except (AttributeError, IndexError, ValidationError):
+        raise AttributeError("Error updating")
 
 
 def add_friend(user1_id, user2_id):

@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.exceptions import ObjectDoesNotExist
 from account import query, models
-from account.tests.factories import UserFactory
+from account.tests.factories import UserFactory, PrivacyFactory
 from django.utils import timezone
 from datetime import datetime
 
@@ -53,6 +53,84 @@ class UpdateAccountTests(TestCase):
         # User not specified
         with self.assertRaises(ObjectDoesNotExist):
             query.update_user({"first_name": "Rob"})
+
+
+class PrivacyTests(TestCase):
+    def test_create_privacies(self):
+        user = UserFactory()
+        query.create_privacies(user.id)
+        self.assertEqual(models.Privacy.objects.count(), 1)
+
+    def test_get_privacies(self):
+        priv = PrivacyFactory()
+        user = priv.user
+        privFetch = query.get_privacies(user.id)
+        self.assertEqual(priv.id, privFetch.id)
+
+    def test_invalid_privacies_get(self):
+        priv = PrivacyFactory()
+        user = priv.user
+        self.assertEqual(models.Privacy.objects.count(), 1)
+        # test invalid getting
+        with self.assertRaises(ObjectDoesNotExist):
+            query.get_privacies(user.id + 1)
+
+
+class UpdatePrivacyTests(TestCase):
+    def test_update_privacies(self):
+        priv = PrivacyFactory()
+        user = priv.user
+        # update privacies to opposite of default
+        query.update_privacies(
+            user.id,
+            {
+                "is_searchable": False,
+                "share_kanban": False,
+                "cover_letter_requestable": False,
+            },
+        )
+        newPriv = models.Privacy.objects.get(user__id=user.id)
+
+        # verify updates succeeded
+        self.assertDictEqual(
+            newPriv.to_dict(),
+            {
+                "id": priv.id,
+                "is_searchable": False,
+                "share_kanban": False,
+                "cover_letter_requestable": False,
+            },
+        )
+        self.assertNotEqual(priv.to_dict(), newPriv.to_dict())
+
+    def test_invalid_update_privacies(self):
+        priv = PrivacyFactory()
+        user = priv.user
+        # update privacies to opposite of default
+        with self.assertRaises(AttributeError):
+            query.update_privacies(
+                user.id,
+                {
+                    # invalid name
+                    "searchable": False,
+                    "share_kanban": False,
+                    "cover_letter_requestable": False,
+                },
+            )
+
+        newPriv = models.Privacy.objects.get(user__id=user.id)
+
+        # verify updates succeeded
+        self.assertDictEqual(
+            newPriv.to_dict(),
+            {
+                "id": priv.id,
+                "is_searchable": True,
+                "share_kanban": True,
+                "cover_letter_requestable": True,
+            },
+        )
+        self.assertEqual(priv.to_dict(), newPriv.to_dict())
 
 
 class FriendTests(TestCase):

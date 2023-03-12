@@ -1,7 +1,7 @@
 from django.test import TestCase
 from account import business
 from unittest.mock import patch
-from account.tests.factories import UserFactory
+from account.tests.factories import UserFactory, PrivacyFactory
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -53,6 +53,41 @@ class UpdateUserTests(TestCase):
         with self.assertRaises(AttributeError):
             business.update_user(payload={"id": user.id, "birthday": "2023-02"})
         mock_update_user.assert_not_called()
+
+
+class PrivacyTests(TestCase):
+    @patch("account.query.create_privacies")
+    def test_get_privacies(self, mock_create_privacies):
+        mocked_priv = PrivacyFactory()
+        mock_create_privacies.return_value = mocked_priv
+
+        priv = business.get_privacies(mocked_priv.user.id)
+        self.assertEqual(mocked_priv.to_dict(), priv.to_dict())
+
+    @patch("account.query.update_privacies")
+    def test_update_privacies(self, mock_update_privacies):
+        mocked_priv = PrivacyFactory()
+        newPrivDict = {
+            "is_searchable": False,
+            "share_kanban": True,
+            "cover_letter_requestable": False,
+        }
+        # payload to `update` is *not* a Privacy dict, but a dict of values
+        business.update_privacies({"user_id": mocked_priv.user.id, "privacies": newPrivDict})
+        mock_update_privacies.assert_called_with(in_user_id=mocked_priv.user.id, payload=newPrivDict)
+
+    @patch("account.query.update_privacies")
+    def test_invalid_update_privacies(self, mock_update_privacies):
+        mocked_priv = PrivacyFactory()
+        # test updating with an attribute error
+        mock_update_privacies.side_effect = AttributeError("Attribute not found.")
+        badPrivDict = {
+            "is_able": False,
+            "share_kanban": True,
+            "cover_letter_requestable": False,
+        }
+        with self.assertRaises(AttributeError):
+            business.update_privacies({"user_id": mocked_priv.user.id, "privacies": badPrivDict})
 
 
 class FriendTests(TestCase):
