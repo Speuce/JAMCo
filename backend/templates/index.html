@@ -1,12 +1,6 @@
 {% load render_vite_bundle %}
 <!DOCTYPE html>
 <html lang="en">
-<!-- 
-  For this base.html to work in dev and in production,
-  you'll need to set a couple of keys inside your settings.py.
-  Another file in this gist shows which ones you'll really need.
--->
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,13 +8,20 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <link href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.css" rel="stylesheet">
 
+  {% if not PROD %}
+  <script type="module" src="http://localhost:3000/@vite/client"></script>
+  {% endif %}
 </head>
 
 <body>
   {% csrf_token %}
   <div id="app"></div>
-  
+
+  {% if PROD %}
   {% render_vite_bundle %}
+  {% else %}
+  <script type="module" src="http://localhost:3000/src/main.js"></script>
+  {% endif %}
 </body>
 
 </html>
