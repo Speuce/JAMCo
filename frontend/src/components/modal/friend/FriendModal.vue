@@ -30,7 +30,13 @@
             </v-col>
           </v-row>
         </v-row>
-        <RequestCard />
+        <RequestCard
+          v-for="req in requests"
+          :key="req.id"
+          :request="req"
+          @acceptRequest="acceptFriendRequest(req)"
+          @denyRequest="denyFriendRequest(req)"
+        />
         <FriendCard
           v-for="user in userData.friends"
           :key="user.id"
