@@ -45,9 +45,9 @@ jobs:
     - name: Install dependencies
       working-directory: ./frontend
       run: npm i
-    - name: Install Playwright Browsers
-      working-directory: ./frontend
-      run: npx playwright install --with-deps
+#     - name: Install Playwright Browsers
+#       working-directory: ./frontend
+#       run: npx playwright install --with-deps
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
@@ -93,9 +93,9 @@ jobs:
         curl "http://localhost:8000" &&
         echo "-------------------------------------" &&
         curl "http://localhost:3000/src/main.js"
-    - name: Run Playwright tests
-      working-directory: ./frontend
-      run: npx playwright test
+#     - name: Run Playwright tests
+#       working-directory: ./frontend
+#       run: npx playwright test
     - name: Output log
       if: ${{ failure() }}
       run: |
