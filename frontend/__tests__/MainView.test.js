@@ -77,6 +77,21 @@ describe('MainView', () => {
     )
   })
 
+  it('catches Error when auth_token validation fails', async () => {
+    getAuthToken.mockReturnValue('token')
+    postRequest.mockReturnValue(Error())
+    const warnSpy = vi.spyOn(console, 'warn')
+    shallowMount(MainView)
+    flushPromises()
+
+    expect(postRequest).toHaveBeenCalledWith(
+      'account/api/validate_auth_token',
+      'token',
+    )
+
+    expect(warnSpy).toBeCalledWith('Token Authentication Failed')
+  })
+
   it('logs out when logoutClicked', () => {
     const wrapper = shallowMount(MainView)
     delete window.location
