@@ -38,6 +38,7 @@ class GetOrCreateAccountTests(TransactionTestCase):
             "email": "john.doe@gmail.com",
             "field_of_work": None,
             "first_name": "John",
+            "friends": [],
         }
         self.assertEqual(response.status_code, 200)
         # The query should return the User object. Since a mock is used,
@@ -97,6 +98,7 @@ class UpdateAccountTests(TransactionTestCase):
                 "email": "john.doe@gmail.com",
                 "field_of_work": None,
                 "first_name": "John",
+                "friends": [],
             },
         )
 
@@ -124,6 +126,7 @@ class UpdateAccountTests(TransactionTestCase):
                 "email": "john.doe@gmail.com",
                 "field_of_work": None,
                 "first_name": "Rob",
+                "friends": [],
             },
         )
 
@@ -150,9 +153,7 @@ class UpdateAccountTests(TransactionTestCase):
                 "city": None,
                 "country": None,
                 "region": None,
-                "email": "john.doe@gmail.com",
-                "field_of_work": None,
-                "first_name": "John",
+                "friends": [],
             },
         )
 
@@ -180,6 +181,7 @@ class UpdateAccountTests(TransactionTestCase):
                 "email": "john.doe@gmail.com",
                 "field_of_work": None,
                 "first_name": "John",
+                "friends": [],
             },
         )
 
