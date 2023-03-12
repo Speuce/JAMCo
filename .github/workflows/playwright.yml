@@ -64,7 +64,7 @@ jobs:
       working-directory: ./frontend
       run: |
         npx vite build --base /static/dist/ &&
-        cp ./dist ../backend/global_static/dist
+        cp -r ./dist ../backend/global_static/dist
     - name: Collect Static
       working-directory: ./backend
       run: |
