@@ -52,6 +52,16 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+    - name: test
+      run: |
+        python -c 'import os; print(os.getenv("PROD"))
+    - name: make .env file
+      run: |
+        cd ./backend && 
+        cat "PROD=0" > .env
+    - name: test2
+      run: |
+        python -c 'import os; print(os.getenv("PROD"))
     - name: Install Python Dependencies
       working-directory: ./backend
       run: |
