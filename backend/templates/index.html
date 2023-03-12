@@ -14,7 +14,7 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <link href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.css" rel="stylesheet">
 
-  {% if not PROD %}
+  {% if True %}
   <script type="module" src="http://localhost:3000/@vite/client"></script>
   {% endif %}
 </head>
@@ -23,7 +23,7 @@
   {% csrf_token %}
   <div id="app"></div>
 
-  {% if PROD %}
+  {% if False %}
   {% render_vite_bundle %}
   {% else %}
   <script type="module" src="http://localhost:3000/src/main.js"></script>
