@@ -27,7 +27,7 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = not bool(os.getenv("PROD", 0))
-IS_TEST = bool(os.getenv("TEST", 0))
+IS_TEST = bool(int(os.getenv("TEST", 0)))
 PROD = bool(int(os.getenv("PROD", 0)))
 
 SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
