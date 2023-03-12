@@ -58,7 +58,7 @@ jobs:
     - name: make .env file
       run: |
         cd ./backend && 
-        cat "PROD=0" > .env
+        echo "PROD=0" > .env
     - name: test2
       run: |
         python -c 'import os; print(os.getenv("PROD"))'
