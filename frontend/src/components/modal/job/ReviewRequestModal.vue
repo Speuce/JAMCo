@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" persistent max-witdth="900px">
+    <v-dialog v-model="dialog" persistent max-width="900px">
       <v-card>
         <v-card-text>
           <v-row>
@@ -21,7 +21,7 @@
 <script>
 export default {
   components: {},
-  data(props) {
+  data() {
     return {
       dialog: true,
     }
