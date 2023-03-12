@@ -171,6 +171,7 @@
   <div class="page-container flex-grow-1">
     <ReviewRequestModal
       v-if="ReviewRequestModalVisible"
+      :job="this.jobData"
       @close="this.ReviewRequestModalVisible = false"
     />
   </div>

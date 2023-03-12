@@ -1,11 +1,30 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" persistent max-width="900px">
+    <v-dialog v-model="dialog" persistent max-width="600px">
       <v-card>
+        <v-card-title>
+          <h2 class="mt-3">Request Cover Letter Review</h2>
+          <h5>
+            {{ this.jobData.position_title }} at {{ this.jobData.company }}
+          </h5>
+        </v-card-title>
         <v-card-text>
           <v-row>
-            <v-col class="info-col" cols="7">
+            <v-col class="info-col" cols="12">
               <v-select :items="[{}, {}, {}]" label="To:" variant="outlined" />
+            </v-col>
+          </v-row>
+          <v-row class="mt-n7">
+            <v-col cols="12" sm="">
+              <v-textarea
+                auto-grow
+                class="text-area-box"
+                label="Message"
+                shaped
+                maxlength="10000"
+                variant="outlined"
+                rows="5"
+              />
             </v-col>
           </v-row>
         </v-card-text>
@@ -27,10 +46,35 @@
 <script>
 export default {
   components: {},
-  data() {
+  emits: ['close'],
+  props: {
+    job: {
+      type: Object,
+      default: () => {
+        return {
+          user: -1,
+          id: -1,
+          company: '',
+          type: '',
+          kcolumn_id: -1,
+          position_title: '',
+          description: '',
+          cover_letter: '',
+          notes: '',
+        }
+      },
+    },
+  },
+  data(props) {
     return {
       dialog: true,
+      jobData: props.job,
+      friends: {},
     }
+  },
+  async mounted() {
+    console.log('hello')
+    console.log(this.jobData)
   },
 }
 </script>
