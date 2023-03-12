@@ -11,7 +11,14 @@
         <v-card-text>
           <v-row>
             <v-col class="info-col" cols="12">
-              <v-select :items="[{}, {}, {}]" label="To:" variant="outlined" />
+              <v-select
+                :items="[this.jobData.user.friends]"
+                item-title="name"
+                item-value="id"
+                label="To:"
+                v-model="selectedFriendId"
+                variant="outlined"
+              />
             </v-col>
           </v-row>
           <v-row class="mt-n7">
@@ -44,6 +51,7 @@
   </v-row>
 </template>
 <script>
+
 export default {
   components: {},
   emits: ['close'],
@@ -69,12 +77,8 @@ export default {
     return {
       dialog: true,
       jobData: props.job,
-      friends: {},
+      selectedFriendId: null,
     }
-  },
-  async mounted() {
-    console.log('hello')
-    console.log(this.jobData)
   },
 }
 </script>
