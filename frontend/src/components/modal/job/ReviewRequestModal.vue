@@ -15,8 +15,9 @@
               <v-select
                 item-title="name"
                 item-value="id"
-                label="To:"
+                label="Recipient*"
                 v-model="selectedFriendId"
+                :style="{ color: this.recipientErrorIndicator}"
                 variant="outlined"
               />
             </v-col>
@@ -26,15 +27,22 @@
               <v-textarea
                 auto-grow
                 class="text-area-box"
-                label="Message"
+                label="Message*"
                 shaped
                 v-model="message"
+                :style="{ color: this.messageErrorIndicator }"
                 maxlength="10000"
                 variant="outlined"
                 rows="5"
               />
             </v-col>
           </v-row>
+          <h4
+            v-if="this.messageErrorIndicator || this.recipientErrorIndicator"
+            class="errorMessage"
+          >
+            Ensure Required (*) Fields Are Filled
+          </h4>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -82,15 +90,29 @@ export default {
       jobData: props.job,
       selectedFriendId: null,
       message: `Hello, please review my cover letter for ${props.job.position_title} at ${props.job.company}.`,
+      messageErrorIndicator: null,
+      recipientErrorIndicator: null,
     }
   },
   methods: {
     sendClicked() {
+      this.messageErrorIndicator = null
+
       // TODO: Create review request and POST it
       console.log(this.selectedFriendId)
       console.log(this.message)
-      this.$emit('close')
+
+      if (this.message /* TODO: && this.recipients or whatever */) {
+        this.$emit('close')
+      } else if (!this.message) {
+        this.messageErrorIndicator = 'red'
+      }
     },
   },
 }
 </script>
+<style scoped>
+.errorMessage {
+  color: red;
+}
+</style>

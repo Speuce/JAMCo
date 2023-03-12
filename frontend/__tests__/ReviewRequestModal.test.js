@@ -81,6 +81,7 @@ describe('ReviewRequestModal', () => {
     expect(wrapper.vm.messageErrorIndicator).toBe(null)
 
     mountModal(job)
+    wrapper.vm.message = ''
     wrapper.vm.sendClicked()
 
     expect(wrapper.vm.recipientErrorIndicator).toBe(null)
