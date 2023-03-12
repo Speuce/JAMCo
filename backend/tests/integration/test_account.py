@@ -231,13 +231,13 @@ class CreatePrivacyTests(TransactionTestCase):
         self.assertEqual(response.status_code, 200)
 
         self.assertEqual(len(User.objects.all()), 1)
+        self.assertEqual(len(Privacy.objects.all()), 1)
 
         # Assert that the privacies exist as default
         response = self.client.post(
             reverse("get_user_privacies"),
             json.dumps({"user_id": -1}),
             content_type="application/json",
-            **self.header,
         )
         self.assertEqual(response.status_code, 400)
 
