@@ -11,8 +11,8 @@
         <v-card-text>
           <v-row>
             <v-col class="info-col" cols="12">
+              <!-- 👇 once friends are in user data: :items="[this.jobData.user.friends]" -->
               <v-select
-                :items="[this.jobData.user.friends]"
                 item-title="name"
                 item-value="id"
                 label="To:"
@@ -28,6 +28,7 @@
                 class="text-area-box"
                 label="Message"
                 shaped
+                v-model="message"
                 maxlength="10000"
                 variant="outlined"
                 rows="5"
@@ -44,7 +45,9 @@
           >
             Cancel
           </v-btn>
-          <v-btn color="blue-darken-1" variant="text"> Send </v-btn>
+          <v-btn color="blue-darken-1" variant="text" @click="sendClicked()">
+            Send
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -78,7 +81,16 @@ export default {
       dialog: true,
       jobData: props.job,
       selectedFriendId: null,
+      message: `Hello, please review my cover letter for ${props.job.position_title} at ${props.job.company}.`,
     }
+  },
+  methods: {
+    sendClicked() {
+      // TODO: Create review request and POST it
+      console.log(this.selectedFriendId)
+      console.log(this.message)
+      this.$emit('close')
+    },
   },
 }
 </script>
