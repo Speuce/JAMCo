@@ -11,10 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 import os
-import logging
 from pathlib import Path
 
-logger = logging.getLogger(__name__)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,8 +28,7 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = not bool(os.getenv("PROD", 0))
 IS_TEST = bool(os.getenv("TEST", 1))
-PROD = bool(int(os.getenv("PROD2", 0)))
-logger.info("--------------- PROD: %s", PROD)
+PROD = bool(int(os.getenv("PROD", 0)))
 
 SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
 
