@@ -30,8 +30,8 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = not bool(os.getenv("PROD", 0))
 IS_TEST = bool(os.getenv("TEST", 1))
-PROD = bool(os.getenv("PROD", 0))
-if PROD:
+PROD2 = bool(os.getenv("PROD2", 0))
+if PROD2:
     raise ValueError("Prod shouldnt be true")
 logger.info("--------------- PROD: %s", PROD)
 
