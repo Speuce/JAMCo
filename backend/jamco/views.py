@@ -5,8 +5,4 @@ import os
 
 @ensure_csrf_cookie
 def index(request):
-    if bool(int(os.getenv("PROD2"))):
-#         return render(request, "index.html")
-       raise ValueError("prod is true: " + str(os.getenv("PROD2",0)))
-    else:
-       return render(request, "index-dev.html")     
+    return render(request, "index.html")
