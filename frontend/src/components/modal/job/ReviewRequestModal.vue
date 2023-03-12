@@ -11,7 +11,13 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="blue-darken-1" variant="text"> Cancel </v-btn>
+          <v-btn
+            color="blue-darken-1"
+            variant="text"
+            @click="this.$emit('close')"
+          >
+            Cancel
+          </v-btn>
           <v-btn color="blue-darken-1" variant="text"> Send </v-btn>
         </v-card-actions>
       </v-card>

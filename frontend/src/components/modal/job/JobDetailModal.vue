@@ -169,7 +169,10 @@
     </v-dialog>
   </v-row>
   <div class="page-container flex-grow-1">
-    <ReviewRequestModal v-if="ReviewRequestModalVisible" />
+    <ReviewRequestModal
+      v-if="ReviewRequestModalVisible"
+      @close="this.ReviewRequestModalVisible = false"
+    />
   </div>
 </template>
 
