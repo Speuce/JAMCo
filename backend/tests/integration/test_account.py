@@ -195,7 +195,7 @@ class CreatePrivacyTests(TransactionTestCase):
         }
 
     def test_get_privacies(self):
-        # Create an account first
+        # Create an account first -- this generates privacies
         response = self.client.post(
             reverse("get_or_create_account"),
             json.dumps({"credential": "test", "client_id": "test"}),
@@ -221,7 +221,7 @@ class CreatePrivacyTests(TransactionTestCase):
         )
 
     def test_invalid_get_privacies(self):
-        # Create an account first
+        # Create an account first -- this generates privacies
         response = self.client.post(
             reverse("get_or_create_account"),
             json.dumps({"credential": "test", "client_id": "test"}),
@@ -253,7 +253,7 @@ class UpdatePrivacyTests(TransactionTestCase):
         }
 
     def test_update_privacies(self):
-        # Create an account first
+        # Create an account first -- this generates privacies
         response = self.client.post(
             reverse("get_or_create_account"),
             json.dumps({"credential": "test", "client_id": "test"}),
@@ -285,7 +285,7 @@ class UpdatePrivacyTests(TransactionTestCase):
         self.assertEqual(newPriv, outPriv)
 
     def test_invalid_update_privacies(self):
-        # Create an account first
+        # Create an account first -- this generates privacies
         response = self.client.post(
             reverse("get_or_create_account"),
             json.dumps({"credential": "test", "client_id": "test"}),
