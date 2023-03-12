@@ -54,10 +54,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: test
       run: |
-        python -c 'import os; print(os.getenv("PROD"))'
-    - name: test2
-      run: |
-        python -c 'import os; print(os.getenv("PROD"))'
+        python -c 'import os; print(os.getenv("PROD2"))'
     - name: Install Python Dependencies
       working-directory: ./backend
       run: |
@@ -79,6 +76,9 @@ jobs:
       working-directory: ./frontend
       run: |
         nohup npm run dev &
+    - name: test2
+      run: |
+        python -c 'import os; print(os.getenv("PROD2"))'
     - name: Run Django Server
       working-directory: ./backend
       run: |
