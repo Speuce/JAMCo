@@ -5,7 +5,7 @@
         <v-row class="inner-page-container">
           <v-col class="items">
             <v-row class="center">
-              <h3>Add Friends</h3>
+              <h2>Add Friends</h2>
             </v-row>
             <v-row>
               <v-text-field
@@ -31,6 +31,8 @@
                     : false
                 "
                 @sendFriendRequest="sendFriendRequest(user)"
+                @removeFriend="removeFriend(user)"
+                @viewKanban="viewFriendKanban(user)"
               />
             </div>
             <v-row class="center offset-right">
@@ -101,6 +103,16 @@ export default {
       console.log(user)
       // TODO: send friend request to user
     },
+    removeFriend(user) {
+      // eslint-disable-next-line no-console
+      console.log(user)
+      // TODO: remove friend from user
+    },
+    viewFriendKanban(user) {
+      // eslint-disable-next-line no-console
+      console.log(user)
+      // TODO: view friend kanban board
+    },
   },
 }
 </script>
@@ -126,6 +138,6 @@ export default {
   align-items: center;
 }
 .dialog-popup {
-  max-width: 700px;
+  max-width: 960px;
 }
 </style>

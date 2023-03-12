@@ -32,7 +32,7 @@
       />
       <FriendModal
         v-if="friendModalVisible"
-        :user="this.userData"
+        :userData="this.userData"
         @close="friendModalVisible = false"
       />
       <UserInfoModal

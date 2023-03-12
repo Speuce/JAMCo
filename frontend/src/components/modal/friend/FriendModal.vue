@@ -31,6 +31,13 @@
           </v-row>
         </v-row>
         <RequestCard />
+        <FriendCard
+          v-for="user in userData.friends"
+          :key="user.id"
+          :userData="user"
+          :isFriend="true"
+          @removeFriend="removeFriend(user)"
+        />
         <v-card-actions>
           <v-btn
             color="blue-darken-1"
@@ -47,17 +54,19 @@
 
 <script>
 import RequestCard from './RequestCard.vue'
+import FriendCard from './FriendCard.vue'
 import SearchFriendsModal from './SearchFriendsModal.vue'
 
 export default {
   name: 'FriendModal',
   components: {
     RequestCard,
+    FriendCard,
     SearchFriendsModal,
   },
   emits: ['close'],
   props: {
-    user: {
+    userData: {
       type: Object,
       default: () => {
         return {
@@ -70,6 +79,7 @@ export default {
           region: '',
           city: '',
           birthday: '',
+          friends: [],
         }
       },
     },

@@ -4,20 +4,30 @@
       <h4>{{ userData.first_name }} {{ userData.last_name }}</h4>
       <p>, {{ userData.country }}</p>
     </div>
-    <v-btn
-      v-if="!isFriend"
-      @click="this.$emit('sendFriendRequest', userData.id)"
-      ><v-icon>mdi-account-plus</v-icon></v-btn
-    >
-    <v-btn v-if="isFriend" variant="text" disabled
-      ><v-icon>mdi-account-check</v-icon></v-btn
-    >
+    <div>
+      <v-btn
+        v-if="!isFriend"
+        @click="this.$emit('sendFriendRequest', userData.id)"
+        >Send Friend Request<v-divider class="mx-1" /><v-icon
+          >mdi-account-plus</v-icon
+        ></v-btn
+      >
+      <v-btn v-if="isFriend" @click="this.$emit('viewKanban', userData.id)"
+        >View Kanban<v-divider class="mx-1" /><v-icon
+          >mdi-view-dashboard-variant-outline</v-icon
+        ></v-btn
+      >
+      <v-btn v-if="isFriend" @click="this.$emit('removeFriend', userData.id)"
+        ><v-icon>mdi-trash-can-outline</v-icon></v-btn
+      >
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'FriendCard',
+  emits: ['viewKanban', 'removeFriend', 'sendFriendRequest'],
   props: {
     userData: {
       type: Object,
