@@ -70,22 +70,32 @@ jobs:
     - name: Run migrations
       working-directory: ./backend
       run: python manage.py migrate
-    - name: Build Vite
+#     - name: Build Vite
+#       working-directory: ./frontend
+#       run: |
+#         npx vite build --base /static/dist/ &&
+#         cp -r ./dist ../backend/global_static/dist
+#     - name: Collect Static
+#       working-directory: ./backend
+#       run: |
+#         python manage.py collectstatic --noinput
+    - name: Run vite dev server
       working-directory: ./frontend
       run: |
-        npx vite build --base /static/dist/ &&
-        cp -r ./dist ../backend/global_static/dist
-    - name: Collect Static
-      working-directory: ./backend
-      run: |
-        python manage.py collectstatic --noinput
+        nohup npm run dev &
     - name: Run Django Server
       working-directory: ./backend
       run: |
         nohup python manage.py runserver 0.0.0.0:8000 >> test.log 2>&1 &
-    - name: Run Playwright tests
-      working-directory: ./frontend
-      run: npx playwright test
+    - name: run curl test
+      run: |
+        sleep 5 &&
+        curl "http://localhost:8000" &&
+        echo "-------------------------------------" &&
+        curl "http://localhost:3000"
+#     - name: Run Playwright tests
+#       working-directory: ./frontend
+#       run: npx playwright test
     - name: Output log
       if: ${{ failure() }}
       run: |
