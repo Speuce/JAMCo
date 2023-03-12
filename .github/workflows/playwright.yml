@@ -55,10 +55,6 @@ jobs:
     - name: test
       run: |
         python -c 'import os; print(os.getenv("PROD"))'
-    - name: make .env file
-      run: |
-        cd ./backend && 
-        echo "PROD=0" > .env
     - name: test2
       run: |
         python -c 'import os; print(os.getenv("PROD"))'
@@ -97,13 +93,13 @@ jobs:
 #       working-directory: ./frontend
 #       run: npx playwright test
     - name: Output log
-      if: ${{ failure() }}
+      if: ${{ always() }}
       run: |
         cd backend &&
         cat test.log &&
         cat debug.log
     - uses: actions/upload-artifact@v3
-      if: always()
+#       if: always()
       with:
         name: playwright-report
         path: playwright-report/
