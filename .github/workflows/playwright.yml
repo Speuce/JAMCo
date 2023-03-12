@@ -71,7 +71,6 @@ jobs:
     - name: Run Playwright tests
       working-directory: ./frontend
       run: npx playwright test
-    - name: Output log
       if: ${{ always() }}
     - uses: actions/upload-artifact@v3
       if: always()
