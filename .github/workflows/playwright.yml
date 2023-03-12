@@ -60,9 +60,15 @@ jobs:
     - name: Run migrations
       working-directory: ./backend
       run: python manage.py migrate
-    - name: Run Vite dev Server
+    - name: Build Vite
       working-directory: ./frontend
-      run: nohup npm run dev &
+      run: |
+        npx vite build --base /static/dist/ &&
+        cp ./dist ../backend/global_static/dist
+    - name: Collect Static
+      working-directory: ./backend
+      run: |
+        python manage.py collectstatic --noinput
     - name: Run Django Server
       working-directory: ./backend
       run: |
