@@ -23,6 +23,7 @@ jobs:
       POSTGRES_HOST: '127.0.0.1'
       TOKEN_ENCRYPTION_KEY: 4xu3i8YiTDl5Zm7HOAZTPlHh3gpqBbe7Gfn6vanqPyI=
       PROD: 0
+      IS_TEST: 0
     services:
       postgres:
         image: postgres:15.1-alpine

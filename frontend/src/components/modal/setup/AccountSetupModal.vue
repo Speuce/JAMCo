@@ -1,6 +1,11 @@
 <template>
   <v-row>
-    <v-dialog v-model="dialog" persistent class="dialog-popup">
+    <v-dialog
+      v-model="dialog"
+      persistent
+      class="dialog-popup"
+      id="signin_dialog"
+    >
       <v-card style="overflow: hidden">
         <v-row class="inner-page-container">
           <v-col class="items">
@@ -16,6 +21,7 @@
               <v-row>
                 <v-text-field
                   label="First Name*"
+                  id="first_name"
                   required
                   v-model="this.userData.first_name"
                   :style="{
@@ -28,6 +34,7 @@
               <v-row>
                 <v-text-field
                   label="Last Name*"
+                  id="last_name"
                   required
                   v-model="this.userData.last_name"
                   :style="{
@@ -39,6 +46,7 @@
               </v-row>
               <v-row>
                 <Datepicker
+                  id="birthday"
                   v-model="this.userData.birthday"
                   :enable-time-picker="false"
                   placeholder="Birthday"
@@ -48,6 +56,7 @@
               <v-row>
                 <v-text-field
                   label="Country*"
+                  id="country"
                   v-model="this.userData.country"
                   :style="{
                     color: this.countryEmpty ? 'red' : '',
@@ -59,6 +68,7 @@
               <v-row>
                 <v-text-field
                   label="Province/Territory/State"
+                  id="region"
                   v-model="this.userData.region"
                   maxlength="30"
                   variant="outlined"
@@ -67,6 +77,7 @@
               <v-row>
                 <v-text-field
                   label="City"
+                  id="city"
                   v-model="this.userData.city"
                   maxlength="30"
                   variant="outlined"
@@ -75,6 +86,7 @@
               <v-row>
                 <v-text-field
                   label="Field of Work*"
+                  id="field_of_work"
                   v-model="this.userData.field_of_work"
                   :style="{
                     color: this.workFieldEmpty ? 'red' : '',
@@ -85,6 +97,7 @@
               <v-row>
                 <v-text-field
                   label="Email*"
+                  id="email"
                   v-model="this.userData.email"
                   :style="{
                     color: this.emailEmpty ? 'red' : '',
@@ -111,7 +124,9 @@
                 <v-row><small>* indicates required field</small></v-row>
               </v-col>
               <v-col cols="12" sm="4">
-                <v-btn @click="signUpClicked" class="">Sign Up</v-btn>
+                <v-btn @click="signUpClicked" class="" id="sign_up_button"
+                  >Sign Up</v-btn
+                >
               </v-col>
             </v-row>
           </v-col>
