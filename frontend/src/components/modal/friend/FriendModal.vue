@@ -1,3 +1,15 @@
+<!--
+TODO:
+
+- Section for Pending Sent Requests
+    (RequestCards -> 'sent' list returned from get_user_friend_requests)
+- Section for Received Requests awaiting response
+    (RequestCards -> 'received' list returned from get_user_friend_requests)
+- Section for Current Friends
+    (FriendCards -> isFriend prop=true, buttons to view Kanban, remove friend)
+
+-->
+
 <template>
   <SearchFriendsModal
     v-if="searchFriendModalVisible"
