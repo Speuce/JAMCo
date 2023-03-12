@@ -5,7 +5,7 @@ import os
 
 @ensure_csrf_cookie
 def index(request):
-    if os.getenv("PROD2"):
+    if bool(int(os.getenv("PROD2"))):
 #         return render(request, "index.html")
        raise ValueError("prod is true: " + str(os.getenv("PROD2",0)))
     else:
