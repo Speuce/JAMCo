@@ -1,38 +1,22 @@
 <template>
   <div class="card-container">
     <div class="id-company">
-      <p class="company">
-        {{ job?.company ?? '' }}
-      </p>
+      <p class="company">name</p>
+      <span class="small-gray">status</span>
     </div>
     <div class="position-container">
-      <span class="small-gray" id="job-position">{{
-        job?.position_title ?? ''
-      }}</span>
-      <CardBadge v-if="job?.type" :colours="badgeColours">{{
-        job.type
-      }}</CardBadge>
+      <span class="small-gray" id="job-position">status</span>
     </div>
   </div>
 </template>
 
 <script>
-import CardBadge from './CardBadge.vue'
-import stringToTriColourPalatte from '../../helpers/string-to-tri-colour-palatte'
 export default {
-  name: 'JobCard',
-  components: {
-    CardBadge,
-  },
+  name: 'RequestCard',
   props: {
-    job: {
+    request: {
       type: Object,
       default: null,
-    },
-  },
-  computed: {
-    badgeColours() {
-      return this.job ? stringToTriColourPalatte(this.job.type) : []
     },
   },
 }

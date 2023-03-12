@@ -12,6 +12,11 @@
       </v-col>
       <v-col class="py-0">
         <div class="text-end">
+          <v-btn color="primary" flat @click="friendModalVisible = true">
+            <v-icon size="x-large" left>mdi-account-group</v-icon>
+            <v-divider class="mx-1" />
+            Friends
+          </v-btn>
           <v-btn color="primary" flat @click="userInfoModalVisible = true">
             <v-icon size="x-large">mdi-cog</v-icon>
           </v-btn>
@@ -24,6 +29,11 @@
         v-if="setupModalVisible"
         @updateUser="updateUserAccount"
         :user="this.userData"
+      />
+      <FriendModal
+        v-if="friendModalVisible"
+        :user="this.userData"
+        @close="friendModalVisible = false"
       />
       <UserInfoModal
         v-if="userInfoModalVisible"
@@ -49,6 +59,7 @@ import LoginModal from '@/components/modal/login/LoginModal.vue'
 import JobTrackingView from './JobTrackingView.vue'
 import AccountSetupModal from '../components/modal/setup/AccountSetupModal.vue'
 import UserInfoModal from '../components/modal/user/UserInfoModal.vue'
+import FriendModal from '../components/modal/friend/FriendModal.vue'
 import { postRequest } from '@/helpers/requests.js'
 import { getAuthToken, setAuthToken } from '@/helpers/auth-cookie.js'
 
@@ -58,6 +69,7 @@ export default {
     JobTrackingView,
     AccountSetupModal,
     UserInfoModal,
+    FriendModal,
   },
   data() {
     return {
@@ -66,6 +78,7 @@ export default {
       setupModalVisible: false,
       userInfoModalVisible: false,
       failedAuthentication: false,
+      friendModalVisible: false,
     }
   },
   async mounted() {
