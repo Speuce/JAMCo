@@ -16,9 +16,10 @@
                 item-title="name"
                 item-value="id"
                 label="Recipient*"
-                v-model="selectedFriendId"
-                :style="{ color: this.recipientErrorIndicator}"
+                v-model="selectedFriendIds"
+                :style="{ color: this.recipientErrorIndicator }"
                 variant="outlined"
+                no-data-text="No friends"
               />
             </v-col>
           </v-row>
@@ -49,7 +50,7 @@
           <v-btn
             color="blue-darken-1"
             variant="text"
-            @click="this.$emit('close')"
+            @click="this.closeClicked"
           >
             Cancel
           </v-btn>
@@ -62,7 +63,6 @@
   </v-row>
 </template>
 <script>
-
 export default {
   components: {},
   emits: ['close'],
@@ -88,7 +88,7 @@ export default {
     return {
       dialog: true,
       jobData: props.job,
-      selectedFriendId: null,
+      selectedFriendIds: null,
       message: `Hello, please review my cover letter for ${props.job.position_title} at ${props.job.company}.`,
       messageErrorIndicator: null,
       recipientErrorIndicator: null,
@@ -97,16 +97,30 @@ export default {
   methods: {
     sendClicked() {
       this.messageErrorIndicator = null
+      this.recipientErrorIndicator = null
 
       // TODO: Create review request and POST it
-      console.log(this.selectedFriendId)
+      console.log(this.selectedFriendIds)
       console.log(this.message)
 
-      if (this.message /* TODO: && this.recipients or whatever */) {
+      if (this.message && this.selectedFriendIds) {
+        this.messageErrorIndicator = null
+        this.recipientErrorIndicator = null
         this.$emit('close')
-      } else if (!this.message) {
-        this.messageErrorIndicator = 'red'
+      } else {
+        if (!this.message) {
+          this.messageErrorIndicator = 'red'
+        }
+        if (!this.selectedFriendIds) {
+          this.recipientErrorIndicator = 'red'
+        }
       }
+    },
+
+    closeClicked() {
+      this.messageErrorIndicator = null
+      this.recipientErrorIndicator = null
+      this.$emit('close')
     },
   },
 }

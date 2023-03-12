@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { expect, describe, it } from 'vitest';
+import { expect, describe, it, afterEach } from 'vitest';
 import ReviewRequestModal from '../src/components/modal/job/ReviewRequestModal.vue'
 
 describe('ReviewRequestModal', () => {
@@ -23,6 +23,11 @@ describe('ReviewRequestModal', () => {
       },
     })
   }
+
+  afterEach(() => {
+    wrapper.vm.messageErrorIndicator = null
+    wrapper.vm.recipientErrorIndicator = null
+  })
 
   it('populates with default values when no props provided', () => {
     mountModal()
@@ -55,6 +60,7 @@ describe('ReviewRequestModal', () => {
   it('emits close when send button clicked', () => {
     mountModal(job)
     let buttons = wrapper.findAllComponents({ name: 'v-btn' })
+    wrapper.vm.selectedFriendIds = [-1]
 
     buttons.forEach((button) => {
       if (button.text() === 'Send') {
@@ -81,6 +87,7 @@ describe('ReviewRequestModal', () => {
     expect(wrapper.vm.messageErrorIndicator).toBe(null)
 
     mountModal(job)
+    wrapper.vm.selectedFriendIds = [-1]
     wrapper.vm.message = ''
     wrapper.vm.sendClicked()
 
