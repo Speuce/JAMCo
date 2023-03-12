@@ -6,6 +6,6 @@ from django.conf import settings
 def index(request):
     if settings.PROD:
 #         return render(request, "index.html")
-       raise Error("prod is true")
+       raise ValueError("prod is true")
     else:
        return render(request, "index-dev.html")     
