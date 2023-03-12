@@ -28,9 +28,9 @@ SECRET_KEY = "django-insecure-p4enq_&$q7e%a+cs3@5lcb4h#^9j!*c07ci-9o(v1#k8!ebaos
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = not os.getenv("PROD", 0)
-IS_TEST = os.getenv("TEST", 1)
-PROD = os.getenv("PROD", 0)
+DEBUG = not bool(os.getenv("PROD", 0))
+IS_TEST = bool(os.getenv("TEST", 1))
+PROD = bool(os.getenv("PROD", 0))
 logger.info("--------------- PROD: %s", PROD)
 
 SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
