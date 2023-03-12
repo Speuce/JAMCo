@@ -212,7 +212,6 @@ class CreatePrivacyTests(TransactionTestCase):
             reverse("get_user_privacies"),
             json.dumps({"user_id": user["id"]}),
             content_type="application/json",
-            **self.header,
         )
         self.assertEqual(response.status_code, 200)
         privs = json.loads(response.content)
@@ -277,7 +276,6 @@ class UpdatePrivacyTests(TransactionTestCase):
             reverse("update_privacies"),
             json.dumps({"user_id": user["id"], "privacies": newPriv}),
             content_type="application/json",
-            **self.header,
         )
         self.assertEqual(response.status_code, 200)
 
@@ -309,7 +307,6 @@ class UpdatePrivacyTests(TransactionTestCase):
             reverse("update_privacies"),
             json.dumps({"user_id": -1, "privacies": newPriv}),
             content_type="application/json",
-            **self.header,
         )
         self.assertEqual(response.status_code, 400)
 
