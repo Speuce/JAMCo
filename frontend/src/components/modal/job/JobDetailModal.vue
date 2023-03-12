@@ -85,6 +85,18 @@
                 </v-col>
               </v-row>
 
+              <v-row class="mt-n8">
+                <v-col cols="12" sm="" class="text-right">
+                  <v-btn
+                    color="blue-darken-1"
+                    variant="text"
+                    @click="this.requestReviewClicked"
+                  >
+                    Request Review
+                  </v-btn>
+                </v-col>
+              </v-row>
+
               <v-row>
                 <v-col cols="12" sm="">
                   <v-textarea
