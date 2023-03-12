@@ -184,7 +184,6 @@ class UpdateAccountTests(TransactionTestCase):
         )
 
 
-@mock.patch("google.oauth2.id_token.verify_oauth2_token")
 class CreatePrivacyTests(TransactionTestCase):
     reset_sequences = True
 
@@ -195,16 +194,11 @@ class CreatePrivacyTests(TransactionTestCase):
             "HTTP_X-CSRFToken": "valid_csrf_token",
         }
 
-    def test_get_privacies(self, mock_verify_oauth2_token):
-        mock_verify_oauth2_token.return_value = {
-            "sub": "unique_user_id",
-            "given_name": "firstname",
-            "email": "useremail",
-        }
+    def test_get_privacies(self):
         # Create an account first
         response = self.client.post(
             reverse("get_or_create_account"),
-            json.dumps({"credential": "unique_user_id", "client_id": "8675309"}),
+            json.dumps({"credential": "test", "client_id": "test"}),
             content_type="application/json",
             **self.header,
         )
@@ -226,16 +220,11 @@ class CreatePrivacyTests(TransactionTestCase):
             privs, {"id": 1, "is_searchable": True, "share_kanban": True, "cover_letter_requestable": True}
         )
 
-    def test_invalid_get_privacies(self, mock_verify_oauth2_token):
-        mock_verify_oauth2_token.return_value = {
-            "sub": "unique_user_id",
-            "given_name": "firstname",
-            "email": "useremail",
-        }
+    def test_invalid_get_privacies(self):
         # Create an account first
         response = self.client.post(
             reverse("get_or_create_account"),
-            json.dumps({"credential": "unique_user_id", "client_id": "8675309"}),
+            json.dumps({"credential": "test", "client_id": "test"}),
             content_type="application/json",
             **self.header,
         )
@@ -253,7 +242,6 @@ class CreatePrivacyTests(TransactionTestCase):
         self.assertEqual(response.status_code, 400)
 
 
-@mock.patch("google.oauth2.id_token.verify_oauth2_token")
 class UpdatePrivacyTests(TransactionTestCase):
     reset_sequences = True
 
@@ -264,16 +252,11 @@ class UpdatePrivacyTests(TransactionTestCase):
             "HTTP_X-CSRFToken": "valid_csrf_token",
         }
 
-    def test_update_privacies(self, mock_verify_oauth2_token):
-        mock_verify_oauth2_token.return_value = {
-            "sub": "unique_user_id",
-            "given_name": "firstname",
-            "email": "useremail",
-        }
+    def test_update_privacies(self):
         # Create an account first
         response = self.client.post(
             reverse("get_or_create_account"),
-            json.dumps({"credential": "unique_user_id", "client_id": "8675309"}),
+            json.dumps({"credential": "test", "client_id": "test"}),
             content_type="application/json",
             **self.header,
         )
@@ -301,16 +284,11 @@ class UpdatePrivacyTests(TransactionTestCase):
         outPriv = Privacy.objects.get(id=1).to_dict()
         self.assertEqual(newPriv, outPriv)
 
-    def test_invalid_update_privacies(self, mock_verify_oauth2_token):
-        mock_verify_oauth2_token.return_value = {
-            "sub": "unique_user_id",
-            "given_name": "firstname",
-            "email": "useremail",
-        }
+    def test_invalid_update_privacies(self):
         # Create an account first
         response = self.client.post(
             reverse("get_or_create_account"),
-            json.dumps({"credential": "unique_user_id", "client_id": "8675309"}),
+            json.dumps({"credential": "test", "client_id": "test"}),
             content_type="application/json",
             **self.header,
         )
@@ -339,7 +317,6 @@ class UpdatePrivacyTests(TransactionTestCase):
         self.assertNotEqual(newPriv, outPriv)
 
 
-@mock.patch("google.oauth2.id_token.verify_oauth2_token")
 class AccountTestCase(TransactionTestCase):
     reset_sequences = True
 
