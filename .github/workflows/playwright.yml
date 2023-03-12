@@ -92,10 +92,10 @@ jobs:
         sleep 5 &&
         curl "http://localhost:8000" &&
         echo "-------------------------------------" &&
-        curl "http://localhost:3000"
-#     - name: Run Playwright tests
-#       working-directory: ./frontend
-#       run: npx playwright test
+        curl "http://localhost:3000/src/main.js"
+    - name: Run Playwright tests
+      working-directory: ./frontend
+      run: npx playwright test
     - name: Output log
       if: ${{ failure() }}
       run: |
