@@ -5,6 +5,7 @@ from django.conf import settings
 @ensure_csrf_cookie
 def index(request):
     if settings.PROD:
-        return render(request, "index.html")
+#         return render(request, "index.html")
+       raise Error("prod is true")
     else:
        return render(request, "index-dev.html")     
