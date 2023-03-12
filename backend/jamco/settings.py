@@ -32,7 +32,7 @@ DEBUG = not bool(os.getenv("PROD", 0))
 IS_TEST = bool(os.getenv("TEST", 1))
 PROD2 = bool(os.getenv("PROD2", 0))
 if PROD2:
-    raise ValueError("Prod shouldnt be true")
+    raise ValueError("Prod shouldnt be true:" + str(PROD2))
 logger.info("--------------- PROD: %s", PROD)
 
 SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
