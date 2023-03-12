@@ -4,11 +4,14 @@ Account views
 API-layer for account related operations.
 """
 import logging
+from django.conf import settings
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_POST
 from django.core.exceptions import ObjectDoesNotExist
+from account.models import User
 from google.oauth2 import id_token
 from google.auth.transport import requests
+from account.stubs import stub_verify_oauth2_token
 from jamco.helper import read_request
 from . import business
 
@@ -37,7 +40,12 @@ def get_or_create_account(request: HttpRequest):
     # Verify Credentials via Google
     try:
         # Specify the CLIENT_ID of the app that accesses the backend:
-        idinfo = id_token.verify_oauth2_token(credential, requests.Request(), client_id, clock_skew_in_seconds=5)
+        idinfo = None
+        if not settings.IS_TEST:
+            idinfo = id_token.verify_oauth2_token(credential, requests.Request(), client_id, clock_skew_in_seconds=5)
+        else:
+            User.objects.filter(google_id="1234567890").delete()
+            idinfo = stub_verify_oauth2_token(credential, client_id)
 
         # ID token is valid. Get the user's Google Account ID from the decoded token.
         logger.debug(f"Credential Validated for User.google_id: { idinfo['sub'] }")

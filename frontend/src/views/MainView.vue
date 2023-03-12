@@ -19,10 +19,7 @@
       </v-col>
     </v-row>
     <div class="page-container flex-grow-1">
-      <LoginModal
-        v-if="!userData && failedAuthentication"
-        @signin="userSignedIn"
-      />
+      <LoginModal v-if="!userData && failedAuthentication" @signin="onSignin" />
       <AccountSetupModal
         v-if="setupModalVisible"
         @updateUser="updateUserAccount"
@@ -71,6 +68,7 @@ export default {
   },
   async mounted() {
     let token = getAuthToken()
+    window.signIn = this.onSignin
     if (token) {
       try {
         await postRequest('account/api/validate_auth_token', token).then(
@@ -91,6 +89,14 @@ export default {
     logoutClicked() {
       setAuthToken('')
       location.reload()
+    },
+    async onSignin(response) {
+      const item = {
+        credential: response.credential,
+        client_id: response.client_id,
+      }
+      const resp = await postRequest('account/api/get_or_create_account', item)
+      this.userSignedIn(resp)
     },
     userSignedIn(resp) {
       this.userData = resp.data
