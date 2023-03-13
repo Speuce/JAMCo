@@ -118,25 +118,6 @@ def get_user_privacies(request: HttpRequest):
 
 
 @require_POST
-def add_friend(request: HttpRequest):
-    """
-    Takes two users' ids and makes it so those two users are friends with each other. If they were friends already, this
-    method doesn't do anything
-    """
-
-    try:
-        body = read_request(request)
-        user1_id = body["user1_id"]
-        user2_id = body["user2_id"]
-        logger.debug(f"add_friend: {user1_id}, {user2_id}")
-
-        business.add_friend(user1_id, user2_id)
-        return JsonResponse(status=200, data={})
-    except Exception as err_msg:
-        return JsonResponse(status=400, data={"error": repr(err_msg)})
-
-
-@require_POST
 def remove_friend(request: HttpRequest):
     """
     Takes two users' ids and makes it so those two users are no longer friends with each other. If they weren't friends
@@ -170,3 +151,73 @@ def validate_auth_token(request: HttpRequest):
     except ObjectDoesNotExist as err_msg:
         logger.debug(f"Invalid Token: {err_msg}")
         return JsonResponse(status=401, data={"error": repr(err_msg)})
+
+
+def create_friend_request(request: HttpRequest):
+    """
+    Creates new FriendRequest
+    """
+
+    try:
+        body = read_request(request)
+        from_user_id = body["from_user_id"]
+        to_user_id = body["to_user_id"]
+        logger.debug(f"create_friend_request: {from_user_id} -> {to_user_id}")
+
+        req = business.create_friend_request(from_user_id=from_user_id, to_user_id=to_user_id)
+        return JsonResponse(data=req.to_dict())
+    except (ObjectDoesNotExist, ValueError) as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+def accept_friend_request(request: HttpRequest):
+    """
+    Accepts friend request sent to this user (the user sending accept)
+    """
+
+    try:
+        body = read_request(request)
+        request_id = body["request_id"]
+        from_user_id = body["from_user_id"]
+        to_user_id = body["to_user_id"]
+        logger.debug(f"accept_friend_request: ToUser:{to_user_id}, FromUser:{from_user_id}, Request: {request_id}")
+
+        business.accept_friend_request(request_id=request_id, to_user_id=to_user_id, from_user_id=from_user_id)
+        return JsonResponse(status=200, data={})
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+def deny_friend_request(request: HttpRequest):
+    """
+    Denies friend request sent to this user (the user sending deny)
+    """
+
+    try:
+        body = read_request(request)
+        request_id = body["request_id"]
+        from_user_id = body["from_user_id"]
+        to_user_id = body["to_user_id"]
+        logger.debug(f"deny_friend_request: ToUser:{to_user_id}, FromUser:{from_user_id}, Request: {request_id}")
+
+        business.deny_friend_request(request_id=request_id, to_user_id=to_user_id, from_user_id=from_user_id)
+        return JsonResponse(status=200, data={})
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+def get_friend_requests_status(request: HttpRequest):
+    """
+    Get sent & received requests for a user
+    """
+
+    try:
+        body = read_request(request)
+        user_id = body["user_id"]
+        logger.debug(f"get_friend_requests_status: {user_id}")
+
+        sent, received = business.get_friend_requests_status(user_id=user_id)
+
+        return JsonResponse(data={"sent": list(sent), "received": list(received)})
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})

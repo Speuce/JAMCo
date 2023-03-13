@@ -4,3 +4,4 @@ env-ignore/
 *.log
 */tmp/*
 */static/*
+.env
