@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { expect, describe, it, fail } from 'vitest';
+import { expect, describe, it } from 'vitest';
 import IncomingReviewsModal from '../src/components/modal/job/IncomingReviewsModal.vue'
 
 describe('IncomingReviewsModal', () => {

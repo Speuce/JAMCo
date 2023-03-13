@@ -6,21 +6,28 @@
           <h2 class="mt-3">Cover Letter Review Requests</h2>
         </v-card-title>
         <v-card-text>
-          <v-col class="scroll-reviews">
+          <v-col v-if="requestEntries.length > 0" class="scroll-reviews">
             <v-row
-              v-for="request in requestEntries" :key="request.id" class="mb-5"
+              v-for="request in requestEntries"
+              :key="request.id"
+              class="mb-5"
             >
               <v-col>
                 <v-row style="white-space: pre">
-                  <b> {{ request.responder }} </b> reviewed your cover letter for
-                  <b> {{ request.jobTitle }} </b>
-                  at <b> {{ request.company }} </b>:
+                  <b> {{ request.responder }} </b> reviewed your cover letter
+                  for <b> {{ request.jobTitle }} </b> at
+                  <b> {{ request.company }} </b>:
                 </v-row>
                 <v-row>
                   {{ request.response }}
                 </v-row>
               </v-col>
             </v-row>
+          </v-col>
+          <v-col v-else>
+            You have no incoming cover letter reviews. You can ask your friends
+            to review your cover letters by pressing the "Request Review" button
+            next to any cover letter.
           </v-col>
         </v-card-text>
         <v-card-actions>
@@ -43,93 +50,12 @@ export default {
   data() {
     return {
       dialog: true,
-      requestEntries: [
-        {
-          id: 0,
-          responder: 'e',
-          jobTitle: 'pro gamer',
-          company: 'u of m',
-          response: 'qwertyuiop',
-        },
-        {
-          id: 1,
-          responder: 'f',
-          jobTitle: 'pro gamer',
-          company: 'u of m',
-          response: 'bad',
-        },
-        {
-          id: 2,
-          responder: 'g',
-          jobTitle: 'pro gamer',
-          company: 'u of m',
-          response: 'good',
-        },
-        {
-          id: 0,
-          responder: 'e',
-          jobTitle: 'pro gamer',
-          company: 'u of m',
-          response: 'qwertyuiop',
-        },
-        {
-          id: 1,
-          responder: 'f',
-          jobTitle: 'pro gamer',
-          company: 'u of m',
-          response: 'bad',
-        },
-        {
-          id: 2,
-          responder: 'g',
-          jobTitle: 'pro gamer',
-          company: 'u of m',
-          response: 'good',
-        },
-        {
-          id: 0,
-          responder: 'e',
-          jobTitle: 'pro gamer',
-          company: 'u of m',
-          response: 'qwertyuiop',
-        },
-        {
-          id: 1,
-          responder: 'f',
-          jobTitle: 'pro gamer',
-          company: 'u of m',
-          response: 'bad',
-        },
-        {
-          id: 2,
-          responder: 'g',
-          jobTitle: 'pro gamer',
-          company: 'u of m',
-          response: 'good',
-        },
-        {
-          id: 0,
-          responder: 'e',
-          jobTitle: 'pro gamer',
-          company: 'u of m',
-          response: 'qwertyuiop',
-        },
-        {
-          id: 1,
-          responder: 'f',
-          jobTitle: 'pro gamer',
-          company: 'u of m',
-          response: 'bad',
-        },
-        {
-          id: 2,
-          responder: 'g',
-          jobTitle: 'pro gamer',
-          company: 'u of m',
-          response: 'good',
-        },
-      ],
+      requestEntries: [],
     }
+  },
+  async mounted() {
+    console.log(this.requestEntries)
+    console.log(Boolean(this.requestEntries.length))
   },
 }
 </script>
