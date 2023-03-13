@@ -170,3 +170,15 @@ def validate_auth_token(request: HttpRequest):
     except ObjectDoesNotExist as err_msg:
         logger.debug(f"Invalid Token: {err_msg}")
         return JsonResponse(status=401, data={"error": repr(err_msg)})
+
+
+@require_POST
+def search_users_by_name(request: HttpRequest):
+    """
+    Searches for [searchable] users by name
+    """
+
+    search_str = read_request(request)
+    logger.debug(f"Searching for users like '{search_str}'")
+    users_list = business.search_users_by_name(search_str)
+    return JsonResponse({"user_list": users_list})

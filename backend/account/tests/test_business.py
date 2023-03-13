@@ -1,5 +1,6 @@
 from django.test import TestCase
 from account import business
+from account.models import User
 from unittest.mock import patch
 from account.tests.factories import UserFactory, PrivacyFactory
 from django.core.exceptions import ObjectDoesNotExist
@@ -108,6 +109,42 @@ class FriendTests(TestCase):
         # such that it doesn't doesn't do anything if the user(s) involved are already not friends
         business.remove_friend(0, 0)
         mock_remove_friend.assert_called()
+
+
+class SearchTests(TestCase):
+    @patch("account.query.get_all_searchable")
+    def test_searching_users(self, mock_search_users_by_name):
+        p1 = PrivacyFactory()
+        p2 = PrivacyFactory()
+        u1 = p1.user
+        u2 = p2.user
+
+        mock_search_users_by_name.return_value = User.objects.all()
+
+        # Make sure empty strings don't return all users
+        results = business.search_users_by_name("")
+        self.assertEqual(len(results), 0)
+
+        results = business.search_users_by_name(f"{u1.first_name} {u1.last_name}")
+        self.assertIn(u1.to_dict(), results)
+        self.assertNotIn(u2.to_dict(), results)
+
+        # Create similar names
+        u1.first_name = "Timothy"
+        u1.save()
+        u2.first_name = "Jimothy"
+        u2.save()
+
+        # Update the return value
+        mock_search_users_by_name.return_value = User.objects.all()
+
+        results = business.search_users_by_name("moth")
+        self.assertIn(u1.to_dict(), results)
+        self.assertIn(u2.to_dict(), results)
+
+        # Make sure all tokens are validated as being in the same name
+        results = business.search_users_by_name(f"{u1.first_name} {u2.first_name}")
+        self.assertEqual(len(results), 0)
 
 
 @patch("account.query.get_user_by_token_fields")
