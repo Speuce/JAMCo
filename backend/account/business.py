@@ -58,6 +58,21 @@ def remove_friend(user1_id, user2_id):
     query.remove_friend(user1_id, user2_id)
 
 
+def search_users_by_name(search_string) -> list:
+    toks = str.split(search_string)
+    result = []
+    for usr in query.get_all_searchable():
+        success = True
+        for tok in toks:
+            if tok not in usr.first_name and tok not in usr.last_name:
+                success = False
+                break
+        if success:
+            result.append(usr)
+
+    return result
+
+
 def authenticate_token(token):
     try:
         token_json = decrypt_token(token)

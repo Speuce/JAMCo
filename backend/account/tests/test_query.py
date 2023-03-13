@@ -19,6 +19,37 @@ class GetOrCreateUserTests(TestCase):
         self.assertTrue(models.User.objects.filter(google_id="4").exists())
         self.assertEqual(models.User.objects.filter(google_id="4").count(), 1)
 
+    def test_get_all_searchable(self):
+        p1 = PrivacyFactory()
+        p2 = PrivacyFactory()
+        p3 = PrivacyFactory()
+
+        # set u2 to be non-searchable
+        p2.is_searchable = False
+        p2.save()
+
+        qs = query.get_all_searchable()
+
+        self.assertIn(p1.user, qs)
+        self.assertIn(p3.user, qs)
+        self.assertNotIn(p2.user, qs)
+
+    def test_none_searchable(self):
+        p1 = PrivacyFactory()
+        p2 = PrivacyFactory()
+
+        # set all to be non-searchable
+        p1.is_searchable = False
+        p1.save()
+        p2.is_searchable = False
+        p2.save()
+
+        qs = query.get_all_searchable()
+
+        self.assertNotIn(p1.user, qs)
+        self.assertNotIn(p2.user, qs)
+        self.assertEqual(len(qs), 0)
+
 
 class UserExistsTests(TestCase):
     def test_user_exists(self):
