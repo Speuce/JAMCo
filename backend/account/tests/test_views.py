@@ -36,6 +36,8 @@ class GetOrCreateAccountTests(TransactionTestCase):
             **self.header,
         )
 
+        self.assertEqual(json.loads(response.data)["error"], None)
+
         self.assertEqual(response.status_code, 200)
 
         self.assertEqual(json.loads(response.content)["data"], mocked_user.to_dict())
