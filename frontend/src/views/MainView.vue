@@ -12,6 +12,9 @@
       </v-col>
       <v-col class="py-0">
         <div class="text-end">
+          <v-btn color="primary" flat @click="console.log('heyyy')">
+            <v-icon size="x-large">mdi-email</v-icon>
+          </v-btn>
           <v-btn color="primary" flat @click="userInfoModalVisible = true">
             <v-icon size="x-large">mdi-cog</v-icon>
           </v-btn>
