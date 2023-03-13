@@ -3,6 +3,8 @@ from unittest.mock import patch, MagicMock
 from django.test import RequestFactory, TestCase
 from django.core.exceptions import ObjectDoesNotExist
 from job import views
+from job.tests.factories import JobFactory, ReviewRequestFactory
+from account.tests.factories import UserFactory
 
 
 class TestViews(TestCase):
@@ -132,3 +134,74 @@ class TestViews(TestCase):
         response = views.update_job(request)
         mock_update_job.assert_called_with(job_data)
         self.assertEqual(response.status_code, 400)
+
+
+@patch("job.business.create_review_request")
+class ReviewRequestTests(TestCase):
+    def test_create_review_request(self, mock_create_review_request):
+        # Prepare data
+        review_request_data = {"job_id": JobFactory().id, "message": "i showed you my cover letter please respond"}
+        request_body = json.dumps(review_request_data).encode("utf-8")
+        request = RequestFactory().post("/create_review_request/", data=request_body, content_type="application/json")
+
+        # Set up mock
+        review_request = MagicMock(to_dict=MagicMock(return_value={**review_request_data, "id": 1}))
+        mock_create_review_request.return_value = review_request
+
+        # Call the view function
+        response = views.create_review_request(request)
+
+        # Check the response
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode("utf-8"), json.dumps({"review_request": review_request.to_dict()}))
+
+    def test_create_review_request_with_error(self, mock_create_review_request):
+        request_body = json.dumps({}).encode("utf-8")
+        request = RequestFactory().post("/create_review_request/", data=request_body, content_type="application/json")
+
+        # Set up mock
+        mock_create_review_request.side_effect = Exception("Something went wrong!")
+
+        # Call the view function
+        response = views.create_review_request(request)
+
+        # Check the response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.content.decode("utf-8"), json.dumps({"error": "Exception('Something went wrong!')"}))
+
+
+@patch("job.business.create_review")
+class ReviewTests(TestCase):
+    def test_create_review(self, mock_create_review):
+        review_data = {
+            "reviewer_id": UserFactory().id,
+            "request_id": ReviewRequestFactory().id,
+            "response": "best cover letter I've ever seen 10/10",
+            "completed": None,
+        }
+
+        request_body = json.dumps(review_data).encode("utf-8")
+        request = RequestFactory().post("/create_review/", data=request_body, content_type="application/json")
+
+        review = MagicMock(to_dict=MagicMock(return_value={**review_data, "id": 1}))
+        mock_create_review.return_value = review
+
+        response = views.create_review(request)
+
+        # Check the response
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode("utf-8"), json.dumps({"review": review.to_dict()}))
+
+    def test_create_review_with_error(self, mock_create_review):
+        request_body = json.dumps({}).encode("utf-8")
+        request = RequestFactory().post("/create_review/", data=request_body, content_type="application/json")
+
+        # Set up mock
+        mock_create_review.side_effect = Exception("Something went wrong!")
+
+        # Call the view function
+        response = views.create_review(request)
+
+        # Check the response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.content.decode("utf-8"), json.dumps({"error": "Exception('Something went wrong!')"}))

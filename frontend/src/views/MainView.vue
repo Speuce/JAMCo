@@ -12,6 +12,13 @@
       </v-col>
       <v-col class="py-0">
         <div class="text-end">
+          <v-btn
+            color="primary"
+            flat
+            @click="incomingReviewsModalVisible = true"
+          >
+            <v-icon size="x-large">mdi-email</v-icon>
+          </v-btn>
           <v-btn color="primary" flat @click="userInfoModalVisible = true">
             <v-icon size="x-large">mdi-cog</v-icon>
           </v-btn>
@@ -33,6 +40,10 @@
         @close="this.userInfoModalVisible = false"
         @logout="logoutClicked"
       />
+      <IncomingReviewsModal
+        v-if="incomingReviewsModalVisible"
+        @close="incomingReviewsModalVisible = false"
+      />
       <Suspense>
         <JobTrackingView
           v-if="this.userData"
@@ -51,6 +62,7 @@ import AccountSetupModal from '../components/modal/setup/AccountSetupModal.vue'
 import UserInfoModal from '../components/modal/user/UserInfoModal.vue'
 import { postRequest } from '@/helpers/requests.js'
 import { getAuthToken, setAuthToken } from '@/helpers/auth-cookie.js'
+import IncomingReviewsModal from '../components/modal/job/IncomingReviewsModal.vue'
 
 export default {
   components: {
@@ -58,6 +70,7 @@ export default {
     JobTrackingView,
     AccountSetupModal,
     UserInfoModal,
+    IncomingReviewsModal,
   },
   data() {
     return {
@@ -65,6 +78,7 @@ export default {
       userPrivacies: null,
       setupModalVisible: false,
       userInfoModalVisible: false,
+      incomingReviewsModalVisible: false,
       failedAuthentication: false,
     }
   },
@@ -72,18 +86,13 @@ export default {
     let token = getAuthToken()
     window.signIn = this.onSignin
     if (token) {
-      try {
-        await postRequest('account/api/validate_auth_token', token).then(
-          (response) => {
-            if (response.user) {
-              this.userSignedIn({ data: response.user, token: response.token })
-            }
-          },
-        )
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.warn('Token Authentication Failed')
-      }
+      await postRequest('account/api/validate_auth_token', token).then(
+        (response) => {
+          if (response.user) {
+            this.userSignedIn({ data: response.user, token: response.token })
+          }
+        },
+      )
     }
     if (!this.userData) this.failedAuthentication = true
   },
