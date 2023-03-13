@@ -12,7 +12,11 @@
       </v-col>
       <v-col class="py-0">
         <div class="text-end">
-          <v-btn color="primary" flat @click="console.log('heyyy')">
+          <v-btn
+            color="primary"
+            flat
+            @click="incomingReviewsModalVisible = true"
+          >
             <v-icon size="x-large">mdi-email</v-icon>
           </v-btn>
           <v-btn color="primary" flat @click="userInfoModalVisible = true">
@@ -38,6 +42,10 @@
         @close="userInfoModalVisible = false"
         @logout="logoutClicked"
       />
+      <IncomingReviewsModal
+        v-if="incomingReviewsModalVisible"
+        @close="incomingReviewsModalVisible = false"
+      />
       <Suspense>
         <JobTrackingView
           v-if="this.userData"
@@ -56,6 +64,7 @@ import AccountSetupModal from '../components/modal/setup/AccountSetupModal.vue'
 import UserInfoModal from '../components/modal/user/UserInfoModal.vue'
 import { postRequest } from '@/helpers/requests.js'
 import { getAuthToken, setAuthToken } from '@/helpers/auth-cookie.js'
+import IncomingReviewsModal from '../components/modal/job/IncomingReviewsModal.vue'
 
 export default {
   components: {
@@ -63,12 +72,14 @@ export default {
     JobTrackingView,
     AccountSetupModal,
     UserInfoModal,
+    IncomingReviewsModal,
   },
   data() {
     return {
       userData: null,
       setupModalVisible: false,
       userInfoModalVisible: false,
+      incomingReviewsModalVisible: false,
       failedAuthentication: false,
     }
   },
