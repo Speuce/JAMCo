@@ -38,7 +38,8 @@ def update_user(payload: dict):
         # If there are invalid keys in the payload (e.g. the frontend misspelled
         # the name of a field), raise an exception
         if hasattr(user, key):
-            setattr(user, key, value)
+            if key != "friends":  # friends are handled separately
+                setattr(user, key, value)
         else:
             raise AttributeError("User has no attribute " + key)
 
