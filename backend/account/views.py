@@ -221,3 +221,16 @@ def get_friend_requests_status(request: HttpRequest):
         return JsonResponse(data={"sent": list(sent), "received": list(received)})
     except Exception as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+
+@require_POST
+def search_users_by_name(request: HttpRequest):
+    """
+    Searches for [searchable] users by name
+    """
+
+    search_str = read_request(request)
+    logger.debug(f"Searching for users like '{search_str}'")
+    users_list = business.search_users_by_name(search_str)
+    return JsonResponse({"user_list": users_list})

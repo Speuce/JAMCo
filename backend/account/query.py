@@ -5,6 +5,7 @@ Query functions for account related operations.
 """
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import QuerySet
 from django.utils import timezone
 from account.models import User, Privacy, FriendRequest
 from django.db.models.query import QuerySet
@@ -148,3 +149,5 @@ def are_friends(user_id_one, user_id_two) -> bool:
     user_one = User.objects.get(id=user_id_one)
     user_two = User.objects.get(id=user_id_two)
     return user_one.friends.contains(user_two)
+def get_all_searchable() -> QuerySet(User):
+    return User.objects.filter(id__in=Privacy.objects.filter(is_searchable=True).values_list("user__id", flat=True))
