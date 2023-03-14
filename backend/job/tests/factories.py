@@ -1,4 +1,4 @@
-from job.models import Job, ReviewRequest
+from job.models import Job, ReviewRequest, Review
 from column.tests.factories import KanbanColumnFactory
 from account.tests.factories import UserFactory
 import factory
@@ -24,3 +24,14 @@ class ReviewRequestFactory(factory.django.DjangoModelFactory):
     job = factory.SubFactory(JobFactory)
     message = "review plz 🥺👉👈"
     fulfilled = False
+
+
+class ReviewFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Review
+
+    id = factory.Sequence(lambda n: n)
+    reviewer = factory.SubFactory(UserFactory)
+    request = factory.SubFactory(ReviewRequestFactory)
+    response = "best cover letter I've ever seen 10/10"
+    completed = None

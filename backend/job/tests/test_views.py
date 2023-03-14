@@ -3,7 +3,7 @@ from unittest.mock import patch, MagicMock
 from django.test import RequestFactory, TestCase
 from django.core.exceptions import ObjectDoesNotExist
 from job import views
-from job.tests.factories import JobFactory, ReviewRequestFactory
+from job.tests.factories import JobFactory, ReviewRequestFactory, ReviewFactory
 from account.tests.factories import UserFactory
 
 
@@ -170,8 +170,8 @@ class ReviewRequestTests(TestCase):
         self.assertEqual(response.content.decode("utf-8"), json.dumps({"error": "Exception('Something went wrong!')"}))
 
 
-@patch("job.business.create_review")
 class ReviewTests(TestCase):
+    @patch("job.business.create_review")
     def test_create_review(self, mock_create_review):
         review_data = {
             "reviewer_id": UserFactory().id,
@@ -192,6 +192,7 @@ class ReviewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content.decode("utf-8"), json.dumps({"review": review.to_dict()}))
 
+    @patch("job.business.create_review")
     def test_create_review_with_error(self, mock_create_review):
         request_body = json.dumps({}).encode("utf-8")
         request = RequestFactory().post("/create_review/", data=request_body, content_type="application/json")
@@ -201,6 +202,37 @@ class ReviewTests(TestCase):
 
         # Call the view function
         response = views.create_review(request)
+
+        # Check the response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.content.decode("utf-8"), json.dumps({"error": "Exception('Something went wrong!')"}))
+
+    @patch("job.business.get_reviews_for_user")
+    def test_get_reviews_for_user(self, mock_get_reviews_for_user):
+        user = UserFactory()
+        request_body = json.dumps({"user_id": user.id}).encode("utf-8")
+        request = RequestFactory().post("/get_reviews_for_user/", data=request_body, content_type="application/json")
+
+        # In the situation we're modelling, one user reviewed that cover letter an incredible number of times
+        reviews = [ReviewFactory() for i in range(100)]
+        mock_get_reviews_for_user.return_value = reviews
+
+        response = views.get_reviews_for_user(request)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.content.decode("utf-8"), json.dumps({"reviews": [review.to_dict() for review in reviews]})
+        )
+
+    @patch("job.business.get_reviews_for_user")
+    def test_get_reviews_for_user_with_error(self, mock_get_reviews_for_user):
+        user = UserFactory()
+        request_body = json.dumps({"user_id": user.id}).encode("utf-8")
+        request = RequestFactory().post("/get_reviews_for_user/", data=request_body, content_type="application/json")
+
+        mock_get_reviews_for_user.side_effect = Exception("Something went wrong!")
+
+        response = views.get_reviews_for_user(request)
 
         # Check the response
         self.assertEqual(response.status_code, 400)

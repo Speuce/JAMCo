@@ -158,3 +158,32 @@ class CreateReviewTests(TestCase):
         payload_nonexistent_request = {"reviewer_id": user.id, "request_id": -1, "response": response}
         with self.assertRaises(ObjectDoesNotExist):
             query.create_review(payload_nonexistent_request)
+
+
+class GetReviewsForUserTests(TestCase):
+    def test_get_reviews_for_user(self):
+        request = ReviewRequestFactory()
+        reviewer = UserFactory()
+        review = models.Review.objects.create(reviewer=reviewer, request=request)
+        additional_review = models.Review.objects.create(reviewer=reviewer, request=request)
+        irrelevant_request = ReviewRequestFactory()
+        irrelevant_review = models.Review.objects.create(reviewer=reviewer, request=irrelevant_request)
+
+        reviews = query.get_reviews_for_user({"user_id": request.job.user.id})
+        self.assertIn(review, reviews)
+        self.assertIn(additional_review, reviews)
+        # That query should only get reviews for the given user
+        self.assertNotIn(irrelevant_review, reviews)
+
+        # The reviews aren' addressed to the user who wrote them
+        reviews_to_reviewer = query.get_reviews_for_user({"user_id": reviewer.id})
+        self.assertEqual(len(reviews_to_reviewer), 0)
+
+    def test_invalid_get_reviews_for_user(self):
+        # User doesn't exist
+        with self.assertRaises(ObjectDoesNotExist):
+            query.get_reviews_for_user({"user_id": -1})
+
+        # User not specified
+        with self.assertRaises(KeyError):
+            query.get_reviews_for_user({})
