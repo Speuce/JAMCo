@@ -34,6 +34,7 @@
         v-if="friendModalVisible"
         :userData="this.userData"
         @close="friendModalVisible = false"
+        @update:user-data="userData = $event"
       />
       <UserInfoModal
         v-if="userInfoModalVisible"

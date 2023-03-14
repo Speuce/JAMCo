@@ -29,6 +29,7 @@ class User(AbstractUser):
             "birthday": self.birthday,
             "field_of_work": self.field_of_work,
             "friends": list(self.friends.values("id", "first_name", "last_name", "country")),
+            "sent_friend_requests": list(self.request_sender.values_list("to_user_id", flat=True)),
         }
 
 

@@ -1,6 +1,6 @@
 <template>
   <div class="card-container">
-    <div class="name-country">
+    <div class="name-country mt-2">
       <h4>{{ userData.first_name }} {{ userData.last_name }}</h4>
       <p>, {{ userData.country }}</p>
     </div>
@@ -18,19 +18,14 @@
           >
         </template>
       </v-tooltip>
-      <v-tooltip text="Pending Friend Request">
-        <template v-slot:activator="{ props }">
-          <v-btn
-            v-bind="props"
-            v-if="!isFriend && sentRequest"
-            disabled
-            icon
-            size="small"
-            color="primary"
-            ><v-icon size="large">mdi-check</v-icon></v-btn
-          >
-        </template>
-      </v-tooltip>
+      <v-btn
+        v-if="!isFriend && sentRequest"
+        disabled
+        icon
+        size="small"
+        color="primary"
+        ><v-icon size="large">mdi-check</v-icon></v-btn
+      >
       <v-tooltip text="View Kanban">
         <template v-slot:activator="{ props }">
           <v-btn

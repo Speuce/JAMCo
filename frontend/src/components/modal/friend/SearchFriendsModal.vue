@@ -1,3 +1,4 @@
+<!-- eslint-disable no-console -->
 <template>
   <v-row>
     <v-dialog v-model="dialog" persistent class="dialog-popup">
@@ -39,7 +40,12 @@
                 :userData="user"
                 :isFriend="
                   userData && userData.friends
-                    ? userData.friends.contains(user.id)
+                    ? userData.friends.includes(user.id)
+                    : false
+                "
+                :sentRequest="
+                  userData && userData.sent_friend_requests
+                    ? userData.sent_friend_requests.includes(user.id)
                     : false
                 "
                 @sendFriendRequest="sendFriendRequest(user)"
@@ -59,35 +65,14 @@
 
 <script>
 import FriendCard from './FriendCard.vue'
-import { ref } from 'vue'
+import { postRequest } from '@/helpers/requests.js'
 
-// Demo Results for testing FriendCard
-const searchResults = ref([
-  {
-    id: 0,
-    first_name: 'first',
-    last_name: 'last',
-    country: 'CA',
-  },
-  {
-    id: 1,
-    first_name: 'firstname',
-    last_name: 'lastname',
-    country: 'CA',
-  },
-  {
-    id: 2,
-    first_name: 'f',
-    last_name: 'l',
-    country: 'US',
-  },
-])
 export default {
   name: 'SearchFriendsModal',
   components: {
     FriendCard,
   },
-  emits: ['close'],
+  emits: ['close', 'update:userData'],
   props: {
     userData: {
       type: Object,
@@ -98,23 +83,45 @@ export default {
     return {
       dialog: true,
       searchField: '',
-      searchResults,
+      searchResults: [],
     }
   },
   methods: {
-    triggerSearch() {
-      // eslint-disable-next-line no-console
-      console.log('search: ' + this.searchField)
+    async triggerSearch() {
+      const response = await postRequest(
+        'account/api/search_users_by_name',
+        this.searchField,
+      )
+      // Filter out the current user from the search results
+      this.searchResults = response.user_list.filter(
+        (user) => user.google_id !== this.userData.google_id,
+      )
+
+      this.searchResults = response.user_list
     },
-    sendFriendRequest(user) {
+
+    async sendFriendRequest(user) {
+      await postRequest('account/api/create_friend_request', {
+        from_user_id: this.userData.id,
+        to_user_id: user.id,
+      })
+      const newUserData = { ...this.userData }
+      newUserData.sent_friend_requests.push(user.id)
+      this.$emit('update:userData', newUserData)
+    },
+
+    async removeFriend(user) {
       // eslint-disable-next-line no-console
       console.log(user)
-      // TODO: send friend request to user
-    },
-    removeFriend(user) {
-      // eslint-disable-next-line no-console
-      console.log(user)
-      // TODO: remove friend from user
+      await postRequest('account/api/remove_friend', {
+        user1_id: this.userData.id,
+        user2_id: user.id,
+      })
+      const newUserData = { ...this.userData }
+      newUserData.friends = newUserData.friends.filter(
+        (friend) => friend.id !== user.id,
+      )
+      this.$emit('update:userData', newUserData)
     },
     viewFriendKanban(user) {
       // eslint-disable-next-line no-console

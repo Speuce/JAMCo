@@ -41,6 +41,8 @@ def update_user(payload: dict):
         if hasattr(user, key):
             if key != "friends":  # friends are handled separately
                 setattr(user, key, value)
+        elif key == "sent_friend_requests":
+            continue
         else:
             raise AttributeError("User has no attribute " + key)
 
@@ -149,5 +151,7 @@ def are_friends(user_id_one, user_id_two) -> bool:
     user_one = User.objects.get(id=user_id_one)
     user_two = User.objects.get(id=user_id_two)
     return user_one.friends.contains(user_two)
+
+
 def get_all_searchable() -> QuerySet(User):
     return User.objects.filter(id__in=Privacy.objects.filter(is_searchable=True).values_list("user__id", flat=True))

@@ -14,6 +14,8 @@ TODO:
   <SearchFriendsModal
     v-if="searchFriendModalVisible"
     @close="searchFriendModalVisible = false"
+    :user-data="userData"
+    @update:user-data="$emit('update:user-data', $event)"
   />
   <v-row v-if="!searchFriendModalVisible">
     <v-dialog v-model="dialog" persistent class="dialog-popup">
@@ -86,7 +88,7 @@ export default {
     FriendCard,
     SearchFriendsModal,
   },
-  emits: ['close'],
+  emits: ['close', 'update:userData'],
   props: {
     userData: {
       type: Object,
@@ -110,6 +112,7 @@ export default {
     return {
       dialog: true,
       searchFriendModalVisible: false,
+      requests: [],
     }
   },
 }
