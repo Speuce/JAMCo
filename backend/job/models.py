@@ -23,6 +23,7 @@ class Job(models.Model):
             "notes": self.notes,
             "cover_letter": self.cover_letter,
             "kcolumn_id": self.kcolumn.id,
+            "user_id": self.user.id,
             "deadlines": self.deadlines,
             "type": self.type,
         }
