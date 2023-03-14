@@ -83,6 +83,10 @@ export default {
         }
       },
     },
+    user: {
+      type: Object,
+      default: undefined,
+    },
   },
   data(props) {
     return {
@@ -92,11 +96,11 @@ export default {
       message: `Hello, please review my cover letter for ${props.job.position_title} at ${props.job.company}.`,
       messageErrorIndicator: null,
       recipientErrorIndicator: null,
+      activeUser: props.user,
     }
   },
   async mounted() {
-    console.log(this.jobData)
-    console.log(this.jobData.user_id) // TODO: Include the user in Job.to_dict in the backend
+    console.log(this.activeUser)
   },
   methods: {
     sendClicked() {

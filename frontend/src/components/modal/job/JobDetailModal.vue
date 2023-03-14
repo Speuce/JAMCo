@@ -172,6 +172,7 @@
     <ReviewRequestModal
       v-if="ReviewRequestModalVisible"
       :job="this.jobData"
+      :user="this.user"
       @close="this.ReviewRequestModalVisible = false"
     />
   </div>
@@ -213,6 +214,10 @@ export default {
       type: Object,
       default: undefined,
     },
+    user: {
+      type: Object,
+      default: undefined,
+    },
   },
   data: (props) => ({
     dialog: true,
@@ -224,6 +229,7 @@ export default {
     companyErrorIndicator: null,
     deadlineError: false,
     ReviewRequestModalVisible: false,
+    activeUser: props.user,
   }),
   setup(props) {
     deadlines.value = props.job.deadlines ? props.job.deadlines : []

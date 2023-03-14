@@ -5,6 +5,7 @@
       @createOrUpdateJob="createOrUpdateJob"
       @close="closeDetailModal"
       :job="this.selectedJob"
+      :user="this.activeUser"
       :columns="colList"
     />
     <ColumnOptionModal
