@@ -241,6 +241,12 @@ class GetUserByTokenFieldsTests(TestCase):
         retrieved_user = query.get_user_by_token_fields(user.google_id, login)
         self.assertEqual(user, retrieved_user)
 
+    def test_get_user_by_token_fields_noupdate(self):
+        login = timezone.now()
+        user = UserFactory(google_id="gID", last_login=login)
+        retrieved_user = query.get_user_by_token_fields_noupdate(user.google_id, login)
+        self.assertEqual(user, retrieved_user)
+
 
 class UpdateLastUserLoginTest(TestCase):
     def test_update_last_user_login(self):

@@ -269,6 +269,28 @@ class AuthenticateTokenTests(TestCase):
         mock_authenticate_token.assert_called()
 
 
+@patch("account.business.validate_token")
+class GetUpdatedUserDataTests(TestCase):
+    def test_get_updated_user_data(self, mock_validate_token):
+        user = UserFactory()
+        mock_validate_token.return_value = user
+        response = self.client.post(
+            reverse("get_updated_user_data"), json.dumps({"token": "valid_token"}), content_type="application/json"
+        )
+        content = json.loads(response.content)
+        self.assertEqual(response.status_code, 200)
+        mock_validate_token.assert_called()
+        self.assertEqual(content["user"], user.to_dict())
+
+    def test_get_updated_user_data_invalid(self, mock_validate_token):
+        mock_validate_token.side_effect = ObjectDoesNotExist("Invalid Token")
+        response = self.client.post(
+            reverse("get_updated_user_data"), json.dumps({"token": "invalid_token"}), content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 401)
+        mock_validate_token.assert_called()
+
+
 @patch("account.business.create_friend_request")
 class CreateFriendRequestTests(TestCase):
     def test_create_friend_request_valid(self, mock_create_friend_request):

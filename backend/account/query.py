@@ -98,7 +98,7 @@ def get_user_by_token_fields(google_id, last_login) -> User:
     return user
 
 
-def get_user_by_token_fiends_noupdate(google_id, last_login) -> User:
+def get_user_by_token_fields_noupdate(google_id, last_login) -> User:
     user = User.objects.get(google_id=google_id, last_login=last_login)
     return user
 
