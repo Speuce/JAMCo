@@ -35,6 +35,7 @@
             icon
             size="small"
             color="secondary"
+            class="mr-2"
           >
             <v-icon size="large"> mdi-view-dashboard-variant-outline </v-icon>
           </v-btn>

@@ -39,18 +39,33 @@ TODO:
           </v-row>
         </v-card-title>
         <div class="inner-page-container">
-          <div v-if="!userData.friends.length" class="text-center">
+          <div
+            v-if="
+              !userData.friends.length &&
+              !userData.received_friend_requests.length
+            "
+            class="text-center"
+          >
             <h3>You Don't have Any Friends! (yet)</h3>
             <p>Click the Add Friends Button at the top to get started</p>
           </div>
-          <RequestCard
-            v-for="req in requests"
-            :key="req.id"
-            :request="req"
-            :user="userData"
-            @acceptRequest="acceptFriendRequest(req)"
-            @denyRequest="denyFriendRequest(req)"
-          />
+          <div v-if="userData.received_friend_requests.length">
+            <v-row class="mb-2">
+              <v-icon color="grey-darken-1" size="large" class="mr-4"
+                >mdi-account-question</v-icon
+              >
+              <h3>Friend Requests</h3>
+            </v-row>
+
+            <RequestCard
+              v-for="req in userData.received_friend_requests"
+              :key="req.id"
+              :request="req"
+              :user="userData"
+              @acceptRequest="acceptFriendRequest(req)"
+              @denyRequest="denyFriendRequest(req)"
+            />
+          </div>
           <FriendCard
             v-for="user in userData.friends"
             :key="user.id"
@@ -80,6 +95,7 @@ TODO:
 import RequestCard from './RequestCard.vue'
 import FriendCard from './FriendCard.vue'
 import SearchFriendsModal from './SearchFriendsModal.vue'
+import { postRequest } from '@/helpers/requests.js'
 
 export default {
   name: 'FriendModal',
@@ -88,7 +104,7 @@ export default {
     FriendCard,
     SearchFriendsModal,
   },
-  emits: ['close', 'update:userData'],
+  emits: ['close', 'update:userData', 'fetchUserData'],
   props: {
     userData: {
       type: Object,
@@ -104,6 +120,8 @@ export default {
           city: '',
           birthday: '',
           friends: [],
+          sent_friend_requests: [],
+          received_friend_requests: [],
         }
       },
     },
@@ -112,8 +130,33 @@ export default {
     return {
       dialog: true,
       searchFriendModalVisible: false,
-      requests: [],
     }
+  },
+  methods: {
+    async acceptFriendRequest(request) {
+      console.log(request)
+      await postRequest('account/api/accept_friend_request', {
+        request_id: request.id,
+        to_user_id: this.userData.id,
+        from_user_id: request.from_user_id,
+      })
+      this.$emit('fetchUserData')
+    },
+    async denyFriendRequest(request) {
+      await postRequest('account/api/deny_friend_request', {
+        request_id: request.id,
+        from_user_id: request.from_user_id,
+        to_user_id: this.userData.id,
+      })
+      this.$emit('fetchUserData')
+    },
+    async removeFriend(user) {
+      await postRequest('account/api/remove_friend', {
+        user1_id: this.userData.id,
+        user2_id: user.id,
+      })
+      this.$emit('fetchUserData')
+    },
   },
 }
 </script>
