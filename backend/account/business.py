@@ -61,7 +61,7 @@ def remove_friend(user1_id, user2_id):
 
 
 def search_users_by_name(search_string) -> list:
-    search_string = str.lower(search_string)
+    search_string = str.lower(search_string).strip()
     toks = str.split(search_string)
     result = []
     # No mass-searching allowed

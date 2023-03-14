@@ -131,8 +131,8 @@ class SearchTests(TestCase):
 
         mock_search_users_by_name.return_value = User.objects.all()
 
-        # Make sure empty strings don't return all users
-        results = business.search_users_by_name("")
+        # Make sure empty/whitespace strings don't return all users
+        results = business.search_users_by_name("  ")
         self.assertEqual(len(results), 0)
 
         results = business.search_users_by_name(f"{u1.first_name} {u1.last_name}")
