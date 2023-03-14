@@ -4,9 +4,9 @@
       <v-card style="overflow: hidden">
         <v-row>
           <v-row class="inner-page-container">
-            <v-col cols="12" sm="7" class="items">
+            <v-col cols="12" sm="6" class="items">
               <v-row>
-                <v-col cols="12" sm="5">
+                <v-col cols="12" sm="7">
                   <h2>Settings</h2>
                 </v-col>
                 <v-col cols="12" sm="5">
@@ -129,6 +129,112 @@
               <v-row>
                 <h3>Privacy Options</h3>
               </v-row>
+              <v-row><br /></v-row>
+              <v-list
+                lines="three"
+                select-strategy="classic"
+                :disabled="!this.editingEnabled"
+              >
+                <v-list-item
+                  value="is_searchable"
+                  @click="
+                    () => {
+                      if (this.editingEnabled) {
+                        this.userPrivacies.is_searchable =
+                          !this.userPrivacies.is_searchable
+                      }
+                    }
+                  "
+                >
+                  <template v-slot:prepend>
+                    <v-list-item-action start>
+                      <v-checkbox-btn
+                        :model-value="this.userPrivacies.is_searchable"
+                        :disabled="!this.editingEnabled"
+                        @click="
+                          () => {
+                            if (this.editingEnabled) {
+                              this.userPrivacies.is_searchable =
+                                !this.userPrivacies.is_searchable
+                            }
+                          }
+                        "
+                      ></v-checkbox-btn>
+                    </v-list-item-action>
+                  </template>
+                  <v-list-item-title>Searchable</v-list-item-title>
+                  <v-list-item-subtitle>
+                    Let other users find and add me as a friend (does not affect
+                    your current friends).
+                  </v-list-item-subtitle>
+                </v-list-item>
+                <v-list-item
+                  value="share_kanban"
+                  @click="
+                    () => {
+                      if (this.editingEnabled) {
+                        this.userPrivacies.share_kanban =
+                          !this.userPrivacies.share_kanban
+                      }
+                    }
+                  "
+                >
+                  <template v-slot:prepend>
+                    <v-list-item-action start>
+                      <v-checkbox-btn
+                        :model-value="this.userPrivacies.share_kanban"
+                        :disabled="!this.editingEnabled"
+                        @click="
+                          () => {
+                            if (this.editingEnabled) {
+                              this.userPrivacies.share_kanban =
+                                !this.userPrivacies.share_kanban
+                            }
+                          }
+                        "
+                      ></v-checkbox-btn>
+                    </v-list-item-action>
+                  </template>
+                  <v-list-item-title>Share Applications</v-list-item-title>
+                  <v-list-item-subtitle>
+                    Allow my friends to view my application board.
+                  </v-list-item-subtitle>
+                </v-list-item>
+                <v-list-item
+                  value="cover_letter_requestable"
+                  @click="
+                    () => {
+                      if (this.editingEnabled) {
+                        this.userPrivacies.cover_letter_requestable =
+                          !this.userPrivacies.cover_letter_requestable
+                      }
+                    }
+                  "
+                >
+                  <template v-slot:prepend>
+                    <v-list-item-action start>
+                      <v-checkbox-btn
+                        :model-value="
+                          this.userPrivacies.cover_letter_requestable
+                        "
+                        :disabled="!this.editingEnabled"
+                        @click="
+                          () => {
+                            if (this.editingEnabled) {
+                              this.userPrivacies.cover_letter_requestable =
+                                !this.userPrivacies.cover_letter_requestable
+                            }
+                          }
+                        "
+                      ></v-checkbox-btn>
+                    </v-list-item-action>
+                  </template>
+                  <v-list-item-title>Cover Letter Requests</v-list-item-title>
+                  <v-list-item-subtitle>
+                    Allow my friends to request cover letter reviews from me.
+                  </v-list-item-subtitle>
+                </v-list-item>
+              </v-list>
             </v-col>
             <v-row class="center offset-right">
               <v-col cols="12" sm="8">
@@ -213,6 +319,17 @@ export default {
         }
       },
     },
+    privacies: {
+      type: Object,
+      default: () => {
+        return {
+          id: -1,
+          is_searchable: false,
+          share_kanban: false,
+          cover_letter_requestable: false,
+        }
+      },
+    },
   },
   data(props) {
     return {
@@ -224,6 +341,7 @@ export default {
       emailEmpty: false,
       editingEnabled: false,
       userData: { ...props.user },
+      userPrivacies: { ...props.privacies },
     }
   },
   computed: {
@@ -265,7 +383,7 @@ export default {
         !this.workFieldEmpty &&
         !this.emailEmpty
       ) {
-        this.$emit('updateUser', this.userData)
+        this.$emit('updateUser', this.userData, this.userPrivacies)
       } else {
         this.editingEnabled = true
       }
