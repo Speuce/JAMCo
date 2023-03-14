@@ -9,10 +9,12 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+from dotenv import load_dotenv
 import os
 from pathlib import Path
 
+# loads local env vars from root .env
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +29,7 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = not bool(os.getenv("PROD", 0))
-IS_TEST = bool(int(os.getenv("TEST", 1)))
+IS_TEST = bool(int(os.getenv("TEST", 0)))
 PROD = bool(int(os.getenv("PROD", 0)))
 
 SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))

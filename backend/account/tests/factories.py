@@ -1,6 +1,7 @@
-from account.models import User, Privacy
+from account.models import User, Privacy, FriendRequest
 import factory
 import factory.django
+from django.utils import timezone
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -24,3 +25,15 @@ class PrivacyFactory(factory.django.DjangoModelFactory):
     is_searchable = True
     share_kanban = True
     cover_letter_requestable = True
+
+
+class FriendRequestFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = FriendRequest
+
+    id = factory.Sequence(lambda n: n)
+    from_user = factory.SubFactory(UserFactory)
+    to_user = factory.SubFactory(UserFactory)
+    sent = timezone.now()
+    accepted = False
+    acknowledged = None

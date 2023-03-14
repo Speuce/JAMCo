@@ -7,7 +7,8 @@ Query functions for account related operations.
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import QuerySet
 from django.utils import timezone
-from account.models import User, Privacy
+from account.models import User, Privacy, FriendRequest
+from django.db.models.query import QuerySet
 
 
 def get_or_create_user(payload: dict) -> User:
@@ -38,7 +39,8 @@ def update_user(payload: dict):
         # If there are invalid keys in the payload (e.g. the frontend misspelled
         # the name of a field), raise an exception
         if hasattr(user, key):
-            setattr(user, key, value)
+            if key != "friends":  # friends are handled separately
+                setattr(user, key, value)
         else:
             raise AttributeError("User has no attribute " + key)
 
@@ -101,3 +103,54 @@ def update_user_last_login(user) -> None:
 
 def get_all_searchable() -> QuerySet(User):
     return User.objects.filter(id__in=Privacy.objects.filter(is_searchable=True).values_list("user__id", flat=True))
+
+
+
+def create_friend_request(from_user_id, to_user_id) -> FriendRequest:
+    return FriendRequest.objects.create(
+        from_user=User.objects.get(id=from_user_id),
+        to_user=User.objects.get(id=to_user_id),
+        sent=timezone.now(),
+        accepted=False,
+        acknowledged=None,
+    )
+
+
+def accept_friend_request(request_id, to_user_id, from_user_id) -> None:
+    request = FriendRequest.objects.get(id=request_id, to_user_id=to_user_id, from_user_id=from_user_id)
+    request.accepted = True
+    request.acknowledged = timezone.now()
+    request.save()
+
+
+def deny_friend_request(request_id, to_user_id, from_user_id) -> None:
+    request = FriendRequest.objects.get(id=request_id, to_user__id=to_user_id, from_user_id=from_user_id)
+    request.acknowledged = timezone.now()
+    request.save()
+
+
+def get_friend_requests_status(user_id) -> list[QuerySet, QuerySet]:
+    sent = FriendRequest.objects.filter(from_user__id=user_id).values(
+        "accepted", "acknowledged", "from_user_id", "id", "sent", "to_user_id"
+    )
+    received = FriendRequest.objects.filter(to_user__id=user_id).values(
+        "accepted", "acknowledged", "from_user_id", "id", "sent", "to_user_id"
+    )
+    return sent, received
+
+
+def pending_friend_request_exists(from_user_id, to_user_id, request_id=None) -> bool:
+    if request_id is not None:
+        return FriendRequest.objects.filter(
+            id=request_id, to_user__id=to_user_id, from_user_id=from_user_id, acknowledged=None
+        ).exists()
+    return (
+        FriendRequest.objects.filter(from_user__id=from_user_id, to_user__id=to_user_id, acknowledged=None).exists()
+        or FriendRequest.objects.filter(from_user__id=to_user_id, to_user__id=from_user_id, acknowledged=None).exists()
+    )
+
+
+def are_friends(user_id_one, user_id_two) -> bool:
+    user_one = User.objects.get(id=user_id_one)
+    user_two = User.objects.get(id=user_id_two)
+    return user_one.friends.contains(user_two)
