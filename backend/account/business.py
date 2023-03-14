@@ -75,7 +75,9 @@ def search_users_by_name(search_string) -> list:
                     success = False
                     break
             if success:
-                result.append(usr.to_dict())
+                result.append(
+                    {"id": usr.id, "first_name": usr.first_name, "last_name": usr.last_name, "country": usr.country}
+                )
 
     return result
 
