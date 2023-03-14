@@ -44,6 +44,7 @@ urlpatterns = [
     path("account/api/create_friend_request", account_views.create_friend_request, name="create_friend_request"),
     path("account/api/accept_friend_request", account_views.accept_friend_request, name="accept_friend_request"),
     path("account/api/deny_friend_request", account_views.deny_friend_request, name="deny_friend_request"),
+    path("account/api/search_users_by_name", account_views.search_users_by_name, name="search_users_by_name"),
     path(
         "account/api/get_friend_requests_status",
         account_views.get_friend_requests_status,
