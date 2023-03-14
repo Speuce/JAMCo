@@ -181,4 +181,4 @@ def search_users_by_name(request: HttpRequest):
     search_str = read_request(request)
     logger.debug(f"Searching for users like '{search_str}'")
     users_list = business.search_users_by_name(search_str)
-    return JsonResponse({"user_list": users_list})
+    return JsonResponse(data={"user_list": users_list})

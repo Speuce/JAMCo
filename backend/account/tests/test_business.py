@@ -116,8 +116,10 @@ class SearchTests(TestCase):
     def test_searching_users(self, mock_search_users_by_name):
         p1 = PrivacyFactory()
         p2 = PrivacyFactory()
+        p3 = PrivacyFactory()
         u1 = p1.user
         u2 = p2.user
+        u3 = p3.user
 
         mock_search_users_by_name.return_value = User.objects.all()
 
@@ -134,13 +136,18 @@ class SearchTests(TestCase):
         u1.save()
         u2.first_name = "Jimothy"
         u2.save()
+        u3.first_name = "Butterfree"
+        u3.last_name = "Ketchum"
+        u3.save()
 
         # Update the return value
         mock_search_users_by_name.return_value = User.objects.all()
 
         results = business.search_users_by_name("moth")
+        self.assertEqual(len(results), 2)
         self.assertIn(u1.to_dict(), results)
         self.assertIn(u2.to_dict(), results)
+        self.assertNotIn(u3.to_dict(), results)
 
         # Make sure all tokens are validated as being in the same name
         results = business.search_users_by_name(f"{u1.first_name} {u2.first_name}")

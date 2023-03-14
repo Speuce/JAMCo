@@ -282,6 +282,25 @@ class FriendTests(TestCase):
         mock_remove_friend.assert_called()
 
 
+@patch("account.business.search_users_by_name")
+class SearchTests(TestCase):
+    def test_search_users_by_name(self, mock_search_users_by_name):
+        u1 = UserFactory()
+        u2 = UserFactory()
+        u3 = UserFactory()
+        mock_return = [u1.to_dict(), u2.to_dict(), u3.to_dict()]
+        mock_search_users_by_name.return_value = mock_return
+
+        response = self.client.post(
+            reverse("search_users_by_name"),
+            json.dumps("search string proxy"),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+        self.assertEqual(content["user_list"], mock_return)
+
+
 @patch("account.business.authenticate_token")
 class AuthenticateTokenTests(TestCase):
     def test_validate_auth_token(self, mock_authenticate_token):
