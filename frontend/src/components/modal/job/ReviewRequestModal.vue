@@ -94,14 +94,14 @@ export default {
       recipientErrorIndicator: null,
     }
   },
+  async mounted() {
+    console.log(this.jobData)
+    console.log(this.jobData.user) // TODO: Include the user in Job.to_dict in the backend
+  },
   methods: {
     sendClicked() {
       this.messageErrorIndicator = null
       this.recipientErrorIndicator = null
-
-      // TODO: Create review request and POST it
-      console.log(this.selectedFriendIds)
-      console.log(this.message)
 
       if (this.message && this.selectedFriendIds) {
         this.messageErrorIndicator = null
