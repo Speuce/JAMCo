@@ -332,6 +332,8 @@ class SearchUsersByNameTest(TransactionTestCase):
         PrivacyFactory(user=user_three, is_searchable=False)
         user_four = UserFactory(first_name="Joe", last_name="Joel")
         PrivacyFactory(user=user_four)
+        user_five = UserFactory(first_name="Rob", last_name="Smith")
+        PrivacyFactory(user=user_five)
 
         # Verify only the is_searchable Bobby is returned
         response = self.client.post(
@@ -356,6 +358,20 @@ class SearchUsersByNameTest(TransactionTestCase):
         expected_results = [
             {"id": user_one.id, "first_name": user_one.first_name, "last_name": user_one.last_name, "country": None},
             {"id": user_four.id, "first_name": user_four.first_name, "last_name": user_four.last_name, "country": None},
+        ]
+        user_list = json.loads(response.content)["user_list"]
+        self.assertEqual(expected_results, user_list)
+
+        # Search on single token
+        response = self.client.post(
+            reverse("search_users_by_name"),
+            json.dumps("Smith"),
+            content_type="application/json",
+        )
+
+        expected_results = [
+            {"id": user_two.id, "first_name": user_two.first_name, "last_name": user_two.last_name, "country": None},
+            {"id": user_five.id, "first_name": user_five.first_name, "last_name": user_five.last_name, "country": None},
         ]
         user_list = json.loads(response.content)["user_list"]
         self.assertEqual(expected_results, user_list)
