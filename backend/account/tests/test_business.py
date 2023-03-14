@@ -132,7 +132,7 @@ class SearchTests(TestCase):
         self.assertNotIn(u2.to_dict(), results)
 
         # Create similar names
-        u1.first_name = "Timothy"
+        u1.first_name = "TiMothy"
         u1.save()
         u2.first_name = "Jimothy"
         u2.save()
