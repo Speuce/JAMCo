@@ -4,7 +4,7 @@ from django.urls import reverse
 from job.models import Job, ReviewRequest, Review
 from account.tests.factories import UserFactory
 from column.tests.factories import KanbanColumnFactory
-from job.tests.factories import JobFactory, ReviewRequestFactory
+from job.tests.factories import JobFactory, ReviewRequestFactory, ReviewFactory
 
 
 class TestViews(TransactionTestCase):
@@ -626,3 +626,30 @@ class TestViews(TransactionTestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(len(Review.objects.all()), 1)
+
+    def test_get_reviews_for_user(self):
+        recipient = UserFactory()
+        reviews = [ReviewFactory() for i in range(100)]
+        for review in reviews:
+            review.request.job.user = recipient
+            review.request.job.save()
+        other_recipient = UserFactory()
+        other_reviews = [ReviewFactory() for i in range(200)]
+        for review in other_reviews:
+            review.request.job.user = other_recipient
+            review.request.job.save()
+
+        payload = {"user_id": recipient.id}
+
+        response = self.client.post(
+            reverse("get_reviews_for_user"), json.dumps(payload), content_type="application/json"
+        )
+        self.assertEqual(Review.objects.count(), 300)
+        self.assertEqual(len(json.loads(response.content)["reviews"]), 100)
+
+    def test_get_reviews_for_user_with_error(self):
+        # Recipient doesn't exist
+        response = self.client.post(
+            reverse("get_reviews_for_user"), json.dumps({"user_id": -1}), content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
