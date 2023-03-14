@@ -6,7 +6,7 @@ from account.tests.factories import UserFactory
 from column.tests.factories import KanbanColumnFactory
 
 
-class TestViews(TransactionTestCase):
+class CreateJobTests(TransactionTestCase):
     reset_sequences = True
 
     def setUp(self):
@@ -109,6 +109,14 @@ class TestViews(TransactionTestCase):
         # Check the response
         self.assertEqual(response.status_code, 400)
         self.assertEqual(len(Job.objects.all()), 0)
+
+
+class UpdateJobTests(TransactionTestCase):
+    reset_sequences = True
+
+    def setUp(self):
+        self.user = UserFactory()
+        self.column = KanbanColumnFactory(user=self.user)
 
     def test_update_job(self):
         self.assertEqual(len(Job.objects.all()), 0)
@@ -329,6 +337,14 @@ class TestViews(TransactionTestCase):
             },
         )
 
+
+class GetMinimumJobsTests(TransactionTestCase):
+    reset_sequences = True
+
+    def setUp(self):
+        self.user = UserFactory()
+        self.column = KanbanColumnFactory(user=self.user)
+
     def test_get_minimum_jobs(self):
         self.assertEqual(len(Job.objects.all()), 0)
         # Create Job
@@ -389,6 +405,14 @@ class TestViews(TransactionTestCase):
         # Check the response
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content.decode("utf-8"), json.dumps({"jobs": jobs}))
+
+
+class GetJobByIdTests(TransactionTestCase):
+    reset_sequences = True
+
+    def setUp(self):
+        self.user = UserFactory()
+        self.column = KanbanColumnFactory(user=self.user)
 
     def test_get_job_by_id(self):
         self.assertEqual(len(Job.objects.all()), 0)
