@@ -52,4 +52,5 @@ urlpatterns = [
     path("job/api/update_job", job_views.update_job, name="update_job"),
     path("job/api/create_review_request", job_views.create_review_request, name="create_review_request"),
     path("job/api/create_review", job_views.create_review, name="create_review"),
+    path("job/api/get_reviews_for_user", job_views.get_reviews_for_user, name="get_reviews_for_user"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

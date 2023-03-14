@@ -34,6 +34,7 @@ class GetOrCreateJobTests(TestCase):
                 "notes": "",
                 "cover_letter": "",
                 "kcolumn_id": job.kcolumn.id,
+                "user_id": user.id,
                 "deadlines": None,
                 "type": None,
             },
