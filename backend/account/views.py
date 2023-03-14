@@ -153,6 +153,23 @@ def validate_auth_token(request: HttpRequest):
         return JsonResponse(status=401, data={"error": repr(err_msg)})
 
 
+@require_POST
+def get_updated_user_data(request: HttpRequest):
+    """
+    Authenticates auth_token retrieved from local cookies, without creating a new cookie
+    """
+
+    token = read_request(request)
+    logger.debug(f"get_updated_user_data: {token}")
+
+    try:
+        user = business.validate_token(token)
+        return JsonResponse({"user": user.to_dict()})
+    except ObjectDoesNotExist as err_msg:
+        logger.debug(f"Invalid Token: {err_msg}")
+        return JsonResponse(status=401, data={"error": repr(err_msg)})
+
+
 def create_friend_request(request: HttpRequest):
     """
     Creates new FriendRequest
@@ -221,7 +238,6 @@ def get_friend_requests_status(request: HttpRequest):
         return JsonResponse(data={"sent": list(sent), "received": list(received)})
     except Exception as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})
-
 
 
 @require_POST

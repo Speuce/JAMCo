@@ -77,6 +77,18 @@ def search_users_by_name(search_string) -> list:
     return result
 
 
+def validate_token(token) -> bool:
+    try:
+        token_json = decrypt_token(token)
+        user = query.get_user_by_token_fiends_noupdate(
+            token_json["google_id"],
+            datetime.strptime(token_json["last_login"], "%Y-%m-%d %H:%M:%S.%f%z"),
+        )
+        return user
+    except ObjectDoesNotExist as err:
+        raise ObjectDoesNotExist("Failed to Authenticate Token") from err
+
+
 def authenticate_token(token):
     try:
         token_json = decrypt_token(token)

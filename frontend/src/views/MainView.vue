@@ -12,7 +12,7 @@
       </v-col>
       <v-col class="py-0">
         <div class="text-end">
-          <v-btn color="primary" flat @click="friendModalVisible = true">
+          <v-btn color="primary" flat @click="showFriendsModal">
             <v-icon size="x-large" left>mdi-account-group</v-icon>
             <v-divider class="mx-1" />
             Friends
@@ -32,9 +32,9 @@
       />
       <FriendModal
         v-if="friendModalVisible"
-        :userData="this.userData"
+        :userData="{ ...this.userData }"
         @close="friendModalVisible = false"
-        @update:user-data="userData = $event"
+        @fetch-user-data="fetchUserData"
       />
       <UserInfoModal
         v-if="userInfoModalVisible"
@@ -80,12 +80,15 @@ export default {
       userInfoModalVisible: false,
       failedAuthentication: false,
       friendModalVisible: false,
+      authtoken: '',
     }
   },
+
   async mounted() {
     let token = getAuthToken()
     window.signIn = this.onSignin
     if (token) {
+      this.authtoken = token
       try {
         await postRequest('account/api/validate_auth_token', token).then(
           (response) => {
@@ -103,6 +106,7 @@ export default {
   },
   methods: {
     logoutClicked() {
+      this.authtoken = ''
       setAuthToken('')
       location.reload()
     },
@@ -111,14 +115,32 @@ export default {
         credential: response.credential,
         client_id: response.client_id,
       }
+      this.credential = response.credential
+      this.client_id = response.client_id
       const resp = await postRequest('account/api/get_or_create_account', item)
+
       this.userSignedIn(resp)
     },
+
+    async fetchUserData() {
+      if (this.authtoken) {
+        const resp = await postRequest(
+          'account/api/get_updated_user_data',
+          this.authtoken,
+        )
+        this.userData = resp.user
+      } else {
+        this.failedAuthentication = true
+        this.userData = null
+      }
+    },
+
     userSignedIn(resp) {
       this.userData = resp.data
       if (this.setupIncomplete()) {
         this.setupModalVisible = true
       }
+      this.authtoken = resp.token
       setAuthToken(resp.token)
       this.fetchUserPrivacies()
     },
@@ -155,6 +177,11 @@ export default {
         })
         this.userPrivacies = userPrivacies
       }
+    },
+
+    showFriendsModal() {
+      this.friendModalVisible = true
+      this.fetchUserData()
     },
   },
 }

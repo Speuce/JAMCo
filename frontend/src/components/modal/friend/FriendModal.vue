@@ -14,8 +14,8 @@ TODO:
   <SearchFriendsModal
     v-if="searchFriendModalVisible"
     @close="searchFriendModalVisible = false"
-    :user-data="userData"
-    @update:user-data="$emit('update:user-data', $event)"
+    :user-data="{ ...userData }"
+    @fetchUserData="$emit('fetchUserData', $event)"
   />
   <v-row v-if="!searchFriendModalVisible">
     <v-dialog v-model="dialog" persistent class="dialog-popup">
@@ -104,7 +104,7 @@ export default {
     FriendCard,
     SearchFriendsModal,
   },
-  emits: ['close', 'update:userData', 'fetchUserData'],
+  emits: ['close', 'fetchUserData'],
   props: {
     userData: {
       type: Object,
@@ -134,7 +134,6 @@ export default {
   },
   methods: {
     async acceptFriendRequest(request) {
-      console.log(request)
       await postRequest('account/api/accept_friend_request', {
         request_id: request.id,
         to_user_id: this.userData.id,

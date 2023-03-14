@@ -41,6 +41,7 @@ urlpatterns = [
     path("account/api/get_user_privacies", account_views.get_user_privacies, name="get_user_privacies"),
     path("account/api/remove_friend", account_views.remove_friend, name="remove_friend"),
     path("account/api/validate_auth_token", account_views.validate_auth_token, name="validate_auth_token"),
+    path("account/api/get_updated_user_data", account_views.get_updated_user_data, name="get_updated_user_data"),
     path("account/api/create_friend_request", account_views.create_friend_request, name="create_friend_request"),
     path("account/api/accept_friend_request", account_views.accept_friend_request, name="accept_friend_request"),
     path("account/api/deny_friend_request", account_views.deny_friend_request, name="deny_friend_request"),

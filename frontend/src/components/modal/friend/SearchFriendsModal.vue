@@ -72,7 +72,7 @@ export default {
   components: {
     FriendCard,
   },
-  emits: ['close', 'update:userData'],
+  emits: ['close', 'fetchUserData'],
   props: {
     userData: {
       type: Object,
@@ -105,9 +105,7 @@ export default {
         from_user_id: this.userData.id,
         to_user_id: user.id,
       })
-      const newUserData = { ...this.userData }
-      newUserData.sent_friend_requests.push(user.id)
-      this.$emit('update:userData', newUserData)
+      this.$emit('fetchUserData')
     },
 
     async removeFriend(user) {
@@ -117,11 +115,7 @@ export default {
         user1_id: this.userData.id,
         user2_id: user.id,
       })
-      const newUserData = { ...this.userData }
-      newUserData.friends = newUserData.friends.filter(
-        (friend) => friend.id !== user.id,
-      )
-      this.$emit('update:userData', newUserData)
+      this.$emit('fetchUserData')
     },
     viewFriendKanban(user) {
       // eslint-disable-next-line no-console
