@@ -197,11 +197,11 @@ export default {
       type: Object,
       default: () => {
         return {
-          user: -1,
           id: -1,
           company: '',
           type: '',
           kcolumn_id: -1,
+          user_id: -1,
           position_title: '',
           description: '',
           cover_letter: '',

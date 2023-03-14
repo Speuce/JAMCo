@@ -71,11 +71,11 @@ export default {
       type: Object,
       default: () => {
         return {
-          user: -1,
           id: -1,
           company: '',
           type: '',
           kcolumn_id: -1,
+          user_id: -1,
           position_title: '',
           description: '',
           cover_letter: '',
@@ -96,7 +96,7 @@ export default {
   },
   async mounted() {
     console.log(this.jobData)
-    console.log(this.jobData.user) // TODO: Include the user in Job.to_dict in the backend
+    console.log(this.jobData.user_id) // TODO: Include the user in Job.to_dict in the backend
   },
   methods: {
     sendClicked() {
