@@ -3,25 +3,37 @@
     <v-dialog v-model="dialog" persistent class="dialog-popup">
       <v-card style="overflow: hidden">
         <v-row class="inner-page-container">
+          <v-btn
+            @click="this.$emit('close')"
+            class=""
+            style="position: absolute; top: 35px; left: 25px"
+            icon
+            flat
+          >
+            <v-icon size="x-large"> mdi-arrow-left </v-icon>
+          </v-btn>
           <v-col class="items">
             <v-row class="center">
               <h2>Add Friends</h2>
             </v-row>
-            <v-row>
+            <v-row style="width: 400px" class="ml-5 pt-5">
               <v-text-field
                 v-model="searchField"
                 @keyup.enter="triggerSearch"
-                placeholder="Search For Friends"
-              />
-              <v-btn @click="triggerSearch"
-                >Search <v-divider class="mx-1" /><v-icon
-                  >mdi-magnify</v-icon
-                ></v-btn
+                placeholder="Search"
+                variant="solo"
               >
+                <template v-slot:append-inner>
+                  <v-btn @click="triggerSearch" icon flat class="mt-n3"
+                    ><v-icon>mdi-magnify</v-icon></v-btn
+                  >
+                </template>
+              </v-text-field>
             </v-row>
             <v-row><br /></v-row>
             <div class="scrollable">
               <FriendCard
+                class="my-2"
                 v-for="user in searchResults"
                 :key="user.id"
                 :userData="user"
@@ -36,11 +48,7 @@
               />
             </div>
             <v-row class="center offset-right">
-              <v-col cols="12" sm="6">
-                <v-btn @click="this.$emit('close')" class=""
-                  >Back To Friends</v-btn
-                >
-              </v-col>
+              <v-col cols="12" sm="6"> </v-col>
             </v-row>
           </v-col>
         </v-row>

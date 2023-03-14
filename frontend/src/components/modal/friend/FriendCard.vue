@@ -5,21 +5,47 @@
       <p>, {{ userData.country }}</p>
     </div>
     <div>
-      <v-btn
-        v-if="!isFriend"
-        @click="this.$emit('sendFriendRequest', userData.id)"
-        >Send Friend Request<v-divider class="mx-1" /><v-icon
-          >mdi-account-plus</v-icon
-        ></v-btn
-      >
-      <v-btn v-if="isFriend" @click="this.$emit('viewKanban', userData.id)"
-        >View Kanban<v-divider class="mx-1" /><v-icon
-          >mdi-view-dashboard-variant-outline</v-icon
-        ></v-btn
-      >
-      <v-btn v-if="isFriend" @click="this.$emit('removeFriend', userData.id)"
-        ><v-icon>mdi-trash-can-outline</v-icon></v-btn
-      >
+      <v-tooltip text="Add Friend">
+        <template v-slot:activator="{ props }">
+          <v-btn
+            v-bind="props"
+            v-if="!isFriend"
+            @click="this.$emit('sendFriendRequest', userData.id)"
+            icon
+            size="small"
+            color="primary"
+            ><v-icon size="large">mdi-account-plus</v-icon></v-btn
+          >
+        </template>
+      </v-tooltip>
+      <v-tooltip text="View Kanban">
+        <template v-slot:activator="{ props }">
+          <v-btn
+            v-bind="props"
+            v-if="isFriend"
+            @click="this.$emit('viewKanban', userData.id)"
+            icon
+            size="small"
+            color="secondary"
+          >
+            <v-icon size="large"> mdi-view-dashboard-variant-outline </v-icon>
+          </v-btn>
+        </template>
+      </v-tooltip>
+      <v-tooltip text="Remove Friend">
+        <template v-slot:activator="{ props }">
+          <v-btn
+            v-bind="props"
+            v-if="isFriend"
+            @click="this.$emit('removeFriend', userData.id)"
+            icon
+            size="small"
+            color="red"
+          >
+            <v-icon>mdi-trash-can-outline</v-icon>
+          </v-btn>
+        </template>
+      </v-tooltip>
     </div>
   </div>
 </template>

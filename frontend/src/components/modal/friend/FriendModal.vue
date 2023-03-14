@@ -17,47 +17,50 @@ TODO:
   />
   <v-row v-if="!searchFriendModalVisible">
     <v-dialog v-model="dialog" persistent class="dialog-popup">
-      <v-card style="overflow: hidden">
-        <v-row>
-          <v-row class="inner-page-container">
-            <v-col cols="12" sm="7" class="items">
-              <v-row>
-                <v-col cols="12" sm="5">
-                  <h2>Friends</h2>
-                </v-col>
-                <v-col cols="12" sm="5">
-                  <v-btn
-                    class="margin-top"
-                    @click="
-                      () => {
-                        searchFriendModalVisible = true
-                      }
-                    "
-                    >Add Friends<v-divider class="mx-1" /><v-icon
-                      >mdi-account-multiple-plus</v-icon
-                    ></v-btn
-                  >
-                </v-col>
-              </v-row>
-            </v-col>
+      <v-card style="overflow: hidden; height: 600px">
+        <v-card-title class="inner-page-container">
+          <v-row>
+            <h2>Friends</h2>
+            <v-spacer />
+            <v-btn
+              color="primary"
+              class="margin-top"
+              @click="
+                () => {
+                  searchFriendModalVisible = true
+                }
+              "
+              >Add Friends<v-divider class="mx-1" /><v-icon
+                >mdi-account-multiple-plus</v-icon
+              >
+            </v-btn>
           </v-row>
-        </v-row>
-        <RequestCard
-          v-for="req in requests"
-          :key="req.id"
-          :request="req"
-          :user="userData"
-          @acceptRequest="acceptFriendRequest(req)"
-          @denyRequest="denyFriendRequest(req)"
-        />
-        <FriendCard
-          v-for="user in userData.friends"
-          :key="user.id"
-          :userData="user"
-          :isFriend="true"
-          @removeFriend="removeFriend(user)"
-        />
+        </v-card-title>
+        <div class="inner-page-container">
+          <div v-if="!userData.friends.length" class="text-center">
+            <h3>You Don't have Any Friends! (yet)</h3>
+            <p>Click the Add Friends Button at the top to get started</p>
+          </div>
+          <RequestCard
+            v-for="req in requests"
+            :key="req.id"
+            :request="req"
+            :user="userData"
+            @acceptRequest="acceptFriendRequest(req)"
+            @denyRequest="denyFriendRequest(req)"
+          />
+          <FriendCard
+            v-for="user in userData.friends"
+            :key="user.id"
+            :userData="user"
+            :isFriend="true"
+            @removeFriend="removeFriend(user)"
+          />
+        </div>
+        <v-spacer></v-spacer>
+
         <v-card-actions>
+          <v-spacer />
           <v-btn
             color="blue-darken-1"
             variant="text"
@@ -114,9 +117,10 @@ export default {
 
 <style scoped>
 .inner-page-container {
-  padding-top: 2rem;
-  padding-left: 3rem;
-  padding-bottom: 3rem;
+  padding-top: 40px;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-bottom: 20px;
 }
 
 .margin-top {
