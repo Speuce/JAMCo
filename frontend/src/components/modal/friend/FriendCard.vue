@@ -9,12 +9,25 @@
         <template v-slot:activator="{ props }">
           <v-btn
             v-bind="props"
-            v-if="!isFriend"
+            v-if="!isFriend && !sentRequest"
             @click="this.$emit('sendFriendRequest', userData.id)"
             icon
             size="small"
             color="primary"
             ><v-icon size="large">mdi-account-plus</v-icon></v-btn
+          >
+        </template>
+      </v-tooltip>
+      <v-tooltip text="Pending Friend Request">
+        <template v-slot:activator="{ props }">
+          <v-btn
+            v-bind="props"
+            v-if="!isFriend && sentRequest"
+            disabled
+            icon
+            size="small"
+            color="primary"
+            ><v-icon size="large">mdi-check</v-icon></v-btn
           >
         </template>
       </v-tooltip>
@@ -67,6 +80,10 @@ export default {
       },
     },
     isFriend: {
+      type: Boolean,
+      default: false,
+    },
+    sentRequest: {
       type: Boolean,
       default: false,
     },
