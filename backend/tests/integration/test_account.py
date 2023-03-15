@@ -40,6 +40,8 @@ class GetOrCreateAccountTests(TransactionTestCase):
             "field_of_work": None,
             "first_name": "John",
             "friends": [],
+            "received_friend_requests": [],
+            "sent_friend_requests": [],
         }
         self.assertEqual(response.status_code, 200)
         # The query should return the User object. Since a mock is used,
@@ -100,6 +102,8 @@ class UpdateAccountTests(TransactionTestCase):
                 "field_of_work": None,
                 "first_name": "John",
                 "friends": [],
+                "received_friend_requests": [],
+                "sent_friend_requests": [],
             },
         )
 
@@ -128,6 +132,8 @@ class UpdateAccountTests(TransactionTestCase):
                 "field_of_work": None,
                 "first_name": "Rob",
                 "friends": [],
+                "received_friend_requests": [],
+                "sent_friend_requests": [],
             },
         )
 
@@ -158,6 +164,8 @@ class UpdateAccountTests(TransactionTestCase):
                 "country": None,
                 "region": None,
                 "friends": [],
+                "received_friend_requests": [],
+                "sent_friend_requests": [],
             },
         )
 
@@ -186,6 +194,8 @@ class UpdateAccountTests(TransactionTestCase):
                 "field_of_work": None,
                 "first_name": "John",
                 "friends": [],
+                "received_friend_requests": [],
+                "sent_friend_requests": [],
             },
         )
 
