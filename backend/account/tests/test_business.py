@@ -1,5 +1,6 @@
 from django.test import TestCase
 from account import business
+from account.models import User
 from unittest.mock import patch
 from account.tests.factories import UserFactory, PrivacyFactory, FriendRequestFactory
 from django.core.exceptions import ObjectDoesNotExist
@@ -116,6 +117,55 @@ class FriendTests(TestCase):
         mock_are_friends.return_value = True
         business.remove_friend(0, 0)
         mock_remove_friend.assert_called_with(0, 0)
+
+
+class SearchTests(TestCase):
+    @patch("account.query.get_all_searchable")
+    def test_searching_users(self, mock_search_users_by_name):
+        u1 = UserFactory(first_name="First", last_name="Last")
+        u2 = UserFactory(first_name="Unique", last_name="Last")
+        u3 = UserFactory(first_name="No", last_name="Match")
+        PrivacyFactory(user=u1)
+        PrivacyFactory(user=u2)
+        PrivacyFactory(user=u3)
+
+        mock_search_users_by_name.return_value = User.objects.all()
+
+        # Make sure empty/whitespace strings don't return all users
+        results = business.search_users_by_name("  ")
+        self.assertEqual(len(results), 0)
+
+        expected_results = [
+            {"id": u1.id, "first_name": u1.first_name, "last_name": u1.last_name, "country": None},
+        ]
+
+        results = business.search_users_by_name(f"{u1.first_name} {u1.last_name}")
+        self.assertEqual(expected_results, results)
+
+        # Create similar names
+        u1.first_name = "TiMothy"
+        u1.save()
+        u2.first_name = "Jimothy"
+        u2.save()
+        u3.first_name = "Butterfree"
+        u3.last_name = "Ketchum"
+        u3.save()
+
+        expected_results = [
+            {"id": u1.id, "first_name": u1.first_name, "last_name": u1.last_name, "country": None},
+            {"id": u2.id, "first_name": u2.first_name, "last_name": u2.last_name, "country": None},
+        ]
+
+        # Update the return value
+        mock_search_users_by_name.return_value = User.objects.all()
+
+        results = business.search_users_by_name("moth")
+        self.assertEqual(len(results), 2)
+        self.assertEqual(expected_results, results)
+
+        # Make sure all tokens are validated as being in the same name
+        results = business.search_users_by_name(f"{u1.first_name} {u2.first_name}")
+        self.assertEqual(len(results), 0)
 
 
 @patch("account.query.get_user_by_token_fields")
