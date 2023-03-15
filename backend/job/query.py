@@ -51,10 +51,10 @@ def update_job(payload: dict) -> None:
         else:
             raise AttributeError("Job has no attribute " + key)
 
-        # Since this is at the end of the func, it'll only execute if an exception
-        # isn't raised. That is, we'll only save changes if the entire payload is
-        # error-free.
-        job.save()
+    # Since this is at the end of the func, it'll only execute if an exception
+    # isn't raised. That is, we'll only save changes if the entire payload is
+    # error-free.
+    job.save()
 
 
 def get_job_by_id(in_user: int, job_id: int) -> Job:

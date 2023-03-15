@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from datetime import datetime
 
 
 class User(AbstractUser):
@@ -27,4 +28,37 @@ class User(AbstractUser):
             "city": self.city,
             "birthday": self.birthday,
             "field_of_work": self.field_of_work,
+            "friends": list(self.friends.values("id", "first_name", "last_name")),
+        }
+
+
+class Privacy(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    is_searchable = models.BooleanField(null=False)
+    share_kanban = models.BooleanField(null=False)
+    cover_letter_requestable = models.BooleanField(null=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "is_searchable": self.is_searchable,
+            "share_kanban": self.share_kanban,
+            "cover_letter_requestable": self.cover_letter_requestable,
+        }
+
+
+class FriendRequest(models.Model):
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, related_name="request_sender")
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    sent = models.DateTimeField(verbose_name="Timestamp when request sent", null=False)
+    accepted = models.BooleanField(default=False, null=False)
+    acknowledged = models.DateTimeField(null=True, default=None)
+
+    def to_dict(self):
+        return {
+            "from_user_id": self.from_user.id,
+            "to_user_id": self.to_user.id,
+            "sent": datetime.strftime(self.sent, "%Y-%m-%d %H:%M:%S.%f%z"),
+            "accepted": self.accepted,
+            "acknowledged": self.acknowledged,
         }

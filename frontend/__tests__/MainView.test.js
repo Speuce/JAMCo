@@ -48,22 +48,24 @@ describe('MainView', () => {
     expect(wrapper.vm.setupModalVisible).toEqual(true)
   })
 
-  it('posts userData to update_account, closes setupModal on updateUserAccount call', async () => {
+  it('posts userData & privacies, closes setupModal on updateUserAccount call', async () => {
     const wrapper = shallowMount(MainView)
     expect(wrapper.vm.setupModalVisible).toEqual(false)
     const resp = { data: { id: -1 }, token: 'new_token' }
     wrapper.vm.userSignedIn(resp)
+
     expect(wrapper.vm.setupModalVisible).toEqual(true)
 
-    await wrapper.vm.updateUserAccount({ id: -1 })
-    await wrapper.vm.$nextTick()
-
-    expect(postRequest).toHaveBeenCalledWith('account/api/update_account', {
-      id: -1,
-    })
+    await wrapper.vm.updateUserAccount({ id: -1 }, { id: 1 })
 
     expect(wrapper.vm.userData).toEqual({ id: -1 })
     expect(wrapper.vm.setupModalVisible).toEqual(false)
+
+    expect(postRequest.mock.calls).toEqual([
+      ['account/api/get_user_privacies', { user_id: -1 }],
+      ['account/api/update_account', { id: -1 }],
+      ['account/api/update_privacies', { privacies: { id: 1 }, user_id: -1 }],
+    ])
   })
 
   it('authenticates token when cookie found', async () => {
@@ -99,5 +101,17 @@ describe('MainView', () => {
     wrapper.vm.logoutClicked()
     expect(window.location.reload).toHaveBeenCalled()
     expect(wrapper.vm.userData).toBe(null)
+  })
+
+  it('calls the onSignin method with the response and makes the post request', async () => {
+    const wrapper = shallowMount(MainView)
+    postRequest.mockResolvedValue({ data: { client_id: 'some-client' } })
+    const response = { credential: 'some-credential', client_id: 'some-client' }
+    wrapper.vm.onSignin(response)
+    await wrapper.vm.$nextTick()
+    expect(postRequest).toHaveBeenCalledWith(
+      'account/api/get_or_create_account',
+      response,
+    )
   })
 })

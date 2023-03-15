@@ -26,10 +26,7 @@
       </v-col>
     </v-row>
     <div class="page-container flex-grow-1">
-      <LoginModal
-        v-if="!userData && failedAuthentication"
-        @signin="userSignedIn"
-      />
+      <LoginModal v-if="!userData && failedAuthentication" @signin="onSignin" />
       <AccountSetupModal
         v-if="setupModalVisible"
         @updateUser="updateUserAccount"
@@ -39,7 +36,8 @@
         v-if="userInfoModalVisible"
         @updateUser="updateUserAccount"
         :user="this.userData"
-        @close="userInfoModalVisible = false"
+        :privacies="this.userPrivacies"
+        @close="this.userInfoModalVisible = false"
         @logout="logoutClicked"
       />
       <IncomingReviewsModal
@@ -77,6 +75,7 @@ export default {
   data() {
     return {
       userData: null,
+      userPrivacies: null,
       setupModalVisible: false,
       userInfoModalVisible: false,
       incomingReviewsModalVisible: false,
@@ -85,6 +84,7 @@ export default {
   },
   async mounted() {
     let token = getAuthToken()
+    window.signIn = this.onSignin
     if (token) {
       await postRequest('account/api/validate_auth_token', token).then(
         (response) => {
@@ -101,12 +101,21 @@ export default {
       setAuthToken('')
       location.reload()
     },
+    async onSignin(response) {
+      const item = {
+        credential: response.credential,
+        client_id: response.client_id,
+      }
+      const resp = await postRequest('account/api/get_or_create_account', item)
+      this.userSignedIn(resp)
+    },
     userSignedIn(resp) {
       this.userData = resp.data
       if (this.setupIncomplete()) {
         this.setupModalVisible = true
       }
       setAuthToken(resp.token)
+      this.fetchUserPrivacies()
     },
     setupIncomplete() {
       // check if any req. fields are empty
@@ -118,11 +127,29 @@ export default {
         !this.userData.field_of_work
       )
     },
-    async updateUserAccount(userData) {
+    async fetchUserPrivacies() {
+      await postRequest('account/api/get_user_privacies', {
+        user_id: this.userData.id,
+      }).then((privs) => {
+        this.userPrivacies = privs
+      })
+    },
+    async updateUserAccount(userData, userPrivacies) {
       await postRequest('account/api/update_account', userData)
+
       this.userData = userData
+
       this.setupModalVisible = false
       this.userInfoModalVisible = false
+
+      // handles case when AccountSetupModal calls updateUserAccount without privacies
+      if (userPrivacies) {
+        await postRequest('account/api/update_privacies', {
+          privacies: userPrivacies,
+          user_id: this.userData.id,
+        })
+        this.userPrivacies = userPrivacies
+      }
     },
   },
 }

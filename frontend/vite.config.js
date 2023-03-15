@@ -41,5 +41,6 @@ export default defineConfig({
     deps: {
       inline: ['vuetify'],
     },
+    exclude: ['**/e2e/**', '**/node_modules/**'],
   },
 })
