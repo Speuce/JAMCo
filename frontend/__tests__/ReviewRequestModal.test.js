@@ -1,6 +1,11 @@
 import { mount } from '@vue/test-utils'
-import { expect, describe, it, afterEach } from 'vitest';
+import { expect, describe, it, afterEach, vi } from 'vitest';
 import ReviewRequestModal from '../src/components/modal/job/ReviewRequestModal.vue'
+import { postRequest } from '@/helpers/requests.js'
+
+vi.mock('@/helpers/requests.js', () => ({
+  postRequest: vi.fn(),
+}))
 
 describe('ReviewRequestModal', () => {
   let wrapper
@@ -14,12 +19,14 @@ describe('ReviewRequestModal', () => {
     cover_letter: 'Test cover letter',
     notes: 'Test comments',
     deadlines: [],
+    user_id: 0,
   }
 
-  function mountModal(jobProp) {
+  function mountModal(jobProp, userProp) {
     wrapper = mount(ReviewRequestModal, {
       props: {
         job: jobProp,
+        user: userProp,
       },
     })
   }
@@ -76,6 +83,7 @@ describe('ReviewRequestModal', () => {
     expect(wrapper.vm.messageErrorIndicator).toBe(null)
 
     mountModal(job)
+    wrapper.vm.selectedFriendIds = []
     wrapper.vm.sendClicked()
 
     expect(wrapper.vm.recipientErrorIndicator).toBe('red')
@@ -97,14 +105,26 @@ describe('ReviewRequestModal', () => {
 
   it('sends a review request when send button clicked', () => {
     mountModal(job)
+    postRequest.mockImplementation(() => Promise.resolve())
     let buttons = wrapper.findAllComponents({ name: 'v-btn' })
 
+    wrapper.vm.selectedFriendIds = [1, 2]
+
     buttons.forEach((button) => {
-      if (button.text() === 'Cancel') {
+      if (button.text() === 'Send') {
         button.trigger('click')
       }
     })
 
-    expect(wrapper.emitted('sendReviewRequest')).toBeTruthy()
+    wrapper.vm.selectedFriendIds.forEach((id) => {
+      expect(postRequest).toHaveBeenCalledWith(
+        'job/api/create_review_request',
+        {
+          job_id: job.id,
+          reviewer_id: id,
+          message: wrapper.vm.message,
+        },
+      )
+    })
   })
 })

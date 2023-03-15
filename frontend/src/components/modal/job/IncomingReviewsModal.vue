@@ -25,7 +25,7 @@
             </v-row>
           </v-col>
           <v-col v-else>
-            You have no incoming cover letter reviews. You can ask your friends
+            You have no incoming cover letter reviews or review requests. You can ask your friends
             to review your cover letters by pressing the "Request Review" button
             next to any cover letter.
           </v-col>

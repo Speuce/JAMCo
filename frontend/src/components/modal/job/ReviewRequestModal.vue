@@ -90,26 +90,44 @@ export default {
     },
     user: {
       type: Object,
-      default: undefined,
+      default: () => {
+        return {
+          id: -1,
+          first_name: '',
+          last_name: '',
+          email: '',
+          field_of_work: '',
+          country: '',
+          region: '',
+          city: '',
+          birthday: '',
+        }
+      },
     },
   },
   data(props) {
     return {
       dialog: true,
       jobData: props.job,
-      selectedFriendIds: null,
+      selectedFriendIds: [],
       message: `Hello, please review my cover letter for ${props.job.position_title} at ${props.job.company}.`,
       messageErrorIndicator: null,
       recipientErrorIndicator: null,
       activeUser: props.user,
     }
   },
+
+  mounted() {
+    console.log(this.jobData)
+    console.log(this.user)
+  },
+
   methods: {
     sendClicked() {
       this.messageErrorIndicator = null
       this.recipientErrorIndicator = null
 
-      if (this.message && this.selectedFriendIds) {
+      if (this.message && this.selectedFriendIds.length) {
         this.messageErrorIndicator = null
         this.recipientErrorIndicator = null
         this.$emit('close')
@@ -117,7 +135,7 @@ export default {
         if (!this.message) {
           this.messageErrorIndicator = 'red'
         }
-        if (!this.selectedFriendIds) {
+        if (!this.selectedFriendIds.length) {
           this.recipientErrorIndicator = 'red'
         }
       }
