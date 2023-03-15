@@ -94,7 +94,7 @@ export default {
       )
       // Filter out the current user from the search results
       this.searchResults = response.user_list.filter(
-        (user) => user.google_id !== this.userData.google_id,
+        (user) => user.id !== this.userData.id,
       )
     },
 

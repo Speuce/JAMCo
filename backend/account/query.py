@@ -40,7 +40,7 @@ def update_user(payload: dict):
         if hasattr(user, key):
             if key != "friends":  # friends are handled separately
                 setattr(user, key, value)
-        elif key == "sent_friend_requests":
+        elif key == "sent_friend_requests" or key == "received_friend_requests":
             continue
         else:
             raise AttributeError("User has no attribute " + key)

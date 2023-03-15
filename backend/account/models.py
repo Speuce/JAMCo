@@ -29,7 +29,9 @@ class User(AbstractUser):
             "birthday": self.birthday,
             "field_of_work": self.field_of_work,
             "friends": list(self.friends.values("id", "first_name", "last_name", "country")),
-            "sent_friend_requests": list(self.request_sender.values_list("to_user_id", flat=True)),
+            "sent_friend_requests": list(
+                self.request_sender.filter(acknowledged=None).values_list("to_user_id", flat=True)
+            ),
             "received_friend_requests": list(
                 self.request_receiver.filter(acknowledged=None).values(
                     "id", "from_user_id", "from_user__first_name", "from_user__last_name", "from_user__country"
