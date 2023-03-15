@@ -4,6 +4,7 @@ from django.test import TransactionTestCase
 from django.urls import reverse
 from django.http.cookie import SimpleCookie
 from account.models import User, Privacy
+from account.tests.factories import UserFactory, PrivacyFactory
 
 logger = logging.getLogger(__name__)
 
@@ -317,6 +318,87 @@ class UpdatePrivacyTests(TransactionTestCase):
 
         outPriv = Privacy.objects.get(id=1).to_dict()
         self.assertNotEqual(newPriv, outPriv)
+
+
+class SearchUsersByNameTest(TransactionTestCase):
+    reset_sequences = True
+
+    def test_search_from_multiple_users(self):
+        user_one = UserFactory(first_name="Jojo", last_name="Jojo")
+        PrivacyFactory(user=user_one)
+        user_two = UserFactory(first_name="Bobby", last_name="Smith")
+        PrivacyFactory(user=user_two)
+        user_three = UserFactory(first_name="Bobby", last_name="Bill")
+        PrivacyFactory(user=user_three, is_searchable=False)
+        user_four = UserFactory(first_name="Joe", last_name="Joel")
+        PrivacyFactory(user=user_four)
+        user_five = UserFactory(first_name="Rob", last_name="Smith")
+        PrivacyFactory(user=user_five)
+
+        # Verify only the is_searchable Bobby is returned
+        response = self.client.post(
+            reverse("search_users_by_name"),
+            json.dumps("Bobby"),
+            content_type="application/json",
+        )
+
+        expected_results = [
+            {"id": user_two.id, "first_name": user_two.first_name, "last_name": user_two.last_name, "country": None}
+        ]
+        user_list = json.loads(response.content)["user_list"]
+        self.assertEqual(expected_results, user_list)
+
+        # Search overlapping first/last names
+        response = self.client.post(
+            reverse("search_users_by_name"),
+            json.dumps("Jo Jo"),
+            content_type="application/json",
+        )
+
+        expected_results = [
+            {"id": user_one.id, "first_name": user_one.first_name, "last_name": user_one.last_name, "country": None},
+            {"id": user_four.id, "first_name": user_four.first_name, "last_name": user_four.last_name, "country": None},
+        ]
+        user_list = json.loads(response.content)["user_list"]
+        self.assertEqual(expected_results, user_list)
+
+        # Search on single token
+        response = self.client.post(
+            reverse("search_users_by_name"),
+            json.dumps("Smith"),
+            content_type="application/json",
+        )
+
+        expected_results = [
+            {"id": user_two.id, "first_name": user_two.first_name, "last_name": user_two.last_name, "country": None},
+            {"id": user_five.id, "first_name": user_five.first_name, "last_name": user_five.last_name, "country": None},
+        ]
+        user_list = json.loads(response.content)["user_list"]
+        self.assertEqual(expected_results, user_list)
+
+    def test_search_empty_whitespace(self):
+        user_one = UserFactory(first_name="Jojo", last_name="Jojo")
+        PrivacyFactory(user=user_one)
+
+        # Search Empty String
+        response = self.client.post(
+            reverse("search_users_by_name"),
+            json.dumps(""),
+            content_type="application/json",
+        )
+
+        user_list = json.loads(response.content)["user_list"]
+        self.assertEqual(len(user_list), 0)
+
+        # Search Whitespace String
+        response = self.client.post(
+            reverse("search_users_by_name"),
+            json.dumps("    "),
+            content_type="application/json",
+        )
+
+        user_list = json.loads(response.content)["user_list"]
+        self.assertEqual(len(user_list), 0)
 
 
 class AccountTestCase(TransactionTestCase):
