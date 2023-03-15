@@ -64,7 +64,9 @@ class UpdateAccountTests(TestCase):
         user = UserFactory()
 
         # Update the user
-        query.update_user({"id": user.id, "first_name": "Rob"})
+        query.update_user(
+            {"id": user.id, "first_name": "Rob", "sent_friend_requests": [], "received_friend_requests": []}
+        )
 
         # The modifications should hold
         self.assertEqual(models.User.objects.get(id=user.id).first_name, "Rob")
@@ -239,6 +241,12 @@ class GetUserByTokenFieldsTests(TestCase):
         login = timezone.now()
         user = UserFactory(google_id="gID", last_login=login)
         retrieved_user = query.get_user_by_token_fields(user.google_id, login)
+        self.assertEqual(user, retrieved_user)
+
+    def test_get_user_by_token_fields_noupdate(self):
+        login = timezone.now()
+        user = UserFactory(google_id="gID", last_login=login)
+        retrieved_user = query.get_user_by_token_fields_noupdate(user.google_id, login)
         self.assertEqual(user, retrieved_user)
 
 

@@ -40,6 +40,8 @@ def update_user(payload: dict):
         if hasattr(user, key):
             if key != "friends":  # friends are handled separately
                 setattr(user, key, value)
+        elif key == "sent_friend_requests" or key == "received_friend_requests":
+            continue
         else:
             raise AttributeError("User has no attribute " + key)
 
@@ -92,6 +94,11 @@ def remove_friend(user1_id, user2_id):
 def get_user_by_token_fields(google_id, last_login) -> User:
     user = User.objects.get(google_id=google_id, last_login=last_login)
     update_user_last_login(user)
+    return user
+
+
+def get_user_by_token_fields_noupdate(google_id, last_login) -> User:
+    user = User.objects.get(google_id=google_id, last_login=last_login)
     return user
 
 
