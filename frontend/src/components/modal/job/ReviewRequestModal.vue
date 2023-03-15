@@ -11,11 +11,14 @@
         <v-card-text>
           <v-row>
             <v-col class="info-col" cols="12">
-              <!-- 👇 once friends are in user data: :items="[this.jobData.user.friends]" -->
               <v-select
-                item-title="name"
+                multiple
+                chips
+                clearable
+                :items="activeUser.friends"
+                item-title="first_name"
                 item-value="id"
-                label="Recipient*"
+                label="Recipients*"
                 v-model="selectedFriendIds"
                 :style="{ color: this.recipientErrorIndicator }"
                 variant="outlined"
