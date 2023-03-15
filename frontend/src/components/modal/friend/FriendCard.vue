@@ -66,14 +66,7 @@ export default {
   props: {
     userData: {
       type: Object,
-      default: () => {
-        return {
-          id: -1,
-          first_name: 'first',
-          last_name: 'last',
-          country: 'CA',
-        }
-      },
+      default: undefined,
     },
     isFriend: {
       type: Boolean,

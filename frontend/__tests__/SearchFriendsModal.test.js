@@ -105,4 +105,20 @@ describe('SearchFriendsModal', () => {
     })
     expect(wrapper.emitted().fetchUserData).toBeTruthy()
   })
+
+  it('triggers friend Kanban View when viewFriendKanban is called', () => {
+    const logSpy = vi.spyOn(console, 'log')
+    const userData = { id: 1, google_id: 'google123' }
+    const user = { id: 2, google_id: 'google456' }
+
+    const wrapper = shallowMount(SearchFriendsModal, {
+      propsData: {
+        userData,
+      },
+    })
+
+    wrapper.vm.viewFriendKanban(user)
+
+    expect(logSpy).toBeCalledWith(user)
+  })
 })

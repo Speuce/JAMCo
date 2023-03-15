@@ -108,22 +108,7 @@ export default {
   props: {
     userData: {
       type: Object,
-      default: () => {
-        return {
-          id: -1,
-          first_name: '',
-          last_name: '',
-          email: '',
-          field_of_work: '',
-          country: '',
-          region: '',
-          city: '',
-          birthday: '',
-          friends: [],
-          sent_friend_requests: [],
-          received_friend_requests: [],
-        }
-      },
+      default: undefined,
     },
   },
   data() {

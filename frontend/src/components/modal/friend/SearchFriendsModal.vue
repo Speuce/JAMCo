@@ -107,8 +107,6 @@ export default {
     },
 
     async removeFriend(user) {
-      // eslint-disable-next-line no-console
-      console.log(user)
       await postRequest('account/api/remove_friend', {
         user1_id: this.userData.id,
         user2_id: user.id,
