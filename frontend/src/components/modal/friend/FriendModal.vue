@@ -57,33 +57,40 @@ TODO:
               <h3>Friend Requests</h3>
             </v-row>
 
-            <RequestCard
-              v-for="req in userData.received_friend_requests"
-              :key="req.id"
-              :request="req"
-              :user="userData"
-              @acceptRequest="acceptFriendRequest(req)"
-              @denyRequest="denyFriendRequest(req)"
-            />
+            <div class="scrollable">
+              <RequestCard
+                v-for="req in userData.received_friend_requests"
+                :key="req.id"
+                :request="req"
+                :user="userData"
+                @acceptRequest="acceptFriendRequest(req)"
+                @denyRequest="denyFriendRequest(req)"
+              />
+            </div>
           </div>
 
           <div>
             <v-row
               class="mb-2 pt-6"
-              v-if="userData.received_friend_requests.length"
+              v-if="
+                userData.received_friend_requests.length &&
+                userData.friends.length
+              "
             >
               <v-icon color="grey-darken-1" size="large" class="mr-4"
                 >mdi-account-check</v-icon
               >
               <h3>Friends</h3>
             </v-row>
-            <FriendCard
-              v-for="user in userData.friends"
-              :key="user.id"
-              :userData="user"
-              :isFriend="true"
-              @removeFriend="removeFriend(user)"
-            />
+            <div class="scrollable">
+              <FriendCard
+                v-for="user in userData.friends"
+                :key="user.id"
+                :userData="user"
+                :isFriend="true"
+                @removeFriend="removeFriend(user)"
+              />
+            </div>
           </div>
         </div>
         <v-spacer></v-spacer>
@@ -171,5 +178,11 @@ export default {
 
 .dialog-popup {
   max-width: 900px;
+}
+.scrollable {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 10vh;
+  padding: 1px;
 }
 </style>
