@@ -121,6 +121,14 @@ export default {
           this.recipientErrorIndicator = 'red'
         }
       }
+
+      this.selectedFriendIds.forEach((friendId) => {
+        postRequest('job/api/create_review_request', {
+          job_id: this.jobData.id,
+          reviewer_id: friendId,
+          message: this.message,
+        })
+      })
     },
 
     closeClicked() {
