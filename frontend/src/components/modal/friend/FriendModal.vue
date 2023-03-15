@@ -66,13 +66,25 @@ TODO:
               @denyRequest="denyFriendRequest(req)"
             />
           </div>
-          <FriendCard
-            v-for="user in userData.friends"
-            :key="user.id"
-            :userData="user"
-            :isFriend="true"
-            @removeFriend="removeFriend(user)"
-          />
+
+          <div>
+            <v-row
+              class="mb-2 pt-6"
+              v-if="userData.received_friend_requests.length"
+            >
+              <v-icon color="grey-darken-1" size="large" class="mr-4"
+                >mdi-account-check</v-icon
+              >
+              <h3>Friends</h3>
+            </v-row>
+            <FriendCard
+              v-for="user in userData.friends"
+              :key="user.id"
+              :userData="user"
+              :isFriend="true"
+              @removeFriend="removeFriend(user)"
+            />
+          </div>
         </div>
         <v-spacer></v-spacer>
 
