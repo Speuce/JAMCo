@@ -27,6 +27,10 @@ def create_review_request(payload: dict) -> ReviewRequest:
     return query.create_review_request(payload)
 
 
+def get_review_requests_for_user(payload: dict) -> ReviewRequest:
+    return query.create_review_request(payload)
+
+
 def create_review(payload: dict) -> Review:
     return query.create_review(payload)
 

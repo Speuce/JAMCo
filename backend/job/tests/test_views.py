@@ -136,8 +136,8 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 400)
 
 
-@patch("job.business.create_review_request")
 class ReviewRequestTests(TestCase):
+    @patch("job.business.create_review_request")
     def test_create_review_request(self, mock_create_review_request):
         # Prepare data
         review_request_data = {"job_id": JobFactory().id, "message": "i showed you my cover letter please respond"}
@@ -155,6 +155,7 @@ class ReviewRequestTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content.decode("utf-8"), json.dumps({"review_request": review_request.to_dict()}))
 
+    @patch("job.business.create_review_request")
     def test_create_review_request_with_error(self, mock_create_review_request):
         request_body = json.dumps({}).encode("utf-8")
         request = RequestFactory().post("/create_review_request/", data=request_body, content_type="application/json")
@@ -166,6 +167,39 @@ class ReviewRequestTests(TestCase):
         response = views.create_review_request(request)
 
         # Check the response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.content.decode("utf-8"), json.dumps({"error": "Exception('Something went wrong!')"}))
+
+    @patch("job.business.get_review_requests_for_user")
+    def test_get_review_requests_for_user(self, mock_get_review_requests_for_user):
+        user = UserFactory()
+        request_body = json.dumps({"user_id": user.id}).encode("utf-8")
+        request = RequestFactory().post(
+            "/get_review_requests_for_user/", data=request_body, content_type="application/json"
+        )
+
+        review_requests = [ReviewRequestFactory() for i in range(100)]
+        mock_get_review_requests_for_user.return_value = review_requests
+
+        response = views.get_review_requests_for_user(request)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.content.decode("utf-8"),
+            json.dumps({"review_requests": [review_request.to_dict() for review_request in review_requests]}),
+        )
+
+    @patch("job.business.get_review_requests_for_user")
+    def test_get_review_requests_for_user_with_error(self, mock_get_review_requests_for_user):
+        user = UserFactory()
+        request_body = json.dumps({"user_id": user.id}).encode("utf-8")
+        request = RequestFactory().post(
+            "/get_review_requests_for_user/", data=request_body, content_type="application/json"
+        )
+
+        mock_get_review_requests_for_user.side_effect = Exception("Something went wrong!")
+
+        response = views.get_review_requests_for_user(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.content.decode("utf-8"), json.dumps({"error": "Exception('Something went wrong!')"}))
 
