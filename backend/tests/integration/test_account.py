@@ -28,7 +28,7 @@ class GetOrCreateAccountTests(TransactionTestCase):
         user_data = {
             "id": 1,
             "google_id": "1234567890",
-            "username": 0,
+            "username": "1234567890",
             "image_url": "https://i.imgur.com/QJpNyuN.png",
             "last_name": "Doe",
             "birthday": None,
@@ -48,7 +48,6 @@ class GetOrCreateAccountTests(TransactionTestCase):
             user_data,
         )
 
-        user_data["username"] = "0"
         self.assertEqual(len(User.objects.all()), 1)
         self.assertEqual(
             User.objects.get(google_id="1234567890").to_dict(),
@@ -88,7 +87,7 @@ class UpdateAccountTests(TransactionTestCase):
             {
                 "id": 1,
                 "google_id": "1234567890",
-                "username": "0",
+                "username": "1234567890",
                 "image_url": "https://i.imgur.com/QJpNyuN.png",
                 "last_name": "Doe",
                 "birthday": None,
@@ -116,7 +115,7 @@ class UpdateAccountTests(TransactionTestCase):
             {
                 "id": 1,
                 "google_id": "1234567890",
-                "username": "0",
+                "username": "1234567890",
                 "image_url": "https://i.imgur.com/QJpNyuN.png",
                 "last_name": "Doe",
                 "birthday": None,
@@ -146,7 +145,7 @@ class UpdateAccountTests(TransactionTestCase):
             {
                 "id": 1,
                 "google_id": "1234567890",
-                "username": "0",
+                "username": "1234567890",
                 "image_url": "https://i.imgur.com/QJpNyuN.png",
                 "email": "john.doe@gmail.com",
                 "field_of_work": None,
@@ -174,7 +173,7 @@ class UpdateAccountTests(TransactionTestCase):
             {
                 "id": 1,
                 "google_id": "1234567890",
-                "username": "0",
+                "username": "1234567890",
                 "image_url": "https://i.imgur.com/QJpNyuN.png",
                 "last_name": "Doe",
                 "birthday": None,

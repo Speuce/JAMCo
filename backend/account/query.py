@@ -17,7 +17,7 @@ def get_or_create_user(payload: dict) -> User:
         return user
     except ObjectDoesNotExist:
         return User.objects.create(
-            username=User.objects.all().count(),
+            username=payload["sub"],
             google_id=payload["sub"],
             email=payload["email"] if payload.get("email") else "",
             image_url=payload["picture"] if payload.get("picture") else "https://i.imgur.com/QJpNyuN.png",
