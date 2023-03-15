@@ -45,17 +45,46 @@
   </v-row>
 </template>
 <script>
+import { postRequest } from '@/helpers/requests.js'
+
 export default {
   emits: ['close'],
-  data() {
+
+  props: {
+    user: {
+      type: Object,
+      default: () => {
+        return {
+          id: -1,
+          first_name: '',
+          last_name: '',
+          email: '',
+          field_of_work: '',
+          country: '',
+          region: '',
+          city: '',
+          birthday: '',
+        }
+      },
+    },
+  },
+
+  data(props) {
     return {
       dialog: true,
       requestEntries: [],
+      activeUser: props.user,
     }
   },
   async mounted() {
     console.log(this.requestEntries)
     console.log(Boolean(this.requestEntries.length))
+
+    const reviews = await postRequest('/job/api/get_reviews_for_user', {
+      user_id: this.user.id,
+    })
+
+    console.log(reviews)
   },
 }
 </script>

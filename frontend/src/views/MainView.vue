@@ -42,6 +42,7 @@
       />
       <IncomingReviewsModal
         v-if="incomingReviewsModalVisible"
+        :user="this.userData"
         @close="incomingReviewsModalVisible = false"
       />
       <Suspense>
