@@ -143,6 +143,25 @@ class CreateReviewRequestTests(TestCase):
             query.create_review_request(payload_nonexistent_user)
 
 
+class GetReviewRequestsForUserTests(TestCase):
+    def test_get_review_requests_for_user(self):
+        review_request = ReviewRequestFactory()
+        additional_request = ReviewRequestFactory()
+        additional_request.job = review_request.job
+        additional_request.save()
+        irrelevant_request = ReviewRequestFactory()
+
+        review_requests = query.get_review_requests_for_user({"user_id": review_request.job.user.id})
+        self.assertIn(review_request, review_requests)
+        self.assertIn(additional_request, review_requests)
+        # The query should only get requests for the given user
+        self.assertNotIn(irrelevant_request, review_requests)
+
+        # The reviews aren't addressed to the user who sent them
+        requests_to_requester = query.get_review_requests_for_user({"user_id": review_request.reviewer.id})
+        self.assertEqual(len(requests_to_requester), 0)
+
+
 class CreateReviewTests(TestCase):
     def test_create_review(self):
         request = ReviewRequestFactory()
