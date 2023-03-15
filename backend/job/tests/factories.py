@@ -22,6 +22,7 @@ class ReviewRequestFactory(factory.django.DjangoModelFactory):
 
     id = factory.Sequence(lambda n: n)
     job = factory.SubFactory(JobFactory)
+    reviewer = factory.SubFactory(UserFactory)
     message = "review plz 🥺👉👈"
     fulfilled = False
 
@@ -31,7 +32,6 @@ class ReviewFactory(factory.django.DjangoModelFactory):
         model = Review
 
     id = factory.Sequence(lambda n: n)
-    reviewer = factory.SubFactory(UserFactory)
     request = factory.SubFactory(ReviewRequestFactory)
     response = "best cover letter I've ever seen 10/10"
     completed = None

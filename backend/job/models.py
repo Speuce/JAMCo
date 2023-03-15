@@ -33,18 +33,19 @@ class ReviewRequest(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     message = models.TextField(blank=True)
     fulfilled = models.BooleanField(default=False)
+    reviewer = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def to_dict(self):
         return {
             "id": self.id,
             "job_id": self.job.id,
+            "reviewer_id": self.reviewer.id,
             "message": self.message,
             "fulfilled": self.fulfilled,
         }
 
 
 class Review(models.Model):
-    reviewer = models.ForeignKey(User, on_delete=models.CASCADE)
     request = models.ForeignKey(ReviewRequest, on_delete=models.SET_NULL, null=True)
     response = models.TextField(blank=True)
     completed = models.DateTimeField(null=True)
@@ -52,7 +53,6 @@ class Review(models.Model):
     def to_dict(self):
         return {
             "id": self.id,
-            "reviewer_id": self.reviewer.id,
             "request_id": self.request_id,
             "response": self.response,
             "completed": self.completed.isoformat() if self.completed else None,
