@@ -109,10 +109,12 @@ class DeleteJobTests(TestCase):
 class CreateReviewRequestTests(TestCase):
     def test_create_review_request(self):
         job = JobFactory()
+        reviewer = UserFactory()
         message = "You should review my cover letter... NOW!"
-        payload = {"job_id": job.id, "message": message}
+        payload = {"job_id": job.id, "reviewer_id": reviewer.id, "message": message}
 
         review_request = query.create_review_request(payload)
+        self.assertEqual(review_request.reviewer_id, reviewer.id)
         self.assertEqual(review_request.job_id, job.id)
         self.assertEqual(review_request.message, message)
         self.assertEqual(review_request.fulfilled, False)
@@ -123,21 +125,31 @@ class CreateReviewRequestTests(TestCase):
             query.create_review_request({})
 
         # Job doesn't exist
-        message = "Like and subscribe for more cover letters"
-        payload_nonexistent_job = {"job_id": -1, "reviewer_id": -1, "message": message}
+        payload_nonexistent_job = {
+            "job_id": -1,
+            "reviewer_id": UserFactory().id,
+            "message": "Like and subscribe for more cover letters",
+        }
         with self.assertRaises(ObjectDoesNotExist):
             query.create_review_request(payload_nonexistent_job)
+
+        # Reviewer doesn't exist
+        payload_nonexistent_user = {
+            "reviewer_id": -1,
+            "job_id": JobFactory().id,
+            "message": "Hello? Is this thing on? I need a bigger gun",
+        }
+        with self.assertRaises(ObjectDoesNotExist):
+            query.create_review_request(payload_nonexistent_user)
 
 
 class CreateReviewTests(TestCase):
     def test_create_review(self):
-        reviewer = UserFactory()
         request = ReviewRequestFactory()
         response = "2/10 has a little something for everyone"
-        payload = {"reviewer_id": reviewer.id, "request_id": request.id, "response": response}
+        payload = {"request_id": request.id, "response": response}
 
         review = query.create_review(payload)
-        self.assertEqual(review.reviewer_id, reviewer.id)
         self.assertEqual(review.request_id, request.id)
         self.assertEqual(review.response, response)
         self.assertEqual(review.completed, None)
@@ -150,9 +162,6 @@ class CreateReviewTests(TestCase):
         # User doesn't exist
         request = ReviewRequestFactory()
         response = "sorry can't review this i don't exist"
-        payload_nonexistent_user = {"reviewer_id": -1, "request_id": request.id, "response": response}
-        with self.assertRaises(ObjectDoesNotExist):
-            query.create_review(payload_nonexistent_user)
 
         # Request doesn't exist
         user = UserFactory()
@@ -164,11 +173,10 @@ class CreateReviewTests(TestCase):
 class GetReviewsForUserTests(TestCase):
     def test_get_reviews_for_user(self):
         request = ReviewRequestFactory()
-        reviewer = UserFactory()
-        review = models.Review.objects.create(reviewer=reviewer, request=request)
-        additional_review = models.Review.objects.create(reviewer=reviewer, request=request)
+        review = models.Review.objects.create(request=request)
+        additional_review = models.Review.objects.create(request=request)
         irrelevant_request = ReviewRequestFactory()
-        irrelevant_review = models.Review.objects.create(reviewer=reviewer, request=irrelevant_request)
+        irrelevant_review = models.Review.objects.create(request=irrelevant_request)
 
         reviews = query.get_reviews_for_user({"user_id": request.job.user.id})
         self.assertIn(review, reviews)
@@ -176,8 +184,8 @@ class GetReviewsForUserTests(TestCase):
         # That query should only get reviews for the given user
         self.assertNotIn(irrelevant_review, reviews)
 
-        # The reviews aren' addressed to the user who wrote them
-        reviews_to_reviewer = query.get_reviews_for_user({"user_id": reviewer.id})
+        # The reviews aren't addressed to the user who wrote them
+        reviews_to_reviewer = query.get_reviews_for_user({"user_id": request.reviewer.id})
         self.assertEqual(len(reviews_to_reviewer), 0)
 
     def test_invalid_get_reviews_for_user(self):
