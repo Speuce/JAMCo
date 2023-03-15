@@ -88,8 +88,6 @@ export default {
   },
   methods: {
     async triggerSearch() {
-      console.log(this.userData.friends.includes(3))
-
       const response = await postRequest(
         'account/api/search_users_by_name',
         this.searchField,
