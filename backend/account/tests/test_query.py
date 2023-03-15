@@ -64,7 +64,9 @@ class UpdateAccountTests(TestCase):
         user = UserFactory()
 
         # Update the user
-        query.update_user({"id": user.id, "first_name": "Rob"})
+        query.update_user(
+            {"id": user.id, "first_name": "Rob", "sent_friend_requests": [], "received_friend_requests": []}
+        )
 
         # The modifications should hold
         self.assertEqual(models.User.objects.get(id=user.id).first_name, "Rob")

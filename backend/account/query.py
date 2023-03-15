@@ -144,11 +144,6 @@ def get_friend_requests_status(user_id) -> list[QuerySet, QuerySet]:
     return sent, received
 
 
-def get_friends(user_id) -> list[User]:
-    user = User.objects.get(id=user_id)
-    return user.friends.all().values("id", "first_name", "last_name", "image_url", "country")
-
-
 def pending_friend_request_exists(from_user_id, to_user_id, request_id=None) -> bool:
     if request_id is not None:
         return FriendRequest.objects.filter(

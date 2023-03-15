@@ -24,7 +24,7 @@
         icon
         size="small"
         color="primary"
-        ><v-icon size="large">mdi-check</v-icon></v-btn
+        ><v-icon size="large">mdi-account-clock-outline</v-icon></v-btn
       >
       <v-tooltip text="View Kanban">
         <template v-slot:activator="{ props }">
