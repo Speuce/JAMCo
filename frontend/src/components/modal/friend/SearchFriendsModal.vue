@@ -96,8 +96,6 @@ export default {
       this.searchResults = response.user_list.filter(
         (user) => user.google_id !== this.userData.google_id,
       )
-
-      this.searchResults = response.user_list
     },
 
     async sendFriendRequest(user) {
