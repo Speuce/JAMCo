@@ -66,6 +66,8 @@
   </v-row>
 </template>
 <script>
+import { postRequest } from '@/helpers/requests.js'
+
 export default {
   components: {},
   emits: ['close'],
@@ -101,9 +103,6 @@ export default {
       recipientErrorIndicator: null,
       activeUser: props.user,
     }
-  },
-  async mounted() {
-    console.log(this.activeUser)
   },
   methods: {
     sendClicked() {
