@@ -118,6 +118,25 @@ class FriendTests(TestCase):
         business.remove_friend(0, 0)
         mock_remove_friend.assert_called_with(0, 0)
 
+    @patch("account.query.are_friends")
+    @patch("account.query.get_friend_data")
+    def test_get_friend_data(self, mock_get_friend_data, mock_are_friends):
+        user = UserFactory()
+        friend = UserFactory()
+        mock_are_friends.return_value = True
+        mock_get_friend_data.return_value = friend
+        result = business.get_friend_data(user_id=user.id, friend_id=friend.id)
+        self.assertDictEqual(friend.to_dict(), result.to_dict())
+
+        mock_are_friends.return_value = False
+        with self.assertRaises(Exception):
+            business.get_friend_data(user_id=user.id, friend_id=friend.id)
+
+        mock_get_friend_data.side_effect = ObjectDoesNotExist
+        mock_are_friends.return_value = True
+        with self.assertRaises(Exception):
+            business.get_friend_data(user_id=user.id, friend_id=friend.id)
+
 
 class SearchTests(TestCase):
     @patch("account.query.get_all_searchable")
