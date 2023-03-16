@@ -1,7 +1,15 @@
 <template>
   <div style="height: 100vh" class="d-flex flex-column">
     <v-row class="align-center headerbar ma-0 flex-grow-0">
-      <v-col class="py-0"></v-col>
+      <v-col class="py-0">
+        <div class="text-begin">
+          <v-btn color="primary" flat @click="returnToHome">
+            <v-icon size="x-large" left>mdi-home</v-icon>
+            <v-divider class="mx-1" />
+            View My Board
+          </v-btn>
+        </div>
+      </v-col>
       <v-col class="py-0">
         <v-img
           class="mx-auto"
@@ -35,6 +43,7 @@
         :userData="{ ...this.userData }"
         @close="friendModalVisible = false"
         @fetch-user-data="fetchUserData"
+        @viewFriend="showFriendKanban"
       />
       <UserInfoModal
         v-if="userInfoModalVisible"
@@ -76,10 +85,12 @@ export default {
     return {
       userData: null,
       userPrivacies: null,
+      sessionUser: null,
       setupModalVisible: false,
       userInfoModalVisible: false,
       failedAuthentication: false,
       friendModalVisible: false,
+      viewingOther: false,
       authtoken: '',
     }
   },
@@ -137,7 +148,8 @@ export default {
 
     userSignedIn(resp) {
       this.userData = resp.data
-      if (this.setupIncomplete()) {
+      this.sessionUser = { ...this.userData }
+      if (this.setupIncomplete() && !this.viewingOther) {
         this.setupModalVisible = true
       }
       this.authtoken = resp.token
@@ -165,6 +177,7 @@ export default {
       await postRequest('account/api/update_account', userData)
 
       this.userData = userData
+      this.sessionUser = { ...this.userData }
 
       this.setupModalVisible = false
       this.userInfoModalVisible = false
@@ -178,10 +191,30 @@ export default {
         this.userPrivacies = userPrivacies
       }
     },
-
     showFriendsModal() {
       this.friendModalVisible = true
       this.fetchUserData()
+    },
+    async showFriendKanban(friendId) {
+      // first save the user's info
+      this.sessionUser = { ...this.userData }
+      // ensure auth'd
+      if (this.authtoken) {
+        const resp = await postRequest('account/api/get_friend_data', {
+          user_id: this.userData.id,
+          friend_id: friendId,
+        })
+        this.viewingOther = true
+        this.userData = resp.user
+      } else {
+        this.failedAuthentication = true
+        this.userData = null
+      }
+    },
+    returnToHome() {
+      this.userData = { ...this.sessionUser }
+      this.fetchUserData()
+      this.viewingOther = false
     },
   },
 }

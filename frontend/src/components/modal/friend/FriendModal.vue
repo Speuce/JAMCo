@@ -1,4 +1,3 @@
-
 <template>
   <SearchFriendsModal
     v-if="searchFriendModalVisible"
