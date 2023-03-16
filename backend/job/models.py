@@ -40,6 +40,7 @@ class ReviewRequest(models.Model):
             "id": self.id,
             "job_id": self.job.id,
             "reviewer_id": self.reviewer.id,
+            "sender_id": self.job.user.id,
             "message": self.message,
             "fulfilled": self.fulfilled,
         }

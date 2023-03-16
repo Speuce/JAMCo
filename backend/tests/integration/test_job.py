@@ -569,6 +569,7 @@ class GetJobByIdTests(TransactionTestCase):
         self.assertGreaterEqual(response_dict["id"], 0)
         self.assertEqual(response_dict["reviewer_id"], payload["reviewer_id"])
         self.assertEqual(response_dict["job_id"], payload["job_id"])
+        self.assertEqual(response_dict["sender_id"], job.user.id)
         self.assertEqual(response_dict["message"], payload["message"])
         self.assertEqual(response_dict["fulfilled"], False)
 
