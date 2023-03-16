@@ -116,12 +116,6 @@ export default {
       activeUser: props.user,
     }
   },
-
-  mounted() {
-    console.log(this.jobData)
-    console.log(this.user)
-  },
-
   methods: {
     sendClicked() {
       this.messageErrorIndicator = null

@@ -86,16 +86,12 @@ export default {
   },
 
   async mounted() {
-    console.log(this.requestData)
-
     const jobResponse = await postRequest('job/api/get_job_by_id', {
       user_id: this.requestData.sender_id,
       job_id: this.requestData.job_id,
     })
 
     this.jobData = jobResponse.job_data
-
-    console.log(this.jobData)
   },
 
   methods: {

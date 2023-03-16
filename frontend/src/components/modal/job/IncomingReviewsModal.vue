@@ -118,15 +118,12 @@ export default {
       { user_id: this.user.id },
     )
     this.reviewRequests = reviewRequestResponse.review_requests
-    console.log(this.reviewRequests)
-    console.log(this.activeUser.friends)
 
     this.reviewRequests.forEach((request) => {
       request.sender = this.activeUser.friends.find(
         (friend) => friend.id === request.sender_id,
       )
     })
-    console.log(this.reviewRequests)
 
     const reviewResponse = await postRequest('/job/api/get_reviews_for_user', {
       user_id: this.user.id,
@@ -138,17 +135,12 @@ export default {
         user_id: this.activeUser.id,
         job_id: review.job_id,
       })
-
       review.job = jobResponse.job_data
-
-      console.log(review.job)
 
       review.reviewer = this.activeUser.friends.find(
         (friend) => friend.id === review.reviewer_id,
       )
     })
-
-    console.log(this.reviews)
   },
 
   methods: {
