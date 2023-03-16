@@ -1,16 +1,29 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" persistent max-width="600px">
+    <v-dialog v-model="dialog" persistent max-width="1200px">
       <v-card>
         <v-card-title>
-          <h2 class="mt-3">Inbox</h2>
+          <h2 class="mt-3">Reviewing {{ requestData.sender.first_name }}</h2>
         </v-card-title>
         <v-card-text>
-          <v-row>
+          <div style="display: flex">
             <v-col>
-              hiiiii :D
+              hi
             </v-col>
-          </v-row>
+            <v-col>
+              <v-textarea
+                id="review"
+                auto-grow
+                class="text-area-box"
+                label="Your Review"
+                shaped
+                v-model="review"
+                maxlength="10000"
+                variant="outlined"
+                rows="3"
+              />
+            </v-col>
+          </div>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -32,12 +45,38 @@ export default {
 
   emits: ['close'],
 
-  props: {},
+  props: {
+    request: {
+      type: Object,
+      default: () => {
+        return {
+          fulfilled: false,
+          id: -1,
+          job_id: -1,
+          message: '',
+          reviewer_id: -1,
+          sender_id: -1,
+          sender: {
+            id: -1,
+            first_name: '',
+            last_name: '',
+            country: '',
+          },
+        }
+      },
+    },
+  },
 
-  data() {
+  data(props) {
     return {
       dialog: true,
+      review: '',
+      requestData: props.request,
     }
+  },
+
+  mounted() {
+    console.log(this.requestData)
   },
 }
 </script>

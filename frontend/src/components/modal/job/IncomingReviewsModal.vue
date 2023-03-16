@@ -23,8 +23,7 @@
                     {{ request.message }}
                   </v-col>
                   <v-col>
-                    <v-btn @click="reviewModalVisible = true">Review</v-btn>
-                    {{ reviewModalVisible }}
+                    <v-btn @click="reviewClicked(request)">Review</v-btn>
                   </v-col>
                 </div>
               </v-row>
@@ -89,6 +88,7 @@
   <div class="page-container flex-grow-1">
     <ReviewModal
       v-if="reviewModalVisible"
+      :request="currentlySelectedRequest"
       @close="this.reviewModalVisible = false"
     />
   </div>
@@ -130,6 +130,7 @@ export default {
       reviewRequests: [],
       reviews: [],
       activeUser: props.user,
+      currentlySelectedRequest: null,
     }
   },
   async mounted() {
@@ -155,6 +156,13 @@ export default {
     this.reviews = reviewResponse.reviews
 
     console.log(this.reviews)
+  },
+
+  methods: {
+    reviewClicked(request) {
+      this.currentlySelectedRequest = request
+      this.reviewModalVisible = true
+    },
   },
 }
 </script>
