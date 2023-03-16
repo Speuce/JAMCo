@@ -3,12 +3,16 @@
     <v-dialog v-model="dialog" persistent max-width="1200px">
       <v-card>
         <v-card-title>
-          <h2 class="mt-3">Reviewing {{ requestData.sender.first_name }}</h2>
+          <h2 class="mt-3">
+            Reviewing
+            {{ requestData.sender.first_name }} {{ requestData.sender.last_name }}'s Cover Letter
+          </h2>
+          <h4> {{ jobData.position_title }} at {{ jobData.company }}</h4>
         </v-card-title>
         <v-card-text>
           <div style="display: flex">
             <v-col>
-              hi
+              {{ jobData.cover_letter }}
             </v-col>
             <v-col>
               <v-textarea
@@ -40,6 +44,8 @@
   </v-row>
 </template>
 <script>
+import { postRequest } from '@/helpers/requests.js'
+
 export default {
   components: {},
 
@@ -72,11 +78,21 @@ export default {
       dialog: true,
       review: '',
       requestData: props.request,
+      jobData: null,
     }
   },
 
-  mounted() {
+  async mounted() {
     console.log(this.requestData)
+
+    const jobResponse = await postRequest('job/api/get_job_by_id', {
+      user_id: this.requestData.sender_id,
+      job_id: this.requestData.job_id,
+    })
+
+    this.jobData = jobResponse.job_data
+
+    console.log(this.jobData)
   },
 }
 </script>
