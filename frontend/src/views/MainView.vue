@@ -18,6 +18,8 @@
             @click="incomingReviewsModalVisible = true"
           >
             <v-icon size="x-large">mdi-email</v-icon>
+            <v-divider class="mx-1" />
+            Inbox
           </v-btn>
           <v-btn color="primary" flat @click="showFriendsModal">
             <v-icon size="x-large" left>mdi-account-group</v-icon>
