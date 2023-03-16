@@ -23,6 +23,25 @@
               </v-row>
             </v-col>
           </v-row>
+          <v-row>
+            <v-col>
+              <v-row>
+                <h3>Reviews</h3>
+              </v-row>
+              <v-row v-for="review in reviews" :key="review.id" class="mb-5">
+                <v-col>
+                  <v-row style="white-space: pre">
+                    <b> {{ request.responder }} </b> reviewed your cover letter
+                    for <b> {{ request.jobTitle }} </b> at
+                    <b> {{ request.company }} </b>:
+                  </v-row>
+                  <v-row>
+                    {{ request.response }}
+                  </v-row>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
           <!-- <v-col v-if="requestEntries.length > 0" class="scroll-view">
             <v-row
               v-for="request in requestEntries"
@@ -89,14 +108,12 @@ export default {
   data(props) {
     return {
       dialog: true,
-      requestEntries: [],
+      reviewRequests: [],
+      reviews: [],
       activeUser: props.user,
     }
   },
   async mounted() {
-    console.log(this.requestEntries)
-    console.log(Boolean(this.requestEntries.length))
-
     const reviewRequestResponse = await postRequest(
       '/job/api/get_review_requests_for_user',
       { user_id: this.user.id },
@@ -112,11 +129,13 @@ export default {
     })
     console.log(this.reviewRequests)
 
-    const reviews = await postRequest('/job/api/get_reviews_for_user', {
+    const reviewResponse = await postRequest('/job/api/get_reviews_for_user', {
       user_id: this.user.id,
     })
 
-    console.log(reviews)
+    this.reviews = reviewResponse.reviews
+
+    console.log(this.reviews)
   },
 }
 </script>
