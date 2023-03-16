@@ -50,6 +50,15 @@ class GetOrCreateUserTests(TestCase):
         self.assertNotIn(p2.user, qs)
         self.assertEqual(len(qs), 0)
 
+    def test_get_friend_data(self):
+        # This query is more along the lines of "get user," so it belongs here
+        with self.assertRaises(ObjectDoesNotExist):
+            query.get_friend_data(1)
+
+        user = query.get_or_create_user({"sub": "4"})
+        test = query.get_friend_data(user.id)
+        self.assertDictEqual(user.to_dict(), test.to_dict())
+
 
 class UserExistsTests(TestCase):
     def test_user_exists(self):

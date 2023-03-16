@@ -43,7 +43,7 @@
         :userData="{ ...this.userData }"
         @close="friendModalVisible = false"
         @fetch-user-data="fetchUserData"
-        @viewFriend="showFriendKanban"
+        @loadFriend="showFriendKanban"
       />
       <UserInfoModal
         v-if="userInfoModalVisible"
@@ -200,12 +200,14 @@ export default {
       this.sessionUser = { ...this.userData }
       // ensure auth'd
       if (this.authtoken) {
+        // get friend data
         const resp = await postRequest('account/api/get_friend_data', {
           user_id: this.userData.id,
           friend_id: friendId,
         })
+        // toggle view mode and set user data to friend data
         this.viewingOther = true
-        this.userData = resp.user
+        this.userData = resp.friend
       } else {
         this.failedAuthentication = true
         this.userData = null

@@ -140,3 +140,14 @@ def deny_friend_request(request_id, to_user_id, from_user_id) -> None:
 
 def get_friend_requests_status(user_id) -> list[FriendRequest, FriendRequest]:
     return query.get_friend_requests_status(user_id)
+
+
+def get_friend_data(user_id, friend_id) -> User:
+    try:
+        result = query.get_friend_data(friend_id)
+        if query.are_friends(user_id, friend_id):
+            return result
+        else:
+            raise Exception
+    except (Exception, ObjectDoesNotExist):
+        raise Exception

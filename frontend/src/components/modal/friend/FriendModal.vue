@@ -77,6 +77,7 @@
                 :userData="user"
                 :isFriend="true"
                 @removeFriend="removeFriend(user)"
+                @viewKanban="viewFriend(user)"
               />
             </div>
           </div>
@@ -147,6 +148,9 @@ export default {
         user2_id: user.id,
       })
       this.$emit('fetchUserData')
+    },
+    viewFriend(user) {
+      this.$emit('viewFriend', user.id)
     },
   },
 }
