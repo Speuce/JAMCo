@@ -80,6 +80,13 @@ export default {
     console.log(this.requestEntries)
     console.log(Boolean(this.requestEntries.length))
 
+    const reviewRequests = await postRequest(
+      '/job/api/get_review_requests_for_user',
+      { user_id: this.user.id },
+    )
+
+    console.log(reviewRequests)
+
     const reviews = await postRequest('/job/api/get_reviews_for_user', {
       user_id: this.user.id,
     })
