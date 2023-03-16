@@ -16,10 +16,17 @@
                 :key="request.id"
                 class="mb-5"
               >
-                <v-col>
-                  {{ request.sender.first_name }} {{ request.sender.last_name }}:
-                  {{ request.message }}
-                </v-col>
+                <div style="display: flex">
+                  <v-col cols="9">
+                    {{ request.sender.first_name }}
+                    {{ request.sender.last_name }}:
+                    {{ request.message }}
+                  </v-col>
+                  <v-col>
+                    <v-btn @click="reviewModalVisible = true">Review</v-btn>
+                    {{ reviewModalVisible }}
+                  </v-col>
+                </div>
               </v-row>
             </v-col>
           </v-row>
@@ -79,11 +86,22 @@
       </v-card>
     </v-dialog>
   </v-row>
+  <div class="page-container flex-grow-1">
+    <ReviewModal
+      v-if="reviewModalVisible"
+      @close="this.reviewModalVisible = false"
+    />
+  </div>
 </template>
 <script>
 import { postRequest } from '@/helpers/requests.js'
+import ReviewModal from './ReviewModal.vue'
 
 export default {
+  components: {
+    ReviewModal,
+  },
+
   emits: ['close'],
 
   props: {
@@ -108,6 +126,7 @@ export default {
   data(props) {
     return {
       dialog: true,
+      reviewModalVisible: false,
       reviewRequests: [],
       reviews: [],
       activeUser: props.user,

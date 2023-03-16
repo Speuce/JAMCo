@@ -29,4 +29,16 @@ describe('IncomingReviewsModal', () => {
   it("doesn't display that message when there's at least one review", () => {
     fail()
   })
+
+  it('displays a message when there are no review requests', () => {
+    fail()
+  })
+
+  it("doesn't display that message when there's at least one review request", () => {
+    fail()
+  })
+
+  it('opens the review modal when the review button is clicked', () => {
+    fail()
+  })
 })
