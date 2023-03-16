@@ -7,12 +7,12 @@
             Reviewing
             {{ requestData.sender.first_name }} {{ requestData.sender.last_name }}'s Cover Letter
           </h2>
-          <h4> {{ jobData.position_title }} at {{ jobData.company }}</h4>
+          <h4>{{ jobData?.position_title }} at {{ jobData?.company }}</h4>
         </v-card-title>
         <v-card-text>
           <div style="display: flex">
             <v-col>
-              {{ jobData.cover_letter }}
+              {{ jobData?.cover_letter }}
             </v-col>
             <v-col>
               <v-textarea
@@ -36,7 +36,10 @@
             variant="text"
             @click="this.$emit('close')"
           >
-            Close
+            Cancel
+          </v-btn>
+          <v-btn color="blue-darken-1" variant="text" @click="sendClicked">
+            Send
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -93,6 +96,17 @@ export default {
     this.jobData = jobResponse.job_data
 
     console.log(this.jobData)
+  },
+
+  methods: {
+    async sendClicked() {
+      await postRequest('job/api/create_review', {
+        request_id: this.request.id,
+        response: this.review,
+      })
+
+      this.$emit('close')
+    },
   },
 }
 </script>

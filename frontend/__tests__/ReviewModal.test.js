@@ -21,4 +21,12 @@ describe('ReviewModal', () => {
 
     expect(wrapper.emitted('close')).toBeTruthy()
   })
+
+  it('sends a review when send button clicked', () => {
+    fail()
+  })
+
+  it('displays an error when send button is clicked without any review', () => {
+    fail()
+  })
 })
