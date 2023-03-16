@@ -36,41 +36,23 @@
               </v-row>
               <v-row v-for="review in reviews" :key="review.id" class="mb-5">
                 <v-col>
-                  <v-row style="white-space: pre">
-                    <b> {{ request.responder }} </b> reviewed your cover letter
-                    for <b> {{ request.jobTitle }} </b> at
-                    <b> {{ request.company }} </b>:
-                  </v-row>
+                  <!-- TODO: Display job and reviewer information (requires new backend logic for getting a review request by id) -->
+                  <!-- <v-row style="white-space: pre">
+                    <b>
+                      {{ review.request.sender.first_name }}
+                      {{ review.request.sender.last_name }}
+                    </b>
+                    reviewed your cover letter for
+                    <b> {{ review.request.jobTitle }} </b> at
+                    <b> {{ review.request.company }} </b>:
+                  </v-row> -->
                   <v-row>
-                    {{ request.response }}
+                    {{ review.response }}
                   </v-row>
                 </v-col>
               </v-row>
             </v-col>
           </v-row>
-          <!-- <v-col v-if="requestEntries.length > 0" class="scroll-view">
-            <v-row
-              v-for="request in requestEntries"
-              :key="request.id"
-              class="mb-5"
-            >
-              <v-col>
-                <v-row style="white-space: pre">
-                  <b> {{ request.responder }} </b> reviewed your cover letter
-                  for <b> {{ request.jobTitle }} </b> at
-                  <b> {{ request.company }} </b>:
-                </v-row>
-                <v-row>
-                  {{ request.response }}
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-col>
-          <v-col v-else>
-            You have no incoming cover letter reviews or review requests. You can ask your friends
-            to review your cover letters by pressing the "Request Review" button
-            next to any cover letter.
-          </v-col> -->
         </v-card-text>
         <v-card-actions>
           <v-spacer />
