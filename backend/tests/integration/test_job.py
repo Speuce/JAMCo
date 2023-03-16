@@ -600,6 +600,34 @@ class GetJobByIdTests(TransactionTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(len(ReviewRequest.objects.all()), 0)
 
+    def test_get_review_requests_for_user(self):
+        recipient = UserFactory()
+        review_requests = [ReviewRequestFactory() for i in range(100)]
+        for review_request in review_requests:
+            review_request.job.user = recipient
+            review_request.job.save()
+        other_recipient = UserFactory()
+        other_requests = [ReviewRequestFactory() for i in range(200)]
+        for review_request in other_requests:
+            review_request.job.user = other_recipient
+            review_request.job.save()
+
+        payload = {"user_id": recipient.id}
+
+        response = self.client.post(
+            reverse("get_review_requests_for_user"), json.dumps(payload), content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(ReviewRequest.objects.count(), 300)
+        self.assertEqual(len(json.loads(response.content)["review_requests"]), 100)
+
+    def test_get_review_requests_for_user_with_error(self):
+        # Recipient doesn't exist
+        response = self.client.post(
+            reverse("get_review_requests_for_user"), json.dumps({"user_id": -1}), content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+
     def test_create_review(self):
         self.assertEqual(len(Review.objects.all()), 0)
 
@@ -682,6 +710,7 @@ class GetJobByIdTests(TransactionTestCase):
         response = self.client.post(
             reverse("get_reviews_for_user"), json.dumps(payload), content_type="application/json"
         )
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(Review.objects.count(), 300)
         self.assertEqual(len(json.loads(response.content)["reviews"]), 100)
 
