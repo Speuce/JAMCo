@@ -87,7 +87,7 @@ def get_review_requests_for_user(payload: dict):
     # (if we just ran the query below with an invalid user id, it would hide the error by returning an empty queryset)
     user = User.objects.get(id=payload["user_id"])
 
-    return ReviewRequest.objects.filter(job__user=user)
+    return ReviewRequest.objects.filter(reviewer=user)
 
 
 def create_review(payload: dict):

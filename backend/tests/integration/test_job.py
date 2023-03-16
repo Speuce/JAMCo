@@ -604,13 +604,13 @@ class GetJobByIdTests(TransactionTestCase):
         recipient = UserFactory()
         review_requests = [ReviewRequestFactory() for i in range(100)]
         for review_request in review_requests:
-            review_request.job.user = recipient
-            review_request.job.save()
+            review_request.reviewer = recipient
+            review_request.save()
         other_recipient = UserFactory()
         other_requests = [ReviewRequestFactory() for i in range(200)]
         for review_request in other_requests:
-            review_request.job.user = other_recipient
-            review_request.job.save()
+            review_request.reviewer = other_recipient
+            review_request.save()
 
         payload = {"user_id": recipient.id}
 
