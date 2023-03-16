@@ -36,16 +36,13 @@
               </v-row>
               <v-row v-for="review in reviews" :key="review.id" class="mb-5">
                 <v-col>
-                  <!-- TODO: Display job and reviewer information (requires new backend logic for getting a review request by id) -->
-                  <!-- <v-row style="white-space: pre">
-                    <b>
-                      {{ review.request.sender.first_name }}
-                      {{ review.request.sender.last_name }}
-                    </b>
+                  <v-row>
+                    {{ review.reviewer?.first_name }}
+                    {{ review.reviewer?.last_name }}
                     reviewed your cover letter for
-                    <b> {{ review.request.jobTitle }} </b> at
-                    <b> {{ review.request.company }} </b>:
-                  </v-row> -->
+                    {{ review.job?.position_title }} at
+                    {{ review.job?.company }}:
+                  </v-row>
                   <v-row>
                     {{ review.response }}
                   </v-row>
@@ -134,8 +131,22 @@ export default {
     const reviewResponse = await postRequest('/job/api/get_reviews_for_user', {
       user_id: this.user.id,
     })
-
     this.reviews = reviewResponse.reviews
+
+    this.reviews.forEach(async (review) => {
+      const jobResponse = await postRequest('/job/api/get_job_by_id', {
+        user_id: this.activeUser.id,
+        job_id: review.job_id,
+      })
+
+      review.job = jobResponse.job_data
+
+      console.log(review.job)
+
+      review.reviewer = this.activeUser.friends.find(
+        (friend) => friend.id === review.reviewer_id,
+      )
+    })
 
     console.log(this.reviews)
   },
