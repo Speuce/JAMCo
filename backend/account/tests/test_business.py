@@ -1,5 +1,6 @@
 from django.test import TestCase
 from account import business
+from account.models import User
 from unittest.mock import patch
 from account.tests.factories import UserFactory, PrivacyFactory, FriendRequestFactory
 from django.core.exceptions import ObjectDoesNotExist
@@ -118,11 +119,67 @@ class FriendTests(TestCase):
         mock_remove_friend.assert_called_with(0, 0)
 
 
+class SearchTests(TestCase):
+    @patch("account.query.get_all_searchable")
+    def test_searching_users(self, mock_search_users_by_name):
+        u1 = UserFactory(first_name="First", last_name="Last")
+        u2 = UserFactory(first_name="Unique", last_name="Last")
+        u3 = UserFactory(first_name="No", last_name="Match")
+        PrivacyFactory(user=u1)
+        PrivacyFactory(user=u2)
+        PrivacyFactory(user=u3)
+
+        mock_search_users_by_name.return_value = User.objects.all()
+
+        # Make sure empty/whitespace strings don't return all users
+        results = business.search_users_by_name("  ")
+        self.assertEqual(len(results), 0)
+
+        expected_results = [
+            {"id": u1.id, "first_name": u1.first_name, "last_name": u1.last_name, "country": None},
+        ]
+
+        results = business.search_users_by_name(f"{u1.first_name} {u1.last_name}")
+        self.assertEqual(expected_results, results)
+
+        # Create similar names
+        u1.first_name = "TiMothy"
+        u1.save()
+        u2.first_name = "Jimothy"
+        u2.save()
+        u3.first_name = "Butterfree"
+        u3.last_name = "Ketchum"
+        u3.save()
+
+        expected_results = [
+            {"id": u1.id, "first_name": u1.first_name, "last_name": u1.last_name, "country": None},
+            {"id": u2.id, "first_name": u2.first_name, "last_name": u2.last_name, "country": None},
+        ]
+
+        # Update the return value
+        mock_search_users_by_name.return_value = User.objects.all()
+
+        results = business.search_users_by_name("moth")
+        self.assertEqual(len(results), 2)
+        self.assertEqual(expected_results, results)
+
+        # Make sure all tokens are validated as being in the same name
+        results = business.search_users_by_name(f"{u1.first_name} {u2.first_name}")
+        self.assertEqual(len(results), 0)
+
+
+@patch("account.query.get_user_by_token_fields_noupdate")
 @patch("account.query.get_user_by_token_fields")
 @patch("account.business.decrypt_token")
 class AuthenticateTokenTests(TestCase):
     @patch("account.business.encrypt_token")
-    def test_authenticate_token_valid(self, mock_encrypt_token, mock_decrypt_token, mock_get_user_by_token_fields):
+    def test_authenticate_token_valid(
+        self,
+        mock_encrypt_token,
+        mock_decrypt_token,
+        mock_get_user_by_token_fields,
+        mock_get_user_by_token_fields_noupdate,
+    ):
         user = UserFactory()
         mock_get_user_by_token_fields.return_value = user
         mock_encrypt_token.return_value = "new_token"
@@ -131,12 +188,44 @@ class AuthenticateTokenTests(TestCase):
         response = business.authenticate_token(valid_token)
         self.assertEqual(response, (user, "new_token"))
 
-    def test_authenticate_token_invalid(self, mock_decrypt_token, mock_get_user_by_token_fields):
+    def test_authenticate_token_invalid(
+        self,
+        mock_decrypt_token,
+        mock_get_user_by_token_fields,
+        mock_get_user_by_token_fields_noupdate,
+    ):
         mock_get_user_by_token_fields.side_effect = ObjectDoesNotExist("Invalid Get")
         mock_decrypt_token.return_value = {"google_id": "gid", "last_login": "2023-03-03 01:28:02.710196+00:00"}
         invalid_token = "xyz"
         with self.assertRaises(ObjectDoesNotExist):
             business.authenticate_token(invalid_token)
+
+    @patch("account.business.encrypt_token")
+    def test_validate_token_valid(
+        self,
+        mock_encrypt_token,
+        mock_decrypt_token,
+        mock_get_user_by_token_fields,
+        mock_get_user_by_token_fields_noupdate,
+    ):
+        user = UserFactory()
+        mock_get_user_by_token_fields_noupdate.return_value = user
+        mock_decrypt_token.return_value = {"google_id": "gid", "last_login": "2023-03-03 01:28:02.710196+00:00"}
+        valid_token = "xyz"
+        response = business.validate_token(valid_token)
+        self.assertEqual(response, user)
+
+    def test_validate_token_invalid(
+        self,
+        mock_decrypt_token,
+        mock_get_user_by_token_fields,
+        mock_get_user_by_token_fields_noupdate,
+    ):
+        mock_get_user_by_token_fields_noupdate.side_effect = ObjectDoesNotExist("Invalid Get")
+        mock_decrypt_token.return_value = {"google_id": "gid", "last_login": "2023-03-03 01:28:02.710196+00:00"}
+        invalid_token = "xyz"
+        with self.assertRaises(ObjectDoesNotExist):
+            business.validate_token(invalid_token)
 
 
 @patch("account.query.pending_friend_request_exists")

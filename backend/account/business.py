@@ -60,6 +60,40 @@ def remove_friend(user1_id, user2_id):
     query.remove_friend(user1_id, user2_id)
 
 
+def search_users_by_name(search_string) -> list:
+    search_string = str.lower(search_string).strip()
+    toks = str.split(search_string)
+    result = []
+    # No mass-searching allowed
+    if search_string != "":
+        for usr in query.get_all_searchable():
+            success = True
+            first_lower = str.lower(usr.first_name)
+            last_lower = str.lower(usr.last_name)
+            for tok in toks:
+                if tok not in first_lower and tok not in last_lower:
+                    success = False
+                    break
+            if success:
+                result.append(
+                    {"id": usr.id, "first_name": usr.first_name, "last_name": usr.last_name, "country": usr.country}
+                )
+
+    return result
+
+
+def validate_token(token) -> bool:
+    try:
+        token_json = decrypt_token(token)
+        user = query.get_user_by_token_fields_noupdate(
+            token_json["google_id"],
+            datetime.strptime(token_json["last_login"], "%Y-%m-%d %H:%M:%S.%f%z"),
+        )
+        return user
+    except ObjectDoesNotExist as err:
+        raise ObjectDoesNotExist("Failed to Authenticate Token") from err
+
+
 def authenticate_token(token):
     try:
         token_json = decrypt_token(token)

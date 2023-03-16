@@ -1,13 +1,14 @@
 <template>
   <v-row justify="center">
     <v-dialog v-model="dialog" persistent max-width="1300px">
-      <v-card>
+      <v-card id="job-detail-modal-card">
         <v-card-text>
           <v-row>
             <v-col class="info-col" cols="7">
               <v-row>
                 <v-col cols="12" sm="6">
                   <v-text-field
+                    id="job-title"
                     label="Position*"
                     class="text-h5"
                     v-model="jobData.position_title"
@@ -21,6 +22,7 @@
 
                 <v-col cols="12" sm="5">
                   <v-text-field
+                    id="job-type"
                     label="Type"
                     v-model="jobData.type"
                     maxlength="12"
@@ -32,6 +34,7 @@
               <v-row
                 ><v-col cols="12" sm="6">
                   <v-text-field
+                    id="job-company"
                     label="Company*"
                     required
                     v-model="jobData.company"
@@ -45,6 +48,7 @@
 
                 <v-col cols="12" sm="5">
                   <v-select
+                    id="job-status"
                     :items="getColumns"
                     item-title="name"
                     item-value="id"
@@ -58,6 +62,7 @@
               <v-row>
                 <v-col cols="12" sm="">
                   <v-textarea
+                    id="job-description"
                     auto-grow
                     class="text-area-box"
                     label="Description"
@@ -73,6 +78,7 @@
               <v-row>
                 <v-col cols="12" sm="">
                   <v-textarea
+                    id="job-cover-letter"
                     auto-grow
                     class="text-area-box"
                     label="Cover Letter"
@@ -88,6 +94,7 @@
               <v-row>
                 <v-col cols="12" sm="">
                   <v-textarea
+                    id="job-notes"
                     auto-grow
                     class="text-area-box"
                     label="Notes"
@@ -106,6 +113,7 @@
                 <h2 class="mr-2">Deadlines</h2>
                 <v-spacer></v-spacer>
                 <v-btn
+                  id="add-deadline"
                   @click="newDeadline"
                   color="primary"
                   size="large"
@@ -119,6 +127,7 @@
               <v-col class="scroll-deadlines">
                 <v-row v-for="deadline in deadlines" :key="deadline.id">
                   <JobDetailDeadline
+                    :id="`deadline-${deadline.id}`"
                     :deadline="deadline"
                     @deleteDeadline="deleteDeadline"
                     @updateDeadline="handleDeadlineUpdate"
@@ -149,7 +158,12 @@
           >
             Close
           </v-btn>
-          <v-btn color="blue-darken-1" variant="text" @click="this.saveClicked">
+          <v-btn
+            id="job-save-button"
+            color="blue-darken-1"
+            variant="text"
+            @click="this.saveClicked"
+          >
             Save
           </v-btn>
         </v-card-actions>

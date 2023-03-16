@@ -8,12 +8,14 @@
         :style="{
           color: this.tryError && deadlineModel.title.length == 0 ? 'red' : '',
         }"
+        class="deadline-title"
         maxlength="50"
         variant="outlined"
       />
     </v-col>
     <v-col cols="12" sm="5" class="center-offset">
       <Datepicker
+        class="deadline-date"
         v-model="deadlineModel.date"
         :enable-time-picker="false"
         placeholder="Date*"
@@ -32,7 +34,7 @@
         @click="this.$emit('deleteDeadline', this.deadline.id)"
         size="medium"
         flat
-        class="mt-4"
+        class="mt-4 remove-btn"
       >
         <v-icon color="red"> mdi-trash-can-outline </v-icon>
       </v-btn>

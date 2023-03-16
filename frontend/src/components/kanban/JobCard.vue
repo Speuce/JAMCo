@@ -4,8 +4,6 @@
       <p class="company">
         {{ job?.company ?? '' }}
       </p>
-      <!-- could switch this to a frontend-assigned index of-->
-      <!-- span class="small-gray">{{ job?.id ?? '' }}</span -->
     </div>
     <div class="position-container">
       <span class="small-gray" id="job-position">{{
