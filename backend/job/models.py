@@ -55,6 +55,8 @@ class Review(models.Model):
         return {
             "id": self.id,
             "request_id": self.request_id,
+            "job_id": self.request.job.id,
+            "reviewer_id": self.request.reviewer.id,
             "response": self.response,
             "completed": self.completed.isoformat() if self.completed else None,
         }
