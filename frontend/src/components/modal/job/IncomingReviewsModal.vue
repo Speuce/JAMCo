@@ -16,7 +16,10 @@
                 :key="request.id"
                 class="mb-5"
               >
-                <v-col>{{ request.message }}</v-col>
+                <v-col>
+                  {{ request.sender.first_name }} {{ request.sender.last_name }}:
+                  {{ request.message }}
+                </v-col>
               </v-row>
             </v-col>
           </v-row>
@@ -104,7 +107,7 @@ export default {
 
     this.reviewRequests.forEach((request) => {
       request.sender = this.activeUser.friends.find(
-        (friend) => friend.id === request.job.user_id,
+        (friend) => friend.id === request.sender_id,
       )
     })
     console.log(this.reviewRequests)
