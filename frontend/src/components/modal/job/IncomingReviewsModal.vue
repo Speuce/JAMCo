@@ -3,10 +3,24 @@
     <v-dialog v-model="dialog" persistent max-width="600px">
       <v-card>
         <v-card-title>
-          <h2 class="mt-3">Cover Letter Review Requests</h2>
+          <h2 class="mt-3">Inbox</h2>
         </v-card-title>
         <v-card-text>
-          <v-col v-if="requestEntries.length > 0" class="scroll-reviews">
+          <v-row>
+            <v-col>
+              <v-row>
+                <h3>Review Requests</h3>
+              </v-row>
+              <v-row
+                v-for="request in reviewRequests"
+                :key="request.id"
+                class="mb-5"
+              >
+                <v-col>{{ request.message }}</v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+          <!-- <v-col v-if="requestEntries.length > 0" class="scroll-view">
             <v-row
               v-for="request in requestEntries"
               :key="request.id"
@@ -28,7 +42,7 @@
             You have no incoming cover letter reviews or review requests. You can ask your friends
             to review your cover letters by pressing the "Request Review" button
             next to any cover letter.
-          </v-col>
+          </v-col> -->
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -80,12 +94,20 @@ export default {
     console.log(this.requestEntries)
     console.log(Boolean(this.requestEntries.length))
 
-    const reviewRequests = await postRequest(
+    const reviewRequestResponse = await postRequest(
       '/job/api/get_review_requests_for_user',
       { user_id: this.user.id },
     )
+    this.reviewRequests = reviewRequestResponse.review_requests
+    console.log(this.reviewRequests)
+    console.log(this.activeUser.friends)
 
-    console.log(reviewRequests)
+    this.reviewRequests.forEach((request) => {
+      request.sender = this.activeUser.friends.find(
+        (friend) => friend.id === request.job.user_id,
+      )
+    })
+    console.log(this.reviewRequests)
 
     const reviews = await postRequest('/job/api/get_reviews_for_user', {
       user_id: this.user.id,
@@ -97,7 +119,7 @@ export default {
 </script>
 
 <style scoped>
-.scroll-reviews {
+.scroll-view {
   overflow-y: auto;
   overflow-x: hidden;
   height: 60vh;
