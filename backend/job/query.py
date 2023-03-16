@@ -82,6 +82,14 @@ def create_review_request(payload: dict):
     )
 
 
+def get_review_requests_for_user(payload: dict):
+    # We explicitly get the user in order to cause an exception if the user doesn't exist
+    # (if we just ran the query below with an invalid user id, it would hide the error by returning an empty queryset)
+    user = User.objects.get(id=payload["user_id"])
+
+    return ReviewRequest.objects.filter(job__user=user)
+
+
 def create_review(payload: dict):
     return Review.objects.create(
         request=ReviewRequest.objects.get(id=payload["request_id"]),
@@ -91,8 +99,5 @@ def create_review(payload: dict):
 
 
 def get_reviews_for_user(payload: dict):
-    # We explicitly get the user in order to cause an exception if the user doesn't exist
-    # (if we just ran the review query with the given id, it would hide the error by returning an empty queryset)
     user = User.objects.get(id=payload["user_id"])
-
     return Review.objects.filter(request__job__user=user)

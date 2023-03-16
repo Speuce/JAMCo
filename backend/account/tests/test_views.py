@@ -246,6 +246,25 @@ class RemoveFriendTests(TestCase):
         mock_remove_friend.assert_called()
 
 
+@patch("account.business.search_users_by_name")
+class SearchTests(TestCase):
+    def test_search_users_by_name(self, mock_search_users_by_name):
+        u1 = UserFactory()
+        u2 = UserFactory()
+        u3 = UserFactory()
+        mock_return = [u1.to_dict(), u2.to_dict(), u3.to_dict()]
+        mock_search_users_by_name.return_value = mock_return
+
+        response = self.client.post(
+            reverse("search_users_by_name"),
+            json.dumps("search string proxy"),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+        self.assertEqual(content["user_list"], mock_return)
+
+
 @patch("account.business.authenticate_token")
 class AuthenticateTokenTests(TestCase):
     def test_validate_auth_token(self, mock_authenticate_token):
@@ -267,6 +286,28 @@ class AuthenticateTokenTests(TestCase):
         )
         self.assertEqual(response.status_code, 401)
         mock_authenticate_token.assert_called()
+
+
+@patch("account.business.validate_token")
+class GetUpdatedUserDataTests(TestCase):
+    def test_get_updated_user_data(self, mock_validate_token):
+        user = UserFactory()
+        mock_validate_token.return_value = user
+        response = self.client.post(
+            reverse("get_updated_user_data"), json.dumps({"token": "valid_token"}), content_type="application/json"
+        )
+        content = json.loads(response.content)
+        self.assertEqual(response.status_code, 200)
+        mock_validate_token.assert_called()
+        self.assertEqual(content["user"], user.to_dict())
+
+    def test_get_updated_user_data_invalid(self, mock_validate_token):
+        mock_validate_token.side_effect = ObjectDoesNotExist("Invalid Token")
+        response = self.client.post(
+            reverse("get_updated_user_data"), json.dumps({"token": "invalid_token"}), content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 401)
+        mock_validate_token.assert_called()
 
 
 @patch("account.business.create_friend_request")

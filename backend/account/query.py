@@ -5,9 +5,9 @@ Query functions for account related operations.
 """
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import QuerySet
 from django.utils import timezone
 from account.models import User, Privacy, FriendRequest
-from django.db.models.query import QuerySet
 
 
 def get_or_create_user(payload: dict) -> User:
@@ -17,7 +17,7 @@ def get_or_create_user(payload: dict) -> User:
         return user
     except ObjectDoesNotExist:
         return User.objects.create(
-            username=User.objects.all().count(),
+            username=payload["sub"],
             google_id=payload["sub"],
             email=payload["email"] if payload.get("email") else "",
             image_url=payload["picture"] if payload.get("picture") else "https://i.imgur.com/QJpNyuN.png",
@@ -40,6 +40,8 @@ def update_user(payload: dict):
         if hasattr(user, key):
             if key != "friends":  # friends are handled separately
                 setattr(user, key, value)
+        elif key == "sent_friend_requests" or key == "received_friend_requests":
+            continue
         else:
             raise AttributeError("User has no attribute " + key)
 
@@ -95,9 +97,18 @@ def get_user_by_token_fields(google_id, last_login) -> User:
     return user
 
 
+def get_user_by_token_fields_noupdate(google_id, last_login) -> User:
+    user = User.objects.get(google_id=google_id, last_login=last_login)
+    return user
+
+
 def update_user_last_login(user) -> None:
     user.last_login = timezone.now()
     user.save(update_fields=["last_login"])
+
+
+def get_all_searchable() -> QuerySet(User):
+    return User.objects.filter(id__in=Privacy.objects.filter(is_searchable=True).values_list("user__id", flat=True))
 
 
 def create_friend_request(from_user_id, to_user_id) -> FriendRequest:

@@ -19,6 +19,11 @@
           >
             <v-icon size="x-large">mdi-email</v-icon>
           </v-btn>
+          <v-btn color="primary" flat @click="showFriendsModal">
+            <v-icon size="x-large" left>mdi-account-group</v-icon>
+            <v-divider class="mx-1" />
+            Friends
+          </v-btn>
           <v-btn color="primary" flat @click="userInfoModalVisible = true">
             <v-icon size="x-large">mdi-cog</v-icon>
           </v-btn>
@@ -31,6 +36,12 @@
         v-if="setupModalVisible"
         @updateUser="updateUserAccount"
         :user="this.userData"
+      />
+      <FriendModal
+        v-if="friendModalVisible"
+        :userData="{ ...this.userData }"
+        @close="friendModalVisible = false"
+        @fetch-user-data="fetchUserData"
       />
       <UserInfoModal
         v-if="userInfoModalVisible"
@@ -61,6 +72,7 @@ import LoginModal from '@/components/modal/login/LoginModal.vue'
 import JobTrackingView from './JobTrackingView.vue'
 import AccountSetupModal from '../components/modal/setup/AccountSetupModal.vue'
 import UserInfoModal from '../components/modal/user/UserInfoModal.vue'
+import FriendModal from '../components/modal/friend/FriendModal.vue'
 import { postRequest } from '@/helpers/requests.js'
 import { getAuthToken, setAuthToken } from '@/helpers/auth-cookie.js'
 import IncomingReviewsModal from '../components/modal/job/IncomingReviewsModal.vue'
@@ -72,6 +84,7 @@ export default {
     AccountSetupModal,
     UserInfoModal,
     IncomingReviewsModal,
+    FriendModal,
   },
   data() {
     return {
@@ -81,24 +94,34 @@ export default {
       userInfoModalVisible: false,
       incomingReviewsModalVisible: false,
       failedAuthentication: false,
+      friendModalVisible: false,
+      authtoken: '',
     }
   },
+
   async mounted() {
     let token = getAuthToken()
     window.signIn = this.onSignin
     if (token) {
-      await postRequest('account/api/validate_auth_token', token).then(
-        (response) => {
-          if (response.user) {
-            this.userSignedIn({ data: response.user, token: response.token })
-          }
-        },
-      )
+      this.authtoken = token
+      try {
+        await postRequest('account/api/validate_auth_token', token).then(
+          (response) => {
+            if (response.user) {
+              this.userSignedIn({ data: response.user, token: response.token })
+            }
+          },
+        )
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.warn('Token Authentication Failed')
+      }
     }
     if (!this.userData) this.failedAuthentication = true
   },
   methods: {
     logoutClicked() {
+      this.authtoken = ''
       setAuthToken('')
       location.reload()
     },
@@ -107,14 +130,32 @@ export default {
         credential: response.credential,
         client_id: response.client_id,
       }
+      this.credential = response.credential
+      this.client_id = response.client_id
       const resp = await postRequest('account/api/get_or_create_account', item)
+
       this.userSignedIn(resp)
     },
+
+    async fetchUserData() {
+      if (this.authtoken) {
+        const resp = await postRequest(
+          'account/api/get_updated_user_data',
+          this.authtoken,
+        )
+        this.userData = resp.user
+      } else {
+        this.failedAuthentication = true
+        this.userData = null
+      }
+    },
+
     userSignedIn(resp) {
       this.userData = resp.data
       if (this.setupIncomplete()) {
         this.setupModalVisible = true
       }
+      this.authtoken = resp.token
       setAuthToken(resp.token)
       this.fetchUserPrivacies()
     },
@@ -151,6 +192,11 @@ export default {
         })
         this.userPrivacies = userPrivacies
       }
+    },
+
+    showFriendsModal() {
+      this.friendModalVisible = true
+      this.fetchUserData()
     },
   },
 }

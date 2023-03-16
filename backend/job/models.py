@@ -31,9 +31,9 @@ class Job(models.Model):
 
 class ReviewRequest(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    reviewer = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.TextField(blank=True)
     fulfilled = models.BooleanField(default=False)
-    reviewer = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def to_dict(self):
         return {

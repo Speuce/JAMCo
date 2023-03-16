@@ -1,6 +1,7 @@
 <template>
   <div>
     <JobDetailModal
+      id="job-detail-modal"
       v-if="detailModalVisible"
       @createOrUpdateJob="createOrUpdateJob"
       @close="closeDetailModal"
@@ -26,6 +27,7 @@
     </div>
     <div class="floating">
       <v-btn
+        id="add-job-button"
         size="x-large"
         icon
         class="internal"

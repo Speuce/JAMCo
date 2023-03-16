@@ -105,6 +105,23 @@ def create_review_request(request: HttpRequest):
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
 
+def get_review_requests_for_user(request: HttpRequest):
+    """
+    Gets all the cover letter review requests that are addressed to a specific user
+    """
+
+    body = read_request(request)
+    logger.debug(f"get_review_requests_for_user: {body}")
+
+    try:
+        review_requests = business.get_review_requests_for_user(body)
+        return JsonResponse(
+            status=200, data={"review_requests": [review_request.to_dict() for review_request in review_requests]}
+        )
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
 @require_POST
 def create_review(request: HttpRequest):
     """

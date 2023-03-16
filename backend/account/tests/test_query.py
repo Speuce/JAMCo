@@ -19,6 +19,37 @@ class GetOrCreateUserTests(TestCase):
         self.assertTrue(models.User.objects.filter(google_id="4").exists())
         self.assertEqual(models.User.objects.filter(google_id="4").count(), 1)
 
+    def test_get_all_searchable(self):
+        p1 = PrivacyFactory()
+        p2 = PrivacyFactory()
+        p3 = PrivacyFactory()
+
+        # set u2 to be non-searchable
+        p2.is_searchable = False
+        p2.save()
+
+        qs = query.get_all_searchable()
+
+        self.assertIn(p1.user, qs)
+        self.assertIn(p3.user, qs)
+        self.assertNotIn(p2.user, qs)
+
+    def test_none_searchable(self):
+        p1 = PrivacyFactory()
+        p2 = PrivacyFactory()
+
+        # set all to be non-searchable
+        p1.is_searchable = False
+        p1.save()
+        p2.is_searchable = False
+        p2.save()
+
+        qs = query.get_all_searchable()
+
+        self.assertNotIn(p1.user, qs)
+        self.assertNotIn(p2.user, qs)
+        self.assertEqual(len(qs), 0)
+
 
 class UserExistsTests(TestCase):
     def test_user_exists(self):
@@ -33,7 +64,9 @@ class UpdateAccountTests(TestCase):
         user = UserFactory()
 
         # Update the user
-        query.update_user({"id": user.id, "first_name": "Rob"})
+        query.update_user(
+            {"id": user.id, "first_name": "Rob", "sent_friend_requests": [], "received_friend_requests": []}
+        )
 
         # The modifications should hold
         self.assertEqual(models.User.objects.get(id=user.id).first_name, "Rob")
@@ -208,6 +241,12 @@ class GetUserByTokenFieldsTests(TestCase):
         login = timezone.now()
         user = UserFactory(google_id="gID", last_login=login)
         retrieved_user = query.get_user_by_token_fields(user.google_id, login)
+        self.assertEqual(user, retrieved_user)
+
+    def test_get_user_by_token_fields_noupdate(self):
+        login = timezone.now()
+        user = UserFactory(google_id="gID", last_login=login)
+        retrieved_user = query.get_user_by_token_fields_noupdate(user.google_id, login)
         self.assertEqual(user, retrieved_user)
 
 

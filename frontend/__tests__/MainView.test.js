@@ -114,4 +114,27 @@ describe('MainView', () => {
       response,
     )
   })
+
+  it('displays friends modal when showFriendsModal called', () => {
+    const wrapper = shallowMount(MainView)
+
+    expect(wrapper.vm.friendModalVisible).toEqual(false)
+    wrapper.vm.showFriendsModal()
+    expect(wrapper.vm.friendModalVisible).toEqual(true)
+  })
+
+  it('fetches user data when fetchUserData called', async () => {
+    const wrapper = shallowMount(MainView)
+    postRequest.mockResolvedValue({ user: { id: 0 } })
+    wrapper.vm.authtoken = 'valid_token'
+
+    wrapper.vm.fetchUserData()
+
+    await wrapper.vm.$nextTick()
+
+    expect(postRequest).toHaveBeenCalledWith(
+      'account/api/get_updated_user_data',
+      'valid_token',
+    )
+  })
 })

@@ -39,11 +39,14 @@ urlpatterns = [
     ),
     path("account/api/update_privacies", account_views.update_privacies, name="update_privacies"),
     path("account/api/get_user_privacies", account_views.get_user_privacies, name="get_user_privacies"),
+    path("account/api/search_users_by_name", account_views.search_users_by_name, name="search_users_by_name"),
     path("account/api/remove_friend", account_views.remove_friend, name="remove_friend"),
     path("account/api/validate_auth_token", account_views.validate_auth_token, name="validate_auth_token"),
+    path("account/api/get_updated_user_data", account_views.get_updated_user_data, name="get_updated_user_data"),
     path("account/api/create_friend_request", account_views.create_friend_request, name="create_friend_request"),
     path("account/api/accept_friend_request", account_views.accept_friend_request, name="accept_friend_request"),
     path("account/api/deny_friend_request", account_views.deny_friend_request, name="deny_friend_request"),
+    path("account/api/search_users_by_name", account_views.search_users_by_name, name="search_users_by_name"),
     path(
         "account/api/get_friend_requests_status",
         account_views.get_friend_requests_status,
@@ -60,6 +63,11 @@ urlpatterns = [
     path("job/api/create_job", job_views.create_job, name="create_job"),
     path("job/api/update_job", job_views.update_job, name="update_job"),
     path("job/api/create_review_request", job_views.create_review_request, name="create_review_request"),
+    path(
+        "job/api/get_review_requests_for_user",
+        job_views.get_review_requests_for_user,
+        name="get_review_requests_for_user",
+    ),
     path("job/api/create_review", job_views.create_review, name="create_review"),
     path("job/api/get_reviews_for_user", job_views.get_reviews_for_user, name="get_reviews_for_user"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
