@@ -94,19 +94,7 @@ export default {
   props: {
     user: {
       type: Object,
-      default: () => {
-        return {
-          id: -1,
-          first_name: '',
-          last_name: '',
-          email: '',
-          field_of_work: '',
-          country: '',
-          region: '',
-          city: '',
-          birthday: '',
-        }
-      },
+      default: undefined,
     },
   },
 
