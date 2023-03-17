@@ -1,7 +1,6 @@
 <template>
   <div>
     <JobDetailModal
-      id="job-detail-modal"
       v-if="detailModalVisible"
       @createOrUpdateJob="createOrUpdateJob"
       @close="closeDetailModal"

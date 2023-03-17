@@ -1,5 +1,5 @@
 <template>
-  <div class="card-container">
+  <div class="card-container request_card">
     <div class="name-country mt-2">
       <h4>
         {{ request.from_user__first_name }} {{ request.from_user__last_name }}
@@ -10,6 +10,7 @@
       <v-tooltip text="Accept">
         <template v-slot:activator="{ props }">
           <v-btn
+            id="accept_friend_request_button"
             v-bind="props"
             @click="this.$emit('acceptRequest', request.id)"
             icon
@@ -23,6 +24,7 @@
       <v-tooltip text="Deny">
         <template v-slot:activator="{ props }">
           <v-btn
+            id="deny_friend_request_button"
             v-bind="props"
             @click="this.$emit('denyRequest', request.id)"
             icon

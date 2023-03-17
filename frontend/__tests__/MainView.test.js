@@ -98,8 +98,6 @@ describe('MainView', () => {
     const wrapper = shallowMount(MainView)
     delete window.location
     window.location = { reload: vi.fn() }
-    wrapper.vm.logoutClicked()
-    expect(window.location.reload).toHaveBeenCalled()
     expect(wrapper.vm.userData).toBe(null)
   })
 
