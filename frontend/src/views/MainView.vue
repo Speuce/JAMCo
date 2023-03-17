@@ -68,6 +68,7 @@
           v-if="this.userData"
           :key="this.componentKey"
           :user="this.userData"
+          :viewingOther="this.viewingOther"
           style="height: 100%"
         />
       </Suspense>
