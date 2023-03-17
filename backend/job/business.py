@@ -34,6 +34,7 @@ def get_review_requests_for_user(payload: dict) -> ReviewRequest:
 def create_review(payload: dict) -> Review:
     review = query.create_review(payload)
     review.request.fulfilled = True
+    review.request.save()
     return review
 
 

@@ -12,7 +12,7 @@
                 <h3>Review Requests</h3>
               </v-row>
               <v-row
-                v-for="request in reviewRequests"
+                v-for="request in pendingReviewRequests"
                 :key="request.id"
                 class="mb-5"
               >
@@ -68,7 +68,7 @@
     <ReviewModal
       v-if="reviewModalVisible"
       :request="currentlySelectedRequest"
-      @close="this.reviewModalVisible = false"
+      @close="reviewModalClosed"
     />
   </div>
 </template>
@@ -143,10 +143,34 @@ export default {
     })
   },
 
+  computed: {
+    pendingReviewRequests() {
+      console.log(this.reviewRequests)
+      return this.reviewRequests.filter((request) => !request.fulfilled)
+    },
+  },
+
   methods: {
     reviewClicked(request) {
       this.currentlySelectedRequest = request
       this.reviewModalVisible = true
+    },
+
+    async reviewModalClosed() {
+      this.reviewModalVisible = false
+      const reviewRequestResponse = await postRequest(
+        '/job/api/get_review_requests_for_user',
+        { user_id: this.user.id },
+      )
+      const newReviewRequests = reviewRequestResponse.review_requests
+
+      newReviewRequests.forEach((updatedRequest) => {
+        const request = this.reviewRequests.find(
+          (oldRequest) => oldRequest.id === updatedRequest.id,
+        )
+
+        request.fulfilled = updatedRequest.fulfilled
+      })
     },
   },
 }
