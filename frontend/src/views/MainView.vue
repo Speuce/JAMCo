@@ -119,7 +119,7 @@ export default {
       failedAuthentication: false,
       friendModalVisible: false,
       viewingOther: false,
-      componentKey: 0,
+      componentKey: false,
       authtoken: '',
     }
   },
