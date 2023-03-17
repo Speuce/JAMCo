@@ -121,12 +121,12 @@ export default {
       this.messageErrorIndicator = null
       this.recipientErrorIndicator = null
 
-      if (this.message && this.selectedFriendIds.length) {
+      if (this.message.trim() && this.selectedFriendIds.length) {
         this.messageErrorIndicator = null
         this.recipientErrorIndicator = null
         this.$emit('close')
       } else {
-        if (!this.message) {
+        if (!this.message.trim()) {
           this.messageErrorIndicator = 'red'
         }
         if (!this.selectedFriendIds.length) {
