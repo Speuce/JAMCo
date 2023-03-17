@@ -145,7 +145,6 @@ export default {
 
   computed: {
     pendingReviewRequests() {
-      console.log(this.reviewRequests)
       return this.reviewRequests.filter((request) => !request.fulfilled)
     },
   },
