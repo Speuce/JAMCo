@@ -179,7 +179,7 @@ class CreateReviewTests(TestCase):
             query.create_review({})
 
         # User doesn't exist
-        request = ReviewRequestFactory()
+        ReviewRequestFactory()
         response = "sorry can't review this i don't exist"
 
         # Request doesn't exist

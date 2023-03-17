@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { expect, describe, it, vi, beforeEach } from 'vitest';
+import { expect, describe, it, vi, beforeEach } from 'vitest'
 import IncomingReviewsModal from '../src/components/modal/job/IncomingReviewsModal.vue'
 import { postRequest } from '@/helpers/requests.js'
 
@@ -29,8 +29,12 @@ describe('IncomingReviewsModal', () => {
     wrapper = mount(IncomingReviewsModal, {})
   }
 
+  const mostPostRequest = () => {
+    return Promise.resolve({ review_requests: [], reviews: [] })
+  }
+
   beforeEach(() => {
-    postRequest.mockImplementation(() => Promise.resolve({ review_requests: [], reviews: [] }))
+    postRequest.mockImplementation(mostPostRequest)
     mountModal()
   })
 
