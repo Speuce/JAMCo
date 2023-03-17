@@ -29,7 +29,7 @@
             v-if="!viewingOther"
             color="primary"
             flat
-            @click="incomingReviewsModalVisible = true"
+            @click="showInboxModal"
           >
             <v-icon size="x-large">mdi-email</v-icon>
             <v-divider class="mx-1" />
@@ -246,6 +246,10 @@ export default {
     },
     showFriendsModal() {
       this.friendModalVisible = true
+      this.fetchUserData()
+    },
+    showInboxModal() {
+      this.incomingReviewsModalVisible = true
       this.fetchUserData()
     },
     async showFriendKanban(friendId) {
