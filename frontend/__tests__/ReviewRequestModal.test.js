@@ -103,6 +103,19 @@ describe('ReviewRequestModal', () => {
     expect(wrapper.vm.messageErrorIndicator).toBe('red')
   })
 
+  it('treats a whitespace-only message as empty', () => {
+    expect(wrapper.vm.recipientErrorIndicator).toBe(null)
+    expect(wrapper.vm.messageErrorIndicator).toBe(null)
+
+    mountModal(job)
+    wrapper.vm.selectedFriendIds = [-1]
+    wrapper.vm.message = ' \n\r\n     \n '
+    wrapper.vm.sendClicked()
+
+    expect(wrapper.vm.recipientErrorIndicator).toBe(null)
+    expect(wrapper.vm.messageErrorIndicator).toBe('red')
+  })
+
   it('sends a review request when send button clicked', () => {
     mountModal(job)
     postRequest.mockImplementation(() => Promise.resolve())
