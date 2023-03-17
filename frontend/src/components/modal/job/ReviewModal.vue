@@ -15,17 +15,25 @@
               {{ jobData?.cover_letter }}
             </v-col>
             <v-col>
-              <v-textarea
-                id="review"
-                auto-grow
-                class="text-area-box"
-                label="Your Review"
-                shaped
-                v-model="review"
-                maxlength="10000"
-                variant="outlined"
-                rows="3"
-              />
+              <v-row>
+                <v-textarea
+                  id="review"
+                  auto-grow
+                  class="text-area-box"
+                  label="Your Review*"
+                  shaped
+                  v-model="review"
+                  :style="{ color: this.messageErrorIndicator }"
+                  maxlength="10000"
+                  variant="outlined"
+                  rows="3"
+                />
+              </v-row>
+              <v-row>
+                <h4 v-if="this.messageErrorIndicator" class="errorMessage">
+                  Ensure Required (*) Fields Are Filled
+                </h4>
+              </v-row>
             </v-col>
           </div>
         </v-card-text>
@@ -82,6 +90,7 @@ export default {
       review: '',
       requestData: props.request,
       jobData: null,
+      messageErrorIndicator: null,
     }
   },
 
@@ -96,13 +105,26 @@ export default {
 
   methods: {
     async sendClicked() {
-      await postRequest('job/api/create_review', {
-        request_id: this.request.id,
-        response: this.review,
-      })
+      this.messageErrorIndicator = null
 
-      this.$emit('close')
+      if (this.review.trim()) {
+        this.messageErrorIndicator = null
+
+        postRequest('job/api/create_review', {
+          request_id: this.request.id,
+          response: this.review,
+        })
+
+        this.$emit('close')
+      } else {
+        this.messageErrorIndicator = 'red'
+      }
     },
   },
 }
 </script>
+<style scoped>
+.errorMessage {
+  color: red;
+}
+</style>

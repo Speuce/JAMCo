@@ -32,6 +32,7 @@ describe('ReviewModal', () => {
   })
 
   it('sends a review and closes when send button clicked', async () => {
+    wrapper.vm.review = '4.85 / 5 - 97 %'
     await wrapper.vm.sendClicked()
 
     expect(postRequest).toHaveBeenCalledWith('job/api/create_review', {
@@ -39,13 +40,19 @@ describe('ReviewModal', () => {
       response: wrapper.vm.review,
     })
     expect(wrapper.emitted('close')).toBeTruthy()
+    expect(wrapper.vm.messageErrorIndicator).toBe(null)
   })
 
   it('displays an error when send button is clicked without any review', () => {
-    fail()
+    expect(wrapper.vm.messageErrorIndicator).toBe(null)
+    wrapper.vm.sendClicked()
+    expect(wrapper.vm.messageErrorIndicator).toBe('red')
   })
 
   it('treats a whitespace-only review as empty', () => {
-    fail()
+    expect(wrapper.vm.messageErrorIndicator).toBe(null)
+    wrapper.vm.review = '\n\n\n\n\n\n\t\t\t\t\t\t\t\t\t\t                  '
+    wrapper.vm.sendClicked()
+    expect(wrapper.vm.messageErrorIndicator).toBe('red')
   })
 })
