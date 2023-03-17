@@ -1,5 +1,5 @@
 <template>
-  <div class="card-container">
+  <div class="card-container friend_card">
     <div class="name-country mt-2">
       <h4>{{ userData.first_name }} {{ userData.last_name }}</h4>
       <p>, {{ userData.country }}</p>
@@ -8,6 +8,7 @@
       <v-tooltip text="Add Friend">
         <template v-slot:activator="{ props }">
           <v-btn
+            id="send_friend_request_button"
             v-bind="props"
             v-if="!isFriend && !sentRequest"
             @click="this.$emit('sendFriendRequest', userData.id)"
@@ -19,6 +20,7 @@
         </template>
       </v-tooltip>
       <v-btn
+        id="friend_request_sent_button"
         v-if="!isFriend && sentRequest"
         disabled
         icon
@@ -29,6 +31,7 @@
       <v-tooltip text="View Kanban">
         <template v-slot:activator="{ props }">
           <v-btn
+            id="view_kanban_button"
             v-bind="props"
             v-if="isFriend"
             @click="this.$emit('viewKanban')"
@@ -44,6 +47,7 @@
       <v-tooltip text="Remove Friend">
         <template v-slot:activator="{ props }">
           <v-btn
+            id="remove_friend_button"
             v-bind="props"
             v-if="isFriend"
             @click="this.$emit('removeFriend', userData.id)"

@@ -31,6 +31,7 @@
           </v-btn>
           <v-btn
             v-if="!viewingOther"
+            id="friends_modal_button"
             color="primary"
             flat
             @click="showFriendsModal"
@@ -41,6 +42,7 @@
           </v-btn>
           <v-btn
             v-if="!viewingOther"
+            id="user_info_modal_button"
             color="primary"
             flat
             @click="userInfoModalVisible = true"
@@ -141,7 +143,12 @@ export default {
     logoutClicked() {
       this.authtoken = ''
       setAuthToken('')
-      location.reload()
+      this.userData = null
+      this.userPrivacies = null
+      this.setupModalVisible = false
+      this.userInfoModalVisible = false
+      this.failedAuthentication = true
+      this.friendModalVisible = false
     },
     async onSignin(response) {
       const item = {
