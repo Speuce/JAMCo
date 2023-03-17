@@ -150,7 +150,17 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <v-list-item-action start>
+                    <v-list-item-action
+                      start
+                      @click="
+                        () => {
+                          if (this.editingEnabled) {
+                            this.userPrivacies.is_searchable =
+                              !this.userPrivacies.is_searchable
+                          }
+                        }
+                      "
+                    >
                       <v-checkbox-btn
                         :model-value="this.userPrivacies.is_searchable"
                         :disabled="!this.editingEnabled"
@@ -162,7 +172,7 @@
                             }
                           }
                         "
-                      ></v-checkbox-btn>
+                      />
                     </v-list-item-action>
                   </template>
                   <v-list-item-title>Searchable</v-list-item-title>
@@ -183,7 +193,17 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <v-list-item-action start>
+                    <v-list-item-action
+                      start
+                      @click="
+                        () => {
+                          if (this.editingEnabled) {
+                            this.userPrivacies.share_kanban =
+                              !this.userPrivacies.share_kanban
+                          }
+                        }
+                      "
+                    >
                       <v-checkbox-btn
                         :model-value="this.userPrivacies.share_kanban"
                         :disabled="!this.editingEnabled"
@@ -195,7 +215,7 @@
                             }
                           }
                         "
-                      ></v-checkbox-btn>
+                      />
                     </v-list-item-action>
                   </template>
                   <v-list-item-title>Share Applications</v-list-item-title>
@@ -215,7 +235,17 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <v-list-item-action start>
+                    <v-list-item-action
+                      start
+                      @click="
+                        () => {
+                          if (this.editingEnabled) {
+                            this.userPrivacies.cover_letter_requestable =
+                              !this.userPrivacies.cover_letter_requestable
+                          }
+                        }
+                      "
+                    >
                       <v-checkbox-btn
                         :model-value="
                           this.userPrivacies.cover_letter_requestable
@@ -229,7 +259,7 @@
                             }
                           }
                         "
-                      ></v-checkbox-btn>
+                      />
                     </v-list-item-action>
                   </template>
                   <v-list-item-title>Cover Letter Requests</v-list-item-title>
