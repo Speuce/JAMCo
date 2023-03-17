@@ -2,11 +2,10 @@
   <div style="height: 100vh" class="d-flex flex-column">
     <v-row class="align-center headerbar ma-0 flex-grow-0">
       <v-col class="py-0">
-        <div class="text-begin">
-          <v-btn color="primary" flat @click="returnToHome">
-            <v-icon size="x-large" left>mdi-home</v-icon>
-            <v-divider class="mx-1" />
-            View My Board
+        <div class="text-begin" v-if="this.userData" color="primary" flat>
+          <v-btn color="primary" flat :readonly="true">
+            {{ this.userData.first_name }} {{ this.userData.last_name }}'s Job
+            Board
           </v-btn>
         </div>
       </v-col>
@@ -20,6 +19,16 @@
       </v-col>
       <v-col class="py-0">
         <div class="text-end">
+          <v-btn
+            v-if="this.viewingOther"
+            color="primary"
+            flat
+            @click="returnToHome"
+          >
+            <v-icon size="x-large" left>mdi-home</v-icon>
+            <v-divider class="mx-1" />
+            Back to My Board
+          </v-btn>
           <v-btn
             v-if="!viewingOther"
             color="primary"
