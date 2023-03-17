@@ -96,9 +96,13 @@ describe('MainView', () => {
 
   it('logs out when logoutClicked', () => {
     const wrapper = shallowMount(MainView)
-    delete window.location
-    window.location = { reload: vi.fn() }
+    wrapper.vm.logoutClicked()
     expect(wrapper.vm.userData).toBe(null)
+    expect(wrapper.vm.userPrivacies).toBe(null)
+    expect(wrapper.vm.setupModalVisible).toBe(false)
+    expect(wrapper.vm.userInfoModalVisible).toBe(false)
+    expect(wrapper.vm.failedAuthentication).toBe(true)
+    expect(wrapper.vm.friendModalVisible).toBe(false)
   })
 
   it('calls the onSignin method with the response and makes the post request', async () => {
