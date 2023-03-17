@@ -72,7 +72,7 @@ export default {
   components: {
     FriendCard,
   },
-  emits: ['close', 'fetchUserData'],
+  emits: ['close', 'fetchUserData', 'viewKanban'],
   props: {
     userData: {
       type: Object,
@@ -114,9 +114,8 @@ export default {
       this.$emit('fetchUserData')
     },
     viewFriendKanban(user) {
-      // eslint-disable-next-line no-console
-      console.log(user)
-      // TODO: view friend kanban board
+      this.$emit('viewKanban', user)
+      this.$emit('close')
     },
   },
 }

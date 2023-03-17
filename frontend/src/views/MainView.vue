@@ -20,12 +20,22 @@
       </v-col>
       <v-col class="py-0">
         <div class="text-end">
-          <v-btn color="primary" flat @click="showFriendsModal">
+          <v-btn
+            v-if="!viewingOther"
+            color="primary"
+            flat
+            @click="showFriendsModal"
+          >
             <v-icon size="x-large" left>mdi-account-group</v-icon>
             <v-divider class="mx-1" />
             Friends
           </v-btn>
-          <v-btn color="primary" flat @click="userInfoModalVisible = true">
+          <v-btn
+            v-if="!viewingOther"
+            color="primary"
+            flat
+            @click="userInfoModalVisible = true"
+          >
             <v-icon size="x-large">mdi-cog</v-icon>
           </v-btn>
         </div>
