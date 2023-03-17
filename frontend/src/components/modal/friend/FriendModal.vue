@@ -1,19 +1,25 @@
-
 <template>
   <SearchFriendsModal
     v-if="searchFriendModalVisible"
     @close="searchFriendModalVisible = false"
     :user-data="{ ...userData }"
     @fetchUserData="$emit('fetchUserData', $event)"
+    @viewKanban="viewFriend"
   />
   <v-row v-if="!searchFriendModalVisible">
-    <v-dialog v-model="dialog" persistent class="dialog-popup">
+    <v-dialog
+      id="friend_modal"
+      v-model="dialog"
+      persistent
+      class="dialog-popup"
+    >
       <v-card style="overflow: hidden; height: 600px">
         <v-card-title class="inner-page-container">
           <v-row>
             <h2>Friends</h2>
             <v-spacer />
             <v-btn
+              id="add_friends_button"
               color="primary"
               class="margin-top"
               @click="
@@ -78,6 +84,7 @@
                 :userData="user"
                 :isFriend="true"
                 @removeFriend="removeFriend(user)"
+                @viewKanban="viewFriend(user)"
               />
             </div>
           </div>
@@ -87,6 +94,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn
+            id="friend_modal_close_button"
             color="blue-darken-1"
             variant="text"
             @click="this.$emit('close')"
@@ -112,7 +120,7 @@ export default {
     FriendCard,
     SearchFriendsModal,
   },
-  emits: ['close', 'fetchUserData'],
+  emits: ['close', 'fetchUserData', 'loadFriend'],
   props: {
     userData: {
       type: Object,
@@ -148,6 +156,11 @@ export default {
         user2_id: user.id,
       })
       this.$emit('fetchUserData')
+    },
+    viewFriend(user) {
+      // set target friend to view and close modal
+      this.$emit('loadFriend', user.id)
+      this.$emit('close')
     },
   },
 }

@@ -1,10 +1,16 @@
 <!-- eslint-disable no-console -->
 <template>
   <v-row>
-    <v-dialog v-model="dialog" persistent class="dialog-popup">
+    <v-dialog
+      id="search_friends_modal"
+      v-model="dialog"
+      persistent
+      class="dialog-popup"
+    >
       <v-card style="overflow: hidden">
         <v-row class="inner-page-container">
           <v-btn
+            id="close_search_friends_modal_button"
             @click="this.$emit('close')"
             class=""
             style="position: absolute; top: 35px; left: 25px"
@@ -19,13 +25,19 @@
             </v-row>
             <v-row style="width: 400px" class="ml-5 pt-5">
               <v-text-field
+                id="search_friends_search_field"
                 v-model="searchField"
                 @keyup.enter="triggerSearch"
                 placeholder="Search"
                 variant="solo"
               >
                 <template v-slot:append-inner>
-                  <v-btn @click="triggerSearch" icon flat class="mt-n3"
+                  <v-btn
+                    id="search_friends_search_button"
+                    @click="triggerSearch"
+                    icon
+                    flat
+                    class="mt-n3"
                     ><v-icon>mdi-magnify</v-icon></v-btn
                   >
                 </template>
@@ -72,7 +84,7 @@ export default {
   components: {
     FriendCard,
   },
-  emits: ['close', 'fetchUserData'],
+  emits: ['close', 'fetchUserData', 'viewKanban'],
   props: {
     userData: {
       type: Object,
@@ -114,9 +126,8 @@ export default {
       this.$emit('fetchUserData')
     },
     viewFriendKanban(user) {
-      // eslint-disable-next-line no-console
-      console.log(user)
-      // TODO: view friend kanban board
+      this.$emit('viewKanban', user)
+      this.$emit('close')
     },
   },
 }

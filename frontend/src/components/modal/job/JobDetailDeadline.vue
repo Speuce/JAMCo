@@ -8,6 +8,7 @@
         :style="{
           color: this.tryError && deadlineModel.title.length == 0 ? 'red' : '',
         }"
+        :readonly="this.deactivated"
         class="deadline-title"
         maxlength="50"
         variant="outlined"
@@ -18,6 +19,7 @@
         class="deadline-date"
         v-model="deadlineModel.date"
         :enable-time-picker="false"
+        :readonly="this.deactivated"
         placeholder="Date*"
         @update:model-value="updateDate"
         :style="{
@@ -31,6 +33,7 @@
     </v-col>
     <v-col cols="12" sm="2" class="center-offset pl-6">
       <v-btn
+        v-if="!this.deactivated"
         @click="this.$emit('deleteDeadline', this.deadline.id)"
         size="medium"
         flat
@@ -73,6 +76,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    viewingOther: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: (props) => ({
     deadlineModel: {
@@ -80,6 +87,7 @@ export default {
       title: props.deadline.title,
       date: props.deadline.date,
     },
+    deactivated: props.viewingOther,
   }),
   methods: {
     updateDate(date) {

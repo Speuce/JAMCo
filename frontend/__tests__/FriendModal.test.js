@@ -76,4 +76,17 @@ describe('FriendModal', () => {
 
     expect(wrapper.emitted().fetchUserData).toBeTruthy()
   })
+
+  it('emits events when viewFriend called', () => {
+    const userParam = { id: -1 }
+    const userData = { id: 1 }
+    const wrapper = shallowMount(FriendModal, {
+      propsData: { userData },
+    })
+
+    wrapper.vm.viewFriend(userParam)
+
+    expect(wrapper.emitted().loadFriend[0][0]).toEqual(userParam.id)
+    expect(wrapper.emitted().close).toBeTruthy()
+  })
 })

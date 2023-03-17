@@ -40,6 +40,32 @@ class GetOrCreateAccountTests(TransactionTestCase):
 
         self.assertEqual(json.loads(response.content)["data"], mocked_user.to_dict())
 
+    @patch("account.business.get_friend_data")
+    def test_get_friend_data(self, mock_get_friend_data):
+        mocked_user = UserFactory()
+        mocked_friend = UserFactory()
+        mock_get_friend_data.return_value = mocked_friend
+
+        response = self.client.post(
+            reverse("get_friend_data"),
+            json.dumps({"user_id": mocked_user.id, "friend_id": mocked_friend.id}),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(json.loads(response.content)["friend"], mocked_friend.to_dict())
+
+        mock_get_friend_data.side_effect = Exception
+
+        response = self.client.post(
+            reverse("get_friend_data"),
+            json.dumps({"user_id": mocked_user.id, "friend_id": mocked_friend.id}),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+
 
 @patch("account.business.update_user")
 class UpdateAccountTests(TestCase):

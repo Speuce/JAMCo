@@ -1,7 +1,6 @@
 <template>
   <div>
     <JobDetailModal
-      id="job-detail-modal"
       v-if="detailModalVisible"
       @createOrUpdateJob="createOrUpdateJob"
       @close="closeDetailModal"
@@ -9,6 +8,7 @@
       :user="this.activeUser"
       :columns="colList"
       :isNew="this.isNewJob"
+      :viewingOther="this.deactivated"
     />
     <ColumnOptionModal
       v-if="boardOptionModalVisible"
@@ -21,6 +21,7 @@
       <KanbanBoard
         :columns="colList"
         :jobs="jobsByColumn"
+        :viewingOther="deactivated"
         @showDetailModal="showDetailModal"
         @columnChanged="createOrUpdateJob"
         @showBoardOptionModal="showBoardOptionModal"
@@ -28,6 +29,7 @@
     </div>
     <div class="floating">
       <v-btn
+        v-if="!this.deactivated"
         id="add-job-button"
         size="x-large"
         icon
@@ -63,6 +65,10 @@ export default {
       type: Object,
       default: undefined,
     },
+    viewingOther: {
+      type: Boolean,
+      default: false,
+    },
   },
   data(props) {
     return {
@@ -73,6 +79,7 @@ export default {
       colList,
       jobsByColumn,
       activeUser: props.user,
+      deactivated: props.viewingOther,
     }
   },
 

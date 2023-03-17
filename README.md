@@ -21,13 +21,13 @@ Users create personal accounts to access their job application console from any 
 
 ## Job Manager
 
-Enables users to track information relevant to every job they apply for or wish to apply for. Users can record the job requirements, needed documents, dates and deadlines, and application status. 
+Enables users to track information relevant to every job they apply for, or wish to apply for. Users can record the job requirements, necessary documents, dates and deadlines, and application status. 
 
 ## Friends
 
 Users can connect with friends and other community members to share details about the requirements, challenges, and current status of their applications. 
 
-## Notifications
+## Notifications (Optional)
 
 Users can set reminders for their upcoming deadlines to stay coordinated, and set notifications for friend activity to keep in touch. 
 
@@ -65,7 +65,7 @@ We are using Vue.js with Vite and Vuetify on the frontend, and the Django framew
 - Request Cover Letter Reviews ([#16](https://github.com/Speuce/JAMCo/issues/16))
 - View Friends' Applications ([#17](https://github.com/Speuce/JAMCo/issues/17))
 
-### Notifications ([#5](https://github.com/Speuce/JAMCo/issues/5))
+### Notifications ([#5](https://github.com/Speuce/JAMCo/issues/5)) (Optional)
 
 - Friend Request Notifications ([#10](https://github.com/Speuce/JAMCo/issues/10))
 - Deadline Notifications ([#11](https://github.com/Speuce/JAMCo/issues/11))

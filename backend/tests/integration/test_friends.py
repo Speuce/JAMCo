@@ -106,6 +106,22 @@ class AcceptFriendRequestTests(TransactionTestCase):
         self.assertTrue(User.objects.get(id=req.from_user.id).friends.contains(req.to_user))
         self.assertTrue(User.objects.get(id=req.to_user.id).friends.contains(req.from_user))
 
+        # friends should now be able to see each other's board
+        response = self.client.post(
+            reverse("get_friend_data"),
+            json.dumps({"user_id": req.from_user.id, "friend_id": req.to_user.id}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # vice versa
+        response = self.client.post(
+            reverse("get_friend_data"),
+            json.dumps({"user_id": req.to_user.id, "friend_id": req.from_user.id}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+
     def test_accept_friend_request_error(self):
         req = FriendRequestFactory(acknowledged=timezone.now())
         PrivacyFactory(user=req.to_user)
@@ -250,6 +266,22 @@ class RemoveFriendTests(TransactionTestCase):
         self.assertTrue(user_three.friends.contains(user_one))
         self.assertFalse(user_two.friends.contains(user_three))
         self.assertFalse(user_three.friends.contains(user_two))
+
+        # friend one should not be able to see friend two's board
+        response = self.client.post(
+            reverse("get_friend_data"),
+            json.dumps({"user_id": user_one.id, "friend_id": user_two.id}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+
+        # vice versa
+        response = self.client.post(
+            reverse("get_friend_data"),
+            json.dumps({"user_id": user_two.id, "friend_id": user_one.id}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
 
     def test_remove_friend_invalid(self):
         # setup users, add as friends

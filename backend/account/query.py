@@ -91,6 +91,15 @@ def remove_friend(user1_id, user2_id):
     user1.friends.remove(user2)
 
 
+# only to be used when loading a friend's info.
+# friendship status should be verified externally.
+def get_friend_data(friend_id) -> User:
+    if User.objects.filter(id=friend_id).exists():
+        return User.objects.get(id=friend_id)
+    else:
+        raise ObjectDoesNotExist
+
+
 def get_user_by_token_fields(google_id, last_login) -> User:
     user = User.objects.get(google_id=google_id, last_login=last_login)
     update_user_last_login(user)

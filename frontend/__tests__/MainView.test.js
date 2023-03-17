@@ -96,11 +96,13 @@ describe('MainView', () => {
 
   it('logs out when logoutClicked', () => {
     const wrapper = shallowMount(MainView)
-    delete window.location
-    window.location = { reload: vi.fn() }
     wrapper.vm.logoutClicked()
-    expect(window.location.reload).toHaveBeenCalled()
     expect(wrapper.vm.userData).toBe(null)
+    expect(wrapper.vm.userPrivacies).toBe(null)
+    expect(wrapper.vm.setupModalVisible).toBe(false)
+    expect(wrapper.vm.userInfoModalVisible).toBe(false)
+    expect(wrapper.vm.failedAuthentication).toBe(true)
+    expect(wrapper.vm.friendModalVisible).toBe(false)
   })
 
   it('calls the onSignin method with the response and makes the post request', async () => {
@@ -136,5 +138,86 @@ describe('MainView', () => {
       'account/api/get_updated_user_data',
       'valid_token',
     )
+  })
+
+  it('updates fields & calls functions, when returnToHome called', async () => {
+    const userData = { id: 0, first_name: 'first' }
+    const wrapper = shallowMount(MainView)
+    const fetchUserDataSpy = vi.spyOn(wrapper.vm, 'fetchUserData')
+    const forceRerenderSpy = vi.spyOn(wrapper.vm, 'forceRerender')
+    wrapper.vm.sessionUser = userData
+    wrapper.vm.viewingOther = true
+
+    expect(wrapper.vm.userData).toBe(null)
+    expect(wrapper.vm.sessionUser).toEqual(userData)
+    expect(wrapper.vm.viewingOther).toBe(true)
+
+    wrapper.vm.returnToHome()
+
+    await wrapper.vm.$nextTick()
+
+    expect(fetchUserDataSpy).toBeCalled()
+    expect(wrapper.vm.viewingOther).toBe(false)
+    expect(forceRerenderSpy).toBeCalled()
+  })
+
+  it('toggles componentKey when forceRerender called', () => {
+    const wrapper = shallowMount(MainView)
+    expect(wrapper.vm.componentKey).toBe(false)
+    wrapper.vm.forceRerender()
+    expect(wrapper.vm.componentKey).toBe(true)
+  })
+
+  it('handles viewing of friend kanban when showFriendKanban called', async () => {
+    const userData = { id: 0, first_name: 'first' }
+    const friend = { id: 1, first_name: 'newname' }
+
+    const wrapper = shallowMount(MainView)
+    postRequest.mockResolvedValue({ friend: friend })
+    const forceRerenderSpy = vi.spyOn(wrapper.vm, 'forceRerender')
+
+    wrapper.vm.userData = { ...userData }
+    wrapper.vm.authtoken = 'token'
+
+    await wrapper.vm.showFriendKanban(friend.id)
+
+    expect(wrapper.vm.sessionUser).toEqual(userData)
+    await wrapper.vm.$nextTick()
+    expect(postRequest).toHaveBeenCalledWith('account/api/get_friend_data', {
+      user_id: userData.id,
+      friend_id: friend.id,
+    })
+    expect(wrapper.vm.viewingOther).toBe(true)
+    expect(wrapper.vm.userData).toEqual(friend)
+    expect(forceRerenderSpy).toBeCalled()
+  })
+
+  it('handles unauthenticated access of friend kanban', async () => {
+    const userData = { id: 0, first_name: 'first' }
+    const friend = { id: 1, first_name: 'newname' }
+
+    const wrapper = shallowMount(MainView)
+    postRequest.mockResolvedValue({ friend: friend })
+    const forceRerenderSpy = vi.spyOn(wrapper.vm, 'forceRerender')
+
+    wrapper.vm.userData = { ...userData }
+
+    await wrapper.vm.showFriendKanban(friend.id)
+
+    expect(wrapper.vm.sessionUser).toEqual(userData)
+    await wrapper.vm.$nextTick()
+    expect(postRequest).not.toHaveBeenCalledWith(
+      'account/api/get_friend_data',
+      {
+        user_id: userData.id,
+        friend_id: friend.id,
+      },
+    )
+    expect(wrapper.vm.viewingOther).toBe(false)
+    expect(wrapper.vm.userData).toEqual(null)
+    expect(forceRerenderSpy).not.toBeCalled()
+
+    expect(wrapper.vm.failedAuthentication).toBe(true)
+    expect(wrapper.vm.userData).toBe(null)
   })
 })

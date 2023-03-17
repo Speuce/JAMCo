@@ -8,7 +8,6 @@ from django.conf import settings
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_POST
 from django.core.exceptions import ObjectDoesNotExist
-from account.models import User
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from account.stubs import stub_verify_oauth2_token
@@ -44,7 +43,6 @@ def get_or_create_account(request: HttpRequest):
         if not settings.IS_TEST:
             idinfo = id_token.verify_oauth2_token(credential, requests.Request(), client_id, clock_skew_in_seconds=5)
         else:
-            User.objects.filter(google_id="1234567890").delete()
             idinfo = stub_verify_oauth2_token(credential, client_id)
 
         # ID token is valid. Get the user's Google Account ID from the decoded token.
@@ -248,5 +246,23 @@ def get_friend_requests_status(request: HttpRequest):
         sent, received = business.get_friend_requests_status(user_id=user_id)
 
         return JsonResponse(data={"sent": list(sent), "received": list(received)})
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+def get_friend_data(request: HttpRequest):
+    """
+    Retrieve data of a friend of the user
+    """
+
+    try:
+        body = read_request(request)
+        user_id = body["user_id"]
+        friend_id = body["friend_id"]
+        logger.debug(f"get_friend_data: Getting info from user {friend_id} for user {user_id}")
+
+        friend = business.get_friend_data(user_id=user_id, friend_id=friend_id)
+
+        return JsonResponse({"friend": friend.to_dict()})
     except Exception as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})

@@ -16,6 +16,7 @@
                   {{ column.name }}
                 </p>
                 <v-btn
+                  v-if="!this.deactivated"
                   @click="this.$emit('showBoardOptionModal')"
                   color="greytext"
                   icon="mdi-pencil"
@@ -29,6 +30,7 @@
           <draggable
             :list="this.jobs[column.id]"
             :animation="200"
+            :disabled="this.deactivated"
             ghost-class="ghost-card"
             group="column.id"
             @change="handle($event, column.id)"
@@ -45,6 +47,7 @@
           </draggable>
         </div>
         <v-btn
+          v-if="!this.deactivated"
           @click="this.$emit('showBoardOptionModal')"
           color="greytext"
           icon="mdi-plus"
@@ -77,6 +80,13 @@ export default {
       type: Object,
       default: null,
     },
+    viewingOther: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  data(props) {
+    return { deactivated: props.viewingOther }
   },
   methods: {
     handle(event, colId) {

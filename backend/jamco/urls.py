@@ -52,6 +52,7 @@ urlpatterns = [
         account_views.get_friend_requests_status,
         name="get_friend_requests_status",
     ),
+    path("account/api/get_friend_data", account_views.get_friend_data, name="get_friend_data"),
     path("column/api/get_columns", column_views.get_columns, name="get_columns"),
     path(
         "column/api/update_columns",
