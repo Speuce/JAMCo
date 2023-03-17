@@ -1,7 +1,7 @@
 from django.test import TestCase
 from unittest.mock import patch
 from job import business
-from job.tests.factories import JobFactory
+from job.tests.factories import JobFactory, ReviewFactory
 
 
 class CreateJobTests(TestCase):
@@ -63,3 +63,17 @@ class GetJobByIdTests(TestCase):
 
         job_response = business.get_job_by_id(0, mocked_job.id)
         self.assertEqual(mocked_job.to_dict(), job_response.to_dict())
+
+
+class CreateReviewTests(TestCase):
+    @patch("job.query.create_review")
+    def test_creating_review_fulfils_request(self, mock_create_review):
+        mock_create_review.return_value = ReviewFactory()
+        review = business.create_review(
+            {
+                "request_id": "the request is created by ReviewFactory so there's no good value I could put here sorry",
+                "response": "THIS TBH",
+            }
+        )
+
+        self.assertTrue(review.request.fulfilled)

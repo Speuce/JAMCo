@@ -32,7 +32,9 @@ def get_review_requests_for_user(payload: dict) -> ReviewRequest:
 
 
 def create_review(payload: dict) -> Review:
-    return query.create_review(payload)
+    review = query.create_review(payload)
+    review.request.fulfilled = True
+    return review
 
 
 def get_reviews_for_user(payload: dict) -> list[Review]:
