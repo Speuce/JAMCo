@@ -15,7 +15,7 @@ Searching for a job can be a busy and time-consuming process, particularly for s
 
 # Core Features
 
-## Accounts
+
 
 Users create personal accounts to access their job application console from any computer. Users can link their accounts with an external provider, and can personalize their experience and profile.
 
