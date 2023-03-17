@@ -66,6 +66,7 @@
       <Suspense>
         <JobTrackingView
           v-if="this.userData"
+          :key="this.componentKey"
           :user="this.userData"
           style="height: 100%"
         />
@@ -101,6 +102,7 @@ export default {
       failedAuthentication: false,
       friendModalVisible: false,
       viewingOther: false,
+      componentKey: 0,
       authtoken: '',
     }
   },
@@ -217,16 +219,22 @@ export default {
         })
         // toggle view mode and set user data to friend data
         this.viewingOther = true
-        this.userData = resp.friend
+        // this.userData = resp.friend
+        Object.assign(this.userData, resp.friend)
+        this.forceRerender()
       } else {
         this.failedAuthentication = true
         this.userData = null
       }
     },
+    forceRerender() {
+      this.componentKey = !this.componentKey
+    },
     returnToHome() {
       this.userData = { ...this.sessionUser }
       this.fetchUserData()
       this.viewingOther = false
+      this.forceRerender()
     },
   },
 }
