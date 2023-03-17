@@ -41,4 +41,12 @@ describe('IncomingReviewsModal', () => {
   it('opens the review modal when the review button is clicked', () => {
     fail()
   })
+
+  it('hides the review request header when there are no review requests', () => {
+    fail()
+  })
+
+  it('hides the review header when there are no reviews', () => {
+    fail()
+  })
 })

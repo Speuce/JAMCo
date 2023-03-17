@@ -6,7 +6,7 @@
           <h2 class="mt-3">Inbox</h2>
         </v-card-title>
         <v-card-text>
-          <v-row>
+          <v-row v-if="pendingReviewRequests.length > 0">
             <v-col>
               <v-row>
                 <h3>Review Requests</h3>
@@ -29,7 +29,7 @@
               </v-row>
             </v-col>
           </v-row>
-          <v-row>
+          <v-row v-if="reviews.length > 0">
             <v-col>
               <v-row>
                 <h3>Reviews</h3>
