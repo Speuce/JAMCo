@@ -8,6 +8,7 @@
               this.userData.id === this.sessionUser.id
                 ? 'Your Job Board'
                 : this.userData.first_name +
+                  ' ' +
                   this.userData.last_name +
                   "'s Job Board"
             }}
