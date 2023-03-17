@@ -143,8 +143,10 @@ export default {
         user_id: this.activeUser.id,
         job_id: review.job_id,
       })
+      // eslint-disable-next-line no-param-reassign
       review.job = jobResponse.job_data
 
+      // eslint-disable-next-line no-param-reassign
       review.reviewer = this.activeUser.friends.find(
         (friend) => friend.id === review.reviewer_id,
       )
