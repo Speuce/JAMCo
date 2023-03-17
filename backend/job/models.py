@@ -23,6 +23,40 @@ class Job(models.Model):
             "notes": self.notes,
             "cover_letter": self.cover_letter,
             "kcolumn_id": self.kcolumn.id,
+            "user_id": self.user.id,
             "deadlines": self.deadlines,
             "type": self.type,
+        }
+
+
+class ReviewRequest(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    reviewer = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField(blank=True)
+    fulfilled = models.BooleanField(default=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "job_id": self.job.id,
+            "reviewer_id": self.reviewer.id,
+            "sender_id": self.job.user.id,
+            "message": self.message,
+            "fulfilled": self.fulfilled,
+        }
+
+
+class Review(models.Model):
+    request = models.ForeignKey(ReviewRequest, on_delete=models.SET_NULL, null=True)
+    response = models.TextField(blank=True)
+    completed = models.DateTimeField(null=True)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "request_id": self.request_id,
+            "job_id": self.request.job.id,
+            "reviewer_id": self.request.reviewer.id,
+            "response": self.response,
+            "completed": self.completed.isoformat() if self.completed else None,
         }

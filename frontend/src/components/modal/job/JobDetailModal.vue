@@ -97,6 +97,19 @@
                 </v-col>
               </v-row>
 
+              <v-row v-if="!isNew && !deactivated" class="mt-n8">
+                <v-col cols="12" sm="" class="text-right">
+                  <v-btn
+                    color="blue-darken-1"
+                    variant="text"
+                    :disabled="reviewRequestButtonDisabled"
+                    @click="ReviewRequestModalVisible = true"
+                  >
+                    Request Review
+                  </v-btn>
+                </v-col>
+              </v-row>
+
               <v-row>
                 <v-col cols="12" sm="">
                   <v-textarea
@@ -180,11 +193,20 @@
       </v-card>
     </v-dialog>
   </v-row>
+  <div class="page-container flex-grow-1">
+    <ReviewRequestModal
+      v-if="ReviewRequestModalVisible"
+      :job="this.jobData"
+      :user="this.user"
+      @close="this.ReviewRequestModalVisible = false"
+    />
+  </div>
 </template>
 
 <script>
 import JobDetailDeadline from '../job/JobDetailDeadline.vue'
 import { ref } from 'vue'
+import ReviewRequestModal from './ReviewRequestModal.vue'
 
 const nextDeadlineId = ref(0) // TODO: remove once backend integration complete
 const deadlines = ref([])
@@ -193,6 +215,7 @@ const selectedColumnId = ref(-1)
 export default {
   components: {
     JobDetailDeadline,
+    ReviewRequestModal,
   },
   emits: ['close', 'createOrUpdateJob'],
   props: {
@@ -200,11 +223,11 @@ export default {
       type: Object,
       default: () => {
         return {
-          user: -1,
           id: -1,
           company: '',
           type: '',
           kcolumn_id: -1,
+          user_id: -1,
           position_title: '',
           description: '',
           cover_letter: '',
@@ -215,6 +238,14 @@ export default {
     columns: {
       type: Object,
       default: undefined,
+    },
+    user: {
+      type: Object,
+      default: undefined,
+    },
+    isNew: {
+      type: Boolean,
+      default: true,
     },
     viewingOther: {
       type: Boolean,
@@ -230,6 +261,8 @@ export default {
     positionErrorIndicator: null,
     companyErrorIndicator: null,
     deadlineError: false,
+    ReviewRequestModalVisible: false,
+    activeUser: props.user,
     deactivated: props.viewingOther,
   }),
   setup(props) {
@@ -241,6 +274,10 @@ export default {
   computed: {
     getColumns() {
       return this.columns
+    },
+
+    reviewRequestButtonDisabled() {
+      return this.jobData.cover_letter.trim() === ''
     },
   },
   methods: {

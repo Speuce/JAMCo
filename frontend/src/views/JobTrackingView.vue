@@ -5,7 +5,9 @@
       @createOrUpdateJob="createOrUpdateJob"
       @close="closeDetailModal"
       :job="this.selectedJob"
+      :user="this.activeUser"
       :columns="colList"
+      :isNew="this.isNewJob"
       :viewingOther="this.deactivated"
     />
     <ColumnOptionModal
@@ -188,6 +190,7 @@ export default {
               job.kcolumn_id
             ].sort((a, b) => a.id - b.id)
 
+            isNewJob.value = false
             this.selectedJob = completeJob.job_data
             this.detailModalVisible = true
           })

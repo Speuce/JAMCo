@@ -87,3 +87,68 @@ def update_job(request: HttpRequest):
         return JsonResponse(status=200, data={})
     except (ObjectDoesNotExist, AttributeError) as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+@require_POST
+def create_review_request(request: HttpRequest):
+    """
+    Creates a request for a cover letter review
+    """
+
+    body = read_request(request)
+    logger.debug(f"create_review_request: {body}")
+
+    try:
+        review_request = business.create_review_request(body)
+        return JsonResponse(status=200, data={"review_request": review_request.to_dict()})
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+def get_review_requests_for_user(request: HttpRequest):
+    """
+    Gets all the cover letter review requests that are addressed to a specific user
+    """
+
+    body = read_request(request)
+    logger.debug(f"get_review_requests_for_user: {body}")
+
+    try:
+        review_requests = business.get_review_requests_for_user(body)
+        return JsonResponse(
+            status=200, data={"review_requests": [review_request.to_dict() for review_request in review_requests]}
+        )
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+@require_POST
+def create_review(request: HttpRequest):
+    """
+    Creates a cover letter review
+    """
+
+    body = read_request(request)
+    logger.debug(f"create_review: {body}")
+
+    try:
+        review = business.create_review(body)
+        return JsonResponse(status=200, data={"review": review.to_dict()})
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+@require_POST
+def get_reviews_for_user(request: HttpRequest):
+    """
+    Gets all the cover letter reviews that are addressed to a specific user
+    """
+
+    body = read_request(request)
+    logger.debug(f"get_reviews_for_user: {body}")
+
+    try:
+        reviews = business.get_reviews_for_user(body)
+        return JsonResponse(status=200, data={"reviews": [review.to_dict() for review in reviews]})
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})

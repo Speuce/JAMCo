@@ -26,6 +26,16 @@
       <v-col class="py-0">
         <div class="text-end">
           <v-btn
+            v-if="!viewingOther"
+            color="primary"
+            flat
+            @click="incomingReviewsModalVisible = true"
+          >
+            <v-icon size="x-large">mdi-email</v-icon>
+            <v-divider class="mx-1" />
+            Inbox
+          </v-btn>
+          <v-btn
             v-if="this.viewingOther"
             color="primary"
             flat
@@ -80,6 +90,11 @@
         @close="this.userInfoModalVisible = false"
         @logout="logoutClicked"
       />
+      <IncomingReviewsModal
+        v-if="incomingReviewsModalVisible"
+        :user="this.userData"
+        @close="incomingReviewsModalVisible = false"
+      />
       <Suspense>
         <JobTrackingView
           v-if="this.userData"
@@ -101,6 +116,7 @@ import UserInfoModal from '../components/modal/user/UserInfoModal.vue'
 import FriendModal from '../components/modal/friend/FriendModal.vue'
 import { postRequest } from '@/helpers/requests.js'
 import { getAuthToken, setAuthToken } from '@/helpers/auth-cookie.js'
+import IncomingReviewsModal from '../components/modal/job/IncomingReviewsModal.vue'
 
 export default {
   components: {
@@ -108,6 +124,7 @@ export default {
     JobTrackingView,
     AccountSetupModal,
     UserInfoModal,
+    IncomingReviewsModal,
     FriendModal,
   },
   data() {
@@ -117,6 +134,7 @@ export default {
       sessionUser: null,
       setupModalVisible: false,
       userInfoModalVisible: false,
+      incomingReviewsModalVisible: false,
       failedAuthentication: false,
       friendModalVisible: false,
       viewingOther: false,

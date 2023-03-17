@@ -39,11 +39,11 @@ describe('JobDetailModal', () => {
   it('populates with default values when no props provided', () => {
     mountModal()
     expect(wrapper.vm.jobData).toEqual({
-      user: -1,
       id: -1,
       company: '',
       type: '',
       kcolumn_id: -1,
+      user_id: -1,
       position_title: '',
       description: '',
       cover_letter: '',
@@ -284,5 +284,23 @@ describe('JobDetailModal', () => {
         date: '2022-05-05',
       },
     ])
+  })
+  it('should only let the user click the review request button when the cover letter is nonempty', () => {
+    mountModal()
+    // Since the default job has an empty cover letter, the button should be enabled
+    expect(wrapper.vm.reviewRequestButtonDisabled).toBeTruthy()
+
+    mountModal(job)
+    // Since the example job has a nonempty cover letter, the button should be enabled
+    expect(wrapper.vm.reviewRequestButtonDisabled).toBeFalsy()
+  })
+  it('should treat a whitespace-only cover letter as empty', () => {
+    mountModal(job)
+    // Sanity check: Make sure that the whitespace-only cover letter is actually changing something
+    expect(wrapper.vm.reviewRequestButtonDisabled).toBeFalsy()
+
+    // Some of the most inspiration cover letters are wordless:
+    wrapper.vm.jobData.cover_letter = '   \n     '
+    expect(wrapper.vm.reviewRequestButtonDisabled).toBeTruthy()
   })
 })

@@ -1,9 +1,10 @@
 import json
 from django.test import TransactionTestCase
 from django.urls import reverse
-from job.models import Job
+from job.models import Job, ReviewRequest, Review
 from account.tests.factories import UserFactory
 from column.tests.factories import KanbanColumnFactory
+from job.tests.factories import JobFactory, ReviewRequestFactory, ReviewFactory
 
 
 class CreateJobTests(TransactionTestCase):
@@ -43,6 +44,7 @@ class CreateJobTests(TransactionTestCase):
                 "notes": "",
                 "cover_letter": "",
                 "kcolumn_id": 1,
+                "user_id": self.user.id,
                 "deadlines": None,
                 "type": None,
             },
@@ -147,6 +149,7 @@ class UpdateJobTests(TransactionTestCase):
                 "notes": "",
                 "cover_letter": "",
                 "kcolumn_id": self.column.id,
+                "user_id": self.user.id,
                 "deadlines": None,
                 "type": None,
             },
@@ -184,6 +187,7 @@ class UpdateJobTests(TransactionTestCase):
                 "notes": "",
                 "cover_letter": "cover letter",
                 "kcolumn_id": self.column.id,
+                "user_id": self.user.id,
                 "deadlines": None,
                 "type": "test_type",
             },
@@ -218,6 +222,7 @@ class UpdateJobTests(TransactionTestCase):
                 "notes": "",
                 "cover_letter": "",
                 "kcolumn_id": self.column.id,
+                "user_id": self.user.id,
                 "deadlines": None,
                 "type": None,
             },
@@ -258,6 +263,7 @@ class UpdateJobTests(TransactionTestCase):
                 "notes": "",
                 "cover_letter": "",
                 "kcolumn_id": self.column.id,
+                "user_id": self.user.id,
                 "deadlines": None,
                 "type": None,
             },
@@ -292,6 +298,7 @@ class UpdateJobTests(TransactionTestCase):
                 "notes": "",
                 "cover_letter": "",
                 "kcolumn_id": self.column.id,
+                "user_id": self.user.id,
                 "deadlines": None,
                 "type": None,
             },
@@ -332,6 +339,7 @@ class UpdateJobTests(TransactionTestCase):
                 "notes": "",
                 "cover_letter": "",
                 "kcolumn_id": self.column.id,
+                "user_id": self.user.id,
                 "deadlines": None,
                 "type": None,
             },
@@ -374,6 +382,7 @@ class GetMinimumJobsTests(TransactionTestCase):
                 "notes": "",
                 "cover_letter": "",
                 "kcolumn_id": self.column.id,
+                "user_id": self.user.id,
                 "deadlines": None,
                 "type": None,
             },
@@ -438,6 +447,7 @@ class GetJobByIdTests(TransactionTestCase):
             "notes": "",
             "cover_letter": "",
             "kcolumn_id": self.column.id,
+            "user_id": self.user.id,
             "deadlines": None,
             "type": None,
         }
@@ -489,6 +499,7 @@ class GetJobByIdTests(TransactionTestCase):
             "notes": "",
             "cover_letter": "",
             "kcolumn_id": column_two.id,
+            "user_id": user_two.id,
             "deadlines": None,
             "type": None,
         }
@@ -533,3 +544,180 @@ class GetJobByIdTests(TransactionTestCase):
             response.content.decode("utf-8"),
             json.dumps({"error": "ObjectDoesNotExist('Job with that User does not exist')"}),
         )
+
+    def test_create_review_request(self):
+        self.assertEqual(len(ReviewRequest.objects.all()), 0)
+
+        job = JobFactory()
+        reviewer = UserFactory()
+        payload = {
+            "job_id": job.id,
+            "reviewer_id": reviewer.id,
+            "message": "i showed you my cover letter please respond",
+        }
+
+        response = self.client.post(
+            reverse("create_review_request"),
+            json.dumps(payload),
+            content_type="application/json",
+        )
+
+        # Check the response
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(ReviewRequest.objects.all()), 1)
+        response_dict = json.loads(response.content)["review_request"]
+        self.assertGreaterEqual(response_dict["id"], 0)
+        self.assertEqual(response_dict["reviewer_id"], payload["reviewer_id"])
+        self.assertEqual(response_dict["job_id"], payload["job_id"])
+        self.assertEqual(response_dict["sender_id"], job.user.id)
+        self.assertEqual(response_dict["message"], payload["message"])
+        self.assertEqual(response_dict["fulfilled"], False)
+
+    def test_create_review_request_with_error(self):
+        self.assertEqual(len(ReviewRequest.objects.all()), 0)
+
+        # Payload has missing fields
+        response = self.client.post(reverse("create_review_request"), "{}", content_type="application/JSON")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(len(ReviewRequest.objects.all()), 0)
+
+        # Reviewer doesn't exist
+        payload = {"reviewer_id": -1, "message": "7.8/10 too much water?"}
+        response = self.client.post(
+            reverse("create_review_request"),
+            json.dumps(payload),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(len(ReviewRequest.objects.all()), 0)
+
+        # Job doesn't exist
+        payload = {"job_id": -1, "message": "REVIEW COVER LETTER NOW (2019) (NO VIRUS)"}
+        response = self.client.post(
+            reverse("create_review_request"),
+            json.dumps(payload),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(len(ReviewRequest.objects.all()), 0)
+
+    def test_get_review_requests_for_user(self):
+        recipient = UserFactory()
+        review_requests = [ReviewRequestFactory() for i in range(100)]
+        for review_request in review_requests:
+            review_request.reviewer = recipient
+            review_request.save()
+        other_recipient = UserFactory()
+        other_requests = [ReviewRequestFactory() for i in range(200)]
+        for review_request in other_requests:
+            review_request.reviewer = other_recipient
+            review_request.save()
+
+        payload = {"user_id": recipient.id}
+
+        response = self.client.post(
+            reverse("get_review_requests_for_user"), json.dumps(payload), content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(ReviewRequest.objects.count(), 300)
+        self.assertEqual(len(json.loads(response.content)["review_requests"]), 100)
+
+    def test_get_review_requests_for_user_with_error(self):
+        # Recipient doesn't exist
+        response = self.client.post(
+            reverse("get_review_requests_for_user"), json.dumps({"user_id": -1}), content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_create_review(self):
+        self.assertEqual(len(Review.objects.all()), 0)
+
+        review_request = ReviewRequestFactory()
+        payload = {"request_id": review_request.id, "response": "W"}
+
+        response = self.client.post(
+            reverse("create_review"),
+            json.dumps(payload),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(Review.objects.all()), 1)
+        response_dict = json.loads(response.content)["review"]
+        self.assertGreaterEqual(response_dict["id"], 0)
+        self.assertEqual(response_dict["request_id"], payload["request_id"])
+        self.assertEqual(response_dict["response"], payload["response"])
+        self.assertEqual(response_dict["completed"], None)
+
+    def test_create_review_with_error(self):
+        self.assertEqual(len(Review.objects.all()), 0)
+
+        review_request = ReviewRequestFactory()
+        reviewer = UserFactory()
+
+        # Request doesn't exist
+        review_data = {"reviewer_id": reviewer.id, "request_id": -1, "response": "🤓"}
+        response = self.client.post(
+            reverse("create_review"),
+            json.dumps(review_data),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(len(Review.objects.all()), 0)
+
+        # Response not given
+        review_data = {"reviewer_id": reviewer.id, "request_id": review_request.id}
+        response = self.client.post(
+            reverse("create_review"),
+            json.dumps(review_data),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(len(Review.objects.all()), 0)
+
+        # (an empty response is fine, though)
+        review_data = {"reviewer_id": reviewer.id, "request_id": review_request.id, "response": ""}
+        response = self.client.post(
+            reverse("create_review"),
+            json.dumps(review_data),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(Review.objects.all()), 1)
+
+        # Field(s) missing
+        review_data = {"request_id": review_request.id}
+        response = self.client.post(
+            reverse("create_review"),
+            json.dumps(review_data),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(len(Review.objects.all()), 1)
+
+    def test_get_reviews_for_user(self):
+        recipient = UserFactory()
+        reviews = [ReviewFactory() for i in range(100)]
+        for review in reviews:
+            review.request.job.user = recipient
+            review.request.job.save()
+        other_recipient = UserFactory()
+        other_reviews = [ReviewFactory() for i in range(200)]
+        for review in other_reviews:
+            review.request.job.user = other_recipient
+            review.request.job.save()
+
+        payload = {"user_id": recipient.id}
+
+        response = self.client.post(
+            reverse("get_reviews_for_user"), json.dumps(payload), content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Review.objects.count(), 300)
+        self.assertEqual(len(json.loads(response.content)["reviews"]), 100)
+
+    def test_get_reviews_for_user_with_error(self):
+        # Recipient doesn't exist
+        response = self.client.post(
+            reverse("get_reviews_for_user"), json.dumps({"user_id": -1}), content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)

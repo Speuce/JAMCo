@@ -63,4 +63,12 @@ urlpatterns = [
     path("job/api/get_job_by_id", job_views.get_job_by_id, name="get_job_by_id"),
     path("job/api/create_job", job_views.create_job, name="create_job"),
     path("job/api/update_job", job_views.update_job, name="update_job"),
+    path("job/api/create_review_request", job_views.create_review_request, name="create_review_request"),
+    path(
+        "job/api/get_review_requests_for_user",
+        job_views.get_review_requests_for_user,
+        name="get_review_requests_for_user",
+    ),
+    path("job/api/create_review", job_views.create_review, name="create_review"),
+    path("job/api/get_reviews_for_user", job_views.get_reviews_for_user, name="get_reviews_for_user"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.query import QuerySet
 from account.models import User
 from column.models import KanbanColumn
-from job.models import Job
+from job.models import Job, ReviewRequest, Review
 
 logger = logging.getLogger(__name__)
 
@@ -71,3 +71,33 @@ def get_minimum_jobs(in_user: int) -> QuerySet:
 
 def delete_job(in_user: int, job_id: int):
     Job.objects.get(id=job_id, user__id=in_user).delete()
+
+
+def create_review_request(payload: dict):
+    return ReviewRequest.objects.create(
+        job=Job.objects.get(id=payload["job_id"]),
+        reviewer=User.objects.get(id=payload["reviewer_id"]),
+        message=payload["message"],
+        fulfilled=False,
+    )
+
+
+def get_review_requests_for_user(payload: dict):
+    # We explicitly get the user in order to cause an exception if the user doesn't exist
+    # (if we just ran the query below with an invalid user id, it would hide the error by returning an empty queryset)
+    user = User.objects.get(id=payload["user_id"])
+
+    return ReviewRequest.objects.filter(reviewer=user)
+
+
+def create_review(payload: dict):
+    return Review.objects.create(
+        request=ReviewRequest.objects.get(id=payload["request_id"]),
+        response=payload["response"],
+        completed=None,
+    )
+
+
+def get_reviews_for_user(payload: dict):
+    user = User.objects.get(id=payload["user_id"])
+    return Review.objects.filter(request__job__user=user)
