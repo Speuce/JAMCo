@@ -135,14 +135,22 @@ export default {
       }
 
       this.selectedFriendIds.forEach((friendId) => {
-        postRequest('job/api/create_review_request', {
-          job_id: this.jobData.id,
-          reviewer_id: friendId,
-          message: this.message,
-        })
+        this.trySend(friendId)
       })
     },
-
+    async trySend(friendId) {
+      await postRequest('account/api/get_user_privacies', {
+        user_id: friendId,
+      }).then((privs) => {
+        if (privs.cover_letter_requestable) {
+          postRequest('job/api/create_review_request', {
+            job_id: this.jobData.id,
+            reviewer_id: friendId,
+            message: this.message,
+          })
+        }
+      })
+    },
     closeClicked() {
       this.messageErrorIndicator = null
       this.recipientErrorIndicator = null
