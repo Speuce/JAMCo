@@ -4,8 +4,13 @@
       <v-col class="py-0">
         <div class="text-begin" v-if="this.userData" color="primary" flat>
           <v-btn color="primary" flat :readonly="true">
-            {{ this.userData.first_name }} {{ this.userData.last_name }}'s Job
-            Board
+            {{
+              this.userData.id === this.sessionUser.id
+                ? 'Your Job Board'
+                : this.userData.first_name +
+                  this.userData.last_name +
+                  "'s Job Board"
+            }}
           </v-btn>
         </div>
       </v-col>

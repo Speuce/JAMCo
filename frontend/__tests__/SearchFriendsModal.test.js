@@ -107,7 +107,6 @@ describe('SearchFriendsModal', () => {
   })
 
   it('triggers friend Kanban View when viewFriendKanban is called', () => {
-    const logSpy = vi.spyOn(console, 'log')
     const userData = { id: 1, google_id: 'google123' }
     const user = { id: 2, google_id: 'google456' }
 
@@ -119,6 +118,7 @@ describe('SearchFriendsModal', () => {
 
     wrapper.vm.viewFriendKanban(user)
 
-    expect(logSpy).toBeCalledWith(user)
+    expect(wrapper.emitted().viewKanban[0][0]).toEqual(user)
+    expect(wrapper.emitted().close).toBeTruthy()
   })
 })
