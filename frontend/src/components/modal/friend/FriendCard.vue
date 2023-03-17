@@ -34,7 +34,7 @@
             id="view_kanban_button"
             v-bind="props"
             v-if="isFriend"
-            @click="this.$emit('viewKanban', userData.id)"
+            @click="this.$emit('viewKanban')"
             icon
             size="small"
             color="secondary"

@@ -13,6 +13,7 @@
                     class="text-h5"
                     v-model="jobData.position_title"
                     :style="{ color: this.positionErrorIndicator }"
+                    :readonly="this.deactivated"
                     maxlength="50"
                     variant="outlined"
                   />
@@ -25,6 +26,7 @@
                     id="job-type"
                     label="Type"
                     v-model="jobData.type"
+                    :readonly="this.deactivated"
                     maxlength="12"
                     variant="outlined"
                   />
@@ -38,6 +40,7 @@
                     label="Company*"
                     required
                     v-model="jobData.company"
+                    :readonly="this.deactivated"
                     :style="{ color: this.companyErrorIndicator }"
                     maxlength="50"
                     variant="outlined"
@@ -50,6 +53,7 @@
                   <v-select
                     id="job-status"
                     :items="getColumns"
+                    :readonly="this.deactivated"
                     item-title="name"
                     item-value="id"
                     label="Status*"
@@ -68,6 +72,7 @@
                     label="Description"
                     shaped
                     v-model="jobData.description"
+                    :readonly="this.deactivated"
                     maxlength="10000"
                     variant="outlined"
                     rows="3"
@@ -84,6 +89,7 @@
                     label="Cover Letter"
                     shaped
                     v-model="jobData.cover_letter"
+                    :readonly="this.deactivated"
                     maxlength="10000"
                     variant="outlined"
                     rows="3"
@@ -100,6 +106,7 @@
                     label="Notes"
                     shaped
                     v-model="jobData.notes"
+                    :readonly="this.deactivated"
                     maxlength="10000"
                     variant="outlined"
                     rows="3"
@@ -113,6 +120,7 @@
                 <h2 class="mr-2">Deadlines</h2>
                 <v-spacer></v-spacer>
                 <v-btn
+                  v-if="!this.deactivated"
                   id="add-deadline"
                   @click="newDeadline"
                   color="primary"
@@ -129,6 +137,7 @@
                   <JobDetailDeadline
                     :id="`deadline-${deadline.id}`"
                     :deadline="deadline"
+                    :viewingOther="deactivated"
                     @deleteDeadline="deleteDeadline"
                     @updateDeadline="handleDeadlineUpdate"
                     :tryError="deadlineError"
@@ -159,6 +168,7 @@
             Close
           </v-btn>
           <v-btn
+            v-if="!this.deactivated"
             id="job-save-button"
             color="blue-darken-1"
             variant="text"
@@ -206,6 +216,10 @@ export default {
       type: Object,
       default: undefined,
     },
+    viewingOther: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: (props) => ({
     dialog: true,
@@ -216,6 +230,7 @@ export default {
     positionErrorIndicator: null,
     companyErrorIndicator: null,
     deadlineError: false,
+    deactivated: props.viewingOther,
   }),
   setup(props) {
     deadlines.value = props.job.deadlines ? props.job.deadlines : []

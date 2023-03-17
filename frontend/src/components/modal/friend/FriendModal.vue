@@ -4,6 +4,7 @@
     @close="searchFriendModalVisible = false"
     :user-data="{ ...userData }"
     @fetchUserData="$emit('fetchUserData', $event)"
+    @viewKanban="viewFriend"
   />
   <v-row v-if="!searchFriendModalVisible">
     <v-dialog
@@ -83,6 +84,7 @@
                 :userData="user"
                 :isFriend="true"
                 @removeFriend="removeFriend(user)"
+                @viewKanban="viewFriend(user)"
               />
             </div>
           </div>
@@ -118,7 +120,7 @@ export default {
     FriendCard,
     SearchFriendsModal,
   },
-  emits: ['close', 'fetchUserData'],
+  emits: ['close', 'fetchUserData', 'loadFriend'],
   props: {
     userData: {
       type: Object,
@@ -154,6 +156,11 @@ export default {
         user2_id: user.id,
       })
       this.$emit('fetchUserData')
+    },
+    viewFriend(user) {
+      // set target friend to view and close modal
+      this.$emit('loadFriend', user.id)
+      this.$emit('close')
     },
   },
 }

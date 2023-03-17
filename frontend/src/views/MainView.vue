@@ -1,7 +1,20 @@
 <template>
   <div style="height: 100vh" class="d-flex flex-column">
     <v-row class="align-center headerbar ma-0 flex-grow-0">
-      <v-col class="py-0"></v-col>
+      <v-col class="py-0">
+        <div class="text-begin" v-if="this.userData" color="primary" flat>
+          <v-btn color="primary" flat :readonly="true">
+            {{
+              this.userData.id === this.sessionUser.id
+                ? 'Your Job Board'
+                : this.userData.first_name +
+                  ' ' +
+                  this.userData.last_name +
+                  "'s Job Board"
+            }}
+          </v-btn>
+        </div>
+      </v-col>
       <v-col class="py-0">
         <v-img
           class="mx-auto"
@@ -13,6 +26,17 @@
       <v-col class="py-0">
         <div class="text-end">
           <v-btn
+            v-if="this.viewingOther"
+            color="primary"
+            flat
+            @click="returnToHome"
+          >
+            <v-icon size="x-large" left>mdi-home</v-icon>
+            <v-divider class="mx-1" />
+            Back to My Board
+          </v-btn>
+          <v-btn
+            v-if="!viewingOther"
             id="friends_modal_button"
             color="primary"
             flat
@@ -23,6 +47,7 @@
             Friends
           </v-btn>
           <v-btn
+            v-if="!viewingOther"
             id="user_info_modal_button"
             color="primary"
             flat
@@ -45,6 +70,7 @@
         :userData="{ ...this.userData }"
         @close="friendModalVisible = false"
         @fetch-user-data="fetchUserData"
+        @loadFriend="showFriendKanban"
       />
       <UserInfoModal
         v-if="userInfoModalVisible"
@@ -57,7 +83,9 @@
       <Suspense>
         <JobTrackingView
           v-if="this.userData"
+          :key="this.componentKey"
           :user="this.userData"
+          :viewingOther="this.viewingOther"
           style="height: 100%"
         />
       </Suspense>
@@ -86,10 +114,13 @@ export default {
     return {
       userData: null,
       userPrivacies: null,
+      sessionUser: null,
       setupModalVisible: false,
       userInfoModalVisible: false,
       failedAuthentication: false,
       friendModalVisible: false,
+      viewingOther: false,
+      componentKey: false,
       authtoken: '',
     }
   },
@@ -152,7 +183,8 @@ export default {
 
     userSignedIn(resp) {
       this.userData = resp.data
-      if (this.setupIncomplete()) {
+      this.sessionUser = { ...this.userData }
+      if (this.setupIncomplete() && !this.viewingOther) {
         this.setupModalVisible = true
       }
       this.authtoken = resp.token
@@ -180,6 +212,7 @@ export default {
       await postRequest('account/api/update_account', userData)
 
       this.userData = userData
+      this.sessionUser = { ...this.userData }
 
       this.setupModalVisible = false
       this.userInfoModalVisible = false
@@ -193,10 +226,38 @@ export default {
         this.userPrivacies = userPrivacies
       }
     },
-
     showFriendsModal() {
       this.friendModalVisible = true
       this.fetchUserData()
+    },
+    async showFriendKanban(friendId) {
+      // first save the user's info
+      this.sessionUser = { ...this.userData }
+      // ensure auth'd
+      if (this.authtoken) {
+        // get friend data
+        const resp = await postRequest('account/api/get_friend_data', {
+          user_id: this.userData.id,
+          friend_id: friendId,
+        })
+        // toggle view mode and set user data to friend data
+        this.viewingOther = true
+        // this.userData = resp.friend
+        Object.assign(this.userData, resp.friend)
+        this.forceRerender()
+      } else {
+        this.failedAuthentication = true
+        this.userData = null
+      }
+    },
+    forceRerender() {
+      this.componentKey = !this.componentKey
+    },
+    returnToHome() {
+      this.userData = { ...this.sessionUser }
+      this.fetchUserData()
+      this.viewingOther = false
+      this.forceRerender()
     },
   },
 }

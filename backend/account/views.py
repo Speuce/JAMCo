@@ -248,3 +248,21 @@ def get_friend_requests_status(request: HttpRequest):
         return JsonResponse(data={"sent": list(sent), "received": list(received)})
     except Exception as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})
+
+
+def get_friend_data(request: HttpRequest):
+    """
+    Retrieve data of a friend of the user
+    """
+
+    try:
+        body = read_request(request)
+        user_id = body["user_id"]
+        friend_id = body["friend_id"]
+        logger.debug(f"get_friend_data: Getting info from user {friend_id} for user {user_id}")
+
+        friend = business.get_friend_data(user_id=user_id, friend_id=friend_id)
+
+        return JsonResponse({"friend": friend.to_dict()})
+    except Exception as err_msg:
+        return JsonResponse(status=400, data={"error": repr(err_msg)})
