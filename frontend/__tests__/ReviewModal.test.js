@@ -1,6 +1,11 @@
 import { mount } from '@vue/test-utils'
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ReviewModal from '../src/components/modal/job/ReviewModal.vue'
+import { postRequest } from '@/helpers/requests.js'
+
+vi.mock('@/helpers/requests.js', () => ({
+  postRequest: vi.fn(),
+}))
 
 describe('ReviewModal', () => {
   let wrapper
@@ -9,12 +14,16 @@ describe('ReviewModal', () => {
     wrapper = mount(ReviewModal, {})
   }
 
-  it('emits close when close button clicked', () => {
+  beforeEach(() => {
+    postRequest.mockImplementation(() => Promise.resolve({ job_data: {} }))
     mountModal()
-    let buttons = wrapper.findAllComponents({ name: 'v-btn' })
+  })
+
+  it('emits close when close button clicked', () => {
+    const buttons = wrapper.findAllComponents({ name: 'v-btn' })
 
     buttons.forEach((button) => {
-      if (button.text() === 'Close') {
+      if (button.text() === 'Cancel') {
         button.trigger('click')
       }
     })
@@ -22,11 +31,21 @@ describe('ReviewModal', () => {
     expect(wrapper.emitted('close')).toBeTruthy()
   })
 
-  it('sends a review when send button clicked', () => {
-    fail()
+  it('sends a review and closes when send button clicked', async () => {
+    await wrapper.vm.sendClicked()
+
+    expect(postRequest).toHaveBeenCalledWith('job/api/create_review', {
+      request_id: wrapper.vm.request.id,
+      response: wrapper.vm.review,
+    })
+    expect(wrapper.emitted('close')).toBeTruthy()
   })
 
   it('displays an error when send button is clicked without any review', () => {
+    fail()
+  })
+
+  it('treats a whitespace-only review as empty', () => {
     fail()
   })
 })
