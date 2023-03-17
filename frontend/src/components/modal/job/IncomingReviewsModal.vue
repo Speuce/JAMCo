@@ -6,7 +6,15 @@
           <h2 class="mt-3">Inbox</h2>
         </v-card-title>
         <v-card-text>
-          <v-row v-if="pendingReviewRequests.length > 0">
+          <v-row
+            v-if="pendingReviewRequests.length == 0 && reviews.length == 0"
+            ref="emptyInboxMessage"
+          >
+            You have no incoming cover letter reviews or review requests. You
+            can ask your friends to review your cover letters by pressing the
+            "Request Review" button next to any cover letter.
+          </v-row>
+          <v-row v-if="pendingReviewRequests.length > 0" ref="requestSection">
             <v-col>
               <v-row>
                 <h3>Review Requests</h3>
@@ -29,7 +37,7 @@
               </v-row>
             </v-col>
           </v-row>
-          <v-row v-if="reviews.length > 0">
+          <v-row v-if="reviews.length > 0" ref="reviewSection">
             <v-col>
               <v-row>
                 <h3>Reviews</h3>
