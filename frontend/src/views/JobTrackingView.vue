@@ -8,6 +8,7 @@
       :job="this.selectedJob"
       :user="this.activeUser"
       :columns="colList"
+      :isNew="this.isNewJob"
     />
     <ColumnOptionModal
       v-if="boardOptionModalVisible"
