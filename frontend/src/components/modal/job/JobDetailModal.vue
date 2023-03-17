@@ -96,6 +96,7 @@
                   <v-btn
                     color="blue-darken-1"
                     variant="text"
+                    :disabled="reviewRequestButtonDisabled"
                     @click="ReviewRequestModalVisible = true"
                   >
                     Request Review
@@ -258,6 +259,10 @@ export default {
   computed: {
     getColumns() {
       return this.columns
+    },
+
+    reviewRequestButtonDisabled() {
+      return this.jobData.cover_letter === ''
     },
   },
   methods: {

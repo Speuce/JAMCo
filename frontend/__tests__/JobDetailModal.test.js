@@ -285,4 +285,10 @@ describe('JobDetailModal', () => {
       },
     ])
   })
+  it('should only show the review request button when the job had been saved', () => {
+    fail()
+  })
+  it('should only let the user click the review request button when the cover letter is nonempty', () => {
+    fail()
+  })
 })
