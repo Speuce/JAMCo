@@ -262,7 +262,7 @@ export default {
     },
 
     reviewRequestButtonDisabled() {
-      return this.jobData.cover_letter === ''
+      return this.jobData.cover_letter.trim() === ''
     },
   },
   methods: {
