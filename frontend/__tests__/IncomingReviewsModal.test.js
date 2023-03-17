@@ -1,6 +1,11 @@
 import { mount } from '@vue/test-utils'
 import { expect, describe, it, vi, beforeEach } from 'vitest';
 import IncomingReviewsModal from '../src/components/modal/job/IncomingReviewsModal.vue'
+import { postRequest } from '@/helpers/requests.js'
+
+vi.mock('@/helpers/requests.js', () => ({
+  postRequest: vi.fn(),
+}))
 
 describe('IncomingReviewsModal', () => {
   let wrapper
@@ -25,6 +30,7 @@ describe('IncomingReviewsModal', () => {
   }
 
   beforeEach(() => {
+    postRequest.mockImplementation(() => Promise.resolve({ review_requests: [], reviews: [] }))
     mountModal()
   })
 
