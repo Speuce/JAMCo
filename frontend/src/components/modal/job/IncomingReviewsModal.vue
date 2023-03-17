@@ -113,20 +113,24 @@ export default {
       '/job/api/get_review_requests_for_user',
       { user_id: this.user.id },
     )
-    this.reviewRequests = reviewRequestResponse.review_requests
+    this.reviewRequests = []
 
-    this.reviewRequests.forEach((request) => {
+    reviewRequestResponse.review_requests.forEach((request) => {
       request.sender = this.activeUser.friends.find(
         (friend) => friend.id === request.sender_id,
       )
+      if (request.sender) {
+        this.reviewRequests.push(request)
+      }
     })
 
     const reviewResponse = await postRequest('/job/api/get_reviews_for_user', {
       user_id: this.user.id,
     })
-    this.reviews = reviewResponse.reviews
 
-    this.reviews.forEach(async (review) => {
+    this.reviews = []
+
+    reviewResponse.reviews.forEach(async (review) => {
       const jobResponse = await postRequest('/job/api/get_job_by_id', {
         user_id: this.activeUser.id,
         job_id: review.job_id,
@@ -138,6 +142,10 @@ export default {
       review.reviewer = this.activeUser.friends.find(
         (friend) => friend.id === review.reviewer_id,
       )
+
+      if (review.reviewer) {
+        this.reviews.push(review)
+      }
     })
   },
 
