@@ -150,7 +150,7 @@ export default {
       this.$emit('fetchUserData')
     },
     viewFriend(user) {
-      this.$emit('viewFriend', user.id)
+      this.$emit('loadFriend', user.id)
     },
   },
 }
