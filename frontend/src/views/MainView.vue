@@ -26,6 +26,7 @@
       <v-col class="py-0">
         <div class="text-end">
           <v-btn
+            v-if="!viewingOther"
             color="primary"
             flat
             @click="incomingReviewsModalVisible = true"
