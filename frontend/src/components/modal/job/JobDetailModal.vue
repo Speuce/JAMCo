@@ -97,7 +97,7 @@
                 </v-col>
               </v-row>
 
-              <v-row v-if="!isNew" class="mt-n8">
+              <v-row v-if="!isNew && !deactivated" class="mt-n8">
                 <v-col cols="12" sm="" class="text-right">
                   <v-btn
                     color="blue-darken-1"
