@@ -8,6 +8,7 @@ from logging import getLogger
 
 logger = getLogger(__name__)
 
+
 @ensure_csrf_cookie
 def index(request):
     logger.info("Access to index.html")
