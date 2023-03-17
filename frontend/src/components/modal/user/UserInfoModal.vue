@@ -10,7 +10,10 @@
                   <h2>Settings</h2>
                 </v-col>
                 <v-col cols="12" sm="5">
-                  <v-btn class="margin-top" @click="this.$emit('logout')"
+                  <v-btn
+                    id="logout_button"
+                    class="margin-top"
+                    @click="this.$emit('logout')"
                     >LOGOUT<v-divider class="mx-1" /><v-icon
                       >mdi-logout</v-icon
                     ></v-btn

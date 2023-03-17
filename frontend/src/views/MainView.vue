@@ -12,12 +12,22 @@
       </v-col>
       <v-col class="py-0">
         <div class="text-end">
-          <v-btn color="primary" flat @click="showFriendsModal">
+          <v-btn
+            id="friends_modal_button"
+            color="primary"
+            flat
+            @click="showFriendsModal"
+          >
             <v-icon size="x-large" left>mdi-account-group</v-icon>
             <v-divider class="mx-1" />
             Friends
           </v-btn>
-          <v-btn color="primary" flat @click="userInfoModalVisible = true">
+          <v-btn
+            id="user_info_modal_button"
+            color="primary"
+            flat
+            @click="userInfoModalVisible = true"
+          >
             <v-icon size="x-large">mdi-cog</v-icon>
           </v-btn>
         </div>
@@ -108,7 +118,12 @@ export default {
     logoutClicked() {
       this.authtoken = ''
       setAuthToken('')
-      location.reload()
+      this.userData = null
+      this.userPrivacies = null
+      this.setupModalVisible = false
+      this.userInfoModalVisible = false
+      this.failedAuthentication = true
+      this.friendModalVisible = false
     },
     async onSignin(response) {
       const item = {

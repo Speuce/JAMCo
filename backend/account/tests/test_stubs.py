@@ -15,6 +15,17 @@ class OauthStubTests(TestCase):
                 "family_name": "Doe",
             },
         )
+        response = stub_verify_oauth2_token("test2", "test2")
+        self.assertEqual(
+            response,
+            {
+                "sub": "0987654321",
+                "email": "jane.doe@gmail.com",
+                "picture": "https://i.imgur.com/QJpNyuN.png",
+                "given_name": "Jane",
+                "family_name": "Doe",
+            },
+        )
 
     def test_stub_function_error(self):
         with self.assertRaises(ValueError):
