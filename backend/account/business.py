@@ -143,11 +143,8 @@ def get_friend_requests_status(user_id) -> list[FriendRequest, FriendRequest]:
 
 
 def get_friend_data(user_id, friend_id) -> User:
-    try:
-        result = query.get_friend_data(friend_id)
-        if query.are_friends(user_id, friend_id):
-            return result
-        else:
-            raise Exception
-    except (Exception, ObjectDoesNotExist):
-        raise Exception
+    result = query.get_friend_data(friend_id)
+    if query.are_friends(user_id, friend_id):
+        return result
+    else:
+        raise ObjectDoesNotExist
