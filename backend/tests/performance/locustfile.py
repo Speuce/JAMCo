@@ -5,7 +5,7 @@ import json
 
 
 class UserActor(HttpUser, TestCase):
-    wait_time = between(1, 3)
+    wait_time = between(1, 5)
 
     # simulate login
     def on_start(self):
@@ -30,7 +30,22 @@ class UserActor(HttpUser, TestCase):
         if not self.user_id:
             raise Exception(f"No user_id in response: {content}")
 
-        # TODO: update_account
+        # update account fields
+        response = self.client.post(
+            "/account/api/update_account",
+            json.dumps(
+                {
+                    "id": self.user_id,
+                    "first_name": self.faker.first_name(),
+                    "country": self.faker.country(),
+                    "field_of_work": self.faker.job(),
+                }
+            ),
+            headers={"X-CSRFToken": self.csrftoken},
+        )
+
+        if response.status_code != 200:
+            raise Exception(f"update_account error {json.loads(response.content)}")
 
         # TODO: get_user_privacies
 
