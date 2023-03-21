@@ -33,7 +33,7 @@ export default {
       return this.job ? stringToTriColourPalatte(this.job.type) : []
     },
     jobPosition() {
-      var jobPos = ''
+      let jobPos = ''
       if (this.job && this.job.position_title) {
         jobPos =
           this.job.position_title.length > 12
@@ -43,14 +43,14 @@ export default {
       return jobPos
     },
     jobCompany() {
-      var jobPos = ''
+      let jobComp = ''
       if (this.job && this.job.company) {
-        jobPos =
+        jobComp =
           this.job.company.length > 23
             ? this.job.company.substring(0, 23) + '...'
             : this.job.company
       }
-      return jobPos
+      return jobComp
     },
   },
 }
