@@ -27,7 +27,7 @@
                     label="Type"
                     v-model="jobData.type"
                     :readonly="this.deactivated"
-                    maxlength="12"
+                    maxlength="10"
                     variant="outlined"
                   />
                 </v-col>
