@@ -172,6 +172,7 @@ export default {
   padding-left: 50px;
   padding-right: 50px;
   padding-bottom: 20px;
+  overflow-y: auto;
 }
 
 .margin-top {
@@ -184,7 +185,7 @@ export default {
 .scrollable {
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: 20vh;
+  max-height: 28vh;
   padding: 1px;
 }
 </style>
