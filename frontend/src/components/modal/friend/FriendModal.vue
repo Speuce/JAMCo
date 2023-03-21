@@ -184,7 +184,7 @@ export default {
 .scrollable {
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: 10vh;
+  max-height: 20vh;
   padding: 1px;
 }
 </style>
