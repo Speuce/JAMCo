@@ -192,6 +192,14 @@ describe('MainView', () => {
     expect(forceRerenderSpy).toBeCalled()
   })
 
+  it('displays inbox modal when showInboxModal called', () => {
+    const wrapper = shallowMount(MainView)
+
+    expect(wrapper.vm.incomingReviewsModalVisible).toEqual(false)
+    wrapper.vm.showInboxModal()
+    expect(wrapper.vm.incomingReviewsModalVisible).toEqual(true)
+  })
+
   it('handles unauthenticated access of friend kanban', async () => {
     const userData = { id: 0, first_name: 'first' }
     const friend = { id: 1, first_name: 'newname' }

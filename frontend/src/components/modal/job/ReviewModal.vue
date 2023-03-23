@@ -5,7 +5,8 @@
         <v-card-title>
           <h2 class="mt-3">
             Reviewing
-            {{ requestData.sender.first_name }} {{ requestData.sender.last_name }}'s Cover Letter
+            {{ requestData.sender.first_name }}
+            {{ requestData.sender.last_name }}'s Cover Letter
           </h2>
           <h4>{{ jobData?.position_title }} at {{ jobData?.company }}</h4>
         </v-card-title>

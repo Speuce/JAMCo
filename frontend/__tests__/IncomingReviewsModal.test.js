@@ -47,7 +47,10 @@ describe('IncomingReviewsModal', () => {
   }
 
   const mockEmptyPostRequest = () => {
-    return Promise.resolve({ review_requests: [], reviews: [] })
+    return Promise.resolve({
+      review_requests: [],
+      reviews: [{ reviewer_id: 2 }],
+    })
   }
 
   it('emits close when close button clicked', () => {
