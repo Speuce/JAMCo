@@ -3,15 +3,12 @@ from dotenv import load_dotenv
 from locust import HttpUser, task, between
 from faker import Faker
 import json
-from django.utils import timezone
 
 # Required to setup django, allowing for module import(s) below
 load_dotenv()
 django.setup()
 
-from account.models import User, FriendRequest, Privacy  # noqa: E402
-from job.models import Job, ReviewRequest  # noqa: E402
-from column.models import KanbanColumn  # noqa: E402
+from account.models import User  # noqa: E402
 
 
 class UserActor(HttpUser):
@@ -220,12 +217,25 @@ class UserActor(HttpUser):
     @task
     def job_modal_request_cover_letter_review_interaction(self):
         # create job
-        new_job = Job.objects.create(
-            position_title=self.faker.job(),
-            company=self.faker.company(),
-            user=User.objects.get(id=self.user_id),
-            kcolumn=KanbanColumn.objects.get(id=self.columns[0]["id"]),
+        response = self.client.post(
+            "/job/api/create_job",
+            json.dumps(
+                {
+                    "user_id": self.user_id,
+                    "position_title": self.faker.job(),
+                    "company": self.faker.company(),
+                    "type": self.faker.safe_color_name(),
+                    "kcolumn_id": self.columns[0]["id"],
+                }
+            ),
+            headers={"X-CSRFToken": self.csrftoken},
         )
+
+        if response.status_code != 200:
+            raise ValueError(f"create_job error {response.content}")
+
+        content = json.loads(response.content)
+        job_id = content["job"]["id"]
 
         # ~50% of the time in order to emulate non-populated kanban job
         if self.faker.boolean():
@@ -235,7 +245,7 @@ class UserActor(HttpUser):
                 json.dumps(
                     {
                         "user_id": self.user_id,
-                        "job_id": new_job.id,
+                        "job_id": job_id,
                     }
                 ),
                 headers={"X-CSRFToken": self.csrftoken},
@@ -245,22 +255,23 @@ class UserActor(HttpUser):
                 raise ValueError(f"get_job_by_id error {response.content}")
 
         # Create Account, Add Friends
-        g_id = self.faker.uuid4()
-        new_user = User.objects.create(username=g_id, google_id=g_id)
-        User.objects.get(id=self.user_id).friends.set([new_user])
-
-        # update new User privacy
-        Privacy.objects.create(
-            user=new_user,
-            is_searchable=True,
-            share_kanban=True,
-            cover_letter_requestable=True,
+        response = self.client.post(
+            "/account/api/get_or_create_account",
+            json.dumps({"credential": "load_test", "client_id": "load_test"}),
+            headers={"X-CSRFToken": self.csrftoken},
         )
+        if response.status_code != 200:
+            raise ValueError(f"get_or_create_account error {response.content}")
+
+        content = json.loads(response.content)
+        user_id = content["data"]["id"]
+
+        User.objects.get(id=self.user_id).friends.set([User.objects.get(id=user_id)])
 
         # Send review request
         response = self.client.post(
             "/job/api/create_review_request",
-            json.dumps({"job_id": new_job.id, "reviewer_id": new_user.id, "message": "Review Please"}),
+            json.dumps({"job_id": job_id, "reviewer_id": user_id, "message": "Review Please"}),
             headers={"X-CSRFToken": self.csrftoken},
         )
 
@@ -312,21 +323,21 @@ class UserActor(HttpUser):
             raise ValueError(f"search_users_by_name error {response.content}")
 
         # Create Account To Send Request To
-        g_id = self.faker.uuid4()
-        new_user = User.objects.create(username=g_id, google_id=g_id)
-
-        # update user privacy
-        Privacy.objects.create(
-            user=new_user,
-            is_searchable=True,
-            share_kanban=True,
-            cover_letter_requestable=True,
+        response = self.client.post(
+            "/account/api/get_or_create_account",
+            json.dumps({"credential": "load_test", "client_id": "load_test"}),
+            headers={"X-CSRFToken": self.csrftoken},
         )
+        if response.status_code != 200:
+            raise ValueError(f"get_or_create_account error {response.content}")
+
+        content = json.loads(response.content)
+        user_id = content["data"]["id"]
 
         # send friend request
         response = self.client.post(
             "/account/api/create_friend_request",
-            json.dumps({"from_user_id": self.user_id, "to_user_id": new_user.id}),
+            json.dumps({"from_user_id": self.user_id, "to_user_id": user_id}),
             headers={"X-CSRFToken": self.csrftoken},
         )
 
@@ -346,48 +357,81 @@ class UserActor(HttpUser):
             raise ValueError(f"get_updated_user_data error {response.content}")
 
         # create user
-        g_id = self.faker.uuid4()
-        new_user = User.objects.create(username=g_id, google_id=g_id)
+        response = self.client.post(
+            "/account/api/get_or_create_account",
+            json.dumps({"credential": "load_test", "client_id": "load_test"}),
+            headers={"X-CSRFToken": self.csrftoken},
+        )
+        if response.status_code != 200:
+            raise ValueError(f"get_or_create_account error {response.content}")
 
-        # update user privacy
-        Privacy.objects.create(
-            user=new_user,
-            is_searchable=True,
-            share_kanban=True,
-            cover_letter_requestable=True,
+        content = json.loads(response.content)
+        user_id = content["data"]["id"]
+
+        # update self privacy to be searchable
+        response = self.client.post(
+            "/account/api/update_privacies",
+            json.dumps(
+                {
+                    "user_id": self.user_id,
+                    "privacies": {
+                        "is_searchable": True,
+                        "share_kanban": self.faker.boolean(),
+                        "cover_letter_requestable": self.faker.boolean(),
+                    },
+                }
+            ),
+            headers={"X-CSRFToken": self.csrftoken},
         )
 
-        # add friend
-        User.objects.get(id=self.user_id).friends.set([new_user])
+        if response.status_code != 200:
+            raise ValueError(f"update_privacies error {response.content}")
 
         # create friend request
-        request = FriendRequest.objects.create(
-            from_user=User.objects.get(id=self.user_id),
-            to_user=new_user,
-            sent=timezone.now(),
-            accepted=False,
-            acknowledged=None,
+        response = self.client.post(
+            "/account/api/create_friend_request",
+            json.dumps({"from_user_id": user_id, "to_user_id": self.user_id}),
+            headers={"X-CSRFToken": self.csrftoken},
         )
+
+        if response.status_code != 200:
+            raise ValueError(f"create_friend_request error {response.content}")
+
+        # get updated user data
+        response = self.client.post(
+            "/account/api/get_updated_user_data",
+            json.dumps(self.token),
+            headers={"X-CSRFToken": self.csrftoken},
+        )
+
+        if response.status_code != 200:
+            raise ValueError(f"get_updated_user_data error {response.content}")
+
+        received_requests = json.loads(response.content)["user"]["received_friend_requests"]
 
         # ~50/50 accept/deny request
         if self.faker.boolean():
             response = self.client.post(
                 "/account/api/accept_friend_request",
-                json.dumps({"request_id": request.id, "from_user_id": self.user_id, "to_user_id": new_user.id}),
+                json.dumps(
+                    {"request_id": received_requests[0]["id"], "from_user_id": user_id, "to_user_id": self.user_id}
+                ),
                 headers={"X-CSRFToken": self.csrftoken},
             )
 
             if response.status_code != 200:
-                raise ValueError(f"get_updated_user_data error {response.content}")
+                raise ValueError(f"deny_friend_request error {response.content}")
         else:
             response = self.client.post(
                 "/account/api/deny_friend_request",
-                json.dumps({"request_id": request.id, "from_user_id": self.user_id, "to_user_id": new_user.id}),
+                json.dumps(
+                    {"request_id": received_requests[0]["id"], "from_user_id": user_id, "to_user_id": self.user_id}
+                ),
                 headers={"X-CSRFToken": self.csrftoken},
             )
 
             if response.status_code != 200:
-                raise ValueError(f"get_updated_user_data error {response.content}")
+                raise ValueError(f"deny_friend_request error {response.content}")
 
     @task
     def friends_modal_friend_kanban_interaction(self):
@@ -402,14 +446,23 @@ class UserActor(HttpUser):
             raise ValueError(f"get_updated_user_data error {response.content}")
 
         # create new user, add friends
-        g_id = self.faker.uuid4()
-        new_user = User.objects.create(username=g_id, google_id=g_id)
-        User.objects.get(id=self.user_id).friends.set([new_user])
+        response = self.client.post(
+            "/account/api/get_or_create_account",
+            json.dumps({"credential": "load_test", "client_id": "load_test"}),
+            headers={"X-CSRFToken": self.csrftoken},
+        )
+        if response.status_code != 200:
+            raise ValueError(f"get_or_create_account error {response.content}")
+
+        content = json.loads(response.content)
+        user_id = content["data"]["id"]
+
+        User.objects.get(id=self.user_id).friends.set([User.objects.get(id=user_id)])
 
         # view friend kanban
         response = self.client.post(
             "/account/api/get_friend_data",
-            json.dumps({"user_id": self.user_id, "friend_id": new_user.id}),
+            json.dumps({"user_id": self.user_id, "friend_id": user_id}),
             headers={"X-CSRFToken": self.csrftoken},
         )
 
@@ -448,37 +501,58 @@ class UserActor(HttpUser):
         if response.status_code != 200:
             raise ValueError(f"get_reviews_for_user error {response.content}")
 
-        # job, user, friend, review request
-        new_job = Job.objects.create(
-            position_title=self.faker.job(),
-            company=self.faker.company(),
-            user=User.objects.get(id=self.user_id),
-            kcolumn=KanbanColumn.objects.get(id=self.columns[0]["id"]),
+        # create job
+        response = self.client.post(
+            "/job/api/create_job",
+            json.dumps(
+                {
+                    "user_id": self.user_id,
+                    "position_title": self.faker.job(),
+                    "company": self.faker.company(),
+                    "type": self.faker.safe_color_name(),
+                    "kcolumn_id": self.columns[0]["id"],
+                }
+            ),
+            headers={"X-CSRFToken": self.csrftoken},
         )
 
-        g_id = self.faker.uuid4()
-        new_user = User.objects.create(username=g_id, google_id=g_id)
+        if response.status_code != 200:
+            raise ValueError(f"create_job error {response.content}")
 
-        Privacy.objects.create(
-            user=new_user,
-            is_searchable=True,
-            share_kanban=True,
-            cover_letter_requestable=True,
+        content = json.loads(response.content)
+        job_id = content["job"]["id"]
+
+        # create user
+        response = self.client.post(
+            "/account/api/get_or_create_account",
+            json.dumps({"credential": "load_test", "client_id": "load_test"}),
+            headers={"X-CSRFToken": self.csrftoken},
+        )
+        if response.status_code != 200:
+            raise ValueError(f"get_or_create_account error {response.content}")
+
+        content = json.loads(response.content)
+        user_id = content["data"]["id"]
+
+        # add friend
+        User.objects.get(id=self.user_id).friends.set([User.objects.get(id=user_id)])
+
+        # create review request
+        response = self.client.post(
+            "/job/api/create_review_request",
+            json.dumps({"job_id": job_id, "reviewer_id": user_id, "message": "Review Please"}),
+            headers={"X-CSRFToken": self.csrftoken},
         )
 
-        User.objects.get(id=self.user_id).friends.set([new_user])
+        if response.status_code != 200:
+            raise ValueError(f"create_review_request error {response.content}")
 
-        request = ReviewRequest.objects.create(
-            job=new_job,
-            reviewer=new_user,
-            message="Message",
-            fulfilled=False,
-        )
+        request_id = json.loads(response.content)["review_request"]["id"]
 
         # send review
         response = self.client.post(
             "/job/api/create_review",
-            json.dumps({"request_id": request.id, "response": "Review Response"}),
+            json.dumps({"request_id": request_id, "response": "Review Response"}),
             headers={"X-CSRFToken": self.csrftoken},
         )
 
