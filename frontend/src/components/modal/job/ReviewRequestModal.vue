@@ -15,7 +15,7 @@
                 multiple
                 chips
                 clearable
-                :items="activeUser.friends"
+                :items="sendableFriends"
                 item-title="first_name"
                 item-value="id"
                 label="Recipients*"
@@ -114,7 +114,11 @@ export default {
       messageErrorIndicator: null,
       recipientErrorIndicator: null,
       activeUser: props.user,
+      sendableFriends: [],
     }
+  },
+  beforeMount() {
+    this.checkSendability()
   },
   methods: {
     sendClicked() {
@@ -133,22 +137,24 @@ export default {
           this.recipientErrorIndicator = 'red'
         }
       }
-
+      // only sendable friends were selectable
       this.selectedFriendIds.forEach((friendId) => {
-        this.trySend(friendId)
+        postRequest('job/api/create_review_request', {
+          job_id: this.jobData.id,
+          reviewer_id: friendId,
+          message: this.message,
+        })
       })
     },
-    async trySend(friendId) {
-      await postRequest('account/api/get_user_privacies', {
-        user_id: friendId,
-      }).then((privs) => {
-        if (privs.cover_letter_requestable) {
-          postRequest('job/api/create_review_request', {
-            job_id: this.jobData.id,
-            reviewer_id: friendId,
-            message: this.message,
-          })
-        }
+    async checkSendability() {
+      this.activeUser.friends.forEach(async (friend) => {
+        await postRequest('account/api/get_user_privacies', {
+          user_id: friend.id,
+        }).then((privs) => {
+          if (privs.cover_letter_requestable) {
+            this.sendableFriends.push(friend)
+          }
+        })
       })
     },
     closeClicked() {

@@ -34,7 +34,11 @@
         size="x-large"
         icon
         class="internal"
-        @click="showDetailModal()"
+        @click="
+          () => {
+            if (!deactivated) showDetailModal()
+          }
+        "
         color="primary"
       >
         <v-icon>mdi-plus</v-icon>

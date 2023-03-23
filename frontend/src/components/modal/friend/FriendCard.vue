@@ -91,12 +91,8 @@ export default {
     this.getShareStatus()
   },
   methods: {
-    async requestBoardViewing() {
-      await postRequest('account/api/get_user_privacies', {
-        user_id: this.userData.id,
-      }).then((privs) => {
-        if (privs.share_kanban) this.$emit('viewKanban')
-      })
+    requestBoardViewing() {
+      if (this.kanbanViewable) this.$emit('viewKanban')
     },
     async getShareStatus() {
       await postRequest('account/api/get_user_privacies', {
