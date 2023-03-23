@@ -14,7 +14,6 @@ from job.models import Job, ReviewRequest  # noqa: E402
 from column.models import KanbanColumn  # noqa: E402
 
 
-# TODO: Create Test DB On Locust Launch - TestCase?
 class UserActor(HttpUser):
     wait_time = between(10, 12)
 
