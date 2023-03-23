@@ -10,13 +10,13 @@ load_dotenv()
 django.setup()
 
 from account.models import User, FriendRequest, Privacy  # noqa: E402
-from job.models import Job  # noqa: E402
+from job.models import Job, ReviewRequest  # noqa: E402
 from column.models import KanbanColumn  # noqa: E402
 
 
 # TODO: Create Test DB On Locust Launch - TestCase?
 class UserActor(HttpUser):
-    wait_time = between(0, 1)  # 5, 10
+    wait_time = between(10, 12)
 
     # __init__ not required for locust
     # Only used to define object fields accessed in @tasks
@@ -429,7 +429,59 @@ class UserActor(HttpUser):
         if response.status_code != 200:
             raise ValueError(f"get_updated_user_data error {response.content}")
 
-        # TODO: get_review_requests_for_user
-        # TODO: get_reviews_for_user
+        # get review requests
+        response = self.client.post(
+            "/job/api/get_review_requests_for_user",
+            json.dumps({"user_id": self.user_id}),
+            headers={"X-CSRFToken": self.csrftoken},
+        )
 
-        # TODO: send_review(?)
+        if response.status_code != 200:
+            raise ValueError(f"get_review_requests_for_user error {response.content}")
+
+        # get reviews for user
+        response = self.client.post(
+            "/job/api/get_reviews_for_user",
+            json.dumps({"user_id": self.user_id}),
+            headers={"X-CSRFToken": self.csrftoken},
+        )
+
+        if response.status_code != 200:
+            raise ValueError(f"get_reviews_for_user error {response.content}")
+
+        # job, user, friend, review request
+        new_job = Job.objects.create(
+            position_title=self.faker.job(),
+            company=self.faker.company(),
+            user=User.objects.get(id=self.user_id),
+            kcolumn=KanbanColumn.objects.get(id=self.columns[0]["id"]),
+        )
+
+        g_id = self.faker.uuid4()
+        new_user = User.objects.create(username=g_id, google_id=g_id)
+
+        Privacy.objects.create(
+            user=new_user,
+            is_searchable=True,
+            share_kanban=True,
+            cover_letter_requestable=True,
+        )
+
+        User.objects.get(id=self.user_id).friends.set([new_user])
+
+        request = ReviewRequest.objects.create(
+            job=new_job,
+            reviewer=new_user,
+            message="Message",
+            fulfilled=False,
+        )
+
+        # send review
+        response = self.client.post(
+            "/job/api/create_review",
+            json.dumps({"request_id": request.id, "response": "Review Response"}),
+            headers={"X-CSRFToken": self.csrftoken},
+        )
+
+        if response.status_code != 200:
+            raise ValueError(f"create_review error {response.content}")
