@@ -104,10 +104,15 @@ export default {
         'account/api/search_users_by_name',
         this.searchField,
       )
-      // Filter out the current user from the search results
-      this.searchResults = response.user_list.filter(
-        (user) => user.id !== this.userData.id,
-      )
+      // Filter out the current user && users who have pending requests already
+      this.searchResults = response.user_list.filter((user) => {
+        return (
+          user.id !== this.userData.id &&
+          !this.userData.received_friend_requests.some(
+            (x) => x.from_user_id === user.id,
+          )
+        )
+      })
     },
 
     async sendFriendRequest(user) {
