@@ -181,6 +181,92 @@
                     your current friends).
                   </v-list-item-subtitle>
                 </v-list-item>
+                <v-list-item
+                  value="share_kanban"
+                  @click="
+                    () => {
+                      if (this.editingEnabled) {
+                        this.userPrivacies.share_kanban =
+                          !this.userPrivacies.share_kanban
+                      }
+                    }
+                  "
+                >
+                  <template v-slot:prepend>
+                    <v-list-item-action
+                      start
+                      @click="
+                        () => {
+                          if (this.editingEnabled) {
+                            this.userPrivacies.share_kanban =
+                              !this.userPrivacies.share_kanban
+                          }
+                        }
+                      "
+                    >
+                      <v-checkbox-btn
+                        :model-value="this.userPrivacies.share_kanban"
+                        :disabled="!this.editingEnabled"
+                        @click="
+                          () => {
+                            if (this.editingEnabled) {
+                              this.userPrivacies.share_kanban =
+                                !this.userPrivacies.share_kanban
+                            }
+                          }
+                        "
+                      />
+                    </v-list-item-action>
+                  </template>
+                  <v-list-item-title>Share Applications</v-list-item-title>
+                  <v-list-item-subtitle>
+                    Allow my friends to view my application board.
+                  </v-list-item-subtitle>
+                </v-list-item>
+                <v-list-item
+                  value="cover_letter_requestable"
+                  @click="
+                    () => {
+                      if (this.editingEnabled) {
+                        this.userPrivacies.cover_letter_requestable =
+                          !this.userPrivacies.cover_letter_requestable
+                      }
+                    }
+                  "
+                >
+                  <template v-slot:prepend>
+                    <v-list-item-action
+                      start
+                      @click="
+                        () => {
+                          if (this.editingEnabled) {
+                            this.userPrivacies.cover_letter_requestable =
+                              !this.userPrivacies.cover_letter_requestable
+                          }
+                        }
+                      "
+                    >
+                      <v-checkbox-btn
+                        :model-value="
+                          this.userPrivacies.cover_letter_requestable
+                        "
+                        :disabled="!this.editingEnabled"
+                        @click="
+                          () => {
+                            if (this.editingEnabled) {
+                              this.userPrivacies.cover_letter_requestable =
+                                !this.userPrivacies.cover_letter_requestable
+                            }
+                          }
+                        "
+                      />
+                    </v-list-item-action>
+                  </template>
+                  <v-list-item-title>Cover Letter Requests</v-list-item-title>
+                  <v-list-item-subtitle>
+                    Allow my friends to request cover letter reviews from me.
+                  </v-list-item-subtitle>
+                </v-list-item>
               </v-list>
             </v-col>
             <v-row class="center offset-right">
