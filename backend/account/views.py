@@ -10,6 +10,7 @@ from django.views.decorators.http import require_POST
 from django.core.exceptions import ObjectDoesNotExist
 from google.oauth2 import id_token
 from google.auth.transport import requests
+from account.decorators import requires_login
 from account.stubs import stub_verify_oauth2_token
 from jamco.helper import read_request
 from . import business
@@ -58,6 +59,7 @@ def get_or_create_account(request: HttpRequest):
 
 
 @require_POST
+@requires_login(check_field="id")
 def update_account(request: HttpRequest):
     """
     Updates information about an account, given a google id token.
@@ -79,6 +81,7 @@ def update_account(request: HttpRequest):
 
 
 @require_POST
+@requires_login()
 def update_privacies(request: HttpRequest):
     """
     Updates privacy settings given a user id
@@ -97,6 +100,7 @@ def update_privacies(request: HttpRequest):
 
 
 @require_POST
+@requires_login()
 def get_user_privacies(request: HttpRequest):
     """
     Gets Privacy options for the specified user
@@ -116,6 +120,7 @@ def get_user_privacies(request: HttpRequest):
 
 
 @require_POST
+@requires_login(check_field="user1_id")
 def remove_friend(request: HttpRequest):
     """
     Takes two users' ids and makes it so those two users are no longer friends with each other. If they weren't friends
@@ -180,6 +185,8 @@ def search_users_by_name(request: HttpRequest):
     return JsonResponse(data={"user_list": users_list})
 
 
+@require_POST
+@requires_login(check_field="from_user_id")
 def create_friend_request(request: HttpRequest):
     """
     Creates new FriendRequest
@@ -197,6 +204,8 @@ def create_friend_request(request: HttpRequest):
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
 
+@require_POST
+@requires_login(check_field="to_user_id")
 def accept_friend_request(request: HttpRequest):
     """
     Accepts friend request sent to this user (the user sending accept)
@@ -214,7 +223,8 @@ def accept_friend_request(request: HttpRequest):
     except Exception as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
-
+@require_POST
+@requires_login(check_field="to_user_id")
 def deny_friend_request(request: HttpRequest):
     """
     Denies friend request sent to this user (the user sending deny)
@@ -232,7 +242,8 @@ def deny_friend_request(request: HttpRequest):
     except Exception as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
-
+@require_POST
+@requires_login(check_field="user_id")
 def get_friend_requests_status(request: HttpRequest):
     """
     Get sent & received requests for a user
@@ -250,6 +261,8 @@ def get_friend_requests_status(request: HttpRequest):
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
 
+@require_POST
+@requires_login(check_field="user_id")
 def get_friend_data(request: HttpRequest):
     """
     Retrieve data of a friend of the user
