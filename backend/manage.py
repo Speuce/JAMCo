@@ -2,9 +2,13 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+import logging
 
 
 def main():
+    # Hides clutter: localization faker logs
+    logging.getLogger("faker").setLevel(logging.ERROR)
+
     """Run administrative tasks."""
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "jamco.settings")
     try:
