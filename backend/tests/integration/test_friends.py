@@ -1,10 +1,15 @@
 import json
-from django.test import TransactionTestCase
-from django.utils import timezone
-from datetime import datetime
-from django.urls import reverse
-from account.tests.factories import UserFactory, PrivacyFactory, FriendRequestFactory
-from account.models import FriendRequest, User
+from unittest.mock import patch
+
+patch("account.decorators.requires_login", lambda *args, **kwargs: lambda x: x).start()
+
+
+from django.test import TransactionTestCase  # noqa: E402
+from django.utils import timezone  # noqa: E402
+from datetime import datetime  # noqa: E402
+from django.urls import reverse  # noqa: E402
+from account.tests.factories import UserFactory, PrivacyFactory, FriendRequestFactory  # noqa: E402
+from account.models import FriendRequest, User  # noqa: E402
 
 
 class CreateFriendRequestTests(TransactionTestCase):
