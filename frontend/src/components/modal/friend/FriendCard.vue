@@ -33,7 +33,7 @@
           <v-btn
             id="view_kanban_button"
             v-bind="props"
-            v-if="isFriend"
+            v-if="isFriend && this.kanbanViewable"
             @click="requestBoardViewing"
             icon
             size="small"
@@ -82,12 +82,27 @@ export default {
       default: false,
     },
   },
+  data() {
+    return {
+      kanbanViewable: false,
+    }
+  },
+  created() {
+    this.getShareStatus()
+  },
   methods: {
     async requestBoardViewing() {
       await postRequest('account/api/get_user_privacies', {
         user_id: this.userData.id,
       }).then((privs) => {
         if (privs.share_kanban) this.$emit('viewKanban')
+      })
+    },
+    async getShareStatus() {
+      await postRequest('account/api/get_user_privacies', {
+        user_id: this.userData.id,
+      }).then((privs) => {
+        this.kanbanViewable = privs.share_kanban
       })
     },
   },
