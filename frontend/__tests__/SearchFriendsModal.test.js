@@ -18,7 +18,11 @@ describe('SearchFriendsModal', () => {
 
   it('searches for users when triggerSearch method is called', async () => {
     const searchField = 'John'
-    const userData = { id: 1, google_id: 'google123' }
+    const userData = {
+      id: 1,
+      google_id: 'google123',
+      received_friend_requests: [],
+    }
     const response = { user_list: [{ id: 2, google_id: 'google456' }] }
     postRequest.mockResolvedValueOnce(response)
 
@@ -41,7 +45,11 @@ describe('SearchFriendsModal', () => {
 
   it('does not include current user in search results', async () => {
     const searchField = 'John'
-    const userData = { id: 1, google_id: 'google123' }
+    const userData = {
+      id: 1,
+      google_id: 'google123',
+      received_friend_requests: [],
+    }
     const response = {
       user_list: [
         { id: 1, google_id: 'google123' },
