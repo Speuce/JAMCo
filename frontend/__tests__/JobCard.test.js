@@ -14,7 +14,11 @@ describe('JobCard', () => {
   // Testing stringToTriColourPalatte from "assets/string-to-tri-colour-palatte"
   it('calculates the badge colours correctly for assorted strings', () => {
     let job = {}
-    job = { type: 'TestOne', company: 'test' }
+    job = {
+      type: 'TestOne',
+      company: 'testing company united',
+      position_title: 'long position title',
+    }
     mountJobCard(job)
 
     let badgeColours = wrapper.vm.badgeColours
