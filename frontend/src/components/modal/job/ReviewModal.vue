@@ -12,7 +12,7 @@
         </v-card-title>
         <v-card-text>
           <div style="display: flex">
-            <v-col>
+            <v-col style="width: 37vw">
               {{ jobData?.cover_letter }}
             </v-col>
             <v-col>
