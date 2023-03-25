@@ -20,7 +20,7 @@ def requires_login(allow_friends=False, check_field="user_id"):
                             if not user.friends.filter(id=body.get(check_field)).exists():
                                 return JsonResponse({}, status=401)
                     return wrapped_view(request, *args, **kwargs)
-                except Exception as e:
+                except Exception:
                     return JsonResponse(status=401, data={})
             else:
                 return JsonResponse({}, status=401)
