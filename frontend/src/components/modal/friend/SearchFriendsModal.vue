@@ -57,7 +57,10 @@
                 "
                 :sentRequest="
                   userData && userData.sent_friend_requests
-                    ? userData.sent_friend_requests.includes(user.id)
+                    ? userData.sent_friend_requests.includes(user.id) ||
+                      userData.received_friend_requests.some(
+                        (request) => request.from_user_id === user.id,
+                      )
                     : false
                 "
                 @sendFriendRequest="sendFriendRequest(user)"
@@ -104,15 +107,10 @@ export default {
         'account/api/search_users_by_name',
         this.searchField,
       )
-      // Filter out the current user && users who have pending requests already
-      this.searchResults = response.user_list.filter((user) => {
-        return (
-          user.id !== this.userData.id &&
-          !this.userData.received_friend_requests.some(
-            (x) => x.from_user_id === user.id,
-          )
-        )
-      })
+      // Filter out the current user from the search results
+      this.searchResults = response.user_list.filter(
+        (user) => user.id !== this.userData.id,
+      )
     },
 
     async sendFriendRequest(user) {
