@@ -195,7 +195,7 @@
             variant="text"
             @click="
               () => {
-                if (!deactivated) this.saveClicked
+                if (!this.deactivated) this.saveClicked()
               }
             "
           >

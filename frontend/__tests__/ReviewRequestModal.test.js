@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { expect, describe, it, afterEach, vi } from 'vitest';
+import { expect, describe, it, afterEach, vi } from 'vitest'
 import ReviewRequestModal from '../src/components/modal/job/ReviewRequestModal.vue'
 import { postRequest } from '@/helpers/requests.js'
 

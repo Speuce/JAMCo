@@ -118,7 +118,12 @@ export default {
     }
   },
   beforeMount() {
-    this.checkSendability()
+    if (
+      this.activeUser.friends !== null &&
+      this.activeUser.friends !== undefined
+    ) {
+      this.checkSendability()
+    }
   },
   methods: {
     sendClicked() {
