@@ -223,6 +223,7 @@ def accept_friend_request(request: HttpRequest):
     except Exception as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
+
 @require_POST
 @requires_login(check_field="to_user_id")
 def deny_friend_request(request: HttpRequest):
@@ -241,6 +242,7 @@ def deny_friend_request(request: HttpRequest):
         return JsonResponse(status=200, data={})
     except Exception as err_msg:
         return JsonResponse(status=400, data={"error": repr(err_msg)})
+
 
 @require_POST
 @requires_login(check_field="user_id")
