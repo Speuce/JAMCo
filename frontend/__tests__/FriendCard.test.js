@@ -26,6 +26,7 @@ describe('FriendCard', () => {
   })
 
   it('emits viewKanban due to share setting', async () => {
+    postRequest.mockImplementation(() => Promise.resolve())
     postRequest.mockResolvedValue({ share_kanban: true })
     mountModal(user)
     await wrapper.vm.$nextTick()
@@ -33,6 +34,7 @@ describe('FriendCard', () => {
       user_id: 1,
     })
 
+    await wrapper.vm.$nextTick()
     await wrapper.vm.$nextTick()
     expect(wrapper.vm.kanbanViewable).toBeTruthy()
 
