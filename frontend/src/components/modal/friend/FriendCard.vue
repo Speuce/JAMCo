@@ -87,7 +87,7 @@ export default {
       kanbanViewable: false,
     }
   },
-  created() {
+  mounted() {
     this.getShareStatus()
   },
   methods: {

@@ -161,4 +161,13 @@ describe('ReviewRequestModal', () => {
 
     expect(wrapper.vm.sendableFriends).toEqual(user.friends)
   })
+
+  it('verifies that no users can be requested for review', async () => {
+    postRequest.mockResolvedValue({ cover_letter_requestable: false })
+
+    const user = { id: 1, friends: [{ id: 2 }, { id: 3 }, { id: 4 }] }
+    mountModal(job, user)
+    await wrapper.vm.$nextTick()
+    expect(wrapper.vm.sendableFriends).toEqual([])
+  })
 })
