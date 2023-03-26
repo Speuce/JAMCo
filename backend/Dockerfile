@@ -10,5 +10,6 @@ COPY requirements.txt /backend/
 WORKDIR /backend
 RUN pip install -r requirements.txt
 EXPOSE 8000
+EXPOSE 8089
 
 ENTRYPOINT [ "sh", "docker-entrypoint.sh" ]

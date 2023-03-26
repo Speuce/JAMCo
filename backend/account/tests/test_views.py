@@ -69,13 +69,6 @@ class GetOrCreateAccountTests(TransactionTestCase):
 
 @patch("account.business.update_user")
 class UpdateAccountTests(TestCase):
-    def setUp(self):
-        self.client.cookies = SimpleCookie({"csrftoken": "valid_csrf_token"})
-        self.header = {
-            "ACCEPT": "application/json",
-            "HTTP_X-CSRFToken": "valid_csrf_token",
-        }
-
     def test_update_account(self, mock_update_user):
         user = UserFactory()
 

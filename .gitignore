@@ -5,3 +5,4 @@ env-ignore/
 */tmp/*
 */static/*
 .env
+db_dump.json
