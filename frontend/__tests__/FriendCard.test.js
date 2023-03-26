@@ -41,4 +41,21 @@ describe('FriendCard', () => {
     wrapper.vm.requestBoardViewing()
     expect(wrapper.emitted().viewKanban).toBeTruthy()
   })
+
+  it('doesnt emit viewKanban', async () => {
+    postRequest.mockImplementation(() => Promise.resolve())
+    postRequest.mockResolvedValue({ share_kanban: false })
+    mountModal(user)
+    await wrapper.vm.$nextTick()
+    expect(postRequest).toHaveBeenCalledWith('account/api/get_user_privacies', {
+      user_id: 1,
+    })
+
+    await wrapper.vm.$nextTick()
+    await wrapper.vm.$nextTick()
+    expect(wrapper.vm.kanbanViewable).toBeFalsy()
+
+    wrapper.vm.requestBoardViewing()
+    expect(wrapper.emitted().viewKanban).toBeFalsy()
+  })
 })
