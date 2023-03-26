@@ -117,13 +117,8 @@ export default {
       sendableFriends: [],
     }
   },
-  beforeMount() {
-    if (
-      this.activeUser.friends !== null &&
-      this.activeUser.friends !== undefined
-    ) {
-      this.checkSendability()
-    }
+  mounted() {
+    this.checkSendability()
   },
   methods: {
     sendClicked() {
@@ -152,11 +147,11 @@ export default {
       })
     },
     async checkSendability() {
-      this.activeUser.friends.forEach(async (friend) => {
+      this.activeUser.friends?.forEach(async (friend) => {
         await postRequest('account/api/get_user_privacies', {
           user_id: friend.id,
         }).then((privs) => {
-          if (privs.cover_letter_requestable) {
+          if (privs?.cover_letter_requestable) {
             this.sendableFriends.push(friend)
           }
         })

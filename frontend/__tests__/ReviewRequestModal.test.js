@@ -141,12 +141,13 @@ describe('ReviewRequestModal', () => {
     })
   })
 
-  it('verifies cover letter review requestability checks', () => {
+  it('verifies cover letter review requestability checks', async () => {
+    postRequest.mockResolvedValue({ cover_letter_requestable: true })
+
     const user = { id: 1, friends: [{ id: 2 }, { id: 3 }, { id: 4 }] }
     mountModal(job, user)
-    postRequest.mockImplementation(() => Promise.resolve({ data: {} }))
-    postRequest.mockResolvedValue({ cover_letter_requestable: true })
-    wrapper.vm.checkSendability()
+    await wrapper.vm.$nextTick()
+
     expect(postRequest).toHaveBeenCalledWith('account/api/get_user_privacies', {
       user_id: 4,
     })
@@ -156,6 +157,8 @@ describe('ReviewRequestModal', () => {
     expect(postRequest).toHaveBeenCalledWith('account/api/get_user_privacies', {
       user_id: 2,
     })
+    await wrapper.vm.$nextTick()
+
     expect(wrapper.vm.sendableFriends).toEqual(user.friends)
   })
 })
