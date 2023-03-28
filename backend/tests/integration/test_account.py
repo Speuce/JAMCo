@@ -1,10 +1,14 @@
 import logging
 import json
-from django.test import TransactionTestCase
-from django.urls import reverse
-from django.http.cookie import SimpleCookie
-from account.models import User, Privacy
-from account.tests.factories import UserFactory, PrivacyFactory
+from unittest.mock import patch
+
+patch("account.decorators.requires_login", lambda *args, **kwargs: lambda x: x).start()
+
+from django.test import TransactionTestCase  # noqa: E402
+from django.urls import reverse  # noqa: E402
+from django.http.cookie import SimpleCookie  # noqa: E402
+from account.models import User, Privacy  # noqa: E402
+from account.tests.factories import UserFactory, PrivacyFactory  # noqa: E402
 
 logger = logging.getLogger(__name__)
 

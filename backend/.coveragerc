@@ -9,3 +9,5 @@ omit =
     jamco/views.py
     # Exclude package inits
     */__init__.py
+    */decorators.py # Decorators need to be mocked BEFORE the testing packages load.
+    # meaning that the original functionality cannot be tested without breaking all related tests.

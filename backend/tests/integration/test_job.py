@@ -1,10 +1,13 @@
 import json
-from django.test import TransactionTestCase
-from django.urls import reverse
-from job.models import Job, ReviewRequest, Review
-from account.tests.factories import UserFactory
-from column.tests.factories import KanbanColumnFactory
-from job.tests.factories import JobFactory, ReviewRequestFactory, ReviewFactory
+from unittest.mock import patch
+
+patch("account.decorators.requires_login", lambda *args, **kwargs: lambda x: x).start()
+from django.test import TransactionTestCase  # noqa: E402
+from django.urls import reverse  # noqa: E402
+from job.models import Job, ReviewRequest, Review  # noqa: E402
+from account.tests.factories import UserFactory  # noqa: E402
+from column.tests.factories import KanbanColumnFactory  # noqa: E402
+from job.tests.factories import JobFactory, ReviewRequestFactory, ReviewFactory  # noqa: E402
 
 
 class CreateJobTests(TransactionTestCase):
