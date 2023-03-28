@@ -22,7 +22,7 @@
                 v-model="selectedFriendIds"
                 :style="{ color: this.recipientErrorIndicator }"
                 variant="outlined"
-                no-data-text="No friends"
+                no-data-text="No friends available to review"
               />
             </v-col>
           </v-row>
