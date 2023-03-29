@@ -74,7 +74,30 @@ We are using Vue.js with Vite and Vuetify on the frontend, and the Django framew
 
 # Coding Style
 
-Frontend: [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript)
+## Frontend
+
+We use the [Airbnb JavaScript Style Guide](https://airbnb.io/javascript/).
+
+Some rules from this style guide include:
+
+- Use camelCase when naming objects, functions, and instances ([camelcase](https://eslint.org/docs/latest/rules/camelcase)); use PascalCase for constructors and classes ([new-cap](https://eslint.org/docs/latest/rules/new-cap))
+- Use `const` for all variable declarations by default; use `let` instead of `var` if you must reassign references ([prefer-const](https://eslint.org/docs/latest/rules/prefer-const), [no-const-assign](https://eslint.org/docs/latest/rules/no-const-assign), [no-var](https://eslint.org/docs/latest/rules/no-var))
+- Limit line length to 100 characters ([max-len](https://eslint.org/docs/latest/rules/max-len))
+- Use literal syntax for object and array creation, i.e. `{}` and `[]` instead of `new Object()` and `new Array()` ([no-new-object](https://eslint.org/docs/latest/rules/no-new-object) and [no-array-constructor](https://eslint.org/docs/latest/rules/no-array-constructor))
+- Require parentheses when mixing different arithmetic operators ([no-mixed-operators](https://eslint.org/docs/latest/rules/no-mixed-operators))
+
+A list of all the rules can be found on the Airbnb style guide website (linked above) or on [the style guide's GitHub repository](https://github.com/airbnb/javascript). We use ESLint to generate error messages when code does not follow these guidelines. 
+
+We also use [Prettier](https://www.npmjs.com/package/prettier) to enforce the following settings:
+
+- Tab width of 2
+- Trailing commas used whenever listing items across multiple lines, including function arguments
+- No semicolons
+- Single quotes for all strings, except those which contain apostrophes
+
+Both ESLinst and Prettier are integrated into our continuous delivery system, which runs checks whenever code is pushed to make sure that it follows our style guidelines. The GitHub Action that does so can be found [here](https://github.com/Speuce/JAMCo/blob/master/.github/workflows/node.js.yml#L54).
+
+
 
 Backend: [Pylint](https://pypi.org/project/pylint/), default settings with the following warnings disabled:
 
