@@ -17,7 +17,11 @@
                 </p>
                 <v-btn
                   v-if="!this.deactivated"
-                  @click="this.$emit('showBoardOptionModal')"
+                  @click="
+                    () => {
+                      if (!deactivated) this.$emit('showBoardOptionModal')
+                    }
+                  "
                   color="greytext"
                   icon="mdi-pencil"
                   variant="text"
@@ -48,7 +52,11 @@
         </div>
         <v-btn
           v-if="!this.deactivated"
-          @click="this.$emit('showBoardOptionModal')"
+          @click="
+            () => {
+              if (!deactivated) this.$emit('showBoardOptionModal')
+            }
+          "
           color="greytext"
           icon="mdi-plus"
           variant="text"

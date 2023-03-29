@@ -33,8 +33,8 @@
           <v-btn
             id="view_kanban_button"
             v-bind="props"
-            v-if="isFriend"
-            @click="this.$emit('viewKanban')"
+            v-if="isFriend && this.kanbanViewable"
+            @click="requestBoardViewing"
             icon
             size="small"
             color="secondary"
@@ -64,6 +64,7 @@
 </template>
 
 <script>
+import { postRequest } from '@/helpers/requests.js'
 export default {
   name: 'FriendCard',
   emits: ['viewKanban', 'removeFriend', 'sendFriendRequest'],
@@ -79,6 +80,26 @@ export default {
     sentRequest: {
       type: Boolean,
       default: false,
+    },
+  },
+  data() {
+    return {
+      kanbanViewable: false,
+    }
+  },
+  mounted() {
+    this.getShareStatus()
+  },
+  methods: {
+    requestBoardViewing() {
+      if (this.kanbanViewable) this.$emit('viewKanban')
+    },
+    async getShareStatus() {
+      await postRequest('account/api/get_user_privacies', {
+        user_id: this.userData.id,
+      }).then((privs) => {
+        this.kanbanViewable = privs.share_kanban
+      })
     },
   },
 }

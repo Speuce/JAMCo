@@ -34,7 +34,11 @@
     <v-col cols="12" sm="2" class="center-offset pl-6">
       <v-btn
         v-if="!this.deactivated"
-        @click="this.$emit('deleteDeadline', this.deadline.id)"
+        @click="
+          () => {
+            if (!deactivated) this.$emit('deleteDeadline', this.deadline.id)
+          }
+        "
         size="medium"
         flat
         class="mt-4 remove-btn"

@@ -103,7 +103,11 @@
                     color="blue-darken-1"
                     variant="text"
                     :disabled="reviewRequestButtonDisabled"
-                    @click="ReviewRequestModalVisible = true"
+                    @click="
+                      () => {
+                        if (!deactivated) ReviewRequestModalVisible = true
+                      }
+                    "
                   >
                     Request Review
                   </v-btn>
@@ -135,7 +139,11 @@
                 <v-btn
                   v-if="!this.deactivated"
                   id="add-deadline"
-                  @click="newDeadline"
+                  @click="
+                    () => {
+                      if (!deactivated) newDeadline()
+                    }
+                  "
                   color="primary"
                   size="large"
                   class="pt-2"
@@ -185,7 +193,11 @@
             id="job-save-button"
             color="blue-darken-1"
             variant="text"
-            @click="this.saveClicked"
+            @click="
+              () => {
+                if (!this.deactivated) this.saveClicked()
+              }
+            "
           >
             Save
           </v-btn>
