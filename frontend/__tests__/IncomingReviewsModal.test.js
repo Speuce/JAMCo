@@ -79,15 +79,19 @@ describe('IncomingReviewsModal', () => {
     postRequest.mockImplementation(mockPostRequest)
     mountModal()
 
+    const emptyInboxMessage = wrapper.findComponent({
+      ref: 'emptyInboxMessage',
+    })
+    expect(emptyInboxMessage.exists()).toBeTruthy()
+    expect(emptyInboxMessage.vm.$el).toBeTruthy()
+
     wrapper.vm.reviews = [
       { id: 0, reviewer: { first_name: 'first', last_name: 'last' } },
     ]
-
     expect(wrapper.vm.reviews.length).toBe(1)
 
-    expect(
-      wrapper.findComponent({ ref: 'emptyInboxMessage' }).exists(),
-    ).toBeFalsy()
+    await wrapper.vm.$nextTick()
+    expect(emptyInboxMessage.exists()).toBeFalsy()
   })
 
   it("doesn't display that message when there's at least one review request", async () => {
@@ -98,36 +102,49 @@ describe('IncomingReviewsModal', () => {
     wrapper.vm.reviewRequests = [
       { fulfilled: false, sender: { first_name: 'first', last_name: 'last' } },
     ]
-
     expect(wrapper.vm.pendingReviewRequests.length).toBe(1)
-    expect(
-      wrapper.findComponent({ ref: 'emptyInboxMessage' }).exists(),
-    ).toBeFalsy()
+
+    await wrapper.vm.$nextTick()
+    const emptyInboxMessage = wrapper.findComponent({
+      ref: 'emptyInboxMessage',
+    })
+    expect(emptyInboxMessage.exists()).toBeFalsy()
   })
 
   it('opens the review modal when the review button is clicked', async () => {
     postRequest.mockImplementation(mockPostRequest)
     mountModal()
 
+    // Create a review request to show the review button
+    wrapper.vm.reviewRequests = [
+      {
+        id: 0,
+        fulfilled: false,
+        sender: { first_name: 'first', last_name: 'last' },
+      },
+    ]
     await wrapper.vm.$nextTick()
 
-    wrapper.vm.requestData = {
-      id: 0,
-      sender: { first_name: 'first', last_name: 'last' },
-    }
-
+    // Click the review button
     let buttons = wrapper.findAllComponents({ name: 'v-btn' })
-
+    const reviewClickedSpy = vi.spyOn(wrapper.vm, 'reviewClicked')
     buttons.forEach((button) => {
       if (button.text() === 'Review') {
         button.trigger('click')
       }
     })
+    expect(reviewClickedSpy).toHaveBeenCalled()
+
     expect(wrapper.vm.currentlySelectedRequest).toEqual({
       id: 0,
+      fulfilled: false,
       sender: { first_name: 'first', last_name: 'last' },
     })
     expect(wrapper.vm.reviewModalVisible).toBe(true)
+    await wrapper.vm.$nextTick()
+    const reviewModal = wrapper.findComponent({ ref: 'reviewModal' })
+    expect(reviewModal.exists()).toBeTruthy()
+    expect(reviewModal.vm.$el).toBeTruthy()
   })
 
   it('hides the review request section when there are no review requests', () => {
@@ -149,11 +166,13 @@ describe('IncomingReviewsModal', () => {
     expect(wrapper.vm.pendingReviewRequests).toEqual([
       { fulfilled: false, sender: { first_name: 'first', last_name: 'last' } },
     ])
-
     expect(wrapper.vm.pendingReviewRequests.length).toEqual(1)
-    expect(
-      wrapper.findComponent({ ref: 'requestSection' }).exists(),
-    ).toBeTruthy()
+
+    await wrapper.vm.$nextTick()
+
+    const requestSection = wrapper.findComponent({ ref: 'requestSection' })
+    expect(requestSection.exists()).toBeTruthy()
+    expect(requestSection.vm.$el).toBeTruthy()
   })
 
   it('hides the review section when there are no reviews', () => {
@@ -169,11 +188,13 @@ describe('IncomingReviewsModal', () => {
     wrapper.vm.reviews = [
       { fulfilled: false, sender: { first_name: 'first', last_name: 'last' } },
     ]
-
     expect(wrapper.vm.reviews.length).toEqual(1)
-    expect(
-      wrapper.findComponent({ ref: 'requestSection' }).exists(),
-    ).toBeTruthy()
+
+    await wrapper.vm.$nextTick()
+
+    const reviewSection = wrapper.findComponent({ ref: 'reviewSection' })
+    expect(reviewSection.exists()).toBeTruthy()
+    expect(reviewSection.vm.$el).toBeTruthy()
   })
 
   it('handles reviewModalClosed', async () => {
