@@ -71,3 +71,14 @@ We are using Vue.js with Vite and Vuetify on the frontend, and the Django framew
 - Deadline Notifications ([#11](https://github.com/Speuce/JAMCo/issues/11))
 - Optionally Send Application Notifications To Friends ([#12](https://github.com/Speuce/JAMCo/issues/12))
 - Optionally Recieve Application Notifications From Friends ([#13](https://github.com/Speuce/JAMCo/issues/13))
+
+# Coding Style
+
+Frontend: [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript)
+
+Backend: [Pylint](https://pypi.org/project/pylint/), default settings with the following warnings disabled:
+
+- W1203: Logging f-string interpolation
+- C0115: Missing class docstring
+- C0115: Missing module docstring
+- C0116: Missing function docstring
