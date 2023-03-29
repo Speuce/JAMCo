@@ -57,7 +57,10 @@
                 "
                 :sentRequest="
                   userData && userData.sent_friend_requests
-                    ? userData.sent_friend_requests.includes(user.id)
+                    ? userData.sent_friend_requests.includes(user.id) ||
+                      userData.received_friend_requests.some(
+                        (request) => request.from_user_id === user.id,
+                      )
                     : false
                 "
                 @sendFriendRequest="sendFriendRequest(user)"
