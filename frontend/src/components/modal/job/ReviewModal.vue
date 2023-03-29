@@ -111,7 +111,7 @@ export default {
       if (this.review.trim()) {
         this.messageErrorIndicator = null
 
-        postRequest('job/api/create_review', {
+        await postRequest('job/api/create_review', {
           request_id: this.request.id,
           response: this.review,
         })
