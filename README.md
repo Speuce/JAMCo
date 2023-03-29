@@ -78,7 +78,7 @@ Frontend: [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript)
 
 Backend: [Pylint](https://pypi.org/project/pylint/), default settings with the following warnings disabled:
 
-- W1203: Logging f-string interpolation
-- C0115: Missing class docstring
-- C0115: Missing module docstring
-- C0116: Missing function docstring
+- [W1203](https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/logging-fstring-interpolation.html) (logging f-string interpolation)
+- [C0115](https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/missing-class-docstring.html) (missing class docstring)
+- [C0114](https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/missing-module-docstring.html), (missing module docstring)
+- [C0116](https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/missing-function-docstring.html) (missing function docstring)
