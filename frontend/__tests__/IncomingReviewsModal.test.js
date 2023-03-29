@@ -84,6 +84,10 @@ describe('IncomingReviewsModal', () => {
     ]
 
     expect(wrapper.vm.reviews.length).toBe(1)
+
+    expect(
+      wrapper.findComponent({ ref: 'emptyInboxMessage' }).exists(),
+    ).toBeFalsy()
   })
 
   it("doesn't display that message when there's at least one review request", async () => {
@@ -96,6 +100,9 @@ describe('IncomingReviewsModal', () => {
     ]
 
     expect(wrapper.vm.pendingReviewRequests.length).toBe(1)
+    expect(
+      wrapper.findComponent({ ref: 'emptyInboxMessage' }).exists(),
+    ).toBeFalsy()
   })
 
   it('opens the review modal when the review button is clicked', async () => {
@@ -109,9 +116,12 @@ describe('IncomingReviewsModal', () => {
       sender: { first_name: 'first', last_name: 'last' },
     }
 
-    wrapper.vm.reviewClicked({
-      id: 0,
-      sender: { first_name: 'first', last_name: 'last' },
+    let buttons = wrapper.findAllComponents({ name: 'v-btn' })
+
+    buttons.forEach((button) => {
+      if (button.text() === 'Review') {
+        button.trigger('click')
+      }
     })
     expect(wrapper.vm.currentlySelectedRequest).toEqual({
       id: 0,
@@ -141,6 +151,9 @@ describe('IncomingReviewsModal', () => {
     ])
 
     expect(wrapper.vm.pendingReviewRequests.length).toEqual(1)
+    expect(
+      wrapper.findComponent({ ref: 'requestSection' }).exists(),
+    ).toBeTruthy()
   })
 
   it('hides the review section when there are no reviews', () => {
@@ -158,6 +171,9 @@ describe('IncomingReviewsModal', () => {
     ]
 
     expect(wrapper.vm.reviews.length).toEqual(1)
+    expect(
+      wrapper.findComponent({ ref: 'requestSection' }).exists(),
+    ).toBeTruthy()
   })
 
   it('handles reviewModalClosed', async () => {
