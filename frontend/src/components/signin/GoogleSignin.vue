@@ -4,13 +4,13 @@
 <script>
 export default {
   data: () => ({}),
-  mounted() {
-    window.google.accounts.id.initialize({
+  async mounted() {
+    await window.google.accounts.id.initialize({
       client_id:
         '666407506779-6oo4du8jmenhq8noaa8qkhu89i1ghkpi.apps.googleusercontent.com',
       callback: window.signIn,
     })
-    window.google.accounts.id.renderButton(
+    await window.google.accounts.id.renderButton(
       document.getElementById('signin_button'),
       {
         theme: 'outline',
