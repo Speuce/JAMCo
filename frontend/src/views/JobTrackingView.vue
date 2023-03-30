@@ -5,7 +5,7 @@
       @createOrUpdateJob="createOrUpdateJob"
       @close="closeDetailModal"
       :job="this.selectedJob"
-      :user="this.activeUser"
+      :user="this.user"
       :columns="colList"
       :isNew="this.isNewJob"
       :viewingOther="this.deactivated"
@@ -82,7 +82,6 @@ export default {
       isNewJob,
       colList,
       jobsByColumn,
-      activeUser: props.user,
       deactivated: props.viewingOther,
     }
   },
@@ -137,7 +136,7 @@ export default {
     async createOrUpdateJob(job) {
       if (isNewJob.value) {
         let userJob = job
-        userJob.user_id = this.activeUser.id
+        userJob.user_id = this.user.id
         await postRequest('job/api/create_job', userJob).then((newJob) => {
           isNewJob.value = false
           // Push New Job To Bottom of Column
@@ -162,7 +161,7 @@ export default {
     },
     async updateColumns(columns) {
       await postRequest('column/api/update_columns', {
-        user_id: this.activeUser.id,
+        user_id: this.user.id,
         payload: columns,
       }).then((updatedColumns) => {
         colList.value = updatedColumns.columns
@@ -182,7 +181,7 @@ export default {
         if (job.deadlines === undefined) {
           // only get from backend if job not populated
           await postRequest('job/api/get_job_by_id', {
-            user_id: this.activeUser.id,
+            user_id: this.user.id,
             job_id: job.id,
           }).then((completeJob) => {
             jobsByColumn.value[job.kcolumn_id] = jobsByColumn.value[
