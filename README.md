@@ -123,4 +123,5 @@ While not automatically enforced, we also use the following additional formattin
 - Use snake_case for objects, functions, and instances
 - Use PascalCase for classes
 - Indent using 4 spaces
+- Put two blank lines between module-level items (i.e. classes and functions) and one blank line between methods
 
