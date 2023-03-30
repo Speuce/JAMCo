@@ -82,6 +82,7 @@ export default {
       isNewJob,
       colList,
       jobsByColumn,
+      activeUser: props.user,
       deactivated: props.viewingOther,
     }
   },
@@ -136,7 +137,7 @@ export default {
     async createOrUpdateJob(job) {
       if (isNewJob.value) {
         let userJob = job
-        userJob.user_id = this.user.id
+        userJob.user_id = this.activeUser.id
         await postRequest('job/api/create_job', userJob).then((newJob) => {
           isNewJob.value = false
           // Push New Job To Bottom of Column
@@ -161,7 +162,7 @@ export default {
     },
     async updateColumns(columns) {
       await postRequest('column/api/update_columns', {
-        user_id: this.user.id,
+        user_id: this.activeUser.id,
         payload: columns,
       }).then((updatedColumns) => {
         colList.value = updatedColumns.columns
