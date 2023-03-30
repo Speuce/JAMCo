@@ -118,6 +118,7 @@
           :user="this.userData"
           :viewingOther="this.viewingOther"
           style="height: 100%"
+          @fetch-user-data="fetchUserData"
         />
       </Suspense>
     </div>
@@ -203,6 +204,7 @@ export default {
     },
 
     async fetchUserData() {
+      console.log('fetching')
       if (this.authtoken) {
         const resp = await postRequest(
           'account/api/get_updated_user_data',
