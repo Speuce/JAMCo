@@ -74,6 +74,7 @@
   </v-row>
   <div class="page-container flex-grow-1">
     <ReviewModal
+      ref="reviewModal"
       v-if="reviewModalVisible"
       :request="currentlySelectedRequest"
       @close="reviewModalClosed"
