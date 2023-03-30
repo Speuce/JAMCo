@@ -204,7 +204,6 @@ export default {
     },
 
     async fetchUserData() {
-      console.log('fetching')
       if (this.authtoken) {
         const resp = await postRequest(
           'account/api/get_updated_user_data',

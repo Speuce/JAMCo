@@ -179,7 +179,6 @@ export default {
     },
     async showDetailModal(job) {
       this.$emit('fetchUserData')
-      console.log('showingDetail')
       if (job) {
         // editing job
         if (job.deadlines === undefined) {
