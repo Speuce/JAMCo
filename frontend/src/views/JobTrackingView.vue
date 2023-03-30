@@ -182,7 +182,7 @@ export default {
         if (job.deadlines === undefined) {
           // only get from backend if job not populated
           await postRequest('job/api/get_job_by_id', {
-            user_id: this.user.id,
+            user_id: this.activeUser.id,
             job_id: job.id,
           }).then((completeJob) => {
             jobsByColumn.value[job.kcolumn_id] = jobsByColumn.value[
