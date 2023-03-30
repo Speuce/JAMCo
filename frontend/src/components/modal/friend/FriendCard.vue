@@ -88,7 +88,9 @@ export default {
     }
   },
   mounted() {
-    this.getShareStatus()
+    if (this.isFriend) {
+      this.getShareStatus()
+    }
   },
   methods: {
     requestBoardViewing() {

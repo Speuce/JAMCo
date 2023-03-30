@@ -118,6 +118,7 @@
           :user="this.userData"
           :viewingOther="this.viewingOther"
           style="height: 100%"
+          @fetch-user-data="fetchUserData"
         />
       </Suspense>
     </div>

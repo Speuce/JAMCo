@@ -113,7 +113,6 @@ export default {
       message: `Hello, please review my cover letter for ${props.job.position_title} at ${props.job.company}.`,
       messageErrorIndicator: null,
       recipientErrorIndicator: null,
-      activeUser: props.user,
       sendableFriends: [],
     }
   },
@@ -147,7 +146,7 @@ export default {
       })
     },
     async checkSendability() {
-      this.activeUser.friends?.forEach(async (friend) => {
+      this.user.friends?.forEach(async (friend) => {
         await postRequest('account/api/get_user_privacies', {
           user_id: friend.id,
         }).then((privs) => {

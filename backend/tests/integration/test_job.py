@@ -398,7 +398,16 @@ class GetMinimumJobsTests(TransactionTestCase):
             content_type="application/json",
         )
 
-        jobs = [{"id": 1, "kcolumn": self.column.id, "position_title": "Developer", "company": "Google", "type": None}]
+        jobs = [
+            {
+                "id": 1,
+                "kcolumn": self.column.id,
+                "position_title": "Developer",
+                "company": "Google",
+                "type": None,
+                "user_id": self.user.id,
+            }
+        ]
 
         # Check the response
         self.assertEqual(response.status_code, 200)

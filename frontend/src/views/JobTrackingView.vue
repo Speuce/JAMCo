@@ -5,7 +5,7 @@
       @createOrUpdateJob="createOrUpdateJob"
       @close="closeDetailModal"
       :job="this.selectedJob"
-      :user="this.activeUser"
+      :user="this.user"
       :columns="colList"
       :isNew="this.isNewJob"
       :viewingOther="this.deactivated"
@@ -64,6 +64,7 @@ export default {
     JobDetailModal,
     ColumnOptionModal,
   },
+  emits: ['fetchUserData'],
   props: {
     user: {
       type: Object,
@@ -177,6 +178,7 @@ export default {
       })
     },
     async showDetailModal(job) {
+      this.$emit('fetchUserData')
       if (job) {
         // editing job
         if (job.deadlines === undefined) {
