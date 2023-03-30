@@ -97,11 +97,33 @@ We also use [Prettier](https://www.npmjs.com/package/prettier) to enforce the fo
 
 Both ESLinst and Prettier are integrated into our continuous delivery system, which runs checks whenever code is pushed to make sure that it follows our style guidelines. The GitHub Action that does so can be found [here](https://github.com/Speuce/JAMCo/blob/master/.github/workflows/node.js.yml#L54).
 
+## Backend
 
+While not automatically enforced, we use the following formatting guidelines:
 
-Backend: [Pylint](https://pypi.org/project/pylint/), default settings with the following warnings disabled:
+- snake_case for objects, functions, and instances; PascalCase for classes
+- Indentation using 4 spaces
+- Maximum line length of 120 characters
+
+For all other backend formatting, we use [Pylint](https://pypi.org/project/pylint/). We use the default settings (with some warnings disabled, see below), which displays messages for a variety or errors and code smells, including the following:
+
+- Error messages for all syntax errors ([syntax-error](https://pylint.readthedocs.io/en/latest/user_guide/messages/error/syntax-error.html))
+- Warnings for statements that have no effect ([pointless-statement](https://pylint.readthedocs.io/en/latest/user_guide/messages/error/syntax-error.html))
+- Warnings when using an unassigned global variable ([global-variable-not-assigned](https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/global-variable-not-assigned.html))
+- Suggestions to replace for loops that check for a condition with `any` or `all` statements ([consider-using-any-or-all](https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/consider-using-any-or-all.html))
+- Suggestions to eliminate trailing whitespace ([trailing-whitespace](https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/trailing-whitespace.html))
+
+The complete list of messages can be found on [Pylint's documentation](https://pylint.readthedocs.io/en/latest/user_guide/messages/messages_overview.html).
+
+We have disabled some of Pylint's messages, particularly those which check for docstrings. Since our layered architechture results in functionality being spread across multiple modules (e.g. `views.create_job` calls `business.create_job`, which calls `query.create_jobs`), adding docstrings to every class, module, and function would result in a large amount of redundant and repeated information, which would be error-prone to maintain. As such, we chose to put docstrings on all of the view layer code, put docstrings on other layers as needed, and disable warnings regarding missing docstrings.
+
+We also disabled a warning for using f-strings in logging statements because that warning was created for backwards compatibility reasons that don't apply to our project (more info [here](https://docs.python.org/3/howto/logging.html#logging-variable-data)). We chose to disable the warning and use f-strings because they're more readable and less error-prone (more info [here](https://peps.python.org/pep-0498/#rationale)).
+
+The complete list of warnings we have disabled are:
 
 - [W1203](https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/logging-fstring-interpolation.html) (logging f-string interpolation)
 - [C0115](https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/missing-class-docstring.html) (missing class docstring)
 - [C0114](https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/missing-module-docstring.html), (missing module docstring)
 - [C0116](https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/missing-function-docstring.html) (missing function docstring)
+
+Similar to the frontend, we use Pylint with GitHub Actions to check that all pushed code does not trigger any of Pylint's warnings. The GitHub action that does so can be found [here](https://github.com/Speuce/JAMCo/blob/master/.github/workflows/backend_lint.yml).
