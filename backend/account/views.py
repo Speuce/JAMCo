@@ -100,7 +100,7 @@ def update_privacies(request: HttpRequest):
 
 
 @require_POST
-@requires_login()
+@requires_login(allow_friends=True)
 def get_user_privacies(request: HttpRequest):
     """
     Gets Privacy options for the specified user
