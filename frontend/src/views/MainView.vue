@@ -29,7 +29,11 @@
             v-if="!viewingOther"
             color="primary"
             flat
-            @click="showInboxModal"
+            @click="
+              () => {
+                if (!viewingOther) showInboxModal()
+              }
+            "
           >
             <v-icon size="x-large">mdi-email</v-icon>
             <v-divider class="mx-1" />
@@ -39,7 +43,11 @@
             v-if="this.viewingOther"
             color="primary"
             flat
-            @click="returnToHome"
+            @click="
+              () => {
+                if (viewingOther) returnToHome()
+              }
+            "
           >
             <v-icon size="x-large" left>mdi-home</v-icon>
             <v-divider class="mx-1" />
@@ -50,7 +58,11 @@
             id="friends_modal_button"
             color="primary"
             flat
-            @click="showFriendsModal"
+            @click="
+              () => {
+                if (!viewingOther) showFriendsModal()
+              }
+            "
           >
             <v-icon size="x-large" left>mdi-account-group</v-icon>
             <v-divider class="mx-1" />
@@ -61,7 +73,11 @@
             id="user_info_modal_button"
             color="primary"
             flat
-            @click="userInfoModalVisible = true"
+            @click="
+              () => {
+                if (!viewingOther) userInfoModalVisible = true
+              }
+            "
           >
             <v-icon size="x-large">mdi-cog</v-icon>
           </v-btn>
@@ -102,6 +118,7 @@
           :user="this.userData"
           :viewingOther="this.viewingOther"
           style="height: 100%"
+          @fetch-user-data="fetchUserData"
         />
       </Suspense>
     </div>

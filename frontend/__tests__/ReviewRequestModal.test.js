@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { expect, describe, it, afterEach, vi } from 'vitest';
+import { expect, describe, it, afterEach, vi } from 'vitest'
 import ReviewRequestModal from '../src/components/modal/job/ReviewRequestModal.vue'
 import { postRequest } from '@/helpers/requests.js'
 
@@ -139,5 +139,35 @@ describe('ReviewRequestModal', () => {
         },
       )
     })
+  })
+
+  it('verifies cover letter review requestability checks', async () => {
+    postRequest.mockResolvedValue({ cover_letter_requestable: true })
+
+    const user = { id: 1, friends: [{ id: 2 }, { id: 3 }, { id: 4 }] }
+    mountModal(job, user)
+    await wrapper.vm.$nextTick()
+
+    expect(postRequest).toHaveBeenCalledWith('account/api/get_user_privacies', {
+      user_id: 4,
+    })
+    expect(postRequest).toHaveBeenCalledWith('account/api/get_user_privacies', {
+      user_id: 3,
+    })
+    expect(postRequest).toHaveBeenCalledWith('account/api/get_user_privacies', {
+      user_id: 2,
+    })
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.vm.sendableFriends).toEqual(user.friends)
+  })
+
+  it('verifies that no users can be requested for review', async () => {
+    postRequest.mockResolvedValue({ cover_letter_requestable: false })
+
+    const user = { id: 1, friends: [{ id: 2 }, { id: 3 }, { id: 4 }] }
+    mountModal(job, user)
+    await wrapper.vm.$nextTick()
+    expect(wrapper.vm.sendableFriends).toEqual([])
   })
 })

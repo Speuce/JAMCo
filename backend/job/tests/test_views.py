@@ -1,10 +1,13 @@
 import json
 from unittest.mock import patch, MagicMock
-from django.test import RequestFactory, TestCase
-from django.core.exceptions import ObjectDoesNotExist
-from job import views
-from job.tests.factories import JobFactory, ReviewRequestFactory, ReviewFactory
-from account.tests.factories import UserFactory
+
+patch("account.decorators.requires_login", lambda *args, **kwargs: lambda x: x).start()
+
+from django.test import RequestFactory, TestCase  # noqa: E402
+from django.core.exceptions import ObjectDoesNotExist  # noqa: E402
+from job import views  # noqa: E402
+from job.tests.factories import JobFactory, ReviewRequestFactory, ReviewFactory  # noqa: E402
+from account.tests.factories import UserFactory  # noqa: E402
 
 
 class TestViews(TestCase):

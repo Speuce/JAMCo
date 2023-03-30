@@ -7,6 +7,7 @@ import logging
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_POST
 from django.core.exceptions import ObjectDoesNotExist
+from account.decorators import requires_login
 from jamco.helper import read_request
 from . import business
 
@@ -14,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 @require_POST
+@requires_login(allow_friends=True, check_field="user_id")
 def get_minimum_jobs(request: HttpRequest):
     """
     Gets {id, position, company} for each job a given user has
@@ -35,6 +37,7 @@ def get_minimum_jobs(request: HttpRequest):
 
 
 @require_POST
+@requires_login(allow_friends=True, check_field="user_id")
 def get_job_by_id(request: HttpRequest):
     """
     Gets complete job object for user by id
@@ -57,6 +60,7 @@ def get_job_by_id(request: HttpRequest):
 
 
 @require_POST
+@requires_login()
 def create_job(request: HttpRequest):
     """
     Creates job for user
@@ -74,6 +78,7 @@ def create_job(request: HttpRequest):
 
 
 @require_POST
+@requires_login()
 def update_job(request: HttpRequest):
     """
     Updates user's job object
@@ -90,6 +95,7 @@ def update_job(request: HttpRequest):
 
 
 @require_POST
+@requires_login(check_field=None)
 def create_review_request(request: HttpRequest):
     """
     Creates a request for a cover letter review
@@ -105,6 +111,8 @@ def create_review_request(request: HttpRequest):
         return JsonResponse(status=400, data={"error": repr(err_msg)})
 
 
+@require_POST
+@requires_login()
 def get_review_requests_for_user(request: HttpRequest):
     """
     Gets all the cover letter review requests that are addressed to a specific user
@@ -123,6 +131,7 @@ def get_review_requests_for_user(request: HttpRequest):
 
 
 @require_POST
+@requires_login(check_field=None)
 def create_review(request: HttpRequest):
     """
     Creates a cover letter review
@@ -139,6 +148,7 @@ def create_review(request: HttpRequest):
 
 
 @require_POST
+@requires_login()
 def get_reviews_for_user(request: HttpRequest):
     """
     Gets all the cover letter reviews that are addressed to a specific user

@@ -1,10 +1,13 @@
 import json
 from unittest.mock import patch
-from django.test import TestCase, TransactionTestCase
-from django.urls import reverse
-from django.http.cookie import SimpleCookie
-from account.tests.factories import UserFactory, PrivacyFactory, FriendRequestFactory
-from django.core.exceptions import ObjectDoesNotExist
+
+patch("account.decorators.requires_login", lambda *args, **kwargs: lambda x: x).start()
+
+from django.test import TestCase, TransactionTestCase  # noqa: E402
+from django.urls import reverse  # noqa: E402
+from django.http.cookie import SimpleCookie  # noqa: E402
+from account.tests.factories import UserFactory, PrivacyFactory, FriendRequestFactory  # noqa: E402
+from django.core.exceptions import ObjectDoesNotExist  # noqa: E402
 
 
 class GetOrCreateAccountTests(TransactionTestCase):
@@ -69,13 +72,6 @@ class GetOrCreateAccountTests(TransactionTestCase):
 
 @patch("account.business.update_user")
 class UpdateAccountTests(TestCase):
-    def setUp(self):
-        self.client.cookies = SimpleCookie({"csrftoken": "valid_csrf_token"})
-        self.header = {
-            "ACCEPT": "application/json",
-            "HTTP_X-CSRFToken": "valid_csrf_token",
-        }
-
     def test_update_account(self, mock_update_user):
         user = UserFactory()
 

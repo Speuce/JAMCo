@@ -12,7 +12,7 @@
         </v-card-title>
         <v-card-text>
           <div style="display: flex">
-            <v-col>
+            <v-col style="width: 37vw">
               {{ jobData?.cover_letter }}
             </v-col>
             <v-col>
@@ -111,7 +111,7 @@ export default {
       if (this.review.trim()) {
         this.messageErrorIndicator = null
 
-        postRequest('job/api/create_review', {
+        await postRequest('job/api/create_review', {
           request_id: this.request.id,
           response: this.review,
         })

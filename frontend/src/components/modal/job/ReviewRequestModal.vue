@@ -15,14 +15,14 @@
                 multiple
                 chips
                 clearable
-                :items="activeUser.friends"
+                :items="sendableFriends"
                 item-title="first_name"
                 item-value="id"
                 label="Recipients*"
                 v-model="selectedFriendIds"
                 :style="{ color: this.recipientErrorIndicator }"
                 variant="outlined"
-                no-data-text="No friends"
+                no-data-text="No friends available to review"
               />
             </v-col>
           </v-row>
@@ -113,8 +113,11 @@ export default {
       message: `Hello, please review my cover letter for ${props.job.position_title} at ${props.job.company}.`,
       messageErrorIndicator: null,
       recipientErrorIndicator: null,
-      activeUser: props.user,
+      sendableFriends: [],
     }
+  },
+  mounted() {
+    this.checkSendability()
   },
   methods: {
     sendClicked() {
@@ -133,7 +136,7 @@ export default {
           this.recipientErrorIndicator = 'red'
         }
       }
-
+      // only sendable friends were selectable
       this.selectedFriendIds.forEach((friendId) => {
         postRequest('job/api/create_review_request', {
           job_id: this.jobData.id,
@@ -142,7 +145,17 @@ export default {
         })
       })
     },
-
+    async checkSendability() {
+      this.user.friends?.forEach(async (friend) => {
+        await postRequest('account/api/get_user_privacies', {
+          user_id: friend.id,
+        }).then((privs) => {
+          if (privs?.cover_letter_requestable) {
+            this.sendableFriends.push(friend)
+          }
+        })
+      })
+    },
     closeClicked() {
       this.messageErrorIndicator = null
       this.recipientErrorIndicator = null
