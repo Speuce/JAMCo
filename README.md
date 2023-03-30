@@ -76,9 +76,7 @@ We are using Vue.js with Vite and Vuetify on the frontend, and the Django framew
 
 ## Frontend
 
-We use the [Airbnb JavaScript Style Guide](https://airbnb.io/javascript/).
-
-Some rules from this style guide include:
+We use the [Airbnb JavaScript Style Guide](https://airbnb.io/javascript/). Some rules from this style guide include:
 
 - Use camelCase when naming objects, functions, and instances ([camelcase](https://eslint.org/docs/latest/rules/camelcase)); use PascalCase for constructors and classes ([new-cap](https://eslint.org/docs/latest/rules/new-cap))
 - Use `const` for all variable declarations by default; use `let` instead of `var` if you must reassign references ([prefer-const](https://eslint.org/docs/latest/rules/prefer-const), [no-const-assign](https://eslint.org/docs/latest/rules/no-const-assign), [no-var](https://eslint.org/docs/latest/rules/no-var))
@@ -99,31 +97,30 @@ Both ESLinst and Prettier are integrated into our continuous delivery system, wh
 
 ## Backend
 
-While not automatically enforced, we use the following formatting guidelines:
+We use [Flake8](https://pypi.org/project/flake8/) and [Black](https://pypi.org/project/black/) to format our backend code.
 
-- snake_case for objects, functions, and instances; PascalCase for classes
-- Indentation using 4 spaces
-- Maximum line length of 120 characters
+Some of Black's formatting rules include:
 
-For all other backend formatting, we use [Pylint](https://pypi.org/project/pylint/). We use the default settings (with some warnings disabled, see below), which displays messages for a variety or errors and code smells, including the following:
+- Use double quotes for strings unless doing so results in more backslash escapes than using single quotes
+- Limit line length to 120 characters (configured via `python.formatting.blackArgs` in VSCode's `settings.json` file)
+- Have no more than one empty line between lines of code inside functions, and no more than two empty lines between lines of code at the module level
 
-- Error messages for all syntax errors ([syntax-error](https://pylint.readthedocs.io/en/latest/user_guide/messages/error/syntax-error.html))
-- Warnings for statements that have no effect ([pointless-statement](https://pylint.readthedocs.io/en/latest/user_guide/messages/error/syntax-error.html))
-- Warnings when using an unassigned global variable ([global-variable-not-assigned](https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/global-variable-not-assigned.html))
-- Suggestions to replace for loops that check for a condition with `any` or `all` statements ([consider-using-any-or-all](https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/consider-using-any-or-all.html))
-- Suggestions to eliminate trailing whitespace ([trailing-whitespace](https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/trailing-whitespace.html))
+A complete description of Black's code style can be found [here](https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html).
 
-The complete list of messages can be found on [Pylint's documentation](https://pylint.readthedocs.io/en/latest/user_guide/messages/messages_overview.html).
+Some of Flake8's formatting rules include:
 
-We have disabled some of Pylint's messages, particularly those which check for docstrings. Since our layered architechture results in functionality being spread across multiple modules (e.g. `views.create_job` calls `business.create_job`, which calls `query.create_jobs`), adding docstrings to every class, module, and function would result in a large amount of redundant and repeated information, which would be error-prone to maintain. As such, we chose to put docstrings on all of the view layer code, put docstrings on other layers as needed, and disable warnings regarding missing docstrings.
+- Use only spaces for indentation ([W191](https://www.flake8rules.com/rules/W191.html))
+- Avoid deprecated syntax ([W601](https://www.flake8rules.com/rules/W601.html), [W602](https://www.flake8rules.com/rules/W602.html), [W603](https://www.flake8rules.com/rules/W603.html), [W604](https://www.flake8rules.com/rules/W604.html))
+- Start comments with a single '#' followed by a space ([E262](https://www.flake8rules.com/rules/E262.html), [E265](https://www.flake8rules.com/rules/E265.html), [E266](https://www.flake8rules.com/rules/E266.html))
+- Each line should contain at most one statement ([E701](https://www.flake8rules.com/rules/E701.html), [E702](https://www.flake8rules.com/rules/E702.html))
 
-We also disabled a warning for using f-strings in logging statements because that warning was created for backwards compatibility reasons that don't apply to our project (more info [here](https://docs.python.org/3/howto/logging.html#logging-variable-data)). We chose to disable the warning and use f-strings because they're more readable and less error-prone (more info [here](https://peps.python.org/pep-0498/#rationale)).
+A complete list of Flake8's rules can be found [here](https://www.flake8rules.com/).
 
-The complete list of warnings we have disabled are:
+Similar to the frontend, we use Flake8 and Black with GitHub Actions to check that all pushed code does not trigger any of Pylint's warnings. The GitHub action that does so can be found [here](https://github.com/Speuce/JAMCo/blob/master/.github/workflows/backend_lint.yml).
 
-- [W1203](https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/logging-fstring-interpolation.html) (logging f-string interpolation)
-- [C0115](https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/missing-class-docstring.html) (missing class docstring)
-- [C0114](https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/missing-module-docstring.html), (missing module docstring)
-- [C0116](https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/missing-function-docstring.html) (missing function docstring)
+While not automatically enforced, we also use the following additional formatting guidelines:
 
-Similar to the frontend, we use Pylint with GitHub Actions to check that all pushed code does not trigger any of Pylint's warnings. The GitHub action that does so can be found [here](https://github.com/Speuce/JAMCo/blob/master/.github/workflows/backend_lint.yml).
+- Use snake_case for objects, functions, and instances
+- Use PascalCase for classes
+- Indent using 4 spaces
+
