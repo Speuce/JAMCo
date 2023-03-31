@@ -266,7 +266,7 @@ export default {
   },
   data: (props) => ({
     dialog: true,
-    jobData: props.job,
+    jobData: { ...props.job },
     deadlines,
     nextDeadlineId,
     selectedColumnId,
