@@ -24,7 +24,7 @@ def get_or_create_user(payload: dict) -> Tuple[User, bool]:
 def update_user(payload: dict) -> None:
     formatted_payload = payload
     try:
-        # formats date string from 2023-02-12T16:31:00.000Z to 2023-02-12
+        # formats date string from 2023-02-12T16:31:00.000Z to 2023-02-12 
         birthday = payload.get("birthday")
         if birthday and len(birthday) < 10:
             raise ValidationError("Invalid Length")
