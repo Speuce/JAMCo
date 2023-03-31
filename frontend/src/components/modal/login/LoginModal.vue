@@ -3,7 +3,7 @@
     <v-card style="overflow: hidden" class="px-6 py-4 rounded-lg" height="500">
       <v-col>
         <v-row justify="center" class="mt-6">
-          <h2>Welcome to</h2>
+          <h2>Welcome toooo</h2>
         </v-row>
         <v-row justify="center">
           <v-img src="/static/logo-long.png" width="200" height="200"></v-img>
