@@ -71,3 +71,57 @@ We are using Vue.js with Vite and Vuetify on the frontend, and the Django framew
 - Deadline Notifications ([#11](https://github.com/Speuce/JAMCo/issues/11))
 - Optionally Send Application Notifications To Friends ([#12](https://github.com/Speuce/JAMCo/issues/12))
 - Optionally Recieve Application Notifications From Friends ([#13](https://github.com/Speuce/JAMCo/issues/13))
+
+# Coding Style
+
+## Frontend
+
+We use the [Airbnb JavaScript Style Guide](https://airbnb.io/javascript/). Some rules from this style guide include:
+
+- Use camelCase when naming objects, functions, and instances ([camelcase](https://eslint.org/docs/latest/rules/camelcase)); use PascalCase for constructors and classes ([new-cap](https://eslint.org/docs/latest/rules/new-cap))
+- Use `const` for all variable declarations by default; use `let` instead of `var` if you must reassign references ([prefer-const](https://eslint.org/docs/latest/rules/prefer-const), [no-const-assign](https://eslint.org/docs/latest/rules/no-const-assign), [no-var](https://eslint.org/docs/latest/rules/no-var))
+- Limit line length to 100 characters ([max-len](https://eslint.org/docs/latest/rules/max-len))
+- Use literal syntax for object and array creation, i.e. `{}` and `[]` instead of `new Object()` and `new Array()` ([no-new-object](https://eslint.org/docs/latest/rules/no-new-object) and [no-array-constructor](https://eslint.org/docs/latest/rules/no-array-constructor))
+- Require parentheses when mixing different arithmetic operators ([no-mixed-operators](https://eslint.org/docs/latest/rules/no-mixed-operators))
+
+A list of all the rules can be found on the Airbnb style guide website (linked above) or on [the style guide's GitHub repository](https://github.com/airbnb/javascript). We use ESLint to generate error messages when code does not follow these guidelines. 
+
+We also use [Prettier](https://www.npmjs.com/package/prettier) to enforce the following settings:
+
+- Tab width of 2
+- Trailing commas used whenever listing items across multiple lines, including function arguments
+- No semicolons
+- Single quotes for all strings, except those which contain apostrophes
+
+Both ESLinst and Prettier are integrated into our continuous delivery system, which runs checks whenever code is pushed to make sure that it follows our style guidelines. The GitHub Action that does so can be found [here](https://github.com/Speuce/JAMCo/blob/master/.github/workflows/node.js.yml#L54).
+
+## Backend
+
+We use [Flake8](https://pypi.org/project/flake8/) and [Black](https://pypi.org/project/black/) to format our backend code.
+
+Some of Black's formatting rules include:
+
+- Use double quotes for strings unless doing so results in more backslash escapes than using single quotes
+- Limit line length to 120 characters (configured via `python.formatting.blackArgs` in VSCode's `settings.json` file)
+- Have no more than one empty line between lines of code inside functions, and no more than two empty lines between lines of code at the module level
+
+A complete description of Black's code style can be found [here](https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html).
+
+Some of Flake8's formatting rules include:
+
+- Use only spaces for indentation ([W191](https://www.flake8rules.com/rules/W191.html))
+- Avoid deprecated syntax ([W601](https://www.flake8rules.com/rules/W601.html), [W602](https://www.flake8rules.com/rules/W602.html), [W603](https://www.flake8rules.com/rules/W603.html), [W604](https://www.flake8rules.com/rules/W604.html))
+- Start comments with a single '#' followed by a space ([E262](https://www.flake8rules.com/rules/E262.html), [E265](https://www.flake8rules.com/rules/E265.html), [E266](https://www.flake8rules.com/rules/E266.html))
+- Each line should contain at most one statement ([E701](https://www.flake8rules.com/rules/E701.html), [E702](https://www.flake8rules.com/rules/E702.html))
+
+A complete list of Flake8's rules can be found [here](https://www.flake8rules.com/).
+
+Similar to the frontend, we use Flake8 and Black with GitHub Actions to check that all pushed code does not trigger any of Pylint's warnings. The GitHub action that does so can be found [here](https://github.com/Speuce/JAMCo/blob/master/.github/workflows/backend_lint.yml).
+
+While not automatically enforced, we also use the following additional formatting guidelines:
+
+- Use snake_case for objects, functions, and instances
+- Use PascalCase for classes
+- Indent using 4 spaces
+- Put two blank lines between module-level items (i.e. classes and functions) and one blank line between methods
+
