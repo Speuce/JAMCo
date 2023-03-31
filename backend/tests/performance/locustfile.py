@@ -3,12 +3,13 @@ from dotenv import load_dotenv
 from locust import HttpUser, task, between
 from faker import Faker
 import json
+from django.utils import timezone
 
 # Required to setup django, allowing for module import(s) below
 load_dotenv()
 django.setup()
 
-from account.models import User  # noqa: E402
+from account.models import User, FriendRequest  # noqa: E402
 
 
 class UserActor(HttpUser):
@@ -45,6 +46,8 @@ class UserActor(HttpUser):
         content = json.loads(response.content)
         self.user_id = content["data"]["id"]
         self.token = content["token"]
+
+        self.client.cookies.set("auth_token", self.token)
 
         if not self.user_id:
             raise ValueError(f"No user_id in response: {content}")
@@ -387,11 +390,13 @@ class UserActor(HttpUser):
         if response.status_code != 200:
             raise ValueError(f"update_privacies error {response.content}")
 
-        # create friend request
-        response = self.client.post(
-            "/account/api/create_friend_request",
-            json.dumps({"from_user_id": user_id, "to_user_id": self.user_id}),
-            headers={"X-CSRFToken": self.csrftoken},
+        # make object manually to avoid endpoint validation
+        FriendRequest.objects.create(
+            from_user=User.objects.get(id=user_id),
+            to_user=User.objects.get(id=self.user_id),
+            sent=timezone.now(),
+            accepted=False,
+            acknowledged=None,
         )
 
         if response.status_code != 200:
