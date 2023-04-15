@@ -6,7 +6,7 @@ JAMCo's vision is to empower job seekers by providing a user-friendly platform f
 
 # Summary
 
-JAMCo is designed to track your progress across all your open job applications. Its kanban board is designed to make job tracking a breeze. You can customize your board to include categories relevant to your field, such as jobs you wish to apply to in the future, pending pre-assessments, or scheduled interviews. Adding jobs to the job board is easy with our user-friendly forms. Signing up on JAMCo is near-instant with a Google login, and you can customize your profile and tracking options for any industry. You can also use the Friends page to add people you know on JAMCo, view their open applications, share relevant positions, and request cover letter reviews. You can even configure notifications to send you an email when a friend shares a job or requests a cover letter review.
+JAMCo is designed to track your progress across all your open job applications. Its kanban board is designed to make job tracking a breeze. You can customize your board to include categories relevant to your field, such as jobs you wish to apply to in the future, pending pre-assessments, or scheduled interviews. Adding jobs to the job board is easy with our user-friendly forms. Signing up on JAMCo is near-instant with a Google login, and you can customize your profile and tracking options for any industry. You can also use the Friends page to add people you know on JAMCo, view their open applications, share relevant positions, and request cover letter reviews. When a friend requests a cover letter review or reviews one of yours, you'll see it in the app's built-in mailbox.
 
 # Target Market: Students
 
